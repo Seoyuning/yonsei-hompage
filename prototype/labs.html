@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="paper">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>연구실 익스플로러 · 연세대학교 기계공학부</title>
+<meta name="description" content="연세대학교 기계공학부 연구실 33개 — 연구 분야로 탐색·검색." />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --blue-900:#00205B; --blue-700:#103F8F; --blue-200:#C6D8F4; --blue-100:#E3ECFA; --blue-50:#F1F6FD;
+  --paper-0:#FBFAF7; --paper-50:#F5F3EC; --paper-100:#ECE8DD;
+  --text-primary:#14181F; --text-secondary:#474E59; --text-tertiary:#6C7480;
+  --ink-line:#B7BEC9; --ink-grid:#E7EAF0;
+  --gold-600:#8A6D2E; --cyan-500:#1796BC;
+  --c-solid:#3E5C76; --c-solid-bg:#E9EDF2; --c-thermal:#B5532E; --c-thermal-bg:#F7E8E1;
+  --c-manuf:#2F7268; --c-manuf-bg:#E3F0EC; --c-bio:#6E4A9E; --c-bio-bg:#EFE9F5;
+  --c-optics:#3A53B0; --c-optics-bg:#E7EBF7; --c-dyn:#1F7A99; --c-dyn-bg:#E1F0F4;
+  --bg:var(--paper-0); --bg-alt:var(--paper-50); --panel:#fff;
+  --border:var(--ink-line); --grid:var(--ink-grid);
+  --brand:var(--blue-900); --link:var(--blue-700);
+  --txt:var(--text-primary); --txt-2:var(--text-secondary); --txt-3:var(--text-tertiary);
+  --font-sans:"Pretendard Variable",Pretendard,-apple-system,system-ui,sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,monospace;
+  --container:1280px; --radius-xs:2px; --radius-sm:4px;
+  --ring:0 0 0 3px rgba(27,83,174,.45);
+  --shadow-2:0 4px 12px rgba(0,32,91,.08),0 2px 4px rgba(0,32,91,.05);
+  --dur-fast:120ms; --dur-base:200ms; --dur-slow:320ms; --ease:cubic-bezier(.2,0,0,1);
+}
+[data-theme="cyanotype"]{
+  --paper-0:#0A1A3A; --paper-50:#0E2147; --paper-100:#13284F;
+  --text-primary:#EAF1FC; --text-secondary:#AFC2E2; --text-tertiary:#7F95BC;
+  --ink-line:#3C5488; --ink-grid:#16294F;
+  --blue-900:#7FB0FF; --blue-700:#9DC4FF; --blue-50:#12244B; --blue-100:#16294F;
+  --cyan-500:#5FD0EC; --gold-600:#D8BE84; --panel:#0E2147; --brand:#DCE8FF; --link:#9DC4FF;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-sans);background:var(--bg);color:var(--txt);line-height:1.7;word-break:keep-all;overflow-wrap:break-word;-webkit-font-smoothing:antialiased;transition:background var(--dur-base),color var(--dur-base)}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+a{color:var(--link);text-decoration:none}a:hover{text-decoration:underline}
+:focus-visible{outline:none;box-shadow:var(--ring);border-radius:var(--radius-xs)}
+.mono{font-family:var(--font-mono);font-feature-settings:"tnum"}
+.wrap{max-width:var(--container);margin:0 auto;padding:0 clamp(16px,5vw,80px)}
+.skip{position:absolute;left:-9999px;top:0;z-index:700;background:var(--brand);color:#fff;padding:10px 16px;border-radius:var(--radius-sm)}
+.skip:focus{left:16px;top:12px}
+.hdr{position:sticky;top:0;z-index:100;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.hdr-in{display:flex;align-items:center;gap:24px;height:68px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:-.01em;color:var(--brand);font-size:17px}
+.brand .emblem{width:30px;height:30px;flex:none}
+.brand-txt{display:flex;flex-direction:column;line-height:1.12}
+.brand-txt small{font-family:var(--font-mono);font-size:9.5px;font-weight:500;letter-spacing:.07em;color:var(--txt-3);margin-top:2px}
+@media(max-width:560px){.brand-txt small{display:none}}
+.nav{display:none;gap:4px;margin-left:8px}
+.nav a{color:var(--txt);padding:8px 14px;border-radius:var(--radius-sm);font-weight:600;font-size:15px;position:relative}
+.nav a:hover{background:var(--blue-50);text-decoration:none}
+.nav a[aria-current]{color:var(--brand)}
+.nav a[aria-current]::after{content:"";position:absolute;left:14px;right:14px;bottom:2px;height:2px;background:var(--brand)}
+.hdr-util{margin-left:auto;display:flex;align-items:center;gap:6px}
+.icon-btn{width:40px;height:40px;display:grid;place-items:center;border:1px solid transparent;background:none;border-radius:var(--radius-sm);cursor:pointer;color:var(--txt);transition:background var(--dur-fast)}
+.icon-btn:hover{background:var(--blue-50)}
+.lang{font-family:var(--font-mono);font-size:12px;border:1px solid var(--border);border-radius:999px;overflow:hidden;display:flex}
+.lang button{border:none;background:none;padding:6px 10px;cursor:pointer;color:var(--txt-3);font-family:inherit}
+.lang button[aria-pressed="true"]{background:var(--brand);color:#fff}
+.burger{display:grid}
+@media(min-width:1024px){.nav{display:flex}.burger{display:none}}
+.drawer{position:fixed;inset:0;z-index:300;visibility:hidden;pointer-events:none}
+.drawer[open]{visibility:visible;pointer-events:auto}
+.drawer-bg{position:absolute;inset:0;background:rgba(0,20,54,.4);opacity:0;transition:opacity var(--dur-base)}
+.drawer[open] .drawer-bg{opacity:1}
+.drawer-panel{position:absolute;right:0;top:0;bottom:0;width:min(84vw,340px);background:var(--panel);border-left:1px solid var(--border);transform:translateX(100%);transition:transform var(--dur-slow) var(--ease);padding:20px;display:flex;flex-direction:column;gap:4px;overflow:auto}
+.drawer[open] .drawer-panel{transform:none}
+.drawer-panel a{color:var(--txt);font-weight:600;font-size:17px;padding:14px 8px;border-bottom:1px solid var(--grid)}
+
+.page-hd{padding:clamp(40px,6vw,72px) 0 24px;border-bottom:1px solid var(--border);
+  background:linear-gradient(transparent,transparent),repeating-linear-gradient(0deg,transparent 0 39px,var(--grid) 39px 40px),repeating-linear-gradient(90deg,transparent 0 39px,var(--grid) 39px 40px),var(--bg)}
+.crumb{font-family:var(--font-mono);font-size:12px;letter-spacing:.05em;color:var(--txt-3);margin-bottom:14px}
+.crumb b{color:var(--brand);font-weight:600}
+.page-hd h1{font-size:clamp(30px,5vw,46px);font-weight:800;letter-spacing:-.03em;line-height:1.08;color:var(--brand)}
+.page-hd .lede{margin-top:14px;color:var(--txt-2);max-width:60ch}
+.page-datum{margin-top:18px;font-family:var(--font-mono);font-size:13px;color:var(--txt-2);display:flex;gap:16px;flex-wrap:wrap}
+.page-datum b{color:var(--brand);font-weight:600}
+
+.filterbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:14px 16px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--panel);margin:28px 0;position:sticky;top:76px;z-index:50;box-shadow:var(--shadow-2)}
+.search-in{flex:1;min-width:200px;display:flex;align-items:center;gap:8px;border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;background:var(--bg)}
+.search-in svg{flex:none;color:var(--txt-3)}
+.search-in input{border:none;background:none;outline:none;font:inherit;font-family:var(--font-mono);font-size:13px;color:var(--txt);width:100%}
+.cchips{display:flex;flex-wrap:wrap;gap:6px}
+.cchip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:999px;padding:6px 11px;font-size:12px;font-weight:600;cursor:pointer;background:var(--panel);color:var(--txt-2);transition:all var(--dur-fast)}
+.cchip .cd{width:9px;height:9px;border-radius:50%;background:var(--cc);flex:none}
+.cchip[aria-pressed="true"]{background:var(--cc-bg);border-color:var(--cc);color:var(--cc)}
+[data-theme="cyanotype"] .cchip[aria-pressed="true"]{color:#fff;background:color-mix(in srgb,var(--cc) 40%,transparent)}
+.viewtoggle{display:inline-flex;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
+.viewtoggle button{border:none;background:var(--panel);padding:8px 12px;font:inherit;font-size:12.5px;cursor:pointer;color:var(--txt-2);border-right:1px solid var(--grid)}
+.viewtoggle button:last-child{border-right:none}
+.viewtoggle button[aria-pressed="true"]{background:var(--brand);color:#fff}
+.filter-meta{margin-left:auto;display:flex;align-items:center;gap:12px;font-family:var(--font-mono);font-size:12.5px;color:var(--txt-2);white-space:nowrap}
+.filter-meta b{color:var(--brand)}
+.reset-btn{border:1px solid var(--border);background:var(--panel);border-radius:var(--radius-sm);padding:7px 12px;cursor:pointer;font:inherit;font-size:12px;color:var(--txt-2)}
+.reset-btn:hover{background:var(--blue-50)}
+
+.lab-grid{display:grid;grid-template-columns:1fr;gap:14px;padding-bottom:80px}
+@media(min-width:640px){.lab-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1024px){.lab-grid{grid-template-columns:repeat(3,1fr)}}
+.lcard{border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--panel);padding:18px;border-top:3px solid var(--cc);display:flex;flex-direction:column;gap:8px;position:relative;transition:all var(--dur-fast)}
+.lcard:hover{box-shadow:var(--shadow-2);transform:translateY(-2px)}
+.lcard[hidden]{display:none}
+.lcard-nm{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px;line-height:1.3}
+.lcard-nm .cdot{width:10px;height:10px;border-radius:50%;background:var(--cc);flex:none}
+.lcard-en{font-family:var(--font-mono);font-size:11.5px;color:var(--txt-3)}
+.lcard-meta{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--txt-2);margin-top:auto;padding-top:6px}
+.lcard-meta .pi{font-weight:600}
+.lcard-meta .loc{font-family:var(--font-mono);font-size:12px;color:var(--txt-3)}
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;padding:3px 8px;border-radius:var(--radius-xs);width:fit-content}
+.tag .td{width:8px;height:8px;border-radius:50%;background:currentColor}
+.lcard-links{font-size:12.5px;font-family:var(--font-mono);display:flex;gap:8px;flex-wrap:wrap}
+/* 리스트 뷰 */
+.lab-grid.list{grid-template-columns:1fr}
+.lab-grid.list .lcard{flex-direction:row;align-items:center;flex-wrap:wrap;gap:8px 18px;border-top:none;border-left:3px solid var(--cc);padding:14px 18px}
+.lab-grid.list .lcard-en{margin-right:4px}
+.lab-grid.list .lcard-meta{margin-top:0;margin-left:auto;padding-top:0}
+.dir-empty{grid-column:1/-1;text-align:center;padding:56px 20px;color:var(--txt-3);font-size:15px}
+
+.ftr{background:#001436;color:#C6D8F4;padding:44px 0 26px}
+[data-theme="cyanotype"] .ftr{background:#060F26}
+.ftr .fb{font-weight:800;color:#fff;font-size:16px;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.ftr .meta{font-family:var(--font-mono);font-size:12px;color:#6C7FA8;line-height:1.9}
+.ftr-bot{border-top:1px solid #1B345F;margin-top:28px;padding-top:16px;font-family:var(--font-mono);font-size:12px;color:#6C7FA8}
+.reveal{animation:rise .6s var(--ease) both}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.reveal{animation:none}}
+</style>
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+<a class="skip" href="#main">본문 바로가기</a>
+<header class="hdr">
+  <div class="wrap hdr-in">
+    <a class="brand" href="index.html" aria-label="연세대학교 기계공학부 홈">
+      <svg class="emblem" viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="3" fill="none" stroke="var(--brand)" stroke-width="2.5"/><path d="M12 27V13l8 9 8-9v14" fill="none" stroke="var(--brand)" stroke-width="2.5" stroke-linejoin="round"/></svg>
+      <span class="brand-txt"><b>연세대학교 기계공학부</b><small>SCHOOL OF MECHANICAL ENGINEERING · SINCE 1962</small></span>
+    </a>
+    <nav class="nav" aria-label="주메뉴">
+      <a href="index.html">소개</a><a href="academics.html">교육</a>
+      <a href="labs.html" aria-current="page">연구</a><a href="people.html">구성원</a>
+      <a href="news.html">소식</a><a href="#">입학·진로</a>
+    </nav>
+    <div class="hdr-util">
+      <div class="lang" role="group" aria-label="언어 선택"><button aria-pressed="true">KO</button><button aria-pressed="false">EN</button></div>
+      <button class="icon-btn" id="themeBtn" aria-label="청사진 모드 전환"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a9 9 0 1 0 9 9c-4.97 0-9-4.03-9-9Z"/></svg></button>
+      <button class="icon-btn burger" id="burger" aria-label="메뉴 열기" aria-expanded="false"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+    </div>
+  </div>
+</header>
+<div class="drawer" id="drawer">
+  <div class="drawer-bg" data-close></div>
+  <nav class="drawer-panel" aria-label="모바일 메뉴">
+    <a href="index.html" data-close>소개</a><a href="academics.html" data-close>교육</a><a href="labs.html" data-close>연구</a>
+    <a href="people.html" data-close>구성원</a><a href="news.html" data-close>소식</a><a href="#" data-close>입학·진로</a>
+  </nav>
+</div>
+
+<main id="main">
+<section class="page-hd">
+  <div class="wrap">
+    <p class="crumb"><b>§ 연구</b> / 연구실</p>
+    <h1>연구실 익스플로러</h1>
+    <p class="lede">33개 연구실을 6개 클러스터로 탐색하세요. 색은 연구 분야, 클릭하면 세부로 이어집니다.</p>
+    <p class="page-datum"><span>연구실 <b>33</b></span><span>클러스터 <b>6</b></span><span>교수 <b>33</b></span></p>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="filterbar reveal" role="search">
+    <label class="search-in">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="연구실·PI·분야 검색" aria-label="연구실 검색" />
+    </label>
+    <div class="cchips" id="cchips" role="group" aria-label="연구 클러스터 필터">
+      <button class="cchip" data-cluster="solid"   aria-pressed="false" style="--cc:var(--c-solid);--cc-bg:var(--c-solid-bg)"><span class="cd"></span>고체·구조·재료역학</button>
+      <button class="cchip" data-cluster="thermal" aria-pressed="false" style="--cc:var(--c-thermal);--cc-bg:var(--c-thermal-bg)"><span class="cd"></span>열·유체·에너지</button>
+      <button class="cchip" data-cluster="manuf"   aria-pressed="false" style="--cc:var(--c-manuf);--cc-bg:var(--c-manuf-bg)"><span class="cd"></span>생산·정밀제조</button>
+      <button class="cchip" data-cluster="bio"     aria-pressed="false" style="--cc:var(--c-bio);--cc-bg:var(--c-bio-bg)"><span class="cd"></span>마이크로·나노·바이오</button>
+      <button class="cchip" data-cluster="optics"  aria-pressed="false" style="--cc:var(--c-optics);--cc-bg:var(--c-optics-bg)"><span class="cd"></span>광학·이미징·계측</button>
+      <button class="cchip" data-cluster="dyn"     aria-pressed="false" style="--cc:var(--c-dyn);--cc-bg:var(--c-dyn-bg)"><span class="cd"></span>동역학·제어·로보·AI</button>
+    </div>
+    <div class="viewtoggle" id="viewtoggle" role="group" aria-label="보기 방식">
+      <button data-view="card" aria-pressed="true">카드</button>
+      <button data-view="list" aria-pressed="false">리스트</button>
+    </div>
+    <div class="filter-meta"><span>연구실 <b id="count">33</b>개</span><button class="reset-btn" id="reset">초기화</button></div>
+  </div>
+
+  <div class="lab-grid" id="grid">
+    <article class="lcard" data-cluster="solid" data-search="전산재료역학 computational mechanics of materials 강건욱" style="--cc:var(--c-solid)"><div class="lcard-nm"><span class="cdot"></span>전산재료역학</div><div class="lcard-en">Computational Mechanics of Materials</div><span class="tag" style="color:var(--c-solid);background:var(--c-solid-bg)"><span class="td"></span>고체·구조·재료역학</span><div class="lcard-meta"><span class="pi">강건욱</span><span class="loc">공학관 N204</span></div></article>
+    <article class="lcard" data-cluster="bio" data-search="마이크로 나노 응용 nano fabrication micro optics 강신일" style="--cc:var(--c-bio)"><div class="lcard-nm"><span class="cdot"></span>마이크로 나노 응용</div><div class="lcard-en">Nano Fabrication / Micro Optics</div><span class="tag" style="color:var(--c-bio);background:var(--c-bio-bg)"><span class="td"></span>마이크로·나노·바이오</span><div class="lcard-meta"><span class="pi">강신일</span><span class="loc">공학관 C330</span></div></article>
+    <article class="lcard" data-cluster="optics" data-search="광학 양자 optics quantum 김경식" style="--cc:var(--c-optics)"><div class="lcard-nm"><span class="cdot"></span>광학 양자</div><div class="lcard-en">Optics Quantum</div><span class="tag" style="color:var(--c-optics);background:var(--c-optics-bg)"><span class="td"></span>광학·이미징·계측</span><div class="lcard-meta"><span class="pi">김경식</span><span class="loc">공학관 A534</span></div></article>
+    <article class="lcard" data-cluster="manuf" data-search="트라이볼로지 tribology research 김대은" style="--cc:var(--c-manuf)"><div class="lcard-nm"><span class="cdot"></span>트라이볼로지</div><div class="lcard-en">Tribology Research</div><span class="tag" style="color:var(--c-manuf);background:var(--c-manuf-bg)"><span class="td"></span>생산·정밀제조</span><div class="lcard-meta"><span class="pi">김대은</span><span class="loc">공학관 A491</span></div></article>
+    <article class="lcard" data-cluster="solid" data-search="멀티스케일구조설계 극한제조 max 김석" style="--cc:var(--c-solid)"><div class="lcard-nm"><span class="cdot"></span>멀티스케일구조설계·극한제조 (MAX)</div><div class="lcard-en">Multiscale Architecture & eXtreme mfg.</div><span class="tag" style="color:var(--c-solid);background:var(--c-solid-bg)"><span class="td"></span>고체·구조·재료역학</span><div class="lcard-meta"><span class="pi">김석</span><span class="loc">공학관 C314</span></div></article>
+    <article class="lcard" data-cluster="optics" data-search="나노광전자시스템 nano-optoelectronics system 김영주" style="--cc:var(--c-optics)"><div class="lcard-nm"><span class="cdot"></span>나노광전자시스템</div><div class="lcard-en">Nano-Optoelectronics System</div><span class="tag" style="color:var(--c-optics);background:var(--c-optics-bg)"><span class="td"></span>광학·이미징·계측</span><div class="lcard-meta"><span class="pi">김영주</span><span class="loc">공학원 D332</span></div></article>
+    <article class="lcard" data-cluster="bio" data-search="마이크로시스템 mems 김용준" style="--cc:var(--c-bio)"><div class="lcard-nm"><span class="cdot"></span>마이크로시스템 (MEMS)</div><div class="lcard-en">MEMS</div><span class="tag" style="color:var(--c-bio);background:var(--c-bio-bg)"><span class="td"></span>마이크로·나노·바이오</span><div class="lcard-meta"><span class="pi">김용준</span><span class="loc">공학관 A583</span></div></article>
+    <article class="lcard" data-cluster="thermal" data-search="어드밴스드 열공학 advanced thermoengineering 김우철" style="--cc:var(--c-thermal)"><div class="lcard-nm"><span class="cdot"></span>어드밴스드 열공학</div><div class="lcard-en">Advanced ThermoEngineering</div><span class="tag" style="color:var(--c-thermal);background:var(--c-thermal-bg)"><span class="td"></span>열·유체·에너지</span><div class="lcard-meta"><span class="pi">김우철 · 학과장</span><span class="loc">공학관 A310</span></div></article>
+    <article class="lcard" data-cluster="thermal" data-search="미소유체 small-scale fluids 김원정" style="--cc:var(--c-thermal)"><div class="lcard-nm"><span class="cdot"></span>미소유체</div><div class="lcard-en">Small-Scale Fluids</div><span class="tag" style="color:var(--c-thermal);background:var(--c-thermal-bg)"><span class="td"></span>열·유체·에너지</span><div class="lcard-meta"><span class="pi">김원정 · 학부지도</span><span class="loc">공학관 A386</span></div></article>
+    <article class="lcard" data-cluster="bio" data-search="나노기전시스템 nano transducers 김종백" style="--cc:var(--c-bio)"><div class="lcard-nm"><span class="cdot"></span>나노기전시스템</div><div class="lcard-en">Nano Transducers</div><span class="tag" style="color:var(--c-bio);background:var(--c-bio-bg)"><span class="td"></span>마이크로·나노·바이오</span><div class="lcard-meta"><span class="pi">김종백</span><span class="loc">산학협동관 520</span></div></article>
+    <article class="lcard" data-cluster="manuf" data-search="지능소자공정 intelligent device manufacturing 김해진" style="--cc:var(--c-manuf)"><div class="lcard-nm"><span class="cdot"></span>지능소자공정</div><div class="lcard-en">Intelligent Device & Manufacturing</div><span class="tag" style="color:var(--c-manuf);background:var(--c-manuf-bg)"><span class="td"></span>생산·정밀제조</span><div class="lcard-meta"><span class="pi">김해진</span><span class="loc">공학관 N206</span></div></article>
+    <article class="lcard" data-cluster="bio" data-search="바이오메디컬 에너지 시스템 biomedical and energy system 류원형" style="--cc:var(--c-bio)"><div class="lcard-nm"><span class="cdot"></span>바이오메디컬·에너지 시스템</div><div class="lcard-en">Biomedical and Energy System</div><span class="tag" style="color:var(--c-bio);background:var(--c-bio-bg)"><span class="td"></span>마이크로·나노·바이오</span><div class="lcard-meta"><span class="pi">류원형</span><span class="loc">공학관 N105</span></div></article>
+    <article class="lcard" data-cluster="dyn" data-search="계산과학 인공지능 computational science ai 민경민" style="--cc:var(--c-dyn)"><div class="lcard-nm"><span class="cdot"></span>계산과학–인공지능</div><div class="lcard-en">Computational Science–AI</div><span class="tag" style="color:var(--c-dyn);background:var(--c-dyn-bg)"><span class="td"></span>동역학·제어·로보·AI</span><div class="lcard-meta"><span class="pi">민경민</span><span class="loc">공학관 N201</span></div></article>
+    <article class="lcard" data-cluster="manuf" data-search="생산 메카트로닉스 manufacturing mechatronics 민병권" style="--cc:var(--c-manuf)"><div class="lcard-nm"><span class="cdot"></span>생산·메카트로닉스</div><div class="lcard-en">Manufacturing & Mechatronics</div><span class="tag" style="color:var(--c-manuf);background:var(--c-manuf-bg)"><span class="td"></span>생산·정밀제조</span><div class="lcard-meta"><span class="pi">민병권</span><span class="loc">산학협동관 308</span></div></article>
+    <article class="lcard" data-cluster="dyn" data-search="진동 광메카트로닉스 vibration opto-mechatronics 박노철" style="--cc:var(--c-dyn)"><div class="lcard-nm"><span class="cdot"></span>진동·광메카트로닉스</div><div class="lcard-en">Vibration and Opto-Mechatronics</div><span class="tag" style="color:var(--c-dyn);background:var(--c-dyn-bg)"><span class="td"></span>동역학·제어·로보·AI</span><div class="lcard-meta"><span class="pi">박노철</span><span class="loc">공학원 332D</span></div><div class="lcard-links"><a href="professor-park.html">PI 소개 →</a><a href="http://optomecha.yonsei.ac.kr" target="_blank" rel="noopener">optomecha ↗</a></div></article>
+    <article class="lcard" data-cluster="thermal" data-search="내연기관 청정에너지 ice clean energy 송순호" style="--cc:var(--c-thermal)"><div class="lcard-nm"><span class="cdot"></span>내연기관·청정에너지</div><div class="lcard-en">ICE & Clean Energy</div><span class="tag" style="color:var(--c-thermal);background:var(--c-thermal-bg)"><span class="td"></span>열·유체·에너지</span><div class="lcard-meta"><span class="pi">송순호</span><span class="loc">공학관 A180</span></div></article>
+    <article class="lcard" data-cluster="dyn" data-search="인간중심 ai 로보틱스 human-centered ai robotics 신동준" style="--cc:var(--c-dyn)"><div class="lcard-nm"><span class="cdot"></span>인간중심AI로보틱스</div><div class="lcard-en">Human-Centered AI Robotics</div><span class="tag" style="color:var(--c-dyn);background:var(--c-dyn-bg)"><span class="td"></span>동역학·제어·로보·AI</span><div class="lcard-meta"><span class="pi">신동준</span><span class="loc">공학관 C426</span></div></article>
+    <article class="lcard" data-cluster="dyn" data-search="정밀제어시스템 micro servo system 양현석" style="--cc:var(--c-dyn)"><div class="lcard-nm"><span class="cdot"></span>정밀제어시스템</div><div class="lcard-en">Micro Servo System</div><span class="tag" style="color:var(--c-dyn);background:var(--c-dyn-bg)"><span class="td"></span>동역학·제어·로보·AI</span><div class="lcard-meta"><span class="pi">양현석</span><span class="loc">공학관 A283</span></div></article>
+    <article class="lcard" data-cluster="solid" data-search="전산구조설계 systematic structure design 유정훈" style="--cc:var(--c-solid)"><div class="lcard-nm"><span class="cdot"></span>전산구조설계</div><div class="lcard-en">Systematic Structure Design</div><span class="tag" style="color:var(--c-solid);background:var(--c-solid-bg)"><span class="td"></span>고체·구조·재료역학</span><div class="lcard-meta"><span class="pi">유정훈</span><span class="loc">공학관 C334</span></div></article>
+    <article class="lcard" data-cluster="manuf" data-search="정밀 생산 메카트로닉스 manufacturing mechatronics 윤준영" style="--cc:var(--c-manuf)"><div class="lcard-nm"><span class="cdot"></span>정밀 생산 메카트로닉스</div><div class="lcard-en">Manufacturing Mechatronics</div><span class="tag" style="color:var(--c-manuf);background:var(--c-manuf-bg)"><span class="td"></span>생산·정밀제조</span><div class="lcard-meta"><span class="pi">윤준영</span><span class="loc">공학관 A190</span></div></article>
+    <article class="lcard" data-cluster="thermal" data-search="열전달 열설계 heat transfer thermal design 이남규" style="--cc:var(--c-thermal)"><div class="lcard-nm"><span class="cdot"></span>열전달·열설계</div><div class="lcard-en">Heat Transfer & Thermal Design</div><span class="tag" style="color:var(--c-thermal);background:var(--c-thermal-bg)"><span class="td"></span>열·유체·에너지</span><div class="lcard-meta"><span class="pi">이남규</span><span class="loc">공학관 N207</span></div></article>
+    <article class="lcard" data-cluster="solid" data-search="멀티피직스 최적설계 phm multi-physics design optimization 이종수" style="--cc:var(--c-solid)"><div class="lcard-nm"><span class="cdot"></span>멀티피직스 최적설계·PHM</div><div class="lcard-en">Multi-Physics Design Optimization & PHM</div><span class="tag" style="color:var(--c-solid);background:var(--c-solid-bg)"><span class="td"></span>고체·구조·재료역학</span><div class="lcard-meta"><span class="pi">이종수</span><span class="loc">공학관 A286/C323</span></div></article>
+    <article class="lcard" data-cluster="thermal" data-search="멀티스케일 유체역학 multi-scale fluid dynamics 이준상" style="--cc:var(--c-thermal)"><div class="lcard-nm"><span class="cdot"></span>멀티스케일 유체역학</div><div class="lcard-en">Multi-scale Fluid Dynamics</div><span class="tag" style="color:var(--c-thermal);background:var(--c-thermal-bg)"><span class="td"></span>열·유체·에너지</span><div class="lcard-meta"><span class="pi">이준상</span><span class="loc">공학관 A277/N204</span></div></article>
+    <article class="lcard" data-cluster="thermal" data-search="난류 turbulence 이창훈" style="--cc:var(--c-thermal)"><div class="lcard-nm"><span class="cdot"></span>난류</div><div class="lcard-en">Turbulence</div><span class="tag" style="color:var(--c-thermal);background:var(--c-thermal-bg)"><span class="td"></span>열·유체·에너지</span><div class="lcard-meta"><span class="pi">이창훈</span><span class="loc">공학관 A178</span></div></article>
+    <article class="lcard" data-cluster="bio" data-search="생체역학 연성재료 biomechanics soft materials 이형석" style="--cc:var(--c-bio)"><div class="lcard-nm"><span class="cdot"></span>생체역학·연성재료</div><div class="lcard-en">Biomechanics & Soft Materials</div><span class="tag" style="color:var(--c-bio);background:var(--c-bio-bg)"><span class="td"></span>마이크로·나노·바이오</span><div class="lcard-meta"><span class="pi">이형석</span><span class="loc">공학관 A581/N104</span></div></article>
+    <article class="lcard" data-cluster="solid" data-search="마이크로역학 micro mechanics 장용훈" style="--cc:var(--c-solid)"><div class="lcard-nm"><span class="cdot"></span>마이크로역학</div><div class="lcard-en">Micro Mechanics</div><span class="tag" style="color:var(--c-solid);background:var(--c-solid-bg)"><span class="td"></span>고체·구조·재료역학</span><div class="lcard-meta"><span class="pi">장용훈</span><span class="loc">공학관 A110</span></div></article>
+    <article class="lcard" data-cluster="bio" data-search="나노 융합 소자 nemd 전성찬" style="--cc:var(--c-bio)"><div class="lcard-nm"><span class="cdot"></span>나노 융합 소자 (NEMD)</div><div class="lcard-en">NEMD</div><span class="tag" style="color:var(--c-bio);background:var(--c-bio-bg)"><span class="td"></span>마이크로·나노·바이오</span><div class="lcard-meta"><span class="pi">전성찬</span><span class="loc">공학관 N204</span></div></article>
+    <article class="lcard" data-cluster="solid" data-search="지능형 구조 통합설계 intelligent structures integrated design 전흥재" style="--cc:var(--c-solid)"><div class="lcard-nm"><span class="cdot"></span>지능형 구조·통합설계</div><div class="lcard-en">Intelligent Structures & Integrated Design</div><span class="tag" style="color:var(--c-solid);background:var(--c-solid-bg)"><span class="td"></span>고체·구조·재료역학</span><div class="lcard-meta"><span class="pi">전흥재</span><span class="loc">공학관 C332</span></div></article>
+    <article class="lcard" data-cluster="bio" data-search="바이오칩 biochip technology 정효일" style="--cc:var(--c-bio)"><div class="lcard-nm"><span class="cdot"></span>바이오칩</div><div class="lcard-en">Biochip Technology</div><span class="tag" style="color:var(--c-bio);background:var(--c-bio-bg)"><span class="td"></span>마이크로·나노·바이오</span><div class="lcard-meta"><span class="pi">정효일</span><span class="loc">공학관 A108</span></div></article>
+    <article class="lcard" data-cluster="optics" data-search="산술 광학 영상 computational imaging instrumentation 주철민" style="--cc:var(--c-optics)"><div class="lcard-nm"><span class="cdot"></span>산술 광학 영상</div><div class="lcard-en">Computational Imaging & Instrumentation</div><span class="tag" style="color:var(--c-optics);background:var(--c-optics-bg)"><span class="td"></span>광학·이미징·계측</span><div class="lcard-meta"><span class="pi">주철민</span><span class="loc">공학관 N104</span></div></article>
+    <article class="lcard" data-cluster="dyn" data-search="기계학습 제어 시스템 machine learning control systems 최종은" style="--cc:var(--c-dyn)"><div class="lcard-nm"><span class="cdot"></span>기계학습·제어 시스템</div><div class="lcard-en">Machine Learning and Control Systems</div><span class="tag" style="color:var(--c-dyn);background:var(--c-dyn-bg)"><span class="td"></span>동역학·제어·로보·AI</span><div class="lcard-meta"><span class="pi">최종은</span><span class="loc">공학관 N206</span></div></article>
+    <article class="lcard" data-cluster="optics" data-search="정밀 측정 지능형 센싱 accurate measurement intelligent sensing 현재상" style="--cc:var(--c-optics)"><div class="lcard-nm"><span class="cdot"></span>정밀 측정·지능형 센싱</div><div class="lcard-en">High-Dim. Accurate Measurement & Sensing</div><span class="tag" style="color:var(--c-optics);background:var(--c-optics-bg)"><span class="td"></span>광학·이미징·계측</span><div class="lcard-meta"><span class="pi">현재상</span><span class="loc">공학관 C315</span></div></article>
+    <article class="lcard" data-cluster="thermal" data-search="지속가능 에너지 플랫폼 multiphysics energy system 홍종섭" style="--cc:var(--c-thermal)"><div class="lcard-nm"><span class="cdot"></span>지속가능 에너지 플랫폼</div><div class="lcard-en">Multiphysics Energy System</div><span class="tag" style="color:var(--c-thermal);background:var(--c-thermal-bg)"><span class="td"></span>열·유체·에너지</span><div class="lcard-meta"><span class="pi">홍종섭</span><span class="loc">공학관 A288</span></div></article>
+    <div class="dir-empty" id="empty" hidden>조건에 맞는 연구실이 없습니다. <button class="reset-btn" id="reset2">필터 초기화</button></div>
+  </div>
+</div>
+</main>
+
+<footer class="ftr">
+  <div class="wrap">
+    <div class="fb"><svg width="22" height="22" viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="3" fill="none" stroke="#fff" stroke-width="2.5"/><path d="M12 27V13l8 9 8-9v14" fill="none" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/></svg>연세대학교 기계공학부</div>
+    <p class="meta">[03722] 서울특별시 서대문구 연세로 50 · 제1공학관 · Tel. 02-2123-4426 (학부)</p>
+    <div class="ftr-bot">© 2026 Yonsei University Dept. of Mechanical Engineering · 연구실 33개 실데이터 · 프로토타입 v0.4 「機制」</div>
+  </div>
+</footer>
+
+<script>
+const root=document.documentElement, tBtn=document.getElementById('themeBtn');
+try{const s=localStorage.getItem('theme'); if(s)root.dataset.theme=s;}catch(e){}
+tBtn.addEventListener('click',()=>{const n=root.dataset.theme==='cyanotype'?'paper':'cyanotype';root.dataset.theme=n;try{localStorage.setItem('theme',n);}catch(e){}});
+const drawer=document.getElementById('drawer'), burger=document.getElementById('burger');
+burger.addEventListener('click',()=>{drawer.setAttribute('open','');burger.setAttribute('aria-expanded','true');});
+drawer.addEventListener('click',e=>{if(e.target.matches('[data-close]')){drawer.removeAttribute('open');burger.setAttribute('aria-expanded','false');}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){drawer.removeAttribute('open');burger.setAttribute('aria-expanded','false');}});
+
+const cards=[...document.querySelectorAll('.lcard')];
+const qEl=document.getElementById('q'), countEl=document.getElementById('count'), emptyEl=document.getElementById('empty'), grid=document.getElementById('grid');
+const state={q:'',clusters:new Set()};
+function apply(){
+  let n=0;
+  cards.forEach(c=>{
+    const okC = state.clusters.size===0 || state.clusters.has(c.dataset.cluster);
+    const okQ = !state.q || c.dataset.search.includes(state.q);
+    const show = okC && okQ; c.hidden = !show; if(show) n++;
+  });
+  countEl.textContent = n; emptyEl.hidden = n>0;
+}
+qEl.addEventListener('input',()=>{ state.q=qEl.value.trim().toLowerCase(); apply(); });
+document.getElementById('cchips').addEventListener('click',e=>{
+  const b=e.target.closest('.cchip'); if(!b) return;
+  const k=b.dataset.cluster, on=b.getAttribute('aria-pressed')==='true';
+  b.setAttribute('aria-pressed', on?'false':'true');
+  if(on) state.clusters.delete(k); else state.clusters.add(k);
+  apply();
+});
+document.getElementById('viewtoggle').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  [...b.parentNode.children].forEach(x=>x.setAttribute('aria-pressed','false'));
+  b.setAttribute('aria-pressed','true');
+  grid.classList.toggle('list', b.dataset.view==='list');
+});
+function resetAll(){
+  state.q=''; state.clusters.clear(); qEl.value='';
+  document.querySelectorAll('.cchip').forEach(c=>c.setAttribute('aria-pressed','false'));
+  apply();
+}
+document.getElementById('reset').addEventListener('click',resetAll);
+document.getElementById('reset2').addEventListener('click',resetAll);
+</script>
+</body>
+</html>

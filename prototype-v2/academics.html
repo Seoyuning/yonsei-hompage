@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="paper" class="js">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>교육과정 · 연세대학교 기계공학부</title>
+<meta name="description" content="연세대학교 기계공학부 교육과정 — 4대 역학에서 창의제품설계·학사논문까지. 전공필수 이수 기구학 맵 · 학부/대학원 트랙 · 졸업요건 130학점 · ABEEK." />
+<!-- FOUC 방지: CSS보다 먼저 저장된 테마 적용 (전 페이지 공통 규약 — TEMPLATE.md §2) -->
+<script>
+(function(){try{var t=localStorage.getItem('ysme-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}
+document.documentElement.classList.add('js');})();
+</script>
+<!-- 폰트: 프로토타입은 CDN. 운영본은 self-host subset (부록A §1.2 라이선스: OFL/Apache) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/main.css" />
+<style>
+/* ═══ §04 교육과정 전용 레이아웃 — 토큰 변수만 사용 (TEMPLATE §1) ═══ */
+/* 커리큘럼 기구학 맵: 좌 SVG 그래프 · 우 상세 패널 */
+.cmap-grid{display:grid;gap:20px;grid-template-columns:1fr;align-items:start}
+@media(min-width:960px){.cmap-grid{grid-template-columns:minmax(0,1.55fr) minmax(300px,1fr)}}
+.cmap{width:100%;height:auto;display:block}
+.cmap .lane{font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;fill:var(--txt-3)}
+.cmap .lanesep{stroke:var(--grid);stroke-width:1;stroke-dasharray:6 6}
+.cmap .edge{fill:none;stroke:var(--ink-line);stroke-width:1.5;transition:stroke var(--dur-fast)}
+.cmap .edge.hot{stroke:var(--cyan-500);stroke-width:2;marker-end:url(#arwHot)}
+.cmap .cnode{cursor:pointer;outline:none}
+.cmap .nbox{fill:var(--panel);stroke:var(--border);stroke-width:1;transition:stroke var(--dur-fast)}
+.cmap .nbar{fill:var(--nc,var(--brand))}
+.cmap .cnode:hover .nbox{stroke:var(--nc,var(--brand));stroke-width:1.5}
+.cmap .cnode:focus-visible .nbox{stroke:var(--blue-700);stroke-width:2.5}
+.cmap .cnode[aria-pressed="true"] .nbox{stroke:var(--nc,var(--brand));stroke-width:2.5}
+.cmap .ncode{font-family:var(--font-mono);font-size:12.5px;font-weight:600;fill:var(--nc,var(--brand))}
+.cmap .nname{font-size:16px;font-weight:700;fill:var(--txt)}
+/* 모바일: SVG 대신 세로 리스트 폴백 */
+.cmap-listwrap{display:none}
+@media(max-width:719px){.cmap-svgwrap{display:none}.cmap-listwrap{display:block;padding:14px 12px}}
+.cgroup-lbl{font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;color:var(--txt-3);margin:10px 0 6px}
+.cmap-list{display:flex;flex-direction:column;gap:8px;list-style:none}
+.cmap-item{display:flex;align-items:center;gap:10px;width:100%;padding:12px 14px;min-height:48px;cursor:pointer;text-align:left}
+.cmap-item .dotc{width:10px;height:10px;border-radius:50%;background:var(--nc,var(--brand));flex:none}
+.cmap-item .ci-code{font-family:var(--font-mono);font-size:12px;color:var(--txt-3)}
+.cmap-item .ci-name{font-weight:700}
+.cmap-item .ci-year{margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--txt-3)}
+.cmap-item[aria-pressed="true"]{border-color:var(--nc,var(--brand));box-shadow:inset 3px 0 0 var(--nc,var(--brand))}
+.cmap-down{text-align:center;font-family:var(--font-mono);color:var(--cyan-500);font-size:13px;padding:4px 0}
+/* 과목 상세 패널 */
+.cdetail{padding:20px;display:flex;flex-direction:column;min-height:340px}
+@media(min-width:960px){.cdetail{position:sticky;top:88px}}
+.cd-code{font-size:13px;color:var(--txt-3);margin-top:10px}
+.cd-name{font-size:24px;font-weight:800;letter-spacing:-.02em;margin-top:2px}
+.cd-tags{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.cd-year{font-family:var(--font-mono);font-size:12px;color:var(--txt-3)}
+.cd-desc{margin-top:12px;color:var(--txt-2);font-size:14.5px;line-height:1.7}
+.cd-flow{margin-top:14px;display:flex;flex-direction:column;gap:6px}
+.cd-chips{display:flex;gap:6px;flex-wrap:wrap}
+/* 트랙 카드 */
+.track-grid{display:grid;gap:16px;grid-template-columns:1fr}
+@media(min-width:860px){.track-grid{grid-template-columns:1fr 1fr}}
+.track{padding:22px;display:flex;flex-direction:column;gap:10px;border-top:3px solid var(--brand)}
+.track ol{list-style:none;display:flex;flex-direction:column;margin-top:4px}
+.track ol li{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--grid);align-items:baseline}
+.track ol li:last-child{border-bottom:none}
+.track .tn{font-family:var(--font-mono);font-size:12px;color:var(--cyan-500);flex:none;width:28px}
+.track .tmeta{font-family:var(--font-mono);font-size:12px;color:var(--txt-3);margin-left:auto;white-space:nowrap}
+</style>
+</head>
+<body>
+<a class="skip" href="#main" data-i18n="ui.skip">본문 바로가기</a>
+<div class="scroll-rule" aria-hidden="true"><i></i></div>
+
+<!-- ═══ 헤더 (canonical — 전 페이지 동일 마크업, TEMPLATE.md §1) ═══ -->
+<header class="hdr">
+  <div class="wrap hdr-in">
+    <a class="brand" href="index.html" aria-label="연세대학교 기계공학부 홈">
+      <svg class="emblem" viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="3" fill="none" stroke="var(--brand)" stroke-width="2.5"/><path d="M12 27V13l8 9 8-9v14" fill="none" stroke="var(--brand)" stroke-width="2.5" stroke-linejoin="round"/></svg>
+      <span class="brand-txt"><b>연세대학교 기계공학부</b><small>SCHOOL OF MECHANICAL ENGINEERING · SINCE 1962</small></span>
+    </a>
+    <nav class="nav" aria-label="주메뉴">
+      <ul>
+        <li class="nav-item">
+          <a class="nav-lnk" href="about-dean.html" data-i18n="nav.about">소개</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="about-dean.html">학과장 인사말 · 비전</a>
+                <a href="history.html">연혁 — Since 1962</a>
+                <a href="contact.html">오시는 길 · 연락처</a>
+              </div>
+              <p class="mega-desc">기독교 정신을 바탕으로 창의적 설계 역량과 글로벌 리더십을 갖춘 인재를 양성합니다.</p>
+              <div class="mega-datum">since <b>1962</b><br>창립 <b>50</b>주년 · 2010</div>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-lnk" href="academics.html" data-i18n="nav.academics" aria-current="page">교육</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="academics.html">교육과정 · 이수체계</a>
+                <a href="academics.html#courses">전공필수 교과목</a>
+                <a href="academics.html#abeek">ABEEK 공학교육인증</a>
+              </div>
+              <p class="mega-desc">고체·열·유체·동역학 4대 역학에서 창의제품설계·학사논문까지 — 종합 설계 능력을 완성하는 과정.</p>
+              <div class="mega-datum">졸업 학점 <b>130</b><br>전공필수 <b>MEU2600–4400</b></div>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-lnk" href="research.html" data-i18n="nav.research">연구</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="research.html">연구실 33 — Lab Explorer</a>
+                <a href="research.html#clusters">6개 연구 클러스터</a>
+                <a href="engineering.html">공학 사양서 /engineering</a>
+              </div>
+              <p class="mega-desc">고체에서 유체, 나노에서 로보틱스까지 — 33개 연구실이 6개 분야로 맞물려 작동합니다.</p>
+              <div class="mega-datum">연구실 <b>33</b><br>클러스터 <b>6</b></div>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-lnk" href="people.html" data-i18n="nav.people">구성원</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="people.html">교수진 디렉터리</a>
+                <a href="professor.html?id=park-nocheol">교수 스토리 — 박노철</a>
+              </div>
+              <p class="mega-desc">한 사람 한 사람이 학부의 동력입니다. 이름·연구실·클러스터로 검색하세요.</p>
+              <div class="mega-datum">전임 교수 <b>33</b></div>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-lnk" href="news.html" data-i18n="nav.news">소식</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="news.html">공지사항</a>
+                <a href="news.html#news">뉴스 · 연구성과</a>
+                <a href="news.html#seminar">세미나</a>
+              </div>
+              <p class="mega-desc">학부·대학원 공지, 연구 뉴스, BK 세미나를 한 허브에서.</p>
+              <div class="mega-datum">최신 갱신 <b>2026.07.02</b></div>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-lnk" href="admissions.html" data-i18n="nav.admissions">입학·진로</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="admissions.html#undergraduate">학부 입학</a>
+                <a href="admissions.html#graduate">대학원 진학</a>
+                <a href="admissions.html#careers">기업·채용</a>
+                <a href="admissions.html#alumni">동문</a>
+              </div>
+              <p class="mega-desc">예비신입생부터 동문까지 — 각자의 경로에서 시작하세요.</p>
+              <div class="mega-datum">문의 <b>02-2123-4426</b></div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </nav>
+    <div class="hdr-util">
+      <button class="icon-btn search-btn" data-search-open aria-label="통합 검색 열기">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <span class="kbd-hint">Ctrl K</span>
+      </button>
+      <div class="lang" role="group" aria-label="언어 선택">
+        <button data-lang="ko" aria-pressed="true">KO</button><button data-lang="en" aria-pressed="false">EN</button>
+      </div>
+      <button class="icon-btn" id="themeBtn" aria-label="청사진(다크) 모드 전환">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9c-4.97 0-9-4.03-9-9Z"/></svg>
+      </button>
+      <button class="icon-btn burger" id="burger" aria-label="메뉴 열기" aria-expanded="false" aria-controls="drawer">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ 모바일 드로어 (canonical) ═══ -->
+<div class="drawer" id="drawer">
+  <div class="drawer-bg" data-close></div>
+  <div class="drawer-panel" role="dialog" aria-modal="true" aria-label="모바일 메뉴">
+    <div class="drawer-top">
+      <span class="overline">MENU</span>
+      <button class="icon-btn" data-close aria-label="메뉴 닫기">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <nav aria-label="모바일 메뉴">
+      <a href="about-dean.html" data-close>소개 <small>ABOUT</small></a>
+      <a href="history.html" class="drawer-sub-link drawer-sub" data-close>연혁</a>
+      <a href="academics.html" data-close>교육 <small>ACADEMICS</small></a>
+      <a href="research.html" data-close>연구 <small>RESEARCH</small></a>
+      <a href="people.html" data-close>구성원 <small>PEOPLE</small></a>
+      <a href="news.html" data-close>소식 <small>NEWS</small></a>
+      <a href="admissions.html" data-close>입학·진로 <small>ADMISSIONS</small></a>
+      <a href="contact.html" data-close>오시는 길 <small>CONTACT</small></a>
+    </nav>
+    <p class="drawer-foot">02-2123-4426 (학부)<br>02-2123-2810 (대학원)<br>「機制 · Mechanism in Motion」</p>
+  </div>
+</div>
+
+<!-- ═══ 검색 모달 (canonical) ═══ -->
+<div class="smodal" id="searchModal" hidden>
+  <div class="smodal-bg" data-search-close></div>
+  <div class="smodal-panel" role="dialog" aria-modal="true" aria-label="통합 검색">
+    <div class="smodal-head">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="searchInput" type="search" placeholder="교수·연구실·과목·공지 검색" aria-label="검색어 입력" role="combobox" aria-expanded="false" aria-controls="searchResults" autocomplete="off" />
+      <kbd>ESC</kbd>
+    </div>
+    <div class="smodal-results" id="searchResults" role="listbox" aria-label="검색 결과"></div>
+    <div class="smodal-foot"><span><b>↑↓</b> 이동</span><span><b>↵</b> 열기</span><span><b>ESC</b> 닫기</span><span id="searchStatus" aria-live="polite" style="margin-left:auto"></span></div>
+  </div>
+</div>
+
+<main id="main">
+<!-- ═══ 페이지 헤드 §04 교육 ═══ -->
+<div class="page-hd gridpaper" style="position:relative">
+  <div class="gridpaper-fade"></div>
+  <div class="wrap" style="position:relative">
+    <nav class="crumb" aria-label="현재 위치"><ol>
+      <li><a href="index.html">홈</a></li>
+      <li aria-current="page">교육과정</li></ol></nav>
+    <h1>교육과정 <span class="mono" style="font-size:.5em;color:var(--txt-3)">§04 ACADEMICS</span></h1>
+    <p class="lead">고체·열·유체·동역학 — 4대 역학이 창의제품설계로 맞물리고, 학사논문으로 완성된다. 이수 체계를 하나의 기구(機構) 도면처럼 읽는다.</p>
+    <div class="datums page-datum" aria-label="교육과정 핵심 지표">
+      <span class="datum"><span class="num">8</span><span class="lbl">전공필수 과목</span>
+        <span class="stamp"><button type="button" aria-label="전공필수 과목 수 출처 보기">i</button><span class="pop" role="tooltip">출처: me.yonsei.ac.kr 교과과정(intro.do) · 최종확인 2026-06-30</span></span></span>
+      <span class="datum"><span class="num">130</span><span class="lbl">졸업 학점</span>
+        <span class="stamp"><button type="button" aria-label="졸업 학점 출처 보기">i</button><span class="pop" role="tooltip">출처: graduation.do · 최종확인 2026-06-30</span></span></span>
+      <span class="datum"><span class="num">2003</span><span class="lbl">ABEEK 가입</span>
+        <span class="stamp"><button type="button" aria-label="ABEEK 가입 연도 출처 보기">i</button><span class="pop pop--left" role="tooltip">출처: history.do — 2003.03 ABEEK 가입 · 확인 2026-07-02</span></span></span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ §04·01 전공필수 이수 기구학 맵 ═══ -->
+<section class="section" id="map">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num">§04·01</span>
+      <div>
+        <h2 class="sec-title">이수 기구학 맵 — Curriculum Mechanism</h2>
+        <p class="sec-sub">2학년 4대 역학이 4학년 종합설계로 이어지는 권장 이수 흐름(기계공학실험1·2는 §04·02 표 참조). 과목을 선택하면 상세가 표시됩니다.</p>
+      </div>
+      <div class="sec-datum"><span>노드 <b>6</b></span><span>흐름 <b>5</b></span></div>
+    </div>
+
+    <div class="cmap-grid reveal">
+      <!-- 도면 시트 셸 안의 방향 그래프 -->
+      <figure class="dwg-sheet" style="margin:0">
+        <div class="dwg-tb"><span>DWG. YSME-2026-004 · 전공필수 이수 흐름</span><span>NODE = 과목 · COLOR = 연계 클러스터</span></div>
+        <div class="dwg-body cmap-svgwrap">
+          <span class="dwg-vlabel">§04 · ACADEMICS</span>
+          <svg class="cmap" id="cmapSvg" viewBox="0 0 900 430" role="group" aria-label="전공필수 이수 흐름도. 2학년 4대 역학 — 고체역학, 열역학, 유체역학, 동역학 — 이 4학년 창의제품설계로, 창의제품설계가 학사논문으로 이어집니다. 각 노드를 선택하면 과목 상세가 표시됩니다.">
+            <defs>
+              <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-line)"/></marker>
+              <marker id="arwHot" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--cyan-500)"/></marker>
+            </defs>
+            <text class="lane" x="155" y="24" text-anchor="middle">2학년 — 4대 역학 · MEU2XXX</text>
+            <text class="lane" x="650" y="24" text-anchor="middle">4학년 — 종합설계 · MEU4XXX</text>
+            <line class="lanesep" x1="350" y1="34" x2="350" y2="410"/>
+            <!-- 선수→후수 엣지 (방향 화살표) -->
+            <path class="edge" data-from="MEU2600" data-to="MEU4300" d="M260,76 C340,76 356,186 422,186" marker-end="url(#arw)"/>
+            <path class="edge" data-from="MEU2610" data-to="MEU4300" d="M260,170 C330,170 350,201 422,201" marker-end="url(#arw)"/>
+            <path class="edge" data-from="MEU2640" data-to="MEU4300" d="M260,264 C330,264 350,215 422,215" marker-end="url(#arw)"/>
+            <path class="edge" data-from="MEU2650" data-to="MEU4300" d="M260,358 C340,358 356,230 422,230" marker-end="url(#arw)"/>
+            <path class="edge" data-from="MEU4300" data-to="MEU4400" d="M650,208 H712" marker-end="url(#arw)"/>
+            <!-- 과목 노드 (색 = 연계 클러스터) -->
+            <g class="cnode" data-code="MEU2600" tabindex="0" role="button" aria-pressed="false" aria-label="MEU2600 고체역학 — 상세 보기" style="--nc:var(--c-solid)">
+              <rect class="nbox" x="50" y="44" width="210" height="64" rx="3"/>
+              <rect class="nbar" x="50" y="44" width="4" height="64"/>
+              <text class="ncode" x="70" y="70">MEU2600</text>
+              <text class="nname" x="70" y="94">고체역학</text>
+            </g>
+            <g class="cnode" data-code="MEU2610" tabindex="0" role="button" aria-pressed="false" aria-label="MEU2610 열역학 — 상세 보기" style="--nc:var(--c-thermal)">
+              <rect class="nbox" x="50" y="138" width="210" height="64" rx="3"/>
+              <rect class="nbar" x="50" y="138" width="4" height="64"/>
+              <text class="ncode" x="70" y="164">MEU2610</text>
+              <text class="nname" x="70" y="188">열역학</text>
+            </g>
+            <g class="cnode" data-code="MEU2640" tabindex="0" role="button" aria-pressed="false" aria-label="MEU2640 유체역학 — 상세 보기" style="--nc:var(--c-thermal)">
+              <rect class="nbox" x="50" y="232" width="210" height="64" rx="3"/>
+              <rect class="nbar" x="50" y="232" width="4" height="64"/>
+              <text class="ncode" x="70" y="258">MEU2640</text>
+              <text class="nname" x="70" y="282">유체역학</text>
+            </g>
+            <g class="cnode" data-code="MEU2650" tabindex="0" role="button" aria-pressed="false" aria-label="MEU2650 동역학 — 상세 보기" style="--nc:var(--c-dyn)">
+              <rect class="nbox" x="50" y="326" width="210" height="64" rx="3"/>
+              <rect class="nbar" x="50" y="326" width="4" height="64"/>
+              <text class="ncode" x="70" y="352">MEU2650</text>
+              <text class="nname" x="70" y="376">동역학</text>
+            </g>
+            <g class="cnode" data-code="MEU4300" tabindex="0" role="button" aria-pressed="false" aria-label="MEU4300 창의제품설계 — 상세 보기" style="--nc:var(--c-manuf)">
+              <rect class="nbox" x="430" y="170" width="220" height="76" rx="3"/>
+              <rect class="nbar" x="430" y="170" width="4" height="76"/>
+              <text class="ncode" x="450" y="198">MEU4300</text>
+              <text class="nname" x="450" y="224">창의제품설계</text>
+            </g>
+            <g class="cnode" data-code="MEU4400" tabindex="0" role="button" aria-pressed="false" aria-label="MEU4400 학사논문 — 상세 보기" style="--nc:var(--gold-600)">
+              <rect class="nbox" x="720" y="170" width="160" height="76" rx="3"/>
+              <rect class="nbar" x="720" y="170" width="4" height="76"/>
+              <text class="ncode" x="740" y="198">MEU4400</text>
+              <text class="nname" x="740" y="224">학사논문</text>
+            </g>
+          </svg>
+        </div>
+        <!-- 모바일 세로 리스트 폴백 (720px 미만) -->
+        <div class="cmap-listwrap">
+          <p class="cgroup-lbl">2학년 — 4대 역학 · MEU2XXX</p>
+          <ul class="cmap-list">
+            <li><button type="button" class="cmap-item card" data-code="MEU2600" aria-pressed="false" style="--nc:var(--c-solid)"><span class="dotc" aria-hidden="true"></span><span class="ci-code">MEU2600</span><span class="ci-name">고체역학</span><span class="ci-year">2학년</span></button></li>
+            <li><button type="button" class="cmap-item card" data-code="MEU2610" aria-pressed="false" style="--nc:var(--c-thermal)"><span class="dotc" aria-hidden="true"></span><span class="ci-code">MEU2610</span><span class="ci-name">열역학</span><span class="ci-year">2학년</span></button></li>
+            <li><button type="button" class="cmap-item card" data-code="MEU2640" aria-pressed="false" style="--nc:var(--c-thermal)"><span class="dotc" aria-hidden="true"></span><span class="ci-code">MEU2640</span><span class="ci-name">유체역학</span><span class="ci-year">2학년</span></button></li>
+            <li><button type="button" class="cmap-item card" data-code="MEU2650" aria-pressed="false" style="--nc:var(--c-dyn)"><span class="dotc" aria-hidden="true"></span><span class="ci-code">MEU2650</span><span class="ci-name">동역학</span><span class="ci-year">2학년</span></button></li>
+          </ul>
+          <p class="cmap-down" aria-hidden="true">↓ 선수 → 후수</p>
+          <p class="cgroup-lbl">4학년 — 종합설계 · MEU4XXX</p>
+          <ul class="cmap-list">
+            <li><button type="button" class="cmap-item card" data-code="MEU4300" aria-pressed="false" style="--nc:var(--c-manuf)"><span class="dotc" aria-hidden="true"></span><span class="ci-code">MEU4300</span><span class="ci-name">창의제품설계</span><span class="ci-year">4학년</span></button></li>
+            <li><button type="button" class="cmap-item card" data-code="MEU4400" aria-pressed="false" style="--nc:var(--gold-600)"><span class="dotc" aria-hidden="true"></span><span class="ci-code">MEU4400</span><span class="ci-name">학사논문</span><span class="ci-year">4학년</span></button></li>
+          </ul>
+        </div>
+        <figcaption class="dwg-cap">
+          <span>FIG.04 — 코드 학년(2·4000번대) 기반 권장 이수 흐름. 확정 선수과목 규정은 학사포털 요람 기준</span>
+          <span class="stamp"><button type="button" aria-label="이수 흐름 구성 근거 보기">i</button><span class="pop pop--left" role="tooltip">과목 실측: me.yonsei.ac.kr 교과과정 · 흐름은 코드 기반 자체 구성 · 2026-06-30</span></span>
+        </figcaption>
+      </figure>
+
+      <!-- 과목 상세 패널 (클릭 시 갱신) -->
+      <aside class="cdetail card card--corner" id="courseDetail" aria-live="polite" aria-label="선택한 과목 상세">
+        <noscript><p style="color:var(--txt-2)">과목 상세 패널은 JavaScript 환경에서 동작합니다. 전공필수 8과목 요약은 아래 표를 확인하세요.</p></noscript>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ §04·02 전공필수 교과목 표 ═══ -->
+<section class="section section--alt" id="courses">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num">§04·02</span>
+      <div>
+        <h2 class="sec-title">전공필수 교과목</h2>
+        <p class="sec-sub">전공필수 8과목 — 연계 분야는 연구실 명칭 기반 자체 분류(6 클러스터)를 따른다.</p>
+      </div>
+      <div class="sec-datum"><span>전공필수 <b>8</b>
+        <span class="stamp"><button type="button" aria-label="교과목 출처 보기">i</button><span class="pop pop--left" role="tooltip">출처: me.yonsei.ac.kr 교과과정(intro.do) · 최종확인 2026-06-30</span></span></span></div>
+    </div>
+    <div class="table-wrap reveal">
+      <table class="dwg-table">
+        <caption class="visually-hidden">전공필수 교과목 목록 — 코드, 과목명, 구분, 연계 분야</caption>
+        <thead><tr><th class="mono" scope="col">CODE</th><th scope="col">과목명</th><th scope="col">구분</th><th scope="col">학년</th><th scope="col">연계 분야 (자체 분류)</th></tr></thead>
+        <tbody id="courseRows"></tbody>
+      </table>
+    </div>
+    <noscript><p style="margin-top:10px;color:var(--txt-2)">전공필수 8과목: <span class="mono">MEU2600</span> 고체역학 · <span class="mono">MEU2610</span> 열역학 · <span class="mono">MEU2640</span> 유체역학 · <span class="mono">MEU2650</span> 동역학 · <span class="mono">MEU2104</span> 기계공학실험1 · <span class="mono">MEU3005</span> 기계공학실험2 · <span class="mono">MEU4300</span> 창의제품설계 · <span class="mono">MEU4400</span> 학사논문</p></noscript>
+    <p class="spec-note reveal">※ 전체 개설 교과목·수강신청 규정·선수과목 세부 기준은 연세포털 학사요람이 기준입니다. 본 페이지는 검증된 전공필수 8과목만 게시합니다(placeholder 0 원칙).</p>
+  </div>
+</section>
+
+<!-- ═══ §04·03 트랙 · 졸업요건 ═══ -->
+<section class="section" id="tracks">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num">§04·03</span>
+      <div>
+        <h2 class="sec-title">학부 · 대학원 트랙</h2>
+        <p class="sec-sub">학부 4년의 권장 경로와 대학원 진학 경로 — 두 트랙이 하나의 열차(train of gears)처럼 이어진다.</p>
+      </div>
+    </div>
+    <div class="track-grid reveal">
+      <article class="track card card--corner">
+        <span class="overline">TRACK A — UNDERGRADUATE</span>
+        <h3 style="font-size:20px;font-weight:800">학부 트랙</h3>
+        <ol>
+          <li><span class="tn" aria-hidden="true">01</span><span>기초 과학·공학 소양 — 수학·물리 기반 다지기</span><span class="tmeta">1–2학년</span></li>
+          <li><span class="tn" aria-hidden="true">02</span><span>4대 역학 — 고체·열·유체·동역학 <span class="mono" style="font-size:12px;color:var(--txt-3)">MEU2600–2650</span></span><span class="tmeta">2–3학년</span></li>
+          <li><span class="tn" aria-hidden="true">03</span><span>창의제품설계 — 역학의 종합, 캡스톤 설계 <span class="mono" style="font-size:12px;color:var(--txt-3)">MEU4300</span></span><span class="tmeta">4학년</span></li>
+          <li><span class="tn" aria-hidden="true">04</span><span>학사논문 — 학부 연구의 완성 <span class="mono" style="font-size:12px;color:var(--txt-3)">MEU4400</span></span><span class="tmeta">4학년</span></li>
+          <li><span class="tn" aria-hidden="true">05</span><span>졸업 — 총 <b class="mono">130</b>학점
+            <span class="stamp"><button type="button" aria-label="졸업 학점 출처 보기">i</button><span class="pop" role="tooltip">출처: graduation.do · 최종확인 2026-06-30</span></span></span><span class="tmeta">졸업요건</span></li>
+        </ol>
+        <a class="btn btn--sm btn--ghost" href="#map" style="width:fit-content">이수 맵에서 보기 ↑</a>
+      </article>
+      <article class="track card card--corner" style="border-top-color:var(--gold-600)">
+        <span class="overline">TRACK B — GRADUATE</span>
+        <h3 style="font-size:20px;font-weight:800">대학원 트랙</h3>
+        <ol>
+          <li><span class="tn" aria-hidden="true">01</span><span>연구 분야 탐색 — 33개 연구실 · 6 클러스터</span><span class="tmeta"><a href="research.html">labs →</a></span></li>
+          <li><span class="tn" aria-hidden="true">02</span><span>석사과정 — 1971년 신설
+            <span class="stamp"><button type="button" aria-label="석사과정 신설 연도 출처 보기">i</button><span class="pop" role="tooltip">출처: history.do — 1971.03 석사과정 신설 · 확인 2026-07-02</span></span></span><span class="tmeta">M.S.</span></li>
+          <li><span class="tn" aria-hidden="true">03</span><span>박사과정 — 1972년 신설
+            <span class="stamp"><button type="button" aria-label="박사과정 신설 연도 출처 보기">i</button><span class="pop" role="tooltip">출처: history.do — 1972.03 박사과정 신설 · 확인 2026-07-02</span></span></span><span class="tmeta">Ph.D.</span></li>
+          <li><span class="tn" aria-hidden="true">04</span><span>4단계 BK21 사업 — 2020년 선정
+            <span class="stamp"><button type="button" aria-label="BK21 선정 출처 보기">i</button><span class="pop" role="tooltip">출처: history.do — 2020.08 4단계 BK21 선정 · 확인 2026-07-02</span></span></span><span class="tmeta">BK21</span></li>
+          <li><span class="tn" aria-hidden="true">05</span><span>대학원 문의 <span class="mono">02-2123-2810</span> · BK21 <span class="mono">02-2123-7817</span>
+            <span class="stamp"><button type="button" aria-label="연락처 출처 보기">i</button><span class="pop" role="tooltip">출처: me.yonsei.ac.kr · 최종확인 2026-06-30</span></span></span><span class="tmeta">CONTACT</span></li>
+        </ol>
+        <a class="btn btn--sm btn--ghost" href="admissions.html#graduate" style="width:fit-content">대학원 진학 안내 →</a>
+      </article>
+    </div>
+
+    <div class="stats reveal" style="--cols:3;margin-top:28px" data-delay="1">
+      <div class="stat"><span class="sv" data-count="130">0</span><span class="sl">졸업 학점
+        <span class="stamp"><button type="button" aria-label="출처 보기">i</button><span class="pop" role="tooltip">graduation.do · 2026-06-30</span></span></span></div>
+      <div class="stat"><span class="sv" data-count="8">0</span><span class="sl">전공필수 과목
+        <span class="stamp"><button type="button" aria-label="출처 보기">i</button><span class="pop" role="tooltip">me.yonsei.ac.kr 교과과정(intro.do) · 2026-06-30</span></span></span></div>
+      <div class="stat"><span class="sv mono">2003</span><span class="sl">ABEEK 가입
+        <span class="stamp"><button type="button" aria-label="출처 보기">i</button><span class="pop pop--left" role="tooltip">history.do — 2003.03 가입 · 2026-07-02</span></span></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ §04·04 ABEEK 공학교육인증 ═══ -->
+<section class="section section--alt" id="abeek">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num">§04·04</span>
+      <div>
+        <h2 class="sec-title">ABEEK 공학교육인증</h2>
+        <p class="sec-sub">한국공학교육인증원(ABEEK) 인증 프로그램 — 설계 교육과 학습 성과를 체계적으로 관리한다.</p>
+      </div>
+    </div>
+    <div class="card card--corner reveal" style="padding:24px;display:flex;flex-direction:column;gap:12px;max-width:var(--measure)">
+      <p style="color:var(--txt-2)">본 학부는 <b>2003년 3월 ABEEK 공학교육인증 프로그램에 가입</b>했다.
+        <span class="stamp"><button type="button" aria-label="ABEEK 가입 출처 보기">i</button><span class="pop" role="tooltip">출처: history.do — 2003.03 ABEEK 가입 · 확인 2026-07-02</span></span>
+        공학교육인증은 기초에서 종합설계까지의 이수 체계와 학습 성과 평가를 국제적 기준으로 운영하는 제도다.</p>
+      <p class="spec-note" style="margin-top:0">※ 인증 트랙의 세부 이수 요건·신청 절차는 학사요람 및 학부 행정팀 안내가 기준입니다 — 문의 <span class="mono">02-2123-4426</span>.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <a class="btn btn--sm btn--primary" href="admissions.html">입학·진로 안내 →</a>
+        <a class="btn btn--sm btn--ghost" href="contact.html">행정팀 문의 →</a>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ═══ 푸터 (canonical — 4컬럼 + 정책 + 사양칩 미니) ═══ -->
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr-grid">
+      <div>
+        <div class="fb">
+          <svg width="26" height="26" viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="3" fill="none" stroke="#fff" stroke-width="2.5"/><path d="M12 27V13l8 9 8-9v14" fill="none" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/></svg>
+          연세대학교 기계공학부
+        </div>
+        <p class="meta">
+          (03722) 서울특별시 서대문구 연세로 50<br>
+          연세대학교 공과대학<br>
+          Tel. 02-2123-4426 (학부) · 02-2123-2810 (대학원)<br>
+          BK21 02-2123-7817
+        </p>
+        <div class="specs" aria-label="사이트 사양 요약">
+          <a class="spec" href="engineering.html"><span class="dot dot--wip"></span>SPEC <b>/engineering</b></a>
+          <span class="spec"><span class="dot"></span>최종 업데이트 <b>2026-07-03</b></span>
+        </div>
+      </div>
+      <div>
+        <h2 class="ftr-h" data-i18n="ftr.quick">바로가기</h2>
+        <ul>
+          <li><a href="research.html">연구실</a></li>
+          <li><a href="people.html">교수진</a></li>
+          <li><a href="academics.html">교육과정</a></li>
+          <li><a href="news.html">공지·뉴스</a></li>
+          <li><a href="admissions.html">입학·진로</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="ftr-h">소개</h2>
+        <ul>
+          <li><a href="about-dean.html">학과장 인사말</a></li>
+          <li><a href="history.html">연혁</a></li>
+          <li><a href="contact.html">오시는 길</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="ftr-h" data-i18n="ftr.policy">정책·안내</h2>
+        <ul>
+          <li><a href="privacy.html">개인정보처리방침</a></li>
+          <li><a href="terms.html">이용약관</a></li>
+          <li><a href="accessibility.html">접근성 선언</a></li>
+          <li><a href="engineering.html">공학 사양서 /engineering</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="ftr-bot">
+      <span>© 2026 Yonsei University School of Mechanical Engineering</span>
+      <span>「機制 · Mechanism in Motion」 프로토타입 v2.0</span>
+    </div>
+  </div>
+</footer>
+
+<p id="langNote" hidden class="visually-hidden" aria-live="polite">English navigation applied. Full English content is in preparation.</p>
+
+<script src="assets/js/data.js" defer></script>
+<script src="assets/js/main.js" defer></script>
+<script defer>
+/* ═══ academics 전용 스크립트 — 이수 맵 인터랙션 + 과목 표 렌더 ═══ */
+window.addEventListener('DOMContentLoaded', function () {
+  'use strict';
+  var D = window.YSME, UI = window.YSMEUI;
+  if (!D || !UI) return;
+
+  /* 단일 진실원천: 과목명·구분은 data.js에서 조회 */
+  var byCode = {};
+  (D.courses || []).forEach(function (c) { byCode[c.code] = c; });
+
+  /* 페이지 레벨 메타 — 흐름(선수/후수)·학년·연계 클러스터는 코드 기반 자체 구성 (FIG.04 스탬프 참조) */
+  var META = {
+    MEU2600: { year: '2학년', cluster: 'solid',   next: ['MEU4300'], desc: '응력과 변형률 — 재료가 힘에 어떻게 버티고 변형되는가. 구조·설계 해석의 출발점이 되는 역학.' },
+    MEU2610: { year: '2학년', cluster: 'thermal', next: ['MEU4300'], desc: '에너지와 엔트로피의 법칙 — 열기관·에너지 시스템 해석의 기초가 되는 역학.' },
+    MEU2640: { year: '2학년', cluster: 'thermal', next: ['MEU4300'], desc: '흐르는 것의 역학 — 유동의 지배 방정식과 해석. 열·유체 설계와 에너지 시스템의 기초.' },
+    MEU2650: { year: '2학년', cluster: 'dyn',     next: ['MEU4300'], desc: '움직임의 역학 — 운동학과 운동역학. 홈 화면 FIG.01의 슬라이더-크랭크가 이 과목의 원형 기구다.' },
+    MEU2104: { year: '2학년', cluster: null, badge: '실험 · 공통', desc: '4대 역학의 이론을 계측과 데이터로 확인하는 첫 실험 — 기계공학 실험 방법론의 기초.' },
+    MEU3005: { year: '3학년', cluster: null, badge: '실험 · 공통', desc: '심화 실험 — 설계·해석·계측을 통합해 창의제품설계로 이어지는 실험 역량을 완성한다.' },
+    MEU4300: { year: '4학년', cluster: 'manuf',   prev: ['MEU2600', 'MEU2610', 'MEU2640', 'MEU2650'], next: ['MEU4400'], desc: '4대 역학을 하나의 제품으로 종합하는 캡스톤 설계 — 아이디어에서 도면, 도면에서 작동까지.' },
+    MEU4400: { year: '4학년', cluster: null,      prev: ['MEU4300'], desc: '학부 연구의 완성 — 스스로 문제를 정의하고 풀어 논문으로 매듭짓는 졸업 연구.' }
+  };
+
+  /* ── §04·02 전공필수 표 — data.js 렌더 ── */
+  var tbody = document.getElementById('courseRows');
+  if (tbody) {
+    tbody.innerHTML = (D.courses || []).map(function (c) {
+      var m = META[c.code] || {};
+      var cl = m.cluster ? UI.clusterOf(m.cluster) : null;
+      var field = cl
+        ? '<a class="tag tag--' + m.cluster + '" href="research.html#' + m.cluster + '"><span class="td" aria-hidden="true"></span>' + UI.escapeHtml(cl.ko) + '</a>'
+        : '<span class="badge badge--gold">' + UI.escapeHtml(m.badge || '종합 · 졸업연구') + '</span>';
+      return '<tr><td class="mono">' + c.code + '</td><td><b>' + UI.escapeHtml(c.ko) + '</b></td>' +
+        '<td>' + UI.escapeHtml(c.type) + '</td><td class="mono">' + (m.year || '') + '</td><td>' + field + '</td></tr>';
+    }).join('');
+  }
+
+  /* ── §04·01 이수 맵: 노드 선택 → 상세 패널 + 연결 엣지 점등 ── */
+  var panel = document.getElementById('courseDetail');
+  var nodes = document.querySelectorAll('.cnode, .cmap-item');
+  var edges = document.querySelectorAll('.cmap .edge');
+
+  function chipOf(code) {
+    var c = byCode[code];
+    if (!c) return '';
+    return '<button type="button" class="chip" data-goto="' + code + '"><span class="mono" style="font-size:11px">' + code + '</span>' + UI.escapeHtml(c.ko) + '</button>';
+  }
+  function courseHtml(code) {
+    var c = byCode[code], m = META[code] || {};
+    if (!c) return '';
+    var cl = m.cluster ? UI.clusterOf(m.cluster) : null;
+    var tag = cl
+      ? '<a class="tag tag--' + m.cluster + '" href="research.html#' + m.cluster + '"><span class="td" aria-hidden="true"></span>' + UI.escapeHtml(cl.ko) + '</a>'
+      : '<span class="badge badge--gold">' + UI.escapeHtml(m.badge || '종합 · 졸업연구') + '</span>';
+    var flow = '';
+    if (m.prev && m.prev.length) flow += '<div class="cd-flow"><span class="overline">선수 ←</span><div class="cd-chips">' + m.prev.map(chipOf).join('') + '</div></div>';
+    if (m.next && m.next.length) flow += '<div class="cd-flow"><span class="overline">후수 →</span><div class="cd-chips">' + m.next.map(chipOf).join('') + '</div></div>';
+    var cta = m.cluster
+      ? '<a class="btn btn--sm btn--ghost" href="research.html#' + m.cluster + '">이 분야 연구실 보기 →</a>'
+      : '<a class="btn btn--sm btn--ghost" href="research.html">연구실 전체 보기 →</a>';
+    return '<span class="overline">COURSE DETAIL</span>' +
+      '<p class="cd-code mono">' + code + '</p>' +
+      '<h3 class="cd-name">' + UI.escapeHtml(c.ko) + '</h3>' +
+      '<div class="cd-tags"><span class="badge">' + UI.escapeHtml(c.type) + '</span><span class="cd-year">' + (m.year || '') + '</span>' + tag + '</div>' +
+      '<p class="cd-desc">' + m.desc + '</p>' + flow +
+      '<div style="margin-top:auto;padding-top:16px">' + cta + '</div>';
+  }
+  function select(code) {
+    if (!byCode[code] || !panel) return;
+    panel.innerHTML = courseHtml(code);
+    nodes.forEach(function (n) { n.setAttribute('aria-pressed', String(n.dataset.code === code)); });
+    edges.forEach(function (e) { e.classList.toggle('hot', e.dataset.from === code || e.dataset.to === code); });
+  }
+  nodes.forEach(function (n) {
+    n.addEventListener('click', function () { select(n.dataset.code); });
+    n.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(n.dataset.code); }
+    });
+  });
+  if (panel) {
+    panel.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-goto]');
+      if (b) select(b.dataset.goto);
+    });
+    select('MEU2650'); /* 기본 선택 — 히어로 FIG.01(슬라이더-크랭크)의 원형 과목 */
+  }
+
+  /* ── 엣지 제도(draw-in) — 스크롤 진입 시 1회 (정중동) ── */
+  var svg = document.getElementById('cmapSvg');
+  if (svg && !UI.reduce && 'IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es, o) {
+      es.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        svg.querySelectorAll('.edge').forEach(function (p, i) {
+          try {
+            var len = p.getTotalLength();
+            p.style.setProperty('--len', len);
+            p.style.setProperty('--dur-draw2', (500 + i * 120) + 'ms');
+            p.classList.add('draw');
+          } catch (e) {}
+        });
+        o.disconnect();
+      });
+    }, { threshold: .3 });
+    io.observe(svg);
+  }
+});
+</script>
+</body>
+</html>

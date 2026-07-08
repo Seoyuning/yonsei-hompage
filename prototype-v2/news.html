@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="paper" class="js">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>소식 — 공지·뉴스·세미나 · 연세대학교 기계공학부</title>
+<meta name="description" content="연세대학교 기계공학부 소식 허브 — 학부·대학원 공지, 연구 뉴스, BK 세미나를 분류·검색으로 한곳에서. 전 게시물 출처 스탬프 표기." />
+<meta property="og:title" content="소식 · 연세대학교 기계공학부" />
+<meta property="og:description" content="공지 · 뉴스 · 세미나 통합 허브 — 수집 게시물 32건, 전 항목 출처 표기" />
+<meta property="og:type" content="website" />
+<!-- FOUC 방지: CSS보다 먼저 저장된 테마 적용 (전 페이지 공통 규약 — TEMPLATE.md §2) -->
+<script>
+(function(){try{var t=localStorage.getItem('ysme-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}
+document.documentElement.classList.add('js');})();
+</script>
+<!-- 폰트: 프로토타입은 CDN. 운영본은 self-host subset (부록A §1.2 라이선스: OFL/Apache) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/main.css" />
+<style>
+/* ── news.html 전용 레이아웃 (토큰 변수만 사용 · :root 재정의 없음) ── */
+.num--sm{font-size:17px!important;letter-spacing:0}
+/* 아카이브 리스트: xs 카드스택 → md+ 테이블형 (단일 마크업, CSS 전환) */
+.nl{border:var(--border-hair);border-radius:var(--radius-sm);background:var(--panel);overflow:hidden}
+.nl-h{display:none}
+.nrow{display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:14px 16px;border-bottom:1px solid var(--grid);transition:background var(--dur-fast);position:relative}
+.nrow:last-child{border-bottom:none}
+.nrow:hover{background:var(--blue-50)}
+.nrow--pinned{box-shadow:inset 3px 0 0 var(--brand)}
+.ncat{grid-column:1;grid-row:1;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.ndate{grid-column:2;grid-row:1;justify-self:end;font-size:12.5px;color:var(--txt-3);white-space:nowrap}
+.ntitle{grid-column:1/-1;grid-row:2;font-size:15px;font-weight:600;line-height:1.55;letter-spacing:-.01em;margin:0}
+.ntitle .badge{margin-left:6px;font-size:10px;vertical-align:2px}
+.nsrc{grid-column:1/-1;grid-row:3;display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--txt-3);min-width:0}
+.nsrc .src-path{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(min-width:768px){
+  .nl-h{display:grid;grid-template-columns:120px minmax(0,1fr) 200px 96px;gap:14px;padding:10px 18px;background:var(--bg-alt);border-bottom:1.5px solid var(--brand);font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;color:var(--txt-3);font-weight:600}
+  .nl-h span:last-child{text-align:right}
+  .nrow{grid-template-columns:120px minmax(0,1fr) 200px 96px;gap:14px;align-items:baseline;padding:13px 18px}
+  .ncat,.ntitle,.nsrc,.ndate{grid-column:auto;grid-row:auto}
+  .ndate{justify-self:end}
+}
+/* 분류 배지 변형 — 토큰 3종 세트만 사용 */
+.news-cat--grad{background:var(--c-bio-bg);color:var(--c-bio-ink)}
+.news-cat--news{background:var(--cyan-bg);color:var(--cyan-500)}
+.news-cat--sem{background:var(--gold-bg);color:var(--gold-600)}
+.chip .chip-n{font-family:var(--font-mono);font-size:11px;color:inherit;opacity:.75}
+/* 앵커가 sticky 헤더+필터바 아래 가려지지 않게 */
+#notice,#news,#seminar{scroll-margin-top:150px}
+</style>
+</head>
+<body>
+<a class="skip" href="#main" data-i18n="ui.skip">본문 바로가기</a>
+<div class="scroll-rule" aria-hidden="true"><i></i></div>
+
+<!-- ═══ 헤더 (canonical — 전 페이지 동일 마크업, TEMPLATE.md §1) ═══ -->
+<header class="hdr">
+  <div class="wrap hdr-in">
+    <a class="brand" href="index.html" aria-label="연세대학교 기계공학부 홈">
+      <svg class="emblem" viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="3" fill="none" stroke="var(--brand)" stroke-width="2.5"/><path d="M12 27V13l8 9 8-9v14" fill="none" stroke="var(--brand)" stroke-width="2.5" stroke-linejoin="round"/></svg>
+      <span class="brand-txt"><b>연세대학교 기계공학부</b><small>SCHOOL OF MECHANICAL ENGINEERING · SINCE 1962</small></span>
+    </a>
+    <nav class="nav" aria-label="주메뉴">
+      <ul>
+        <li class="nav-item">
+          <a class="nav-lnk" href="about-dean.html" data-i18n="nav.about">소개</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="about-dean.html">학과장 인사말 · 비전</a>
+                <a href="history.html">연혁 — Since 1962</a>
+                <a href="contact.html">오시는 길 · 연락처</a>
+              </div>
+              <p class="mega-desc">기독교 정신을 바탕으로 창의적 설계 역량과 글로벌 리더십을 갖춘 인재를 양성합니다.</p>
+              <div class="mega-datum">since <b>1962</b><br>창립 <b>50</b>주년 · 2010</div>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-lnk" href="academics.html" data-i18n="nav.academics">교육</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="academics.html">교육과정 · 이수체계</a>
+                <a href="academics.html#courses">전공필수 교과목</a>
+                <a href="academics.html#abeek">ABEEK 공학교육인증</a>
+              </div>
+              <p class="mega-desc">고체·열·유체·동역학 4대 역학에서 창의제품설계·학사논문까지 — 종합 설계 능력을 완성하는 과정.</p>
+              <div class="mega-datum">졸업 학점 <b>130</b><br>전공필수 <b>MEU2600–4400</b></div>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-lnk" href="research.html" data-i18n="nav.research">연구</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="research.html">연구실 33 — Lab Explorer</a>
+                <a href="research.html#clusters">6개 연구 클러스터</a>
+                <a href="engineering.html">공학 사양서 /engineering</a>
+              </div>
+              <p class="mega-desc">고체에서 유체, 나노에서 로보틱스까지 — 33개 연구실이 6개 분야로 맞물려 작동합니다.</p>
+              <div class="mega-datum">연구실 <b>33</b><br>클러스터 <b>6</b></div>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-lnk" href="people.html" data-i18n="nav.people">구성원</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="people.html">교수진 디렉터리</a>
+                <a href="professor.html?id=park-nocheol">교수 스토리 — 박노철</a>
+              </div>
+              <p class="mega-desc">한 사람 한 사람이 학부의 동력입니다. 이름·연구실·클러스터로 검색하세요.</p>
+              <div class="mega-datum">전임 교수 <b>33</b></div>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-lnk" href="news.html" data-i18n="nav.news" aria-current="page">소식</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="news.html">공지사항</a>
+                <a href="news.html#news">뉴스 · 연구성과</a>
+                <a href="news.html#seminar">세미나</a>
+              </div>
+              <p class="mega-desc">학부·대학원 공지, 연구 뉴스, BK 세미나를 한 허브에서.</p>
+              <div class="mega-datum">최신 갱신 <b>2026.07.02</b></div>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-lnk" href="admissions.html" data-i18n="nav.admissions">입학·진로</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="admissions.html#undergraduate">학부 입학</a>
+                <a href="admissions.html#graduate">대학원 진학</a>
+                <a href="admissions.html#careers">기업·채용</a>
+                <a href="admissions.html#alumni">동문</a>
+              </div>
+              <p class="mega-desc">예비신입생부터 동문까지 — 각자의 경로에서 시작하세요.</p>
+              <div class="mega-datum">문의 <b>02-2123-4426</b></div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </nav>
+    <div class="hdr-util">
+      <button class="icon-btn search-btn" data-search-open aria-label="통합 검색 열기">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <span class="kbd-hint">Ctrl K</span>
+      </button>
+      <div class="lang" role="group" aria-label="언어 선택">
+        <button data-lang="ko" aria-pressed="true">KO</button><button data-lang="en" aria-pressed="false">EN</button>
+      </div>
+      <button class="icon-btn" id="themeBtn" aria-label="청사진(다크) 모드 전환">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9c-4.97 0-9-4.03-9-9Z"/></svg>
+      </button>
+      <button class="icon-btn burger" id="burger" aria-label="메뉴 열기" aria-expanded="false" aria-controls="drawer">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ 모바일 드로어 (canonical) ═══ -->
+<div class="drawer" id="drawer">
+  <div class="drawer-bg" data-close></div>
+  <div class="drawer-panel" role="dialog" aria-modal="true" aria-label="모바일 메뉴">
+    <div class="drawer-top">
+      <span class="overline">MENU</span>
+      <button class="icon-btn" data-close aria-label="메뉴 닫기">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <nav aria-label="모바일 메뉴">
+      <a href="about-dean.html" data-close>소개 <small>ABOUT</small></a>
+      <a href="history.html" class="drawer-sub-link drawer-sub" data-close>연혁</a>
+      <a href="academics.html" data-close>교육 <small>ACADEMICS</small></a>
+      <a href="research.html" data-close>연구 <small>RESEARCH</small></a>
+      <a href="people.html" data-close>구성원 <small>PEOPLE</small></a>
+      <a href="news.html" data-close>소식 <small>NEWS</small></a>
+      <a href="admissions.html" data-close>입학·진로 <small>ADMISSIONS</small></a>
+      <a href="contact.html" data-close>오시는 길 <small>CONTACT</small></a>
+    </nav>
+    <p class="drawer-foot">02-2123-4426 (학부)<br>02-2123-2810 (대학원)<br>「機制 · Mechanism in Motion」</p>
+  </div>
+</div>
+
+<!-- ═══ 검색 모달 (canonical) ═══ -->
+<div class="smodal" id="searchModal" hidden>
+  <div class="smodal-bg" data-search-close></div>
+  <div class="smodal-panel" role="dialog" aria-modal="true" aria-label="통합 검색">
+    <div class="smodal-head">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="searchInput" type="search" placeholder="교수·연구실·과목·공지 검색" aria-label="검색어 입력" role="combobox" aria-expanded="false" aria-controls="searchResults" autocomplete="off" />
+      <kbd>ESC</kbd>
+    </div>
+    <div class="smodal-results" id="searchResults" role="listbox" aria-label="검색 결과"></div>
+    <div class="smodal-foot"><span><b>↑↓</b> 이동</span><span><b>↵</b> 열기</span><span><b>ESC</b> 닫기</span><span id="searchStatus" aria-live="polite" style="margin-left:auto"></span></div>
+  </div>
+</div>
+
+<main id="main">
+<!-- ═══ 페이지 헤드 §05 소식 ═══ -->
+<div class="page-hd gridpaper" style="position:relative">
+  <div class="gridpaper-fade"></div>
+  <div class="wrap" style="position:relative">
+    <nav class="crumb" aria-label="현재 위치"><ol>
+      <li><a href="index.html">홈</a></li>
+      <li aria-current="page">소식</li></ol></nav>
+    <h1>소식 <span class="mono" style="font-size:.5em;color:var(--txt-3)">§05 NEWS · NOTICE · SEMINAR</span></h1>
+    <p class="lead">학부·대학원 공지, 연구 뉴스, BK 세미나 — 흩어져 있던 게시판을 한 허브로 통합했습니다. 모든 게시물에는 원문 게시판 출처 스탬프가 찍혀 있습니다.</p>
+    <div class="datums page-datum" aria-label="소식 지표">
+      <span class="datum"><span class="num" data-count="32">0</span><span class="lbl">수집 게시물</span>
+        <span class="stamp"><button type="button" aria-label="수집 게시물 수치 출처 보기">i</button><span class="pop" role="tooltip">출처: notice.do·news.do·seminar.do 실수집 · 2026-07-02</span></span></span>
+      <span class="datum"><span class="num num--sm mono">2026-07-02</span><span class="lbl">최종 수집일</span>
+        <span class="stamp"><button type="button" aria-label="수집일 근거 보기">i</button><span class="pop" role="tooltip">현행 me.yonsei.ac.kr 게시판 수집 시점</span></span></span>
+      <span class="datum"><span class="num" data-count="5">0</span><span class="lbl">분류 배지</span>
+        <span class="stamp"><button type="button" aria-label="분류 기준 보기">i</button><span class="pop pop--left" role="tooltip">학부·대학원·뉴스·세미나 4개 게시판 + 장학(제목 키워드 파생)</span></span></span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 필터바 (sticky) — 분류 칩 + 검색 + 결과 카운트(aria-live) ═══ -->
+<div class="filterbar" role="region" aria-label="소식 필터">
+  <div class="wrap filterbar-in">
+    <label class="visually-hidden" for="newsSearch">소식 제목 검색</label>
+    <input type="search" id="newsSearch" placeholder="제목 검색 — 예: 장학, 계절학기, SOFC" autocomplete="off" />
+    <button class="chip" data-cat="all" aria-pressed="true">전체 <span class="chip-n"></span></button>
+    <button class="chip" data-cat="학부" aria-pressed="false">학부 <span class="chip-n"></span></button>
+    <button class="chip" data-cat="대학원" aria-pressed="false">대학원 <span class="chip-n"></span></button>
+    <button class="chip" data-cat="장학" aria-pressed="false">장학 <span class="chip-n"></span></button>
+    <button class="chip" data-cat="뉴스" aria-pressed="false">뉴스 <span class="chip-n"></span></button>
+    <button class="chip" data-cat="세미나" aria-pressed="false">세미나 <span class="chip-n"></span></button>
+    <span class="filter-status" id="filterStatus" aria-live="polite" role="status"></span>
+  </div>
+</div>
+
+<!-- ═══ §05 통합 아카이브 — md+ 테이블형 / xs 카드스택 ═══ -->
+<section class="section section--tight">
+  <div class="wrap">
+    <!-- 메가메뉴·타 페이지 딥링크 착지 앵커 (해시 → 필터 프리셋) -->
+    <span id="notice" aria-hidden="true"></span>
+    <span id="news" aria-hidden="true"></span>
+    <span id="seminar" aria-hidden="true"></span>
+    <div class="sec-head reveal">
+      <span class="sec-num">§05 소식</span>
+      <div>
+        <h2 class="sec-title">통합 아카이브</h2>
+        <p class="sec-sub">고정 공지가 최상단, 이후 게시일 내림차순. 수집 14일 이내 게시물에는 <span class="news-new" style="vertical-align:baseline">NEW</span> 틱이 붙습니다.</p>
+      </div>
+      <div class="sec-datum"><span>수집 <b>2026-07-02</b></span><span>원문 <b>me.yonsei.ac.kr</b></span></div>
+    </div>
+
+    <div class="reveal" id="nlWrap">
+      <div class="nl">
+        <div class="nl-h" aria-hidden="true"><span>분류</span><span>제목</span><span>출처</span><span>게시일</span></div>
+        <div id="newsList">
+          <noscript><p style="padding:20px">이 목록은 브라우저 스크립트로 렌더링됩니다. 스크립트를 사용할 수 없는 환경에서는 원문 게시판(me.yonsei.ac.kr → 커뮤니티 → 공지사항·뉴스·세미나)을 이용해 주세요.</p></noscript>
+        </div>
+      </div>
+      <!-- 빈 필터 상태 — 초기화 CTA -->
+      <div class="empty-state" id="emptyState" hidden>
+        <p style="font-weight:700;color:var(--txt-2)">조건에 맞는 공지가 없습니다.</p>
+        <p style="margin-top:6px;font-size:13.5px">검색어를 바꾸거나 분류 필터를 해제해 보세요.</p>
+        <button class="btn btn--ghost btn--sm" id="resetBtn" type="button" style="margin-top:16px">필터 초기화</button>
+      </div>
+      <p class="spec-note" style="margin-top:12px">※ 정직 표기 — 본 목록은 2026-07-02 기준 현행 사이트 게시판에서 실수집한 제목·게시일 그대로이며, 상세 본문은 운영본에서 원문 연동 예정입니다.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ═══ 푸터 (canonical — 4컬럼 + 정책 + 사양칩 미니) ═══ -->
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr-grid">
+      <div>
+        <div class="fb">
+          <svg width="26" height="26" viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="3" fill="none" stroke="#fff" stroke-width="2.5"/><path d="M12 27V13l8 9 8-9v14" fill="none" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/></svg>
+          연세대학교 기계공학부
+        </div>
+        <p class="meta">
+          (03722) 서울특별시 서대문구 연세로 50<br>
+          연세대학교 공과대학<br>
+          Tel. 02-2123-4426 (학부) · 02-2123-2810 (대학원)<br>
+          BK21 02-2123-7817
+        </p>
+        <div class="specs" aria-label="사이트 사양 요약">
+          <a class="spec" href="engineering.html"><span class="dot dot--wip"></span>SPEC <b>/engineering</b></a>
+          <span class="spec"><span class="dot"></span>최종 업데이트 <b>2026-07-03</b></span>
+        </div>
+      </div>
+      <div>
+        <h2 class="ftr-h" data-i18n="ftr.quick">바로가기</h2>
+        <ul>
+          <li><a href="research.html">연구실</a></li>
+          <li><a href="people.html">교수진</a></li>
+          <li><a href="academics.html">교육과정</a></li>
+          <li><a href="news.html">공지·뉴스</a></li>
+          <li><a href="admissions.html">입학·진로</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="ftr-h">소개</h2>
+        <ul>
+          <li><a href="about-dean.html">학과장 인사말</a></li>
+          <li><a href="history.html">연혁</a></li>
+          <li><a href="contact.html">오시는 길</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="ftr-h" data-i18n="ftr.policy">정책·안내</h2>
+        <ul>
+          <li><a href="privacy.html">개인정보처리방침</a></li>
+          <li><a href="terms.html">이용약관</a></li>
+          <li><a href="accessibility.html">접근성 선언</a></li>
+          <li><a href="engineering.html">공학 사양서 /engineering</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="ftr-bot">
+      <span>© 2026 Yonsei University School of Mechanical Engineering</span>
+      <span>「機制 · Mechanism in Motion」 프로토타입 v2.0</span>
+    </div>
+  </div>
+</footer>
+
+<p id="langNote" hidden class="visually-hidden" aria-live="polite">English navigation applied. Full English content is in preparation.</p>
+
+<script src="assets/js/data.js" defer></script>
+<script src="assets/js/main.js" defer></script>
+<script defer>
+/* ═══ news 전용 스크립트 — 분류 필터 + 검색 + NEW 틱 + 출처 스탬프 렌더 ═══ */
+window.addEventListener('DOMContentLoaded', function () {
+  'use strict';
+  var D = window.YSME, UI = window.YSMEUI;
+  var listEl = document.getElementById('newsList');
+  if (!D || !UI || !listEl) return;
+
+  var nlWrap = document.querySelector('.nl');
+  var status = document.getElementById('filterStatus');
+  var empty = document.getElementById('emptyState');
+  var input = document.getElementById('newsSearch');
+  var resetBtn = document.getElementById('resetBtn');
+  var chips = Array.prototype.slice.call(document.querySelectorAll('.chip[data-cat]'));
+
+  var CAT_CLASS = { '학부': '', '대학원': ' news-cat--grad', '뉴스': ' news-cat--news', '세미나': ' news-cat--sem' };
+  var state = { cat: 'all', q: '' };
+
+  /* 정렬: 고정 공지 최상단 → 게시일 내림차순 (data.js 단일 소스) */
+  var posts = D.posts.slice().sort(function (a, b) {
+    var pa = a.pinned ? 1 : 0, pb = b.pinned ? 1 : 0;
+    if (pa !== pb) return pb - pa;
+    return b.date.localeCompare(a.date);
+  });
+  function isSchol(p) { return p.title.indexOf('장학') > -1; }
+
+  /* 칩 카운트 — 하드코딩 대신 데이터에서 집계 (정직 표기) */
+  var counts = { all: posts.length, '장학': 0 };
+  posts.forEach(function (p) {
+    counts[p.cat] = (counts[p.cat] || 0) + 1;
+    if (isSchol(p)) counts['장학']++;
+  });
+  chips.forEach(function (c) {
+    var n = c.querySelector('.chip-n');
+    if (n) n.textContent = counts[c.dataset.cat] != null ? counts[c.dataset.cat] : 0;
+  });
+
+  function match(p) {
+    if (state.cat === '장학') { if (!isSchol(p)) return false; }
+    else if (state.cat !== 'all' && p.cat !== state.cat) return false;
+    if (state.q) {
+      var hay = (p.title + ' ' + p.cat).toLowerCase();
+      if (hay.indexOf(state.q) < 0) return false;
+    }
+    return true;
+  }
+
+  function rowHtml(p) {
+    var tick = UI.isNew(p.date, 14) ? '<span class="news-new">NEW</span>' : '';
+    var schol = isSchol(p) ? ' <span class="badge badge--amber">장학</span>' : '';
+    var pin = p.pinned ? '<span class="badge">고정</span>' : '';
+    return '<article class="nrow' + (p.pinned ? ' nrow--pinned' : '') + '">' +
+      '<span class="ncat"><span class="news-cat' + (CAT_CLASS[p.cat] || '') + '">' + UI.escapeHtml(p.cat) + '</span>' + schol + '</span>' +
+      '<h3 class="ntitle">' + UI.escapeHtml(p.title) + tick + pin + '</h3>' +
+      '<span class="nsrc mono"><span class="src-path">' + UI.escapeHtml(p.source) + '</span>' +
+        '<span class="stamp"><button type="button" aria-expanded="false" aria-label="이 게시물의 출처 보기">i</button>' +
+        '<span class="pop pop--left" role="tooltip">출처: ' + UI.escapeHtml(p.source) + ' · 최종확인 ' + UI.fmtDate(p.verifiedAt) + '</span></span></span>' +
+      '<time class="ndate mono" datetime="' + p.date + '">' + UI.fmtDate(p.date) + '</time>' +
+      '</article>';
+  }
+
+  function render() {
+    var hits = posts.filter(match);
+    listEl.innerHTML = hits.map(rowHtml).join('');
+    var isEmpty = hits.length === 0;
+    nlWrap.hidden = isEmpty;
+    empty.hidden = !isEmpty;
+    if (status) {
+      var catLbl = state.cat === 'all' ? '전체' : state.cat;
+      status.textContent = catLbl + ' ' + hits.length + '건 / 전체 ' + posts.length + '건';
+    }
+  }
+
+  /* 동적 렌더 스탬프 클릭/터치 — main.js 정적 바인딩 보완 (위임 방식) */
+  listEl.addEventListener('click', function (e) {
+    var btn = e.target.closest('.stamp button');
+    if (!btn) return;
+    e.stopPropagation(); /* main.js의 document 클릭 닫힘과 충돌 방지 */
+    var wrap = btn.parentElement;
+    var willOpen = !wrap.classList.contains('open');
+    document.querySelectorAll('.stamp.open').forEach(function (s) {
+      s.classList.remove('open');
+      var b = s.querySelector('button'); if (b) b.setAttribute('aria-expanded', 'false');
+    });
+    if (willOpen) { wrap.classList.add('open'); btn.setAttribute('aria-expanded', 'true'); }
+  });
+
+  function setCat(cat) {
+    state.cat = cat;
+    chips.forEach(function (c) { c.setAttribute('aria-pressed', String(c.dataset.cat === cat)); });
+    render();
+  }
+  chips.forEach(function (c) {
+    c.addEventListener('click', function () { setCat(c.dataset.cat); });
+  });
+  input.addEventListener('input', function () {
+    state.q = input.value.trim().toLowerCase();
+    render();
+  });
+  function resetAll() {
+    input.value = ''; state.q = '';
+    setCat('all');
+    input.focus();
+  }
+  resetBtn.addEventListener('click', resetAll);
+
+  /* 해시 딥링크: 메가메뉴 #news·#seminar → 필터 프리셋 착지 */
+  function applyHash() {
+    var h = window.location.hash;
+    if (h === '#news') setCat('뉴스');
+    else if (h === '#seminar') setCat('세미나');
+    else if (h === '#notice') setCat('학부');
+  }
+  window.addEventListener('hashchange', applyHash);
+
+  render();
+  applyHash();
+});
+</script>
+</body>
+</html>

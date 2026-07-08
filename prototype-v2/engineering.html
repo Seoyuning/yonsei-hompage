@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="paper" class="js">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>공학 사양서 /engineering · 연세대학교 기계공학부</title>
+<meta name="description" content="이 사이트는 자기 사양을 게시합니다 — 성능·접근성 실측표, BOM(자재 명세), WCAG 2.2 AA 자가적합성 체크리스트, 운영·인수 가이드." />
+<!-- ① FOUC 방지 인라인 스크립트 — CSS 로드보다 반드시 먼저 -->
+<script>
+(function(){try{var t=localStorage.getItem('ysme-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}
+document.documentElement.classList.add('js');})();
+</script>
+<!-- ② 폰트 (v1과 동일 CDN 소스) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<!-- ③ 공용 CSS 단일 로드 -->
+<link rel="stylesheet" href="assets/css/main.css" />
+<style>
+/* engineering 전용 — 레이아웃만, 색·간격은 전부 토큰 (TEMPLATE.md §1) */
+.tm-grid{display:grid;gap:14px;grid-template-columns:repeat(2,1fr)}
+@media(min-width:900px){.tm-grid{grid-template-columns:repeat(4,1fr)}}
+.tm{padding:18px 16px;display:flex;flex-direction:column;gap:5px}
+.tm .tv{font-family:var(--font-mono);font-size:clamp(22px,2.6vw,30px);font-weight:600;color:var(--brand);line-height:1.1}
+.tm .tl{font-size:12px;color:var(--txt-3);display:inline-flex;align-items:center;gap:6px}
+.tm .tsub{font-family:var(--font-mono);font-size:10.5px;color:var(--txt-3)}
+.st-pill{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;padding:2px 10px;border-radius:9999px;white-space:nowrap}
+.st-pill .td{width:7px;height:7px;border-radius:50%;background:currentColor;flex:none}
+.st-pass{color:var(--success);background:var(--success-bg)}
+.st-pend{color:var(--warning);background:var(--warning-bg)}
+.st-na{color:var(--txt-3);background:var(--bg-alt)}
+.wcag-principle td{background:var(--bg-alt);font-family:var(--font-mono);font-size:12px;letter-spacing:.05em;color:var(--txt-2);font-weight:600}
+details.acc{border:var(--border-hair);border-radius:var(--radius-sm);background:var(--panel);margin-bottom:10px}
+details.acc summary{cursor:pointer;padding:15px 18px;font-weight:700;display:flex;align-items:center;gap:10px;list-style:none;min-height:44px;font-size:15.5px}
+details.acc summary::-webkit-details-marker{display:none}
+details.acc summary .mono{font-size:11px;color:var(--txt-3);font-weight:500}
+details.acc summary::after{content:"+";margin-left:auto;font-family:var(--font-mono);font-size:16px;color:var(--txt-3)}
+details.acc[open] summary::after{content:"−"}
+details.acc .acc-body{padding:14px 18px 18px;color:var(--txt-2);font-size:14.5px;border-top:1px solid var(--grid);line-height:1.75}
+details.acc .acc-body ul,details.acc .acc-body ol{padding-left:20px;display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.filetree{font-family:var(--font-mono);font-size:12.5px;line-height:1.9;background:var(--bg-alt);border:var(--border-hair);border-radius:var(--radius-sm);padding:16px 18px;overflow-x:auto;color:var(--txt-2)}
+.honesty{border:var(--border-hair);border-left:3px solid var(--warning);border-radius:var(--radius-sm);background:var(--warning-bg);padding:14px 18px;font-size:14px;color:var(--txt-2);max-width:var(--measure)}
+.honesty b{color:var(--txt)}
+</style>
+</head>
+<body>
+<a class="skip" href="#main" data-i18n="ui.skip">본문 바로가기</a>
+<div class="scroll-rule" aria-hidden="true"><i></i></div>
+
+<!-- ═══ 헤더 (canonical — 전 페이지 동일 마크업, TEMPLATE.md §1) ═══ -->
+<header class="hdr">
+  <div class="wrap hdr-in">
+    <a class="brand" href="index.html" aria-label="연세대학교 기계공학부 홈">
+      <svg class="emblem" viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="3" fill="none" stroke="var(--brand)" stroke-width="2.5"/><path d="M12 27V13l8 9 8-9v14" fill="none" stroke="var(--brand)" stroke-width="2.5" stroke-linejoin="round"/></svg>
+      <span class="brand-txt"><b>연세대학교 기계공학부</b><small>SCHOOL OF MECHANICAL ENGINEERING · SINCE 1962</small></span>
+    </a>
+    <nav class="nav" aria-label="주메뉴">
+      <ul>
+        <li class="nav-item">
+          <a class="nav-lnk" href="about-dean.html" data-i18n="nav.about">소개</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="about-dean.html">학과장 인사말 · 비전</a>
+                <a href="history.html">연혁 — Since 1962</a>
+                <a href="contact.html">오시는 길 · 연락처</a>
+              </div>
+              <p class="mega-desc">기독교 정신을 바탕으로 창의적 설계 역량과 글로벌 리더십을 갖춘 인재를 양성합니다.</p>
+              <div class="mega-datum">since <b>1962</b><br>창립 <b>50</b>주년 · 2010</div>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-lnk" href="academics.html" data-i18n="nav.academics">교육</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="academics.html">교육과정 · 이수체계</a>
+                <a href="academics.html#courses">전공필수 교과목</a>
+                <a href="academics.html#abeek">ABEEK 공학교육인증</a>
+              </div>
+              <p class="mega-desc">고체·열·유체·동역학 4대 역학에서 창의제품설계·학사논문까지 — 종합 설계 능력을 완성하는 과정.</p>
+              <div class="mega-datum">졸업 학점 <b>130</b><br>전공필수 <b>MEU2600–4400</b></div>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-lnk" href="research.html" data-i18n="nav.research" aria-current="page">연구</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="research.html">연구실 33 — Lab Explorer</a>
+                <a href="research.html#clusters">6개 연구 클러스터</a>
+                <a href="engineering.html">공학 사양서 /engineering</a>
+              </div>
+              <p class="mega-desc">고체에서 유체, 나노에서 로보틱스까지 — 33개 연구실이 6개 분야로 맞물려 작동합니다.</p>
+              <div class="mega-datum">연구실 <b>33</b><br>클러스터 <b>6</b></div>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-lnk" href="people.html" data-i18n="nav.people">구성원</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="people.html">교수진 디렉터리</a>
+                <a href="professor.html?id=park-nocheol">교수 스토리 — 박노철</a>
+              </div>
+              <p class="mega-desc">한 사람 한 사람이 학부의 동력입니다. 이름·연구실·클러스터로 검색하세요.</p>
+              <div class="mega-datum">전임 교수 <b>33</b></div>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-lnk" href="news.html" data-i18n="nav.news">소식</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="news.html">공지사항</a>
+                <a href="news.html#news">뉴스 · 연구성과</a>
+                <a href="news.html#seminar">세미나</a>
+              </div>
+              <p class="mega-desc">학부·대학원 공지, 연구 뉴스, BK 세미나를 한 허브에서.</p>
+              <div class="mega-datum">최신 갱신 <b>2026.07.02</b></div>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-lnk" href="admissions.html" data-i18n="nav.admissions">입학·진로</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="admissions.html#undergraduate">학부 입학</a>
+                <a href="admissions.html#graduate">대학원 진학</a>
+                <a href="admissions.html#careers">기업·채용</a>
+                <a href="admissions.html#alumni">동문</a>
+              </div>
+              <p class="mega-desc">예비신입생부터 동문까지 — 각자의 경로에서 시작하세요.</p>
+              <div class="mega-datum">문의 <b>02-2123-4426</b></div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </nav>
+    <div class="hdr-util">
+      <button class="icon-btn search-btn" data-search-open aria-label="통합 검색 열기">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <span class="kbd-hint">Ctrl K</span>
+      </button>
+      <div class="lang" role="group" aria-label="언어 선택">
+        <button data-lang="ko" aria-pressed="true">KO</button><button data-lang="en" aria-pressed="false">EN</button>
+      </div>
+      <button class="icon-btn" id="themeBtn" aria-label="청사진(다크) 모드 전환">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9c-4.97 0-9-4.03-9-9Z"/></svg>
+      </button>
+      <button class="icon-btn burger" id="burger" aria-label="메뉴 열기" aria-expanded="false" aria-controls="drawer">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ 모바일 드로어 (canonical) ═══ -->
+<div class="drawer" id="drawer">
+  <div class="drawer-bg" data-close></div>
+  <div class="drawer-panel" role="dialog" aria-modal="true" aria-label="모바일 메뉴">
+    <div class="drawer-top">
+      <span class="overline">MENU</span>
+      <button class="icon-btn" data-close aria-label="메뉴 닫기">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <nav aria-label="모바일 메뉴">
+      <a href="about-dean.html" data-close>소개 <small>ABOUT</small></a>
+      <a href="history.html" class="drawer-sub-link drawer-sub" data-close>연혁</a>
+      <a href="academics.html" data-close>교육 <small>ACADEMICS</small></a>
+      <a href="research.html" data-close>연구 <small>RESEARCH</small></a>
+      <a href="people.html" data-close>구성원 <small>PEOPLE</small></a>
+      <a href="news.html" data-close>소식 <small>NEWS</small></a>
+      <a href="admissions.html" data-close>입학·진로 <small>ADMISSIONS</small></a>
+      <a href="contact.html" data-close>오시는 길 <small>CONTACT</small></a>
+    </nav>
+    <p class="drawer-foot">02-2123-4426 (학부)<br>02-2123-2810 (대학원)<br>「機制 · Mechanism in Motion」</p>
+  </div>
+</div>
+
+<!-- ═══ 검색 모달 (canonical) ═══ -->
+<div class="smodal" id="searchModal" hidden>
+  <div class="smodal-bg" data-search-close></div>
+  <div class="smodal-panel" role="dialog" aria-modal="true" aria-label="통합 검색">
+    <div class="smodal-head">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="searchInput" type="search" placeholder="교수·연구실·과목·공지 검색" aria-label="검색어 입력" role="combobox" aria-expanded="false" aria-controls="searchResults" autocomplete="off" />
+      <kbd>ESC</kbd>
+    </div>
+    <div class="smodal-results" id="searchResults" role="listbox" aria-label="검색 결과"></div>
+    <div class="smodal-foot"><span><b>↑↓</b> 이동</span><span><b>↵</b> 열기</span><span><b>ESC</b> 닫기</span><span id="searchStatus" aria-live="polite" style="margin-left:auto"></span></div>
+  </div>
+</div>
+
+<main id="main">
+
+<!-- ═══ 페이지 헤드 ═══ -->
+<div class="page-hd gridpaper" style="position:relative">
+  <div class="gridpaper-fade"></div>
+  <div class="wrap" style="position:relative">
+    <nav class="crumb" aria-label="현재 위치"><ol>
+      <li><a href="index.html">홈</a></li><li><a href="research.html">연구</a></li>
+      <li aria-current="page">공학 사양서</li></ol></nav>
+    <h1>공학 사양서 <span class="mono" style="font-size:.5em;color:var(--txt-3)">§90 /ENGINEERING</span></h1>
+    <p class="lead">기계공학부의 사이트라면, 사이트도 기계처럼 사양서를 가져야 합니다.
+      이 페이지는 본 사이트의 <b>성능·접근성 사양, 자재 명세(BOM), 적합성 선언, 운영 가이드</b>를 도면처럼 공개합니다.</p>
+    <div class="datums page-datum" aria-label="사양서 개요">
+      <span class="datum"><span class="num mono">v2.0</span><span class="lbl">문서 리비전</span>
+        <span class="stamp"><button type="button" aria-label="리비전 출처 보기">i</button><span class="pop" role="tooltip">data.js site.version · 2026-07-03</span></span></span>
+      <span class="datum"><span class="num">0</span><span class="lbl">런타임 의존성</span>
+        <span class="stamp"><button type="button" aria-label="의존성 0 근거 보기">i</button><span class="pop" role="tooltip">vanilla JS · 프레임워크/빌드도구/트래커 없음</span></span></span>
+      <span class="datum"><span class="num" id="hdPages">—</span><span class="lbl">페이지 수</span>
+        <span class="stamp"><button type="button" aria-label="페이지 수 산출 근거 보기">i</button><span class="pop pop--left" role="tooltip">data.js pages 배열에서 실시간 계수</span></span></span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ §90.0 라이브 계측 — 이 브라우저에서 방금 측정된 값 ═══ -->
+<section class="section section--tight" aria-labelledby="h-telemetry">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num">§90.0 계측</span>
+      <div>
+        <h2 class="sec-title" id="h-telemetry">라이브 텔레메트리</h2>
+        <p class="sec-sub">아래 값은 하드코딩이 아니라, 지금 이 브라우저에서 Performance API·DOM으로 <b>방금 실측</b>된 값입니다. 새로고침하면 다시 측정됩니다.</p>
+      </div>
+      <div class="sec-datum"><span class="mono">MEASURED IN-BROWSER · LIVE</span></div>
+    </div>
+    <div class="tm-grid reveal">
+      <div class="tm card card--corner">
+        <span class="tv mono" id="tmDcl">—</span>
+        <span class="tl">DOMContentLoaded
+          <span class="stamp"><button type="button" aria-label="측정 방법 보기">i</button><span class="pop" role="tooltip">PerformanceNavigationTiming · 이 세션 실측</span></span></span>
+        <span class="tsub">탐색 시작 → DOM 준비</span>
+      </div>
+      <div class="tm card card--corner">
+        <span class="tv mono" id="tmNodes">—</span>
+        <span class="tl">DOM 노드
+          <span class="stamp"><button type="button" aria-label="측정 방법 보기">i</button><span class="pop" role="tooltip">document.getElementsByTagName('*') 실시간 계수</span></span></span>
+        <span class="tsub">Lighthouse 권장 &lt;1,500</span>
+      </div>
+      <div class="tm card card--corner">
+        <span class="tv mono" id="tmRes">—</span>
+        <span class="tl">로드된 리소스
+          <span class="stamp"><button type="button" aria-label="측정 방법 보기">i</button><span class="pop" role="tooltip">performance.getEntriesByType('resource') 실측</span></span></span>
+        <span class="tsub">CSS·JS·폰트 요청 수</span>
+      </div>
+      <div class="tm card card--corner">
+        <span class="tv mono" id="tmRecords">—</span>
+        <span class="tl">데이터 레코드
+          <span class="stamp"><button type="button" aria-label="측정 방법 보기">i</button><span class="pop pop--left" role="tooltip">window.YSME 배열 길이 합산 — 단일 진실원천</span></span></span>
+        <span class="tsub">교수+랩+소식+교과+연혁</span>
+      </div>
+    </div>
+    <p class="spec-note reveal" data-delay="1" id="tmNote">※ JS가 꺼진 환경에서는 측정할 수 없으므로 값 대신 대시(—)가 표시됩니다.</p>
+  </div>
+</section>
+
+<!-- ═══ §90.1 성능·접근성 실측표 ═══ -->
+<section class="section section--alt" id="specs" aria-labelledby="h-specs">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num">§90.1 사양</span>
+      <div>
+        <h2 class="sec-title" id="h-specs">성능 · 접근성 실측표</h2>
+        <p class="sec-sub">기계 도면의 공차표처럼 — 사양·목표·측정방법·안전계수를 명시합니다. 안전계수(S.F.)는 <span class="mono">허용한계 ÷ 설계목표</span>.</p>
+      </div>
+      <div class="sec-datum"><span>기준 <b>Web Vitals · WCAG 2.2</b></span></div>
+    </div>
+
+    <div class="honesty reveal" role="note" style="margin-bottom:22px">
+      <b>정직 표기 원칙</b> — 실측 열은 제출(배포) 시 Lighthouse·DevTools로 측정하여 기입합니다.
+      미측정 수치를 날조하여 게시하지 않습니다. 측정 전 항목은 <span class="st-pill st-pend"><span class="td" aria-hidden="true"></span>제출 시 측정 예정</span>으로 표기합니다.
+    </div>
+
+    <h3 class="overline reveal" style="margin-bottom:10px">TABLE 1 — 성능 (PERFORMANCE)</h3>
+    <div class="table-wrap reveal" style="margin-bottom:28px">
+      <table class="dwg-table">
+        <caption class="visually-hidden">성능 사양표: 항목별 설계 목표, 허용 한계, 안전계수, 측정 방법, 실측값</caption>
+        <thead><tr>
+          <th scope="col">NO.</th><th scope="col">사양 항목</th><th scope="col" class="mono">설계 목표</th>
+          <th scope="col" class="mono">허용 한계</th><th scope="col" class="mono">S.F.</th>
+          <th scope="col">측정 방법</th><th scope="col">실측</th>
+        </tr></thead>
+        <tbody>
+          <tr><td class="mono">P-01</td><td>LCP <span style="color:var(--txt-3)">최대 콘텐츠풀 페인트</span></td>
+            <td class="mono">≤ 1.0 s</td><td class="mono">2.5 s <span class="stamp"><button type="button" aria-label="한계 기준 출처">i</button><span class="pop" role="tooltip">web.dev Web Vitals — LCP Good ≤2.5s</span></span></td>
+            <td class="mono">2.5</td><td>Lighthouse 모바일 · Slow 4G 스로틀</td>
+            <td><span class="st-pill st-pend"><span class="td" aria-hidden="true"></span>제출 시 측정 예정</span></td></tr>
+          <tr><td class="mono">P-02</td><td>CLS <span style="color:var(--txt-3)">누적 레이아웃 이동</span></td>
+            <td class="mono">≤ 0.02</td><td class="mono">0.1 <span class="stamp"><button type="button" aria-label="한계 기준 출처">i</button><span class="pop" role="tooltip">web.dev Web Vitals — CLS Good ≤0.1</span></span></td>
+            <td class="mono">5.0</td><td>Lighthouse · 필드 계측</td>
+            <td><span class="st-pill st-pend"><span class="td" aria-hidden="true"></span>제출 시 측정 예정</span></td></tr>
+          <tr><td class="mono">P-03</td><td>INP <span style="color:var(--txt-3)">상호작용 응답</span></td>
+            <td class="mono">≤ 120 ms</td><td class="mono">200 ms <span class="stamp"><button type="button" aria-label="한계 기준 출처">i</button><span class="pop" role="tooltip">web.dev Web Vitals — INP Good ≤200ms</span></span></td>
+            <td class="mono">1.7</td><td>DevTools Performance 패널</td>
+            <td><span class="st-pill st-pend"><span class="td" aria-hidden="true"></span>제출 시 측정 예정</span></td></tr>
+          <tr><td class="mono">P-04</td><td>초기 전송량 <span style="color:var(--txt-3)">폰트 제외</span></td>
+            <td class="mono">≤ 250 KB</td><td class="mono">500 KB</td>
+            <td class="mono">2.0</td><td>DevTools Network · Disable cache</td>
+            <td><span class="st-pill st-pend"><span class="td" aria-hidden="true"></span>제출 시 측정 예정</span></td></tr>
+          <tr><td class="mono">P-05</td><td>Lighthouse 4개 카테고리</td>
+            <td class="mono">≥ 95 / 100</td><td class="mono">90 / 100</td>
+            <td class="mono">—</td><td>Lighthouse 12 · Perf/A11y/BP/SEO</td>
+            <td><span class="st-pill st-pend"><span class="td" aria-hidden="true"></span>제출 시 측정 예정</span></td></tr>
+          <tr><td class="mono">P-06</td><td>런타임 JS 의존성</td>
+            <td class="mono">0</td><td class="mono">0</td>
+            <td class="mono">—</td><td>소스 검사 — 외부 라이브러리·트래커 부재</td>
+            <td><span class="st-pill st-pass"><span class="td" aria-hidden="true"></span>0 · 충족
+              <span class="stamp"><button type="button" aria-label="근거 보기">i</button><span class="pop pop--left" role="tooltip">data.js·main.js vanilla — package.json 자체가 없음</span></span></span></td></tr>
+          <tr><td class="mono">P-07</td><td>자동재생 애니메이션 루프</td>
+            <td class="mono">0 건</td><td class="mono">0 건</td>
+            <td class="mono">—</td><td>소스 검사 — 모든 모션은 스크롤·호버·버튼 개시</td>
+            <td><span class="st-pill st-pass"><span class="td" aria-hidden="true"></span>0 건 · 충족
+              <span class="stamp"><button type="button" aria-label="근거 보기">i</button><span class="pop pop--left" role="tooltip">정중동 원칙 — 히어로 기구도 의도 개시(§00)</span></span></span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="overline reveal" style="margin-bottom:10px">TABLE 2 — 접근성 (ACCESSIBILITY)</h3>
+    <div class="table-wrap reveal">
+      <table class="dwg-table">
+        <caption class="visually-hidden">접근성 사양표: 항목별 설계 목표, 요구 기준, 안전계수, 측정 방법, 실측값</caption>
+        <thead><tr>
+          <th scope="col">NO.</th><th scope="col">사양 항목</th><th scope="col" class="mono">설계 목표</th>
+          <th scope="col" class="mono">요구 기준</th><th scope="col" class="mono">S.F.</th>
+          <th scope="col">측정 방법</th><th scope="col">실측</th>
+        </tr></thead>
+        <tbody>
+          <tr><td class="mono">A-01</td><td>본문 텍스트 명도 대비</td>
+            <td class="mono">≥ 7.0 : 1</td><td class="mono">4.5 : 1 <span class="stamp"><button type="button" aria-label="기준 출처">i</button><span class="pop" role="tooltip">WCAG 2.2 — 1.4.3 Contrast (Minimum) AA</span></span></td>
+            <td class="mono">1.56</td><td>도구 검사 (전 토큰 조합)</td>
+            <td><span class="st-pill st-pend"><span class="td" aria-hidden="true"></span>제출 시 측정 예정</span></td></tr>
+          <tr><td class="mono">A-02</td><td>인터랙티브 타깃 크기</td>
+            <td class="mono">≥ 44 px</td><td class="mono">24 px <span class="stamp"><button type="button" aria-label="기준 출처">i</button><span class="pop" role="tooltip">WCAG 2.2 — 2.5.8 Target Size (Minimum) AA</span></span></td>
+            <td class="mono">1.83</td><td>CSS min-height 검사 + 수동 확인</td>
+            <td><span class="st-pill st-pass"><span class="td" aria-hidden="true"></span>설계 반영 · 44px
+              <span class="stamp"><button type="button" aria-label="근거 보기">i</button><span class="pop pop--left" role="tooltip">main.css — .btn/.icon-btn/.nav-lnk min-height:44px</span></span></span></td></tr>
+          <tr><td class="mono">A-03</td><td>키보드 조작 도달률</td>
+            <td class="mono">100 %</td><td class="mono">100 %</td>
+            <td class="mono">—</td><td>수동 키보드 감사 (Tab 순회 · 트랩 검사)</td>
+            <td><span class="st-pill st-pend"><span class="td" aria-hidden="true"></span>제출 시 전수 감사</span></td></tr>
+          <tr><td class="mono">A-04</td><td>reduced-motion 대응</td>
+            <td class="mono">전 모션</td><td class="mono">전 모션</td>
+            <td class="mono">—</td><td>OS 설정 켜고 전 페이지 확인</td>
+            <td><span class="st-pill st-pass"><span class="td" aria-hidden="true"></span>설계 반영
+              <span class="stamp"><button type="button" aria-label="근거 보기">i</button><span class="pop pop--left" role="tooltip">main.css 전역 미디어쿼리 + JS reduce 게이팅</span></span></span></td></tr>
+          <tr><td class="mono">A-05</td><td>JS 비활성 시 콘텐츠 접근</td>
+            <td class="mono">100 %</td><td class="mono">핵심 콘텐츠</td>
+            <td class="mono">—</td><td>JS off 상태 전 페이지 열람</td>
+            <td><span class="st-pill st-pass"><span class="td" aria-hidden="true"></span>설계 반영
+              <span class="stamp"><button type="button" aria-label="근거 보기">i</button><span class="pop pop--left" role="tooltip">html.js 게이팅 — 리빌 숨김은 JS 성공 시에만 · noscript 폴백</span></span></span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="spec-note reveal">※ S.F.(안전계수) = 허용한계 ÷ 설계목표. 기계설계에서 부재의 여유율을 남기듯, 성능 예산에도 여유율을 설계했습니다.</p>
+  </div>
+</section>
+
+<!-- ═══ §90.2 BOM — 자재 명세 ═══ -->
+<section class="section" id="bom" aria-labelledby="h-bom">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num">§90.2 자재</span>
+      <div>
+        <h2 class="sec-title" id="h-bom">BOM — Bill of Materials</h2>
+        <p class="sec-sub">이 사이트를 구성하는 전 부품의 명세와 라이선스. 외부 부품은 서체 2종뿐이며, 모두 오픈 라이선스(SIL OFL 1.1)입니다.</p>
+      </div>
+      <div class="sec-datum"><span>외부 의존 <b>서체 2종</b></span><span>추적기 <b>0</b></span></div>
+    </div>
+    <div class="table-wrap reveal">
+      <table class="dwg-table">
+        <caption class="visually-hidden">자재 명세표: 품번, 구분, 품명과 사양, 라이선스, 공급원</caption>
+        <thead><tr>
+          <th scope="col">품번</th><th scope="col">구분</th><th scope="col">품명 · 사양</th><th scope="col">라이선스</th><th scope="col">공급원</th>
+        </tr></thead>
+        <tbody>
+          <tr><td class="mono">BOM-01</td><td>마크업</td><td>HTML5 — 시맨틱 랜드마크 · 정적 14페이지 · 빌드 도구 없음</td><td>자체 제작 © 2026</td><td class="mono">이 저장소</td></tr>
+          <tr><td class="mono">BOM-02</td><td>스타일</td><td>main.css 단일 파일 — 디자인 토큰 시스템 · paper/cyanotype 2테마 · 19개 컴포넌트군</td><td>자체 제작 © 2026</td><td class="mono">assets/css/main.css</td></tr>
+          <tr><td class="mono">BOM-03</td><td>스크립트</td><td>data.js + main.js — vanilla JS(ES5 호환) · defer 클래식 · <b>런타임 의존성 0</b> · file:// 동작</td><td>자체 제작 © 2026</td><td class="mono">assets/js/</td></tr>
+          <tr><td class="mono">BOM-04</td><td>서체(본문)</td><td>Pretendard v1.3.9 — 본문·제목 전용 · 운영 시 서브셋 self-host 예정</td>
+            <td><b>SIL OFL 1.1</b>
+              <span class="stamp"><button type="button" aria-label="라이선스 근거 보기">i</button><span class="pop" role="tooltip">github.com/orioncactus/pretendard — OFL-1.1 명시</span></span></td>
+            <td class="mono">cdn.jsdelivr.net</td></tr>
+          <tr><td class="mono">BOM-05</td><td>서체(모노)</td><td>IBM Plex Mono 400/500/600 — 수치·치수·코드 전용</td>
+            <td><b>SIL OFL 1.1</b>
+              <span class="stamp"><button type="button" aria-label="라이선스 근거 보기">i</button><span class="pop" role="tooltip">github.com/IBM/plex — OFL-1.1 명시</span></span></td>
+            <td class="mono">fonts.googleapis.com</td></tr>
+          <tr><td class="mono">BOM-06</td><td>아이콘·도판</td><td>인라인 SVG(stroke 계열) · 슬라이더-크랭크 기구 도면 — 전량 자체 제작, 외부 아이콘 세트 미사용</td><td>자체 제작 © 2026</td><td class="mono">각 페이지 인라인</td></tr>
+          <tr><td class="mono">BOM-07</td><td>데이터</td><td>YSME 데이터셋 — 교수 33 · 연구실 33 · 소식 32 · 교과 6 · 연혁 14 (전 레코드 출처·확인일 보유)</td>
+            <td>공식 홈페이지 수집
+              <span class="stamp"><button type="button" aria-label="수집 근거 보기">i</button><span class="pop" role="tooltip">me.yonsei.ac.kr 실측 수집 · 2026-06-30</span></span></td>
+            <td class="mono">assets/js/data.js</td></tr>
+          <tr><td class="mono">BOM-08</td><td>제외 품목</td><td>프레임워크 · CSS 라이브러리 · 분석 트래커 · 쿠키 · 외부 임베드 — <b>전부 0</b></td><td>—</td><td class="mono">N/A</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="spec-note reveal">※ SIL Open Font License 1.1 — 상업적 사용·수정·재배포 허용, 서체 단독 판매 금지. 원문: scripts.sil.org/OFL.
+      운영 전환 시 두 서체 모두 서브셋(woff2) self-host로 교체해 CDN 의존을 제거할 것(§90.4 인수 가이드 참조).</p>
+  </div>
+</section>
+
+<!-- ═══ §90.3 WCAG 2.2 AA 자가적합성 체크리스트 ═══ -->
+<section class="section section--alt" id="wcag" aria-labelledby="h-wcag">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num">§90.3 적합성</span>
+      <div>
+        <h2 class="sec-title" id="h-wcag">WCAG 2.2 AA 자가적합성 선언</h2>
+        <p class="sec-sub">W3C WCAG 2.2 레벨 A·AA 전체 55개 성공 기준에 대한 자가 평가입니다.
+          자가 평가는 제3자 인증이 아니며, ‘검증 예정’ 항목은 제출 전 도구·수동 감사로 확정합니다.</p>
+      </div>
+      <div class="sec-datum" id="wcagSummary" aria-hidden="true"></div>
+    </div>
+
+    <div class="filterbar-in reveal" role="group" aria-label="적합성 상태 필터" style="margin-bottom:16px">
+      <button class="chip" data-wf="all" aria-pressed="true">전체</button>
+      <button class="chip" data-wf="pass" aria-pressed="false">충족 (자가평가)</button>
+      <button class="chip" data-wf="pend" aria-pressed="false">검증 예정</button>
+      <button class="chip" data-wf="na" aria-pressed="false">해당 없음</button>
+      <span class="filter-status" id="wcagStatus" aria-live="polite"></span>
+    </div>
+
+    <div class="table-wrap reveal">
+      <table class="dwg-table" id="wcagTable">
+        <caption class="visually-hidden">WCAG 2.2 A·AA 성공 기준별 자가 평가 상태와 비고</caption>
+        <thead><tr>
+          <th scope="col" class="mono">기준</th><th scope="col">성공 기준명</th><th scope="col" class="mono">수준</th>
+          <th scope="col">상태</th><th scope="col">비고 · 적용 방식</th>
+        </tr></thead>
+        <tbody id="wcagBody">
+          <tr><td colspan="5"><noscript>체크리스트는 JS로 렌더됩니다. 전체 목록 요약: A·AA 55개 기준 중 자가평가 충족 37 · 도구 검증 예정 6 · 해당 없음 12. 문의: 02-2123-4426</noscript></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="spec-note reveal">※ 4.1.1 Parsing은 WCAG 2.2에서 삭제된 기준으로 목록에서 제외. 상세 지원 기능·단축키는 <a href="accessibility.html">접근성 선언</a> 페이지 참조.</p>
+  </div>
+</section>
+
+<!-- ═══ §90.4 운영·인수 가이드 ═══ -->
+<section class="section" id="handover" aria-labelledby="h-handover">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num">§90.4 인수</span>
+      <div>
+        <h2 class="sec-title" id="h-handover">운영 · 인수 가이드</h2>
+        <p class="sec-sub">이 사이트를 인수받아 운영할 담당자를 위한 도면 주기(注記)입니다. 갱신은 대부분 data.js 한 파일 편집으로 끝납니다.</p>
+      </div>
+    </div>
+
+    <div class="reveal" style="max-width:860px">
+      <details class="acc" open>
+        <summary>1. 파일 구조 <span class="mono">SINGLE SOURCE OF TRUTH</span></summary>
+        <div class="acc-body">
+          <pre class="filetree" style="margin-top:4px">prototype-v2/
+├── index.html                 # 홈 (§00) — 헤더·푸터 canonical 원본
+├── about-dean.html · history.html · contact.html      # 소개 (§01)
+├── research.html · lab.html · engineering.html         # 연구 (§02·§90)
+├── people.html · professor.html                        # 구성원 (§03)
+├── academics.html             # 교육 (§04)
+├── news.html                  # 소식 (§05)
+├── admissions.html            # 입학·진로 (§06)
+├── privacy.html · terms.html · accessibility.html     # 정책 (§90)
+├── TEMPLATE.md                # 서브페이지 제작 규약
+└── assets/
+    ├── css/main.css           # 디자인 토큰 + 전 컴포넌트 (단일 파일)
+    └── js/
+        ├── data.js            # ★ 모든 데이터의 단일 진실원천
+        └── main.js            # 공용 UI (테마·드로어·검색·리빌·스탬프)</pre>
+          <p style="margin-top:10px">교수·연구실·공지 목록은 HTML에 복제되어 있지 않습니다.
+            <b>data.js만 고치면 홈 하이라이트·디렉터리·검색 인덱스가 함께 갱신</b>됩니다.</p>
+        </div>
+      </details>
+
+      <details class="acc">
+        <summary>2. 콘텐츠 갱신 절차 <span class="mono">data.js EDIT</span></summary>
+        <div class="acc-body">
+          <ul>
+            <li><b>교수 추가</b> — <span class="mono">professors[]</span>에 <span class="mono">{ id, ko, en, rank, cluster, labId, initial }</span> 추가.
+              <span class="mono">id</span>는 <span class="mono">성-이름</span> 로마자(예: kim-woochul), <span class="mono">labId</span>는 반드시 <span class="mono">labs[]</span>에 실재하는 id.</li>
+            <li><b>연구실 추가</b> — <span class="mono">labs[]</span>에 <span class="mono">{ id, ko, en, pi, cluster, loc }</span> 추가.
+              <span class="mono">cluster</span>는 solid·thermal·manuf·nanobio·optics·dyn 6키 고정. 홈페이지 URL은 <b>검증된 곳만</b> <span class="mono">url</span> 필드로.</li>
+            <li><b>공지·뉴스·세미나</b> — <span class="mono">posts[]</span>에 추가. <span class="mono">source</span>(원본 게시판 경로)와 <span class="mono">verifiedAt</span>(확인일)은 <b>필수</b> — 없으면 게시하지 않는 것이 이 사이트의 규칙입니다.</li>
+            <li><b>수치 변경</b> — 화면의 모든 사실 수치에는 출처 스탬프(ⓘ)가 붙습니다. 수치를 바꾸면 스탬프의 출처·확인일도 반드시 함께 갱신하세요.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="acc">
+        <summary>3. 배포 전 체크리스트 <span class="mono">PRE-FLIGHT</span></summary>
+        <div class="acc-body">
+          <ol>
+            <li>서체 2종을 서브셋 woff2로 self-host 전환 (CDN 의존 제거 · OFL 1.1이므로 재배포 허용).</li>
+            <li>Lighthouse 4개 카테고리 측정 → §90.1 실측 열과 홈 사양칩의 ‘측정 예정’을 실측값·측정일로 교체.</li>
+            <li>명도 대비 도구 검사(A-01)와 키보드 전수 감사(A-03) 수행 → §90.3 ‘검증 예정’ 6건 확정.</li>
+            <li>OG 이미지·sitemap.xml·robots.txt 추가, 실서버 URL로 canonical 지정.</li>
+            <li>보안 헤더 권장값: <span class="mono">CSP</span>(self + 폰트 도메인), <span class="mono">X-Content-Type-Options: nosniff</span>, <span class="mono">Referrer-Policy</span>.</li>
+            <li>학교 UI/BI 가이드(엠블럼·연세블루)와 개인정보 표시 범위(교수 연락처 등) 최종 확인 — 담당 교수 사전 문의.</li>
+          </ol>
+        </div>
+      </details>
+
+      <details class="acc">
+        <summary>4. 인수 기준 — 품질 게이트 <span class="mono">ACCEPTANCE</span></summary>
+        <div class="acc-body">
+          <p>아래 8항을 모두 통과해야 인수 완료로 봅니다 (TEMPLATE.md §7과 동일).</p>
+          <ol>
+            <li>다크(청사진) 모드 페이지 이동 시 흰 화면 깜빡임(FOUC) 없음.</li>
+            <li>페이지당 단일 h1 · 랜드마크 · skip 링크 · 인터랙티브 44px 이상.</li>
+            <li>필터·검색 결과 수를 aria-live로 안내, 빈 상태에 초기화 CTA.</li>
+            <li>자동재생 루프 0건 · reduced-motion에서 정적 완성형.</li>
+            <li>출처 스탬프 없는 사실 수치 0건.</li>
+            <li>가로 스크롤 0(테이블은 table-wrap 격리) · 한글 keep-all 유지.</li>
+            <li>file://로 직접 열어 콘솔 에러 0.</li>
+            <li>보라 그라디언트 · 글래스모피즘 · 16px+ 라운드 · 임의 HEX 금지 준수.</li>
+          </ol>
+        </div>
+      </details>
+
+      <details class="acc">
+        <summary>5. 브라우저 지원 범위 <span class="mono">SUPPORT MATRIX</span></summary>
+        <div class="acc-body">
+          <ul>
+            <li>최근 2년 내 Chrome · Edge · Firefox · Safari (데스크톱/모바일) — 전 기능 지원.</li>
+            <li>컨테이너 쿼리 미지원 브라우저 — <span class="mono">@supports</span> 미디어쿼리 폴백으로 동일 레이아웃.</li>
+            <li>CSS scroll-timeline 미지원 — 스크롤 진행 치수선은 JS 폴백 자동 적용.</li>
+            <li>JS 비활성 — 콘텐츠 전부 열람 가능(리빌 숨김은 html.js에서만), 목록형은 noscript 안내 제공.</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+
+    <div class="reveal" data-delay="1" style="margin-top:28px;display:flex;gap:12px;flex-wrap:wrap">
+      <a class="btn btn--primary" href="accessibility.html">접근성 선언 보기</a>
+      <a class="btn btn--ghost" href="index.html">홈으로 →</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ═══ 푸터 (canonical — 4컬럼 + 정책 + 사양칩 미니) ═══ -->
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr-grid">
+      <div>
+        <div class="fb">
+          <svg width="26" height="26" viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="3" fill="none" stroke="#fff" stroke-width="2.5"/><path d="M12 27V13l8 9 8-9v14" fill="none" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/></svg>
+          연세대학교 기계공학부
+        </div>
+        <p class="meta">
+          (03722) 서울특별시 서대문구 연세로 50<br>
+          연세대학교 공과대학<br>
+          Tel. 02-2123-4426 (학부) · 02-2123-2810 (대학원)<br>
+          BK21 02-2123-7817
+        </p>
+        <div class="specs" aria-label="사이트 사양 요약">
+          <a class="spec" href="engineering.html"><span class="dot dot--wip"></span>SPEC <b>/engineering</b></a>
+          <span class="spec"><span class="dot"></span>최종 업데이트 <b>2026-07-03</b></span>
+        </div>
+      </div>
+      <div>
+        <h2 class="ftr-h" data-i18n="ftr.quick">바로가기</h2>
+        <ul>
+          <li><a href="research.html">연구실</a></li>
+          <li><a href="people.html">교수진</a></li>
+          <li><a href="academics.html">교육과정</a></li>
+          <li><a href="news.html">공지·뉴스</a></li>
+          <li><a href="admissions.html">입학·진로</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="ftr-h">소개</h2>
+        <ul>
+          <li><a href="about-dean.html">학과장 인사말</a></li>
+          <li><a href="history.html">연혁</a></li>
+          <li><a href="contact.html">오시는 길</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="ftr-h" data-i18n="ftr.policy">정책·안내</h2>
+        <ul>
+          <li><a href="privacy.html">개인정보처리방침</a></li>
+          <li><a href="terms.html">이용약관</a></li>
+          <li><a href="accessibility.html">접근성 선언</a></li>
+          <li><a href="engineering.html">공학 사양서 /engineering</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="ftr-bot">
+      <span>© 2026 Yonsei University School of Mechanical Engineering</span>
+      <span>「機制 · Mechanism in Motion」 프로토타입 v2.0</span>
+    </div>
+  </div>
+</footer>
+
+<p id="langNote" hidden class="visually-hidden" aria-live="polite">English navigation applied. Full English content is in preparation.</p>
+
+<script src="assets/js/data.js" defer></script>
+<script src="assets/js/main.js" defer></script>
+<script defer>
+/* ═══ engineering 전용 — 라이브 텔레메트리 + WCAG 체크리스트 렌더·필터 ═══ */
+window.addEventListener('DOMContentLoaded', function () {
+  'use strict';
+  var D = window.YSME, UI = window.YSMEUI;
+  var esc = UI ? UI.escapeHtml : function (s) { return String(s); };
+
+  /* ── §90.0 라이브 텔레메트리 — 이 브라우저에서 실측 ── */
+  function put(id, v) { var el = document.getElementById(id); if (el) el.textContent = v; }
+  try {
+    var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    if (nav && nav.domContentLoadedEventStart > 0) put('tmDcl', Math.round(nav.domContentLoadedEventStart) + ' ms');
+    else put('tmDcl', '측정 불가');
+  } catch (e) { put('tmDcl', '측정 불가'); }
+  put('tmNodes', document.getElementsByTagName('*').length.toLocaleString());
+  try {
+    put('tmRes', performance.getEntriesByType('resource').length + ' 건');
+  } catch (e) { put('tmRes', '측정 불가'); }
+  if (D) {
+    var rec = (D.professors || []).length + (D.labs || []).length + (D.posts || []).length +
+              (D.courses || []).length + (D.history || []).length;
+    put('tmRecords', rec.toLocaleString());
+    put('hdPages', (D.pages || []).length);
+  }
+  var note = document.getElementById('tmNote');
+  if (note) note.textContent = '※ 위 값은 ' + new Date().toLocaleTimeString('ko-KR') + ' 이 브라우저에서 측정되었습니다. 새로고침 시 재측정됩니다.';
+
+  /* ── §90.3 WCAG 2.2 A·AA 55개 기준 — 자가 평가 데이터 ──
+     status: pass = 충족(자가평가) · pend = 도구/수동 검증 예정 · na = 해당 콘텐츠 없음 */
+  var WCAG = [
+    { p: '1. 인식의 용이성 (PERCEIVABLE)' },
+    { id: '1.1.1', name: '텍스트 아닌 콘텐츠', lv: 'A',  st: 'pass', note: '모든 SVG에 role/aria-label 또는 aria-hidden, 장식 요소 대체텍스트 생략 처리' },
+    { id: '1.2.1', name: '오디오·비디오(사전녹음)', lv: 'A', st: 'na', note: '음성·영상 콘텐츠 없음' },
+    { id: '1.2.2', name: '자막(사전녹음)', lv: 'A',  st: 'na', note: '영상 콘텐츠 없음' },
+    { id: '1.2.3', name: '음성 해설·대체수단', lv: 'A', st: 'na', note: '영상 콘텐츠 없음' },
+    { id: '1.2.4', name: '자막(실시간)', lv: 'AA', st: 'na', note: '실시간 미디어 없음' },
+    { id: '1.2.5', name: '음성 해설(사전녹음)', lv: 'AA', st: 'na', note: '영상 콘텐츠 없음' },
+    { id: '1.3.1', name: '정보와 관계', lv: 'A',  st: 'pass', note: '시맨틱 랜드마크 · 표 th/caption · 목록 구조 · 제목 위계' },
+    { id: '1.3.2', name: '의미 있는 순서', lv: 'A', st: 'pass', note: 'DOM 순서 = 시각·읽기 순서 (order 재배치 없음)' },
+    { id: '1.3.3', name: '감각적 특성', lv: 'A',  st: 'pass', note: '색·모양·위치에만 의존하는 지시 없음' },
+    { id: '1.3.4', name: '화면 방향', lv: 'AA', st: 'pass', note: '가로·세로 방향 모두 제약 없이 동작' },
+    { id: '1.3.5', name: '입력 목적 식별', lv: 'AA', st: 'pend', note: '문의 폼 autocomplete 속성 최종 검수 예정' },
+    { id: '1.4.1', name: '색에 무관한 인식', lv: 'A', st: 'pass', note: '클러스터 태그 = 색점+텍스트 병행, 링크 밑줄 hover 제공' },
+    { id: '1.4.2', name: '오디오 제어', lv: 'A', st: 'na', note: '자동재생 오디오 없음' },
+    { id: '1.4.3', name: '명도 대비(최소)', lv: 'AA', st: 'pend', note: '목표 7:1 — 전 토큰 조합 도구 실측 예정 (§90.1 A-01)' },
+    { id: '1.4.4', name: '텍스트 크기 조정', lv: 'AA', st: 'pass', note: '200% 확대 시 기능·내용 손실 없음 (상대단위·clamp)' },
+    { id: '1.4.5', name: '텍스트 이미지 금지', lv: 'AA', st: 'pass', note: '텍스트 이미지 미사용 — 도면 라벨도 실제 SVG text 요소' },
+    { id: '1.4.10', name: '리플로우', lv: 'AA', st: 'pass', note: '360px 폭에서 가로 스크롤 없음(테이블은 개별 스크롤 격리)' },
+    { id: '1.4.11', name: '텍스트 외 대비', lv: 'AA', st: 'pend', note: 'UI 경계·아이콘 3:1 — 도구 실측 예정' },
+    { id: '1.4.12', name: '텍스트 간격', lv: 'AA', st: 'pass', note: '간격 사용자 조정 시 잘림·겹침 없음 (고정 높이 미사용)' },
+    { id: '1.4.13', name: '호버·포커스 콘텐츠', lv: 'AA', st: 'pend', note: '스탬프 팝오버는 ESC 해제 지원 — 메가메뉴 ESC 해제 보완 검토 중' },
+    { p: '2. 운용의 용이성 (OPERABLE)' },
+    { id: '2.1.1', name: '키보드 사용 보장', lv: 'A', st: 'pass', note: '전 기능 키보드 조작 가능 (검색·드로어·스탬프·테마 포함)' },
+    { id: '2.1.2', name: '키보드 함정 없음', lv: 'A', st: 'pass', note: '모달·드로어 포커스 트랩은 ESC로 항상 탈출·포커스 복귀' },
+    { id: '2.1.4', name: '단일 문자 단축키', lv: 'A', st: 'pass', note: '단일 문자 단축키 없음 — Ctrl/⌘+K 수정키 조합만 사용' },
+    { id: '2.2.1', name: '응답 시간 조절', lv: 'A', st: 'na', note: '시간 제한 있는 기능 없음' },
+    { id: '2.2.2', name: '정지·일시정지·숨김', lv: 'A', st: 'pass', note: '자동재생·루프 0건 — 모든 모션은 사용자 개시(정중동)' },
+    { id: '2.3.1', name: '번쩍임 제한', lv: 'A', st: 'pass', note: '초당 3회 이상 번쩍이는 콘텐츠 없음' },
+    { id: '2.4.1', name: '반복 영역 건너뛰기', lv: 'A', st: 'pass', note: '본문 바로가기(skip) 링크 + 랜드마크 내비게이션' },
+    { id: '2.4.2', name: '페이지 제목 제공', lv: 'A', st: 'pass', note: '전 페이지 고유 title (페이지명 · 학부명 패턴)' },
+    { id: '2.4.3', name: '포커스 순서', lv: 'A', st: 'pass', note: '탭 순서 = 시각 순서, 양수 tabindex 미사용' },
+    { id: '2.4.4', name: '링크 목적(문맥)', lv: 'A', st: 'pass', note: '링크 텍스트로 목적 식별 가능 · 새 창은 별도 고지' },
+    { id: '2.4.5', name: '여러 탐색 방법', lv: 'AA', st: 'pass', note: '주메뉴 + 통합검색(Ctrl+K) + 푸터 링크 + 브레드크럼' },
+    { id: '2.4.6', name: '제목과 레이블', lv: 'AA', st: 'pass', note: '섹션 §번호+서술적 제목, 폼 라벨 명시' },
+    { id: '2.4.7', name: '포커스 표시', lv: 'AA', st: 'pass', note: ':focus-visible 3px 링 전역 적용' },
+    { id: '2.4.11', name: '포커스 가림 방지(최소)', lv: 'AA', st: 'pend', note: 'sticky 헤더의 포커스 가림 — scroll-margin 전수 검수 예정' },
+    { id: '2.5.1', name: '포인터 제스처', lv: 'A', st: 'na', note: '경로 기반·멀티포인트 제스처 없음' },
+    { id: '2.5.2', name: '포인터 입력 취소', lv: 'A', st: 'pass', note: 'click(up 이벤트) 기준 — down 이벤트 실행 없음' },
+    { id: '2.5.3', name: '레이블과 명칭 일치', lv: 'A', st: 'pass', note: '시각 라벨이 접근 가능한 이름에 포함' },
+    { id: '2.5.4', name: '동작 기반 작동', lv: 'A', st: 'na', note: '기기 동작(기울임·흔들기) 입력 없음' },
+    { id: '2.5.7', name: '드래그 동작 대체', lv: 'AA', st: 'na', note: '드래그 조작 없음' },
+    { id: '2.5.8', name: '타깃 크기(최소)', lv: 'AA', st: 'pass', note: '기준 24px 대비 설계 44px (S.F. 1.83 — §90.1 A-02)' },
+    { p: '3. 이해의 용이성 (UNDERSTANDABLE)' },
+    { id: '3.1.1', name: '기본 언어 표시', lv: 'A', st: 'pass', note: 'html lang="ko" · EN 전환 시 lang 속성 동기 갱신' },
+    { id: '3.1.2', name: '부분 언어 표시', lv: 'AA', st: 'pend', note: '영문 병기 구간 lang="en" 속성 전수 검수 예정' },
+    { id: '3.2.1', name: '포커스에 따른 변화', lv: 'A', st: 'pass', note: '포커스만으로 맥락 변경 없음' },
+    { id: '3.2.2', name: '입력에 따른 변화', lv: 'A', st: 'pass', note: '입력 중 자동 제출·페이지 이동 없음' },
+    { id: '3.2.3', name: '일관된 탐색', lv: 'AA', st: 'pass', note: '헤더·푸터·드로어 canonical 블록 — 전 페이지 동일 순서' },
+    { id: '3.2.4', name: '일관된 식별', lv: 'AA', st: 'pass', note: '동일 기능 동일 명칭·아이콘 (검색·테마·스탬프)' },
+    { id: '3.2.6', name: '일관된 도움', lv: 'A', st: 'pass', note: '연락처(문의처)가 전 페이지 푸터 동일 위치에 제공' },
+    { id: '3.3.1', name: '오류 식별', lv: 'A', st: 'pass', note: '폼 오류를 텍스트로 식별(.error-msg) — 색상 단독 미사용' },
+    { id: '3.3.2', name: '레이블·설명 제공', lv: 'A', st: 'pass', note: '전 입력 필드 라벨·힌트 제공' },
+    { id: '3.3.3', name: '오류 수정 제안', lv: 'AA', st: 'pass', note: '검색 0건 시 대안 안내, 폼 오류 수정 방법 제시' },
+    { id: '3.3.4', name: '오류 예방(법률·금융)', lv: 'AA', st: 'na', note: '법적·금융 거래 기능 없음' },
+    { id: '3.3.7', name: '중복 입력 방지', lv: 'A', st: 'pass', note: '동일 정보 반복 입력 요구 없음' },
+    { id: '3.3.8', name: '접근 가능한 인증(최소)', lv: 'AA', st: 'na', note: '로그인·인증 절차 없음' },
+    { p: '4. 견고성 (ROBUST)' },
+    { id: '4.1.2', name: '이름·역할·값', lv: 'A', st: 'pass', note: 'aria-expanded/pressed/current/modal 등 상태 동기화' },
+    { id: '4.1.3', name: '상태 메시지', lv: 'AA', st: 'pass', note: '검색 결과 수·필터 결과를 aria-live="polite"로 통지' }
+  ];
+  var ST = {
+    pass: { cls: 'st-pass', label: '충족 (자가평가)' },
+    pend: { cls: 'st-pend', label: '검증 예정' },
+    na:   { cls: 'st-na',   label: '해당 없음' }
+  };
+
+  var body = document.getElementById('wcagBody');
+  var status = document.getElementById('wcagStatus');
+  var summary = document.getElementById('wcagSummary');
+
+  function render(filter) {
+    if (!body) return;
+    var html = '', shown = 0, pendingPrinciple = null;
+    WCAG.forEach(function (row) {
+      if (row.p) { pendingPrinciple = row.p; return; }
+      if (filter !== 'all' && row.st !== filter) return;
+      if (pendingPrinciple) {
+        html += '<tr class="wcag-principle"><td colspan="5">' + esc(pendingPrinciple) + '</td></tr>';
+        pendingPrinciple = null;
+      }
+      var s = ST[row.st];
+      html += '<tr><td class="mono">' + esc(row.id) + '</td><td>' + esc(row.name) + '</td>' +
+        '<td class="mono">' + esc(row.lv) + '</td>' +
+        '<td><span class="st-pill ' + s.cls + '"><span class="td" aria-hidden="true"></span>' + s.label + '</span></td>' +
+        '<td style="font-size:13px;color:var(--txt-2)">' + esc(row.note) + '</td></tr>';
+      shown++;
+    });
+    if (!shown) html = '<tr><td colspan="5"><div class="empty-state" style="border:none">해당 상태의 기준이 없습니다.</div></td></tr>';
+    body.innerHTML = html;
+    if (status) status.textContent = '표시 ' + shown + '건 / 전체 ' + WCAG.filter(function (r) { return r.id; }).length + '건';
+  }
+
+  /* 요약 카운트 (배열에서 실시간 산출 — 단일 소스) */
+  var counts = { pass: 0, pend: 0, na: 0 };
+  WCAG.forEach(function (r) { if (r.id) counts[r.st]++; });
+  if (summary) {
+    summary.removeAttribute('aria-hidden');
+    summary.innerHTML = '<span>충족 <b>' + counts.pass + '</b></span><span>검증 예정 <b>' + counts.pend + '</b></span><span>해당 없음 <b>' + counts.na + '</b></span>';
+  }
+
+  document.querySelectorAll('[data-wf]').forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      document.querySelectorAll('[data-wf]').forEach(function (c) { c.setAttribute('aria-pressed', 'false'); });
+      chip.setAttribute('aria-pressed', 'true');
+      render(chip.dataset.wf);
+    });
+  });
+  render('all');
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="paper" class="js">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>연혁 · 연세대학교 기계공학부</title>
+<meta name="description" content="연세대학교 기계공학부 연혁 — 1958 건설공학과 신설, 1962 기계공학과 분리, 2002 학부 독립, 2010 창립 50주년, 2020 BK21 FOUR. 스크롤 인터랙티브 타임라인." />
+<!-- FOUC 방지: CSS보다 먼저 저장된 테마 적용 (전 페이지 공통 규약 — TEMPLATE.md §1) -->
+<script>
+(function(){try{var t=localStorage.getItem('ysme-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}
+document.documentElement.classList.add('js');})();
+</script>
+<!-- 폰트: 프로토타입은 CDN. 운영본은 self-host subset (부록A §1.2 라이선스: OFL/Apache) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/main.css" />
+<style>
+/* ── history 전용 레이아웃 (토큰 변수만 사용 — :root 재정의 없음) ──
+   .tl2 = 스크롤 점등 타임라인: ol::before 레일 + ol::after 진행 치수선(--p),
+   노드는 IO로 .lit 1회 점등(정중동), reduced-motion·JS실패 시 전체 가시 ── */
+.since-big{font-family:var(--font-mono);font-size:clamp(44px,8vw,84px);font-weight:600;color:var(--brand);line-height:1;letter-spacing:-.02em;margin-top:10px}
+.since-big em{font-style:normal;color:var(--gold-600)}
+.tl2-hud{position:sticky;top:84px;z-index:5;width:fit-content;margin-left:auto;font-size:12px;color:var(--cyan-500);border:var(--border-hair);background:color-mix(in srgb,var(--panel) 85%,transparent);backdrop-filter:blur(4px);border-radius:9999px;padding:5px 14px;letter-spacing:.06em}
+.tl2{position:relative;list-style:none;max-width:760px;margin:0 auto;padding:8px 0 8px 44px}
+.tl2::before{content:"";position:absolute;left:11px;top:14px;bottom:14px;width:1px;background:var(--ink-line)}
+.tl2::after{content:"";position:absolute;left:10px;top:14px;bottom:14px;width:2px;background:var(--cyan-500);transform:scaleY(var(--p,0));transform-origin:top}
+.tl2-era{position:relative;padding:4px 0 30px 26px}
+.tl2-era::before{content:"";position:absolute;left:-36.5px;top:12px;width:9px;height:9px;background:var(--cyan-500);transform:rotate(45deg)}
+.tl2-era .overline{color:var(--cyan-500)}
+.tl2-era-d{display:block;font-size:13px;color:var(--txt-3);margin-top:3px}
+.tl2-item{position:relative;padding:0 0 38px 26px}
+.tl2-node{position:absolute;left:-39px;top:5px;width:13px;height:13px;border-radius:50%;background:var(--panel);border:1.5px solid var(--ink-line);transition:border-color var(--dur-slow) var(--ease-mech),background var(--dur-slow) var(--ease-mech),box-shadow var(--dur-slow) var(--ease-mech)}
+.tl2-item::after{content:"";position:absolute;left:-26px;top:11px;width:24px;height:1px;background:var(--ink-line);transform:scaleX(0);transform-origin:left;transition:transform var(--dur-slow) var(--ease)}
+.tl2-year{font-family:var(--font-mono);font-weight:600;font-size:clamp(18px,2.4vw,22px);color:var(--brand);line-height:1.1}
+.tl2-text{margin-top:5px;color:var(--txt-2);font-size:15px;max-width:52ch}
+.tl2-badge{display:inline-block;margin-top:9px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.06em;color:var(--gold-600);border:1px solid var(--gold-500);border-radius:9999px;padding:2px 10px}
+.tl2-item--hl .tl2-year{color:var(--gold-600)}
+.tl2-item--hl .tl2-text{color:var(--txt);font-weight:600}
+.tl2-links{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-family:var(--font-mono);font-size:13px}
+/* 점등 상태 — html.js에서만 대기 상태 적용(JS 실패 시 항상 가시) */
+html.js .tl2-item{opacity:.38;transform:translateX(8px);transition:opacity .55s var(--ease),transform .55s var(--ease)}
+html.js .tl2-item.lit{opacity:1;transform:none}
+.tl2-item.lit .tl2-node{border-color:var(--brand);background:var(--brand);box-shadow:0 0 0 4px color-mix(in srgb,var(--brand) 18%,transparent)}
+.tl2-item--hl.lit .tl2-node{border-color:var(--gold-500);background:var(--gold-500);box-shadow:0 0 0 5px color-mix(in srgb,var(--gold-500) 24%,transparent)}
+.tl2-item.lit::after{transform:scaleX(1)}
+@media (prefers-reduced-motion:reduce){
+  html.js .tl2-item{opacity:1;transform:none;transition:none}
+  .tl2::after{transform:scaleY(1)}
+}
+.tl-motto{max-width:760px;margin:24px auto 0;padding:26px 0 4px 44px;position:relative}
+.tl-motto q{font-size:clamp(19px,2.8vw,26px);font-weight:800;letter-spacing:-.02em;line-height:1.4;color:var(--txt)}
+.tl-motto q::before,.tl-motto q::after{content:""}
+.tl-motto q em{font-style:normal;color:var(--gold-600)}
+.tl-motto cite{display:block;margin-top:10px;font-family:var(--font-mono);font-size:12px;color:var(--txt-3);font-style:normal}
+.tl-prov{max-width:760px;margin:18px auto 0;padding-left:44px;font-family:var(--font-mono);font-size:11.5px;color:var(--txt-3)}
+</style>
+</head>
+<body>
+<a class="skip" href="#main" data-i18n="ui.skip">본문 바로가기</a>
+<div class="scroll-rule" aria-hidden="true"><i></i></div>
+
+<!-- ═══ 헤더 (canonical — index.html 복사 · 수정: 「소개」 aria-current만) ═══ -->
+<header class="hdr">
+  <div class="wrap hdr-in">
+    <a class="brand" href="index.html" aria-label="연세대학교 기계공학부 홈">
+      <svg class="emblem" viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="3" fill="none" stroke="var(--brand)" stroke-width="2.5"/><path d="M12 27V13l8 9 8-9v14" fill="none" stroke="var(--brand)" stroke-width="2.5" stroke-linejoin="round"/></svg>
+      <span class="brand-txt"><b>연세대학교 기계공학부</b><small>SCHOOL OF MECHANICAL ENGINEERING · SINCE 1962</small></span>
+    </a>
+    <nav class="nav" aria-label="주메뉴">
+      <ul>
+        <li class="nav-item">
+          <a class="nav-lnk" href="about-dean.html" data-i18n="nav.about" aria-current="page">소개</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="about-dean.html">학과장 인사말 · 비전</a>
+                <a href="history.html">연혁 — Since 1962</a>
+                <a href="contact.html">오시는 길 · 연락처</a>
+              </div>
+              <p class="mega-desc">기독교 정신을 바탕으로 창의적 설계 역량과 글로벌 리더십을 갖춘 인재를 양성합니다.</p>
+              <div class="mega-datum">since <b>1962</b><br>창립 <b>50</b>주년 · 2010</div>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-lnk" href="academics.html" data-i18n="nav.academics">교육</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="academics.html">교육과정 · 이수체계</a>
+                <a href="academics.html#courses">전공필수 교과목</a>
+                <a href="academics.html#abeek">ABEEK 공학교육인증</a>
+              </div>
+              <p class="mega-desc">고체·열·유체·동역학 4대 역학에서 창의제품설계·학사논문까지 — 종합 설계 능력을 완성하는 과정.</p>
+              <div class="mega-datum">졸업 학점 <b>130</b><br>전공필수 <b>MEU2600–4400</b></div>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-lnk" href="research.html" data-i18n="nav.research">연구</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="research.html">연구실 33 — Lab Explorer</a>
+                <a href="research.html#clusters">6개 연구 클러스터</a>
+                <a href="engineering.html">공학 사양서 /engineering</a>
+              </div>
+              <p class="mega-desc">고체에서 유체, 나노에서 로보틱스까지 — 33개 연구실이 6개 분야로 맞물려 작동합니다.</p>
+              <div class="mega-datum">연구실 <b>33</b><br>클러스터 <b>6</b></div>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-lnk" href="people.html" data-i18n="nav.people">구성원</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="people.html">교수진 디렉터리</a>
+                <a href="professor.html?id=park-nocheol">교수 스토리 — 박노철</a>
+              </div>
+              <p class="mega-desc">한 사람 한 사람이 학부의 동력입니다. 이름·연구실·클러스터로 검색하세요.</p>
+              <div class="mega-datum">전임 교수 <b>33</b></div>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-lnk" href="news.html" data-i18n="nav.news">소식</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="news.html">공지사항</a>
+                <a href="news.html#news">뉴스 · 연구성과</a>
+                <a href="news.html#seminar">세미나</a>
+              </div>
+              <p class="mega-desc">학부·대학원 공지, 연구 뉴스, BK 세미나를 한 허브에서.</p>
+              <div class="mega-datum">최신 갱신 <b>2026.07.02</b></div>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-lnk" href="admissions.html" data-i18n="nav.admissions">입학·진로</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="admissions.html#undergraduate">학부 입학</a>
+                <a href="admissions.html#graduate">대학원 진학</a>
+                <a href="admissions.html#careers">기업·채용</a>
+                <a href="admissions.html#alumni">동문</a>
+              </div>
+              <p class="mega-desc">예비신입생부터 동문까지 — 각자의 경로에서 시작하세요.</p>
+              <div class="mega-datum">문의 <b>02-2123-4426</b></div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </nav>
+    <div class="hdr-util">
+      <button class="icon-btn search-btn" data-search-open aria-label="통합 검색 열기">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <span class="kbd-hint">Ctrl K</span>
+      </button>
+      <div class="lang" role="group" aria-label="언어 선택">
+        <button data-lang="ko" aria-pressed="true">KO</button><button data-lang="en" aria-pressed="false">EN</button>
+      </div>
+      <button class="icon-btn" id="themeBtn" aria-label="청사진(다크) 모드 전환">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9c-4.97 0-9-4.03-9-9Z"/></svg>
+      </button>
+      <button class="icon-btn burger" id="burger" aria-label="메뉴 열기" aria-expanded="false" aria-controls="drawer">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ 모바일 드로어 (canonical) ═══ -->
+<div class="drawer" id="drawer">
+  <div class="drawer-bg" data-close></div>
+  <div class="drawer-panel" role="dialog" aria-modal="true" aria-label="모바일 메뉴">
+    <div class="drawer-top">
+      <span class="overline">MENU</span>
+      <button class="icon-btn" data-close aria-label="메뉴 닫기">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <nav aria-label="모바일 메뉴">
+      <a href="about-dean.html" data-close>소개 <small>ABOUT</small></a>
+      <a href="history.html" class="drawer-sub-link drawer-sub" data-close>연혁</a>
+      <a href="academics.html" data-close>교육 <small>ACADEMICS</small></a>
+      <a href="research.html" data-close>연구 <small>RESEARCH</small></a>
+      <a href="people.html" data-close>구성원 <small>PEOPLE</small></a>
+      <a href="news.html" data-close>소식 <small>NEWS</small></a>
+      <a href="admissions.html" data-close>입학·진로 <small>ADMISSIONS</small></a>
+      <a href="contact.html" data-close>오시는 길 <small>CONTACT</small></a>
+    </nav>
+    <p class="drawer-foot">02-2123-4426 (학부)<br>02-2123-2810 (대학원)<br>「機制 · Mechanism in Motion」</p>
+  </div>
+</div>
+
+<!-- ═══ 검색 모달 (canonical) ═══ -->
+<div class="smodal" id="searchModal" hidden>
+  <div class="smodal-bg" data-search-close></div>
+  <div class="smodal-panel" role="dialog" aria-modal="true" aria-label="통합 검색">
+    <div class="smodal-head">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="searchInput" type="search" placeholder="교수·연구실·과목·공지 검색" aria-label="검색어 입력" role="combobox" aria-expanded="false" aria-controls="searchResults" autocomplete="off" />
+      <kbd>ESC</kbd>
+    </div>
+    <div class="smodal-results" id="searchResults" role="listbox" aria-label="검색 결과"></div>
+    <div class="smodal-foot"><span><b>↑↓</b> 이동</span><span><b>↵</b> 열기</span><span><b>ESC</b> 닫기</span><span id="searchStatus" aria-live="polite" style="margin-left:auto"></span></div>
+  </div>
+</div>
+
+<main id="main">
+<!-- ═══ 페이지 헤드 §01 HISTORY ═══ -->
+<div class="page-hd gridpaper" style="position:relative">
+  <div class="gridpaper-fade"></div>
+  <div class="wrap" style="position:relative">
+    <nav class="crumb" aria-label="현재 위치"><ol>
+      <li><a href="index.html">홈</a></li><li><a href="about-dean.html">소개</a></li>
+      <li aria-current="page">연혁</li></ol></nav>
+    <h1>연혁 <span class="mono" style="font-size:.5em;color:var(--txt-3)">§01 HISTORY</span></h1>
+    <p class="since-big" aria-label="since 1962">Since <em>1962</em></p>
+    <p class="lead">건설공학과에서 출발해 기계공학과로 독립하고, 반세기를 넘어 멈추지 않는 도전을 이어온 학부의 궤적 — 1958년부터 현재까지.</p>
+    <div class="datums page-datum" aria-label="연혁 핵심 지표">
+      <span class="datum card--corner"><span class="num" data-count="14">0</span><span class="lbl">마일스톤</span>
+        <span class="stamp"><button type="button" aria-label="마일스톤 수 출처 보기">i</button><span class="pop" role="tooltip">출처: faculty/history.do · 최종확인 2026-07-02</span></span></span>
+      <span class="datum"><span class="num">1962.12</span><span class="lbl">기계공학과 분리</span>
+        <span class="stamp"><button type="button" aria-label="분리 시점 출처 보기">i</button><span class="pop" role="tooltip">출처: faculty/history.do · 최종확인 2026-07-02</span></span></span>
+      <span class="datum"><span class="num" data-count="50">0</span><span class="lbl">주년 · 2010.11</span>
+        <span class="stamp"><button type="button" aria-label="50주년 출처 보기">i</button><span class="pop" role="tooltip">출처: faculty/history.do · 최종확인 2026-07-02</span></span></span>
+      <span class="datum"><span class="num" data-count="4">0</span><span class="lbl">단계 BK21 · 2020.08 선정</span>
+        <span class="stamp"><button type="button" aria-label="BK21 선정 출처 보기">i</button><span class="pop pop--left" role="tooltip">출처: faculty/history.do · 최종확인 2026-07-02</span></span></span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ §01 인터랙티브 타임라인 (data.js YSME.history 렌더) ═══ -->
+<section class="section" id="timeline">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num">§01 연혁</span>
+      <div>
+        <h2 class="sec-title">1958 → 현재</h2>
+        <p class="sec-sub">스크롤을 내리면 치수선이 그려지고 마일스톤 노드가 점등됩니다. 금색 노드는 학부의 변곡점.</p>
+      </div>
+      <div class="sec-datum"><span>출처 <b>faculty/history.do</b></span><span>확인 <b>2026-07-02</b></span></div>
+    </div>
+
+    <div class="tl2-hud mono" id="tlHud" aria-hidden="true">MEASURING —</div>
+
+    <ol class="tl2" id="tl2" aria-label="연혁 타임라인 1958년부터 현재까지"></ol>
+    <noscript>
+      <ol class="timeline" aria-label="연혁 타임라인 (정적)">
+        <li class="tl-item"><span class="tl-date">1958.12</span><p class="tl-text">이공대학 건설공학과 신설</p></li>
+        <li class="tl-item"><span class="tl-date">1960.03</span><p class="tl-text">첫 신입생 입학</p></li>
+        <li class="tl-item tl-item--hl"><span class="tl-date">1962.12</span><p class="tl-text">기계공학과로 분리</p></li>
+        <li class="tl-item"><span class="tl-date">1963.02</span><p class="tl-text">기계공학과 첫 신입생 입학</p></li>
+        <li class="tl-item"><span class="tl-date">1964.02</span><p class="tl-text">첫 졸업생 배출</p></li>
+        <li class="tl-item"><span class="tl-date">1971.03</span><p class="tl-text">대학원 석사과정 신설</p></li>
+        <li class="tl-item"><span class="tl-date">1972.03</span><p class="tl-text">대학원 박사과정 신설</p></li>
+        <li class="tl-item"><span class="tl-date">1996.03</span><p class="tl-text">기전공학부로 통합</p></li>
+        <li class="tl-item"><span class="tl-date">1999.03</span><p class="tl-text">기계공학·기계설계학과 → 기계공학전공 통합</p></li>
+        <li class="tl-item tl-item--hl"><span class="tl-date">2002.03</span><p class="tl-text">기계공학부로 분리 독립 (입학정원 180명)</p></li>
+        <li class="tl-item"><span class="tl-date">2003.03</span><p class="tl-text">ABEEK 공학교육인증 프로그램 가입</p></li>
+        <li class="tl-item tl-item--hl"><span class="tl-date">2010.11</span><p class="tl-text">창립 50주년</p></li>
+        <li class="tl-item"><span class="tl-date">2016.03</span><p class="tl-text">3단계 BK21 플러스 사업단 협약</p></li>
+        <li class="tl-item tl-item--hl"><span class="tl-date">2020.08</span><p class="tl-text">4단계 BK21 사업 선정</p></li>
+      </ol>
+      <p>※ 인터랙티브 타임라인은 JavaScript 환경에서 제공됩니다.</p>
+    </noscript>
+
+    <blockquote class="tl-motto reveal">
+      <q>멈추지 않는 50년, 100년을 향한 <em>도전</em>.</q>
+      <cite>— 연세대학교 기계공학부 연구 모토
+        <span class="stamp"><button type="button" aria-label="모토 출처 보기">i</button><span class="pop" role="tooltip">출처: research.do · 최종확인 2026-06-30</span></span></cite>
+    </blockquote>
+    <p class="tl-prov">출처: faculty/history.do · research.do · 최종확인 2026-07-02 — ※ 주요 마일스톤 기준. 세부 연혁은 학부 확인 후 보강합니다(정직 표기).</p>
+  </div>
+</section>
+
+<!-- ═══ 다음 이동 ═══ -->
+<section class="section section--tight section--alt">
+  <div class="wrap">
+    <div class="persona reveal">
+      <a class="pcard card" href="about-dean.html"><span class="pl">학부 소개</span><span class="pd">인사말 · 비전 · BK21</span><span class="arr" aria-hidden="true">→</span></a>
+      <a class="pcard card" href="research.html"><span class="pl">연구</span><span class="pd">33개 연구실 탐색</span><span class="arr" aria-hidden="true">→</span></a>
+      <a class="pcard card" href="people.html"><span class="pl">구성원</span><span class="pd">교수진 디렉터리</span><span class="arr" aria-hidden="true">→</span></a>
+      <a class="pcard card" href="news.html"><span class="pl">소식</span><span class="pd">오늘의 기록</span><span class="arr" aria-hidden="true">→</span></a>
+      <a class="pcard card" href="admissions.html#alumni"><span class="pl">동문</span><span class="pd">네트워크 · 소식</span><span class="arr" aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ═══ 푸터 (canonical — 4컬럼 + 정책 + 사양칩 미니) ═══ -->
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr-grid">
+      <div>
+        <div class="fb">
+          <svg width="26" height="26" viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="3" fill="none" stroke="#fff" stroke-width="2.5"/><path d="M12 27V13l8 9 8-9v14" fill="none" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/></svg>
+          연세대학교 기계공학부
+        </div>
+        <p class="meta">
+          (03722) 서울특별시 서대문구 연세로 50<br>
+          연세대학교 공과대학<br>
+          Tel. 02-2123-4426 (학부) · 02-2123-2810 (대학원)<br>
+          BK21 02-2123-7817
+        </p>
+        <div class="specs" aria-label="사이트 사양 요약">
+          <a class="spec" href="engineering.html"><span class="dot dot--wip"></span>SPEC <b>/engineering</b></a>
+          <span class="spec"><span class="dot"></span>최종 업데이트 <b>2026-07-03</b></span>
+        </div>
+      </div>
+      <div>
+        <h2 class="ftr-h" data-i18n="ftr.quick">바로가기</h2>
+        <ul>
+          <li><a href="research.html">연구실</a></li>
+          <li><a href="people.html">교수진</a></li>
+          <li><a href="academics.html">교육과정</a></li>
+          <li><a href="news.html">공지·뉴스</a></li>
+          <li><a href="admissions.html">입학·진로</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="ftr-h">소개</h2>
+        <ul>
+          <li><a href="about-dean.html">학과장 인사말</a></li>
+          <li><a href="history.html">연혁</a></li>
+          <li><a href="contact.html">오시는 길</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="ftr-h" data-i18n="ftr.policy">정책·안내</h2>
+        <ul>
+          <li><a href="privacy.html">개인정보처리방침</a></li>
+          <li><a href="terms.html">이용약관</a></li>
+          <li><a href="accessibility.html">접근성 선언</a></li>
+          <li><a href="engineering.html">공학 사양서 /engineering</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="ftr-bot">
+      <span>© 2026 Yonsei University School of Mechanical Engineering</span>
+      <span>「機制 · Mechanism in Motion」 프로토타입 v2.0</span>
+    </div>
+  </div>
+</footer>
+
+<p id="langNote" hidden class="visually-hidden" aria-live="polite">English navigation applied. Full English content is in preparation.</p>
+
+<script src="assets/js/data.js" defer></script>
+<script src="assets/js/main.js" defer></script>
+<script defer>
+/* ═══ history 전용 스크립트 — YSME.history 렌더 + 스크롤 점등 타임라인 ═══
+   · 노드 점등: IntersectionObserver 1회(unobserve) — 정중동, 자동재생 루프 없음
+   · 진행 치수선: 스크롤 → --p(scaleY) rAF 스로틀
+   · reduced-motion / IO 미지원: 전량 점등 + 치수선 100% (정적 완성형)          */
+window.addEventListener('DOMContentLoaded', function () {
+  'use strict';
+  var D = window.YSME, UI = window.YSMEUI;
+  var tl = document.getElementById('tl2');
+  if (!tl || !D || !UI) return;
+  var reduce = UI.reduce;
+
+  /* ── 렌더: 시대 구분 라벨 + 마일스톤 14 + 「현재」 종단 노드 ── */
+  var eras = {
+    '1958.12': ['ORIGIN', '태동 · 1958–1964', '뿌리 — 건설공학과에서 기계공학과로'],
+    '1971.03': ['EXPANSION', '성장 · 1971–1999', '대학원 신설과 학제 개편'],
+    '2002.03': ['LEAP', '도약 · 2002–현재', '학부 독립 · ABEEK · BK21 FOUR']
+  };
+  var html = '';
+  D.history.forEach(function (h) {
+    var e = eras[h.date];
+    if (e) {
+      html += '<li class="tl2-era"><span class="overline">' + e[0] + ' — ' + UI.escapeHtml(e[1]) + '</span>' +
+        '<span class="tl2-era-d">' + UI.escapeHtml(e[2]) + '</span></li>';
+    }
+    html += '<li class="tl2-item' + (h.highlight ? ' tl2-item--hl' : '') + '">' +
+      '<span class="tl2-node" aria-hidden="true"></span>' +
+      '<span class="tl2-year">' + UI.escapeHtml(h.date) + '</span>' +
+      '<p class="tl2-text">' + UI.escapeHtml(h.text) + '</p>' +
+      (h.highlight ? '<span class="tl2-badge">MILESTONE</span>' : '') +
+      '</li>';
+  });
+  /* 종단 노드 「현재」 — 수치는 datums 단일 소스에서 (출처 스탬프는 페이지 헤드·index 참조) */
+  function datumNum(key) {
+    var d = (D.datums || []).find(function (x) { return x.key === key; });
+    return d ? d.num : '';
+  }
+  var nowYear = String(D.site.updated || '').slice(0, 4);
+  html += '<li class="tl2-item tl2-item--hl tl2-item--now">' +
+    '<span class="tl2-node" aria-hidden="true"></span>' +
+    '<span class="tl2-year">' + nowYear + ' · 현재</span>' +
+    '<p class="tl2-text">전임 교수 ' + datumNum('professors') + '명 · 연구실 ' + datumNum('labs') + '개 · 연구 클러스터 ' + datumNum('clusters') + ' — 기록은 계속됩니다.</p>' +
+    '<div class="tl2-links"><a href="people.html">교수진 →</a><a href="research.html">연구실 →</a><a href="about-dean.html">학부 소개 →</a></div>' +
+    '</li>';
+  tl.innerHTML = html;
+
+  /* ── 점등 + 진행 치수선 ── */
+  var items = Array.prototype.slice.call(tl.querySelectorAll('.tl2-item'));
+  var hud = document.getElementById('tlHud');
+  function light(el) {
+    el.classList.add('lit');
+    var y = el.querySelector('.tl2-year');
+    if (hud && y) hud.textContent = '● ' + y.textContent;
+  }
+  if (reduce || !('IntersectionObserver' in window)) {
+    items.forEach(light);
+    tl.style.setProperty('--p', '1');
+    if (hud) hud.textContent = '● 1958 → ' + nowYear;
+  } else {
+    var io = new IntersectionObserver(function (entries, obs) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { light(en.target); obs.unobserve(en.target); }
+      });
+    }, { threshold: 0.5, rootMargin: '0px 0px -10% 0px' });
+    items.forEach(function (el) { io.observe(el); });
+    /* 안전망: 2.2초 내 미점등분은 스크롤 도달 시 점등되지만, IO 불발 시 강제 표시 */
+    setTimeout(function () {
+      if (!items.some(function (el) { return el.classList.contains('lit'); })) items.forEach(light);
+    }, 2200);
+
+    var ticking = false;
+    function fill() {
+      var r = tl.getBoundingClientRect();
+      var p = (window.innerHeight * 0.75 - r.top) / r.height;
+      p = Math.max(0, Math.min(1, p));
+      tl.style.setProperty('--p', p.toFixed(4));
+      ticking = false;
+    }
+    window.addEventListener('scroll', function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(fill); }
+    }, { passive: true });
+    window.addEventListener('resize', fill);
+    fill();
+  }
+});
+</script>
+</body>
+</html>

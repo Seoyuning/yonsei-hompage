@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="paper" class="js">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>접근성 선언 · 연세대학교 기계공학부</title>
+<meta name="description" content="연세대학교 기계공학부 사이트 접근성 선언 — 지원 기능 목록, 키보드 단축키, 알려진 제한사항, 접근성 문의처." />
+<!-- ① FOUC 방지 인라인 스크립트 — CSS 로드보다 반드시 먼저 -->
+<script>
+(function(){try{var t=localStorage.getItem('ysme-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}
+document.documentElement.classList.add('js');})();
+</script>
+<!-- ② 폰트 (v1과 동일 CDN 소스) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<!-- ③ 공용 CSS 단일 로드 -->
+<link rel="stylesheet" href="assets/css/main.css" />
+<style>
+/* accessibility 전용 — 레이아웃만, 토큰 변수만 사용 */
+.a11y-grid{display:grid;gap:14px;grid-template-columns:1fr}
+@media(min-width:640px){.a11y-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1024px){.a11y-grid{grid-template-columns:repeat(3,1fr)}}
+.fcard{padding:18px;display:flex;flex-direction:column;gap:8px}
+.fcard .fh{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15.5px}
+.fcard .fh svg{flex:none;color:var(--brand)}
+.fcard p{font-size:13.5px;color:var(--txt-2);line-height:1.65}
+.fcard .fm{font-family:var(--font-mono);font-size:11px;color:var(--txt-3);margin-top:auto;padding-top:8px;border-top:1px solid var(--grid)}
+kbd.key{font-family:var(--font-mono);font-size:12px;border:1px solid var(--border);border-bottom-width:2px;border-radius:var(--radius-xs);padding:2px 8px;background:var(--bg-alt);color:var(--txt);white-space:nowrap}
+tr.key-hit td{background:var(--cyan-bg);transition:background var(--dur-fast)}
+.env-chip{display:inline-flex;align-items:center;gap:8px;border:var(--border-hair);border-radius:var(--radius-sm);background:var(--panel);padding:10px 14px;font-size:13.5px;color:var(--txt-2)}
+.env-chip b{font-family:var(--font-mono);color:var(--brand);font-weight:600}
+.decl{border:var(--border-hair);border-left:3px solid var(--brand);border-radius:var(--radius-sm);background:var(--panel);padding:22px 24px;max-width:var(--measure)}
+.decl p{color:var(--txt-2);font-size:15px;line-height:1.8}
+.decl p+p{margin-top:10px}
+</style>
+</head>
+<body>
+<a class="skip" href="#main" data-i18n="ui.skip">본문 바로가기</a>
+<div class="scroll-rule" aria-hidden="true"><i></i></div>
+
+<!-- ═══ 헤더 (canonical — 전 페이지 동일 마크업, TEMPLATE.md §1) ═══ -->
+<header class="hdr">
+  <div class="wrap hdr-in">
+    <a class="brand" href="index.html" aria-label="연세대학교 기계공학부 홈">
+      <svg class="emblem" viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="3" fill="none" stroke="var(--brand)" stroke-width="2.5"/><path d="M12 27V13l8 9 8-9v14" fill="none" stroke="var(--brand)" stroke-width="2.5" stroke-linejoin="round"/></svg>
+      <span class="brand-txt"><b>연세대학교 기계공학부</b><small>SCHOOL OF MECHANICAL ENGINEERING · SINCE 1962</small></span>
+    </a>
+    <nav class="nav" aria-label="주메뉴">
+      <ul>
+        <li class="nav-item">
+          <a class="nav-lnk" href="about-dean.html" data-i18n="nav.about">소개</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="about-dean.html">학과장 인사말 · 비전</a>
+                <a href="history.html">연혁 — Since 1962</a>
+                <a href="contact.html">오시는 길 · 연락처</a>
+              </div>
+              <p class="mega-desc">기독교 정신을 바탕으로 창의적 설계 역량과 글로벌 리더십을 갖춘 인재를 양성합니다.</p>
+              <div class="mega-datum">since <b>1962</b><br>창립 <b>50</b>주년 · 2010</div>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-lnk" href="academics.html" data-i18n="nav.academics">교육</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="academics.html">교육과정 · 이수체계</a>
+                <a href="academics.html#courses">전공필수 교과목</a>
+                <a href="academics.html#abeek">ABEEK 공학교육인증</a>
+              </div>
+              <p class="mega-desc">고체·열·유체·동역학 4대 역학에서 창의제품설계·학사논문까지 — 종합 설계 능력을 완성하는 과정.</p>
+              <div class="mega-datum">졸업 학점 <b>130</b><br>전공필수 <b>MEU2600–4400</b></div>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-lnk" href="research.html" data-i18n="nav.research">연구</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="research.html">연구실 33 — Lab Explorer</a>
+                <a href="research.html#clusters">6개 연구 클러스터</a>
+                <a href="engineering.html">공학 사양서 /engineering</a>
+              </div>
+              <p class="mega-desc">고체에서 유체, 나노에서 로보틱스까지 — 33개 연구실이 6개 분야로 맞물려 작동합니다.</p>
+              <div class="mega-datum">연구실 <b>33</b><br>클러스터 <b>6</b></div>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-lnk" href="people.html" data-i18n="nav.people">구성원</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="people.html">교수진 디렉터리</a>
+                <a href="professor.html?id=park-nocheol">교수 스토리 — 박노철</a>
+              </div>
+              <p class="mega-desc">한 사람 한 사람이 학부의 동력입니다. 이름·연구실·클러스터로 검색하세요.</p>
+              <div class="mega-datum">전임 교수 <b>33</b></div>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-lnk" href="news.html" data-i18n="nav.news">소식</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="news.html">공지사항</a>
+                <a href="news.html#news">뉴스 · 연구성과</a>
+                <a href="news.html#seminar">세미나</a>
+              </div>
+              <p class="mega-desc">학부·대학원 공지, 연구 뉴스, BK 세미나를 한 허브에서.</p>
+              <div class="mega-datum">최신 갱신 <b>2026.07.02</b></div>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-lnk" href="admissions.html" data-i18n="nav.admissions">입학·진로</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="admissions.html#undergraduate">학부 입학</a>
+                <a href="admissions.html#graduate">대학원 진학</a>
+                <a href="admissions.html#careers">기업·채용</a>
+                <a href="admissions.html#alumni">동문</a>
+              </div>
+              <p class="mega-desc">예비신입생부터 동문까지 — 각자의 경로에서 시작하세요.</p>
+              <div class="mega-datum">문의 <b>02-2123-4426</b></div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </nav>
+    <div class="hdr-util">
+      <button class="icon-btn search-btn" data-search-open aria-label="통합 검색 열기">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <span class="kbd-hint">Ctrl K</span>
+      </button>
+      <div class="lang" role="group" aria-label="언어 선택">
+        <button data-lang="ko" aria-pressed="true">KO</button><button data-lang="en" aria-pressed="false">EN</button>
+      </div>
+      <button class="icon-btn" id="themeBtn" aria-label="청사진(다크) 모드 전환">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9c-4.97 0-9-4.03-9-9Z"/></svg>
+      </button>
+      <button class="icon-btn burger" id="burger" aria-label="메뉴 열기" aria-expanded="false" aria-controls="drawer">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ 모바일 드로어 (canonical) ═══ -->
+<div class="drawer" id="drawer">
+  <div class="drawer-bg" data-close></div>
+  <div class="drawer-panel" role="dialog" aria-modal="true" aria-label="모바일 메뉴">
+    <div class="drawer-top">
+      <span class="overline">MENU</span>
+      <button class="icon-btn" data-close aria-label="메뉴 닫기">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <nav aria-label="모바일 메뉴">
+      <a href="about-dean.html" data-close>소개 <small>ABOUT</small></a>
+      <a href="history.html" class="drawer-sub-link drawer-sub" data-close>연혁</a>
+      <a href="academics.html" data-close>교육 <small>ACADEMICS</small></a>
+      <a href="research.html" data-close>연구 <small>RESEARCH</small></a>
+      <a href="people.html" data-close>구성원 <small>PEOPLE</small></a>
+      <a href="news.html" data-close>소식 <small>NEWS</small></a>
+      <a href="admissions.html" data-close>입학·진로 <small>ADMISSIONS</small></a>
+      <a href="contact.html" data-close>오시는 길 <small>CONTACT</small></a>
+    </nav>
+    <p class="drawer-foot">02-2123-4426 (학부)<br>02-2123-2810 (대학원)<br>「機制 · Mechanism in Motion」</p>
+  </div>
+</div>
+
+<!-- ═══ 검색 모달 (canonical) ═══ -->
+<div class="smodal" id="searchModal" hidden>
+  <div class="smodal-bg" data-search-close></div>
+  <div class="smodal-panel" role="dialog" aria-modal="true" aria-label="통합 검색">
+    <div class="smodal-head">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="searchInput" type="search" placeholder="교수·연구실·과목·공지 검색" aria-label="검색어 입력" role="combobox" aria-expanded="false" aria-controls="searchResults" autocomplete="off" />
+      <kbd>ESC</kbd>
+    </div>
+    <div class="smodal-results" id="searchResults" role="listbox" aria-label="검색 결과"></div>
+    <div class="smodal-foot"><span><b>↑↓</b> 이동</span><span><b>↵</b> 열기</span><span><b>ESC</b> 닫기</span><span id="searchStatus" aria-live="polite" style="margin-left:auto"></span></div>
+  </div>
+</div>
+
+<main id="main">
+
+<!-- ═══ 페이지 헤드 ═══ -->
+<div class="page-hd gridpaper" style="position:relative">
+  <div class="gridpaper-fade"></div>
+  <div class="wrap" style="position:relative">
+    <nav class="crumb" aria-label="현재 위치"><ol>
+      <li><a href="index.html">홈</a></li>
+      <li aria-current="page">접근성 선언</li></ol></nav>
+    <h1>접근성 선언 <span class="mono" style="font-size:.5em;color:var(--txt-3)">§90 ACCESSIBILITY</span></h1>
+    <p class="lead">좋은 기계는 누가 조작해도 같은 결과를 냅니다. 이 사이트는 마우스·키보드·스크린리더·저시력·모션 민감 —
+      어떤 방식으로 조작하든 동일한 정보에 닿도록 설계했습니다.</p>
+    <div class="datums page-datum" aria-label="선언 개요">
+      <span class="datum"><span class="num mono" style="font-size:18px">WCAG 2.2 AA</span><span class="lbl">목표 수준</span>
+        <span class="stamp"><button type="button" aria-label="목표 기준 근거 보기">i</button><span class="pop" role="tooltip">W3C WCAG 2.2 — 자가평가 상세는 /engineering §90.3</span></span></span>
+      <span class="datum"><span class="num mono" style="font-size:18px">2026-07-03</span><span class="lbl">선언 갱신일</span>
+        <span class="stamp"><button type="button" aria-label="갱신일 근거 보기">i</button><span class="pop pop--left" role="tooltip">data.js site.updated 기준</span></span></span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ §90.1 적합성 선언문 ═══ -->
+<section class="section section--tight" aria-labelledby="h-decl">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num">§90.1 선언</span>
+      <div><h2 class="sec-title" id="h-decl">적합성 상태</h2></div>
+    </div>
+    <div class="decl reveal">
+      <p>연세대학교 기계공학부 웹사이트(프로토타입 v2)는 <b>W3C 웹 콘텐츠 접근성 지침(WCAG) 2.2 레벨 AA</b>를
+        목표 기준으로 설계·제작되었습니다.</p>
+      <p>현재 상태는 <b>자가 평가 기준 부분 적합</b>입니다 — A·AA 55개 성공 기준 중 자가평가 충족 37건,
+        도구·수동 검증 예정 6건, 해당 없음 12건. 제3자 인증이 아닌 자가 평가이며, 검증 예정 항목은
+        제출(배포) 전 도구 검사와 수동 감사로 확정합니다. 기준별 상세 평가는
+        <a href="engineering.html#wcag">공학 사양서 §90.3 체크리스트</a>에 전부 공개되어 있습니다.</p>
+      <p style="font-family:var(--font-mono);font-size:12px;color:var(--txt-3)">평가 방식: 자가 평가(설계 검토 + 수동 점검) · 평가일 2026-07-03 · 대상: prototype-v2 전 페이지</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ §90.2 지원 기능 목록 ═══ -->
+<section class="section section--alt" id="features" aria-labelledby="h-features">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num">§90.2 기능</span>
+      <div>
+        <h2 class="sec-title" id="h-features">지원 기능</h2>
+        <p class="sec-sub">전 페이지에 공통 적용되는 접근성 기능입니다.</p>
+      </div>
+    </div>
+    <div class="a11y-grid reveal">
+      <div class="fcard card card--corner">
+        <div class="fh"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></svg>완전한 키보드 조작</div>
+        <p>검색·메뉴·드로어·테마 전환·출처 스탬프까지 전 기능을 키보드만으로 사용할 수 있습니다. 모달은 포커스 트랩과 ESC 복귀를 지원합니다.</p>
+        <span class="fm">Tab / Shift+Tab · ESC</span>
+      </div>
+      <div class="fcard card card--corner">
+        <div class="fh"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>본문 바로가기</div>
+        <p>모든 페이지 첫 탭에서 ‘본문 바로가기’ 링크가 나타나 반복되는 내비게이션을 건너뛸 수 있습니다.</p>
+        <span class="fm">SKIP LINK · 2.4.1</span>
+      </div>
+      <div class="fcard card card--corner">
+        <div class="fh"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/></svg>선명한 포커스 표시</div>
+        <p>키보드 포커스가 닿는 모든 요소에 3px 포커스 링이 표시됩니다. 포커스 순서는 시각적 순서와 일치합니다.</p>
+        <span class="fm">:focus-visible · 2.4.7</span>
+      </div>
+      <div class="fcard card card--corner">
+        <div class="fh"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9c-4.97 0-9-4.03-9-9Z"/></svg>청사진(다크) 모드</div>
+        <p>우측 상단 토글로 밝은 제도지·어두운 청사진 테마를 전환할 수 있으며, 선택은 기기에 저장됩니다(서버 전송 없음).</p>
+        <span class="fm">localStorage: ysme-theme</span>
+      </div>
+      <div class="fcard card card--corner">
+        <div class="fh"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>모션 최소화 존중</div>
+        <p>OS의 ‘동작 줄이기’ 설정을 켜면 모든 애니메이션(제도 효과·카운트업·리빌·기구 작동)이 정적 완성형으로 대체됩니다. 자동재생 루프는 원래 0건입니다.</p>
+        <span class="fm">prefers-reduced-motion</span>
+      </div>
+      <div class="fcard card card--corner">
+        <div class="fh"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7V5h16v2M9 20h6M12 5v15"/></svg>텍스트 확대 대응</div>
+        <p>상대 단위 기반 반응형 설계로 200% 확대와 360px 소형 화면에서도 내용·기능 손실 없이 이용할 수 있습니다. 넓은 표는 표 안에서만 스크롤됩니다.</p>
+        <span class="fm">REFLOW · 1.4.4 / 1.4.10</span>
+      </div>
+      <div class="fcard card card--corner">
+        <div class="fh"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 11h3l4-6v14l-4-6H3zM16 8a5 5 0 0 1 0 8M19 5a9 9 0 0 1 0 14"/></svg>스크린리더 지원</div>
+        <p>랜드마크·제목 위계·표 머리글·aria 상태(열림/눌림/현재 페이지)를 제공하고, 검색·필터 결과 수는 aria-live로 음성 통지됩니다.</p>
+        <span class="fm">ARIA · 4.1.2 / 4.1.3</span>
+      </div>
+      <div class="fcard card card--corner">
+        <div class="fh"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>통합 검색</div>
+        <p>어느 페이지에서든 Ctrl+K로 교수·연구실·공지·교과목·페이지를 검색해 바로 이동할 수 있습니다 — 마우스 없이도 사이트 전체가 두 번의 입력 거리입니다.</p>
+        <span class="fm">Ctrl+K · 2.4.5</span>
+      </div>
+      <div class="fcard card card--corner">
+        <div class="fh"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h8M12 8v8"/></svg>넉넉한 터치 타깃</div>
+        <p>버튼·링크 등 인터랙티브 요소는 최소 44px 높이로 설계되어 WCAG 2.2 기준(24px)을 여유 있게 상회합니다.</p>
+        <span class="fm">44px ≥ 24px · 2.5.8</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ §90.3 키보드 단축키 ═══ -->
+<section class="section" id="shortcuts" aria-labelledby="h-keys">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num">§90.3 단축키</span>
+      <div>
+        <h2 class="sec-title" id="h-keys">키보드 단축키</h2>
+        <p class="sec-sub">지금 이 페이지에서 직접 눌러보세요 — 방금 누른 단축키의 행이 잠시 강조됩니다.</p>
+      </div>
+      <div class="sec-datum"><span id="keyEcho" class="mono" aria-live="polite"></span></div>
+    </div>
+    <div class="table-wrap reveal" style="max-width:860px">
+      <table class="dwg-table">
+        <caption class="visually-hidden">키보드 단축키와 동작 설명</caption>
+        <thead><tr><th scope="col">단축키</th><th scope="col">동작</th><th scope="col">적용 범위</th></tr></thead>
+        <tbody>
+          <tr data-key="k"><td><kbd class="key">Ctrl</kbd> + <kbd class="key">K</kbd> <span style="color:var(--txt-3);font-size:12px">(macOS: ⌘K)</span></td>
+            <td>통합 검색 열기 / 닫기</td><td>전 페이지</td></tr>
+          <tr data-key="escape"><td><kbd class="key">ESC</kbd></td>
+            <td>검색 모달·드로어·출처 팝오버 닫기 (포커스는 이전 위치로 복귀)</td><td>전 페이지</td></tr>
+          <tr data-key="tab"><td><kbd class="key">Tab</kbd> / <kbd class="key">Shift</kbd> + <kbd class="key">Tab</kbd></td>
+            <td>다음 / 이전 요소로 이동 · 첫 Tab에서 ‘본문 바로가기’ 노출</td><td>전 페이지</td></tr>
+          <tr data-key="arrow"><td><kbd class="key">↑</kbd> <kbd class="key">↓</kbd></td>
+            <td>검색 결과 사이 이동</td><td>검색 모달</td></tr>
+          <tr data-key="enter"><td><kbd class="key">Enter</kbd></td>
+            <td>선택한 검색 결과 열기 · 버튼/링크 실행</td><td>검색 모달 · 전 페이지</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="spec-note reveal">※ 단일 문자 단축키는 사용하지 않습니다(WCAG 2.1.4) — 모든 단축키는 수정키 조합 또는 표준 키입니다.</p>
+
+    <h3 class="overline reveal" style="margin:32px 0 12px">현재 브라우저 환경 진단 <span style="color:var(--txt-3)">— 실시간 감지</span></h3>
+    <div class="datums reveal" aria-label="현재 접근성 환경">
+      <span class="env-chip">동작 줄이기(reduced-motion): <b id="envMotion">감지 중…</b></span>
+      <span class="env-chip">현재 테마: <b id="envTheme">감지 중…</b></span>
+      <span class="env-chip">문서 언어: <b id="envLang">감지 중…</b></span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ §90.4 알려진 제한사항 · 문의처 ═══ -->
+<section class="section section--alt" id="contact-a11y" aria-labelledby="h-limit">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num">§90.4 한계·문의</span>
+      <div>
+        <h2 class="sec-title" id="h-limit">알려진 제한사항과 문의처</h2>
+      </div>
+    </div>
+    <div class="reveal" style="display:grid;gap:20px;grid-template-columns:1fr;max-width:1000px">
+      <div class="card" style="padding:22px 24px">
+        <h3 style="font-size:16px;margin-bottom:10px">알려진 제한사항 <span class="mono" style="font-size:11px;color:var(--txt-3)">KNOWN LIMITATIONS · 정직 공개</span></h3>
+        <ul style="padding-left:20px;display:flex;flex-direction:column;gap:8px;color:var(--txt-2);font-size:14.5px">
+          <li><b>영문 콘텐츠</b> — 현재 KO/EN 전환은 내비게이션·푸터 등 사이트 크롬에만 적용됩니다. 본문 영문판은 준비 중이며, 전환 시 화면에 고지됩니다.</li>
+          <li><b>도구 검증 전 항목 6건</b> — 명도 대비 실측(1.4.3, 1.4.11), 입력 목적 속성(1.3.5), 호버 콘텐츠 ESC 해제(1.4.13), 포커스 가림(2.4.11), 부분 언어 표시(3.1.2)는 자가 설계 반영 상태로, 제출 전 도구·수동 감사로 확정합니다. 상세: <a href="engineering.html#wcag">공학 사양서 §90.3</a>.</li>
+          <li><b>프로토타입 단계</b> — 성능 실측값(Lighthouse 등)은 아직 게시하지 않았습니다. 미측정 수치를 게시하지 않는 것이 이 사이트의 원칙입니다.</li>
+        </ul>
+      </div>
+      <div class="card" style="padding:22px 24px">
+        <h3 style="font-size:16px;margin-bottom:10px">접근성 문의처 <span class="mono" style="font-size:11px;color:var(--txt-3)">FEEDBACK</span></h3>
+        <p style="color:var(--txt-2);font-size:14.5px;margin-bottom:12px">이용에 불편을 겪으셨거나 개선 제안이 있으시면 알려주세요.
+          접수된 접근성 문의는 운영 담당자가 확인 후 조치 계획과 함께 회신하는 것을 원칙으로 합니다.</p>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;font-size:14.5px;color:var(--txt-2)">
+          <li class="mono">Tel. 02-2123-4426 (학부 행정실)
+            <span class="stamp"><button type="button" aria-label="연락처 출처 보기">i</button><span class="pop" role="tooltip">출처: me.yonsei.ac.kr 학부 대표번호 · 2026-06-30</span></span></li>
+          <li class="mono">Tel. 02-2123-2810 (대학원)</li>
+          <li>(03722) 서울특별시 서대문구 연세로 50 연세대학교 공과대학 기계공학부</li>
+          <li><a href="contact.html">오시는 길 · 문의 폼 →</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="reveal" data-delay="1" style="margin-top:28px;display:flex;gap:12px;flex-wrap:wrap">
+      <a class="btn btn--primary" href="engineering.html#wcag">WCAG 2.2 체크리스트 전체 보기</a>
+      <a class="btn btn--ghost" href="index.html">홈으로 →</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ═══ 푸터 (canonical — 4컬럼 + 정책 + 사양칩 미니) ═══ -->
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr-grid">
+      <div>
+        <div class="fb">
+          <svg width="26" height="26" viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="3" fill="none" stroke="#fff" stroke-width="2.5"/><path d="M12 27V13l8 9 8-9v14" fill="none" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/></svg>
+          연세대학교 기계공학부
+        </div>
+        <p class="meta">
+          (03722) 서울특별시 서대문구 연세로 50<br>
+          연세대학교 공과대학<br>
+          Tel. 02-2123-4426 (학부) · 02-2123-2810 (대학원)<br>
+          BK21 02-2123-7817
+        </p>
+        <div class="specs" aria-label="사이트 사양 요약">
+          <a class="spec" href="engineering.html"><span class="dot dot--wip"></span>SPEC <b>/engineering</b></a>
+          <span class="spec"><span class="dot"></span>최종 업데이트 <b>2026-07-03</b></span>
+        </div>
+      </div>
+      <div>
+        <h2 class="ftr-h" data-i18n="ftr.quick">바로가기</h2>
+        <ul>
+          <li><a href="research.html">연구실</a></li>
+          <li><a href="people.html">교수진</a></li>
+          <li><a href="academics.html">교육과정</a></li>
+          <li><a href="news.html">공지·뉴스</a></li>
+          <li><a href="admissions.html">입학·진로</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="ftr-h">소개</h2>
+        <ul>
+          <li><a href="about-dean.html">학과장 인사말</a></li>
+          <li><a href="history.html">연혁</a></li>
+          <li><a href="contact.html">오시는 길</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="ftr-h" data-i18n="ftr.policy">정책·안내</h2>
+        <ul>
+          <li><a href="privacy.html">개인정보처리방침</a></li>
+          <li><a href="terms.html">이용약관</a></li>
+          <li><a href="accessibility.html">접근성 선언</a></li>
+          <li><a href="engineering.html">공학 사양서 /engineering</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="ftr-bot">
+      <span>© 2026 Yonsei University School of Mechanical Engineering</span>
+      <span>「機制 · Mechanism in Motion」 프로토타입 v2.0</span>
+    </div>
+  </div>
+</footer>
+
+<p id="langNote" hidden class="visually-hidden" aria-live="polite">English navigation applied. Full English content is in preparation.</p>
+
+<script src="assets/js/data.js" defer></script>
+<script src="assets/js/main.js" defer></script>
+<script defer>
+/* ═══ accessibility 전용 — 단축키 라이브 데모 + 환경 진단 ═══ */
+window.addEventListener('DOMContentLoaded', function () {
+  'use strict';
+
+  /* ── 환경 진단 (실시간 감지 · 변경도 추적) ── */
+  var envMotion = document.getElementById('envMotion');
+  var envTheme = document.getElementById('envTheme');
+  var envLang = document.getElementById('envLang');
+  var mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+  function syncEnv() {
+    if (envMotion) envMotion.textContent = mq.matches ? '켜짐 — 모션 정지 적용됨' : '꺼짐 — 기본 모션';
+    if (envTheme) envTheme.textContent = document.documentElement.dataset.theme === 'cyanotype' ? 'CYANOTYPE (청사진 다크)' : 'PAPER (제도지 라이트)';
+    if (envLang) envLang.textContent = document.documentElement.getAttribute('lang') || 'ko';
+  }
+  syncEnv();
+  if (mq.addEventListener) mq.addEventListener('change', syncEnv);
+  /* 테마·언어 버튼이 상태를 바꾸면 재감지 (main.js가 dataset/lang 갱신) */
+  new MutationObserver(syncEnv).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'lang'] });
+
+  /* ── 단축키 라이브 데모 — 누른 키의 표 행을 잠시 강조 ── */
+  var echo = document.getElementById('keyEcho');
+  function hit(sel, label) {
+    var row = document.querySelector('tr[data-key="' + sel + '"]');
+    if (!row) return;
+    row.classList.add('key-hit');
+    clearTimeout(row._t);
+    row._t = setTimeout(function () { row.classList.remove('key-hit'); }, 900);
+    if (echo) echo.textContent = 'PRESSED: ' + label;
+  }
+  document.addEventListener('keydown', function (e) {
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) hit('k', 'Ctrl+K');
+    else if (e.key === 'Escape') hit('escape', 'ESC');
+    else if (e.key === 'Tab') hit('tab', e.shiftKey ? 'Shift+Tab' : 'Tab');
+    else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') hit('arrow', e.key === 'ArrowUp' ? '↑' : '↓');
+    else if (e.key === 'Enter') hit('enter', 'Enter');
+  });
+});
+</script>
+</body>
+</html>

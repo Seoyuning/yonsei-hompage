@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="paper" class="js">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>교수 상세 · 연세대학교 기계공학부</title>
+<meta name="description" content="연세대학교 기계공학부 교수 상세 — 연구 분야·소속 연구실·클러스터를 데이터 시트 형식으로 제공합니다." />
+<!-- FOUC 방지: CSS보다 먼저 저장된 테마 적용 (전 페이지 공통 규약 — TEMPLATE.md §2) -->
+<script>
+(function(){try{var t=localStorage.getItem('ysme-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}
+document.documentElement.classList.add('js');})();
+</script>
+<!-- 폰트: 프로토타입은 CDN. 운영본은 self-host subset (부록A §1.2 라이선스: OFL/Apache) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/main.css" />
+<style>
+/* §03 professor 상세 전용 레이아웃 — 토큰 변수만 사용 (TEMPLATE.md §1) */
+.pf-id{display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-top:6px}
+.pf-id .mono-avatar{width:88px;height:88px;font-size:34px;flex:none}
+.pf-badges{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.pf-cols{display:grid;gap:20px;grid-template-columns:1fr}
+@media(min-width:900px){.pf-cols{grid-template-columns:1.4fr 1fr;align-items:start}}
+.pf-lab{padding:20px;display:flex;flex-direction:column;gap:8px;border-top:3px solid var(--cc,var(--border))}
+.pf-lab .lt{font-weight:700;font-size:18px}
+.pf-lab .le{font-family:var(--font-mono);font-size:12px;color:var(--txt-3)}
+.pf-lab .lmeta{display:flex;gap:12px;flex-wrap:wrap;font-family:var(--font-mono);font-size:12.5px;color:var(--txt-2);padding-top:10px;border-top:1px solid var(--grid)}
+.pf-lab .lab-links{display:flex;gap:14px;flex-wrap:wrap;margin-top:4px;font-size:13.5px}
+.peer-grid{display:grid;gap:12px;grid-template-columns:1fr}
+@media(min-width:640px){.peer-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1024px){.peer-grid{grid-template-columns:repeat(3,1fr)}}
+.pager{display:grid;gap:12px;grid-template-columns:1fr;margin-top:28px}
+@media(min-width:640px){.pager{grid-template-columns:1fr 1fr}}
+.pager a{padding:16px 18px;display:flex;flex-direction:column;gap:4px;color:var(--txt)}
+.pager a:hover{text-decoration:none}
+.pager .pgl{font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;color:var(--txt-3)}
+.pager .pgn{font-weight:700}
+.pager .pager-next{text-align:right;align-items:flex-end}
+</style>
+</head>
+<body>
+<a class="skip" href="#main" data-i18n="ui.skip">본문 바로가기</a>
+<div class="scroll-rule" aria-hidden="true"><i></i></div>
+
+<!-- ═══ 헤더 (canonical — 전 페이지 동일 마크업, TEMPLATE.md §1) ═══ -->
+<header class="hdr">
+  <div class="wrap hdr-in">
+    <a class="brand" href="index.html" aria-label="연세대학교 기계공학부 홈">
+      <svg class="emblem" viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="3" fill="none" stroke="var(--brand)" stroke-width="2.5"/><path d="M12 27V13l8 9 8-9v14" fill="none" stroke="var(--brand)" stroke-width="2.5" stroke-linejoin="round"/></svg>
+      <span class="brand-txt"><b>연세대학교 기계공학부</b><small>SCHOOL OF MECHANICAL ENGINEERING · SINCE 1962</small></span>
+    </a>
+    <nav class="nav" aria-label="주메뉴">
+      <ul>
+        <li class="nav-item">
+          <a class="nav-lnk" href="about-dean.html" data-i18n="nav.about">소개</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="about-dean.html">학과장 인사말 · 비전</a>
+                <a href="history.html">연혁 — Since 1962</a>
+                <a href="contact.html">오시는 길 · 연락처</a>
+              </div>
+              <p class="mega-desc">기독교 정신을 바탕으로 창의적 설계 역량과 글로벌 리더십을 갖춘 인재를 양성합니다.</p>
+              <div class="mega-datum">since <b>1962</b><br>창립 <b>50</b>주년 · 2010</div>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-lnk" href="academics.html" data-i18n="nav.academics">교육</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="academics.html">교육과정 · 이수체계</a>
+                <a href="academics.html#courses">전공필수 교과목</a>
+                <a href="academics.html#abeek">ABEEK 공학교육인증</a>
+              </div>
+              <p class="mega-desc">고체·열·유체·동역학 4대 역학에서 창의제품설계·학사논문까지 — 종합 설계 능력을 완성하는 과정.</p>
+              <div class="mega-datum">졸업 학점 <b>130</b><br>전공필수 <b>MEU2600–4400</b></div>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-lnk" href="research.html" data-i18n="nav.research">연구</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="research.html">연구실 33 — Lab Explorer</a>
+                <a href="research.html#clusters">6개 연구 클러스터</a>
+                <a href="engineering.html">공학 사양서 /engineering</a>
+              </div>
+              <p class="mega-desc">고체에서 유체, 나노에서 로보틱스까지 — 33개 연구실이 6개 분야로 맞물려 작동합니다.</p>
+              <div class="mega-datum">연구실 <b>33</b><br>클러스터 <b>6</b></div>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-lnk" href="people.html" data-i18n="nav.people" aria-current="page">구성원</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="people.html">교수진 디렉터리</a>
+                <a href="professor.html?id=park-nocheol">교수 스토리 — 박노철</a>
+              </div>
+              <p class="mega-desc">한 사람 한 사람이 학부의 동력입니다. 이름·연구실·클러스터로 검색하세요.</p>
+              <div class="mega-datum">전임 교수 <b>33</b></div>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-lnk" href="news.html" data-i18n="nav.news">소식</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="news.html">공지사항</a>
+                <a href="news.html#news">뉴스 · 연구성과</a>
+                <a href="news.html#seminar">세미나</a>
+              </div>
+              <p class="mega-desc">학부·대학원 공지, 연구 뉴스, BK 세미나를 한 허브에서.</p>
+              <div class="mega-datum">최신 갱신 <b>2026.07.02</b></div>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-lnk" href="admissions.html" data-i18n="nav.admissions">입학·진로</a>
+          <div class="mega">
+            <div class="wrap mega-in">
+              <div class="mega-links">
+                <a href="admissions.html#undergraduate">학부 입학</a>
+                <a href="admissions.html#graduate">대학원 진학</a>
+                <a href="admissions.html#careers">기업·채용</a>
+                <a href="admissions.html#alumni">동문</a>
+              </div>
+              <p class="mega-desc">예비신입생부터 동문까지 — 각자의 경로에서 시작하세요.</p>
+              <div class="mega-datum">문의 <b>02-2123-4426</b></div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </nav>
+    <div class="hdr-util">
+      <button class="icon-btn search-btn" data-search-open aria-label="통합 검색 열기">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <span class="kbd-hint">Ctrl K</span>
+      </button>
+      <div class="lang" role="group" aria-label="언어 선택">
+        <button data-lang="ko" aria-pressed="true">KO</button><button data-lang="en" aria-pressed="false">EN</button>
+      </div>
+      <button class="icon-btn" id="themeBtn" aria-label="청사진(다크) 모드 전환">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9c-4.97 0-9-4.03-9-9Z"/></svg>
+      </button>
+      <button class="icon-btn burger" id="burger" aria-label="메뉴 열기" aria-expanded="false" aria-controls="drawer">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ 모바일 드로어 (canonical) ═══ -->
+<div class="drawer" id="drawer">
+  <div class="drawer-bg" data-close></div>
+  <div class="drawer-panel" role="dialog" aria-modal="true" aria-label="모바일 메뉴">
+    <div class="drawer-top">
+      <span class="overline">MENU</span>
+      <button class="icon-btn" data-close aria-label="메뉴 닫기">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <nav aria-label="모바일 메뉴">
+      <a href="about-dean.html" data-close>소개 <small>ABOUT</small></a>
+      <a href="history.html" class="drawer-sub-link drawer-sub" data-close>연혁</a>
+      <a href="academics.html" data-close>교육 <small>ACADEMICS</small></a>
+      <a href="research.html" data-close>연구 <small>RESEARCH</small></a>
+      <a href="people.html" data-close>구성원 <small>PEOPLE</small></a>
+      <a href="news.html" data-close>소식 <small>NEWS</small></a>
+      <a href="admissions.html" data-close>입학·진로 <small>ADMISSIONS</small></a>
+      <a href="contact.html" data-close>오시는 길 <small>CONTACT</small></a>
+    </nav>
+    <p class="drawer-foot">02-2123-4426 (학부)<br>02-2123-2810 (대학원)<br>「機制 · Mechanism in Motion」</p>
+  </div>
+</div>
+
+<!-- ═══ 검색 모달 (canonical) ═══ -->
+<div class="smodal" id="searchModal" hidden>
+  <div class="smodal-bg" data-search-close></div>
+  <div class="smodal-panel" role="dialog" aria-modal="true" aria-label="통합 검색">
+    <div class="smodal-head">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="searchInput" type="search" placeholder="교수·연구실·과목·공지 검색" aria-label="검색어 입력" role="combobox" aria-expanded="false" aria-controls="searchResults" autocomplete="off" />
+      <kbd>ESC</kbd>
+    </div>
+    <div class="smodal-results" id="searchResults" role="listbox" aria-label="검색 결과"></div>
+    <div class="smodal-foot"><span><b>↑↓</b> 이동</span><span><b>↵</b> 열기</span><span><b>ESC</b> 닫기</span><span id="searchStatus" aria-live="polite" style="margin-left:auto"></span></div>
+  </div>
+</div>
+
+<main id="main">
+<!-- ═══ §03 페이지 헤드 — 교수 아이덴티티 (?id= 쿼리 기반 렌더) ═══ -->
+<div class="page-hd gridpaper" style="position:relative">
+  <div class="gridpaper-fade"></div>
+  <div class="wrap" style="position:relative">
+    <nav class="crumb" aria-label="현재 위치"><ol>
+      <li><a href="index.html">홈</a></li>
+      <li><a href="people.html">구성원 — 교수진</a></li>
+      <li aria-current="page" id="crumbCur">교수 상세</li></ol></nav>
+    <div class="pf-id">
+      <div class="mono-avatar" id="pAvatar" aria-hidden="true"></div>
+      <div>
+        <h1 id="pName">교수 상세 <span class="mono" style="font-size:.5em;color:var(--txt-3)">§03 PEOPLE</span></h1>
+        <p class="mono" id="pEn" style="font-size:13px;color:var(--txt-3);margin-top:4px"></p>
+        <div class="pf-badges" id="pBadges"></div>
+      </div>
+    </div>
+    <p class="lead" id="pLead" hidden>연구 분야 — <b id="pLeadLab"></b>
+      <span class="stamp"><button type="button" aria-label="연구 분야 표기 근거 보기">i</button>
+        <span class="pop" role="tooltip">연구실 공식 명칭 기준 (lab2.do) · 최종확인 2026-06-30</span></span>
+    </p>
+    <noscript><p class="lead">이 페이지는 JavaScript로 교수 정보를 렌더링합니다. 전체 명단은 <a href="people.html">교수진 디렉터리</a>에서 확인하세요.</p></noscript>
+  </div>
+</div>
+
+<!-- ═══ 존재하지 않는 id — 빈 상태 ═══ -->
+<section class="section" id="notFound" hidden>
+  <div class="wrap">
+    <div class="empty-state">
+      <p class="mono" style="font-size:12px;color:var(--txt-3);margin-bottom:8px">ERR — RECORD NOT FOUND</p>
+      <p style="margin-bottom:16px" id="notFoundMsg">요청하신 교수를 찾을 수 없습니다. 주소의 <code class="mono">?id=</code> 값을 확인해 주세요.</p>
+      <a class="btn btn--primary" href="people.html">교수진 디렉터리로 이동</a>
+    </div>
+  </div>
+</section>
+
+<div id="detailWrap" hidden>
+<!-- ═══ §03-A 데이터 시트 + 소속 연구실 ═══ -->
+<section class="section">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num">§03 구성원</span>
+      <div>
+        <h2 class="sec-title">Faculty Data Sheet</h2>
+        <p class="sec-sub">공식 페이지에서 검증된 항목만 게시합니다 — 미확인 정보는 비워 둡니다(placeholder 0 원칙).</p>
+      </div>
+      <div class="sec-datum"><span>출처 <b>faculty_list.do · lab2.do</b></span></div>
+    </div>
+    <div class="pf-cols reveal">
+      <!-- 도면 시트 형식 사양표 -->
+      <div class="dwg-sheet">
+        <div class="dwg-tb"><span id="sheetNo">DWG. YSME-FAC-000</span><span>UNIT — VERIFIED FIELDS ONLY</span></div>
+        <div class="dwg-body" style="padding:0">
+          <div class="table-wrap" style="border:none;border-radius:0">
+            <table class="dwg-table">
+              <caption class="visually-hidden">교수 기본 정보 데이터 시트</caption>
+              <thead><tr><th scope="col">FIELD</th><th scope="col">VALUE</th></tr></thead>
+              <tbody id="specRows"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="dwg-cap">
+          <span>FIG.03 — FACULTY DATA SHEET</span>
+          <span style="display:inline-flex;align-items:center;gap:6px">최종확인 2026-06-30
+            <span class="stamp"><button type="button" aria-label="데이터 시트 출처 보기">i</button>
+              <span class="pop pop--left" role="tooltip">출처: faculty_list.do · lab2.do · 2026-06-30</span></span>
+          </span>
+        </div>
+      </div>
+      <!-- 소속 연구실 카드 (클러스터 색 인디케이터) -->
+      <div>
+        <div class="card card--corner pf-lab" id="labCard">
+          <span class="overline">AFFILIATED LAB · 소속 연구실</span>
+          <span class="lt" id="labKo"></span>
+          <span class="le" id="labEn"></span>
+          <div id="labTag"></div>
+          <div class="lmeta" id="labMeta"></div>
+          <div class="lab-links" id="labLinks"></div>
+        </div>
+        <div id="storyCta" style="margin-top:14px"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ §03-B 같은 클러스터 동료 교수 ═══ -->
+<section class="section section--alt">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num">§03 구성원</span>
+      <div>
+        <h2 class="sec-title" id="peerTitle">같은 클러스터의 교수</h2>
+        <p class="sec-sub">하나의 클러스터 안에서 연구실들이 맞물려 작동합니다.</p>
+      </div>
+      <div class="sec-datum" id="peerDatum"></div>
+    </div>
+    <div class="peer-grid reveal" id="peerGrid"></div>
+    <!-- 이전/다음 교수 (가나다순 탐색) -->
+    <nav class="pager reveal" aria-label="교수 순차 탐색" id="pager"></nav>
+    <div class="reveal" style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap">
+      <a class="btn btn--ghost" href="people.html">← 디렉터리 전체</a>
+      <a class="btn btn--ghost" href="research.html" id="clusterCta">연구 클러스터 보기 →</a>
+    </div>
+  </div>
+</section>
+</div>
+</main>
+
+<!-- ═══ 푸터 (canonical — 4컬럼 + 정책 + 사양칩 미니) ═══ -->
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr-grid">
+      <div>
+        <div class="fb">
+          <svg width="26" height="26" viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="3" fill="none" stroke="#fff" stroke-width="2.5"/><path d="M12 27V13l8 9 8-9v14" fill="none" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/></svg>
+          연세대학교 기계공학부
+        </div>
+        <p class="meta">
+          (03722) 서울특별시 서대문구 연세로 50<br>
+          연세대학교 공과대학<br>
+          Tel. 02-2123-4426 (학부) · 02-2123-2810 (대학원)<br>
+          BK21 02-2123-7817
+        </p>
+        <div class="specs" aria-label="사이트 사양 요약">
+          <a class="spec" href="engineering.html"><span class="dot dot--wip"></span>SPEC <b>/engineering</b></a>
+          <span class="spec"><span class="dot"></span>최종 업데이트 <b>2026-07-03</b></span>
+        </div>
+      </div>
+      <div>
+        <h2 class="ftr-h" data-i18n="ftr.quick">바로가기</h2>
+        <ul>
+          <li><a href="research.html">연구실</a></li>
+          <li><a href="people.html">교수진</a></li>
+          <li><a href="academics.html">교육과정</a></li>
+          <li><a href="news.html">공지·뉴스</a></li>
+          <li><a href="admissions.html">입학·진로</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="ftr-h">소개</h2>
+        <ul>
+          <li><a href="about-dean.html">학과장 인사말</a></li>
+          <li><a href="history.html">연혁</a></li>
+          <li><a href="contact.html">오시는 길</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="ftr-h" data-i18n="ftr.policy">정책·안내</h2>
+        <ul>
+          <li><a href="privacy.html">개인정보처리방침</a></li>
+          <li><a href="terms.html">이용약관</a></li>
+          <li><a href="accessibility.html">접근성 선언</a></li>
+          <li><a href="engineering.html">공학 사양서 /engineering</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="ftr-bot">
+      <span>© 2026 Yonsei University School of Mechanical Engineering</span>
+      <span>「機制 · Mechanism in Motion」 프로토타입 v2.0</span>
+    </div>
+  </div>
+</footer>
+
+<p id="langNote" hidden class="visually-hidden" aria-live="polite">English navigation applied. Full English content is in preparation.</p>
+
+<script src="assets/js/data.js" defer></script>
+<script src="assets/js/main.js" defer></script>
+<script defer>
+/* ═══ professor 전용 스크립트 — ?id= 쿼리 기반 상세 렌더 ═══ */
+window.addEventListener('DOMContentLoaded', function () {
+  'use strict';
+  var D = window.YSME, UI = window.YSMEUI;
+  if (!D || !UI) return;
+  var esc = UI.escapeHtml;
+
+  var CC = { solid: '--c-solid', thermal: '--c-thermal', manuf: '--c-manuf',
+             nanobio: '--c-bio', optics: '--c-optics', dyn: '--c-dyn' };
+
+  /* ── ?id= 파싱 (file://에서도 location.search 동작) ── */
+  function getParam(name) {
+    var m = location.search.match(new RegExp('[?&]' + name + '=([^&]*)'));
+    if (!m) return '';
+    try { return decodeURIComponent(m[1]); } catch (e) { return m[1]; }
+  }
+  var id = getParam('id');
+  var idx = -1;
+  var p = D.professors.find(function (x, i) {
+    if (x.id === id) { idx = i; return true; }
+    return false;
+  });
+
+  var notFound = document.getElementById('notFound');
+  var detailWrap = document.getElementById('detailWrap');
+  var crumbCur = document.getElementById('crumbCur');
+  var pName = document.getElementById('pName');
+
+  /* ── 빈 상태: 존재하지 않는 id / id 미지정 ── */
+  if (!p) {
+    notFound.hidden = false;
+    detailWrap.hidden = true;
+    pName.textContent = '교수를 찾을 수 없습니다';
+    crumbCur.textContent = '교수 상세 (없음)';
+    document.title = '교수를 찾을 수 없습니다 · 연세대학교 기계공학부';
+    var msg = document.getElementById('notFoundMsg');
+    if (id) {
+      msg.textContent = '요청하신 id 「' + id + '」에 해당하는 교수가 없습니다. 디렉터리에서 다시 선택해 주세요.';
+    } else {
+      msg.textContent = '교수 id가 지정되지 않았습니다. 디렉터리에서 교수를 선택해 주세요.';
+    }
+    return;
+  }
+
+  detailWrap.hidden = false;
+  var lab = UI.labOf(p.labId) || {};
+  var cl = UI.clusterOf(p.cluster) || {};
+
+  /* ── 아이덴티티 헤드 ── */
+  document.title = p.ko + ' 교수 · 연세대학교 기계공학부';
+  crumbCur.textContent = p.ko;
+  document.getElementById('pAvatar').textContent = p.initial;
+  pName.innerHTML = esc(p.ko) + ' <span class="mono" style="font-size:.5em;color:var(--txt-3)">§03 PEOPLE</span>';
+  document.getElementById('pEn').textContent = p.en;
+  document.getElementById('pBadges').innerHTML =
+    '<span class="badge">' + esc(p.rank) + '</span>' +
+    (p.role ? '<span class="badge badge--gold">' + esc(p.role) + '</span>' : '') +
+    '<span class="tag tag--' + p.cluster + '"><span class="td" aria-hidden="true"></span>' + esc(cl.ko || '') + '</span>';
+  /* 연구 한 줄 — 검증된 연구실 공식 명칭 기준 (날조 금지 원칙) */
+  document.getElementById('pLeadLab').textContent = (lab.ko || '') + ' (' + (lab.en || '') + ')';
+  document.getElementById('pLead').hidden = false;
+
+  /* ── 데이터 시트 (검증 필드만) ── */
+  document.getElementById('sheetNo').textContent =
+    'DWG. YSME-FAC-' + ('00' + (idx + 1)).slice(-3);
+  function row(field, valueHtml) {
+    return '<tr><th scope="row" class="mono">' + field + '</th><td>' + valueHtml + '</td></tr>';
+  }
+  var rows = [
+    row('NAME', esc(p.ko) + ' <span class="mono" style="color:var(--txt-3);font-size:12px">' + esc(p.en) + '</span>'),
+    row('RANK', esc(p.rank)),
+  ];
+  if (p.role) rows.push(row('ROLE', esc(p.role)));
+  rows.push(
+    row('LAB', esc(lab.ko || '') + ' <span class="mono" style="color:var(--txt-3);font-size:12px">' + esc(lab.en || '') + '</span>'),
+    row('CLUSTER', '<span class="tag tag--' + p.cluster + '"><span class="td" aria-hidden="true"></span>' + esc(cl.ko || '') + '</span>'),
+    row('LOCATION', '<span class="mono">' + esc(lab.loc || '') + '</span>')
+  );
+  if (lab.url) {
+    rows.push(row('LAB SITE', '<a href="' + lab.url + '" target="_blank" rel="noopener" class="mono">' +
+      esc(lab.url.replace(/^https?:\/\//, '')) + ' ↗<span class="visually-hidden"> (새 창)</span></a>'));
+  }
+  document.getElementById('specRows').innerHTML = rows.join('');
+
+  /* ── 소속 연구실 카드 ── */
+  var labCard = document.getElementById('labCard');
+  labCard.style.setProperty('--cc', 'var(' + (CC[p.cluster] || '--border') + ')');
+  document.getElementById('labKo').textContent = lab.ko || '';
+  document.getElementById('labEn').textContent = lab.en || '';
+  document.getElementById('labTag').innerHTML =
+    '<span class="tag tag--' + p.cluster + '"><span class="td" aria-hidden="true"></span>' + esc(cl.ko || '') + '</span>';
+  document.getElementById('labMeta').innerHTML =
+    '<span>PI ' + esc(lab.pi || '') + '</span><span>' + esc(lab.loc || '') + '</span>';
+  document.getElementById('labLinks').innerHTML =
+    '<a href="research.html#' + lab.id + '">Lab Explorer에서 보기 →</a>' +
+    (lab.url ? '<a href="' + lab.url + '" target="_blank" rel="noopener">공식 홈페이지 ↗<span class="visually-hidden"> (새 창)</span></a>' : '');
+
+  /* ── 교수 스토리 CTA (storyPage 필드 보유 시) ── */
+  if (p.storyPage) {
+    document.getElementById('storyCta').innerHTML =
+      '<a class="btn btn--primary" href="' + p.storyPage + '">교수 스토리 읽기 →</a>';
+  }
+
+  /* ── 같은 클러스터 동료 ── */
+  var peers = D.professors.filter(function (x) { return x.cluster === p.cluster && x.id !== p.id; });
+  document.getElementById('peerTitle').textContent = '「' + (cl.ko || '') + '」 클러스터의 다른 교수';
+  document.getElementById('peerDatum').innerHTML =
+    '<span>클러스터 연구실 <b>' + (cl.count || peers.length + 1) + '</b></span>';
+  document.getElementById('peerGrid').innerHTML = peers.map(function (x) {
+    var xl = UI.labOf(x.labId) || {};
+    return '<a class="pcard card card--corner" href="professor.html?id=' + x.id + '">' +
+      '<span class="pl">' + esc(x.ko) + ' <span class="mono" style="font-size:11px;color:var(--txt-3);font-weight:400">' + esc(x.rank) + '</span></span>' +
+      '<span class="pd">' + esc(xl.ko || '') + ' · ' + esc(xl.loc || '') + '</span>' +
+      '<span class="arr" aria-hidden="true">→</span></a>';
+  }).join('') || '<p class="empty-state">같은 클러스터의 다른 교수가 없습니다.</p>';
+  document.getElementById('clusterCta').href = 'research.html#' + p.cluster;
+  document.getElementById('clusterCta').textContent = '「' + (cl.ko || '') + '」 클러스터 연구실 보기 →';
+
+  /* ── 이전/다음 교수 (faculty_list 가나다순) ── */
+  var prev = D.professors[idx - 1], next = D.professors[idx + 1];
+  function pagerHtml(x, dir) {
+    if (!x) return '<span></span>';
+    var cls = dir > 0 ? 'card pager-next' : 'card';
+    var lbl = dir > 0 ? 'NEXT →' : '← PREV';
+    return '<a class="' + cls + '" href="professor.html?id=' + x.id + '">' +
+      '<span class="pgl">' + lbl + '</span><span class="pgn">' + esc(x.ko) + ' <span class="mono" style="font-size:11px;color:var(--txt-3);font-weight:400">' + esc(x.en) + '</span></span></a>';
+  }
+  document.getElementById('pager').innerHTML = pagerHtml(prev, -1) + pagerHtml(next, 1);
+});
+</script>
+</body>
+</html>

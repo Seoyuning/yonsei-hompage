@@ -590,6 +590,20 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   padding-top: 10px;
   border-top: 1px solid var(--line);
 }
+.gh-mode-toggle { display: flex; gap: 4px; margin: 2px 0 10px; }
+.gh-mode {
+  flex: 1 1 0;
+  min-height: 30px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  color: var(--text-2);
+  font-size: var(--step--1);
+  cursor: pointer;
+}
+.gh-mode:hover { color: var(--text); background: var(--surface-2); }
+.gh-mode.is-active { color: #ffffff; background: var(--yonsei-800); border-color: var(--yonsei-800); }
+:root[data-theme="dark"] .gh-mode.is-active { background: var(--yonsei-600); border-color: var(--yonsei-600); }
 .gh-status {
   font-size: var(--step--1);
   color: var(--text-2);

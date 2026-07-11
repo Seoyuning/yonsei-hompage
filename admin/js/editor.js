@@ -24,7 +24,9 @@ var dirty = false;
 var mode = 'edit';          // 'edit' | 'preview'
 var selectedEid = null;
 var draftHtml = null;       // 미리보기 중인 임시 HTML (null=없음)
-var assetCache = new Map(); // 상대경로 → blob URL
+var assetCache = new Map();     // 상대경로 → blob URL (편집 캔버스, same-origin)
+var assetTextCache = new Map(); // 상대경로 → 텍스트 (sandbox 미리보기 인라인용)
+var assetDataCache = new Map(); // 상대경로 → data: URL (sandbox 미리보기 미디어용)
 var frame = null;           // iframe 엘리먼트 (lazy)
 
 var HISTORY_MAX = 80;
@@ -125,8 +127,46 @@ async function assetUrl(rel, asText) {
   return url;
 }
 
-/* pristine 사본의 상대 자산 참조를 blob URL로 치환한 렌더용 HTML 생성 */
-async function buildRenderHtml(sourceDoc) {
+/* 자산 텍스트(캐시). sandbox 미리보기에서 blob 대신 인라인 삽입할 때 사용 */
+function assetKeyOf(rel) {
+  return rel.replace(/^\.\//, '').split('#')[0].split('?')[0];
+}
+async function assetText(rel) {
+  var key = assetKeyOf(rel);
+  if (assetTextCache.has(key)) return assetTextCache.get(key);
+  var txt = null;
+  try { txt = await Admin.fs.readFile(key); } catch (e) { txt = null; }
+  if (txt != null) assetTextCache.set(key, txt);
+  return txt;
+}
+/* 바이너리 자산 → data: URL(캐시). sandbox 프레임은 부모 blob URL을 못 읽으므로 */
+async function assetDataUrl(rel) {
+  var key = assetKeyOf(rel);
+  if (assetDataCache.has(key)) return assetDataCache.get(key);
+  var durl = null;
+  try {
+    var burl = await Admin.fs.fileUrl(key);
+    if (burl) {
+      var blob = await fetch(burl).then(function (r) { return r.blob(); });
+      try { URL.revokeObjectURL(burl); } catch (e) {}
+      durl = await new Promise(function (res) {
+        var fr = new FileReader();
+        fr.onload = function () { res(fr.result); };
+        fr.onerror = function () { res(null); };
+        fr.readAsDataURL(blob);
+      });
+    }
+  } catch (e) { durl = null; }
+  if (durl) assetDataCache.set(key, durl);
+  return durl;
+}
+
+/* pristine 사본의 상대 자산 참조를 렌더용으로 치환한 HTML 생성.
+   opts.inline=true(초안·버전 미리보기): sandbox(opaque origin) 프레임은 부모가
+   만든 blob: URL을 로드할 수 없으므로 CSS/JS는 인라인, 미디어는 data: URL로 삽입.
+   opts.inline=false(편집 캔버스, same-origin): 종전대로 blob: URL 치환(빠름·저메모리). */
+async function buildRenderHtml(sourceDoc, opts) {
+  var inline = !!(opts && opts.inline);
   var doc = sourceDoc.cloneNode(true);
   var i, el, u;
 
@@ -139,24 +179,52 @@ async function buildRenderHtml(sourceDoc) {
   var links = doc.querySelectorAll('link[rel="stylesheet"][href]');
   for (i = 0; i < links.length; i++) {
     el = links[i];
-    if (isRelative(el.getAttribute('href'))) {
-      u = await assetUrl(el.getAttribute('href'), true);
+    var href = el.getAttribute('href');
+    if (!isRelative(href)) continue;
+    if (inline) {
+      var css = await assetText(href);
+      if (css != null && el.parentNode) {
+        var styleEl = doc.createElement('style');
+        var mediaAttr = el.getAttribute('media');
+        if (mediaAttr) styleEl.setAttribute('media', mediaAttr);
+        styleEl.textContent = css;
+        el.parentNode.replaceChild(styleEl, el);
+      }
+    } else {
+      u = await assetUrl(href, true);
       if (u) el.setAttribute('href', u);
     }
   }
   var scripts = doc.querySelectorAll('script[src]');
   for (i = 0; i < scripts.length; i++) {
     el = scripts[i];
-    if (isRelative(el.getAttribute('src'))) {
-      u = await assetUrl(el.getAttribute('src'), true);
+    var ssrc = el.getAttribute('src');
+    if (!isRelative(ssrc)) continue;
+    if (inline) {
+      var js = await assetText(ssrc);
+      if (js != null && el.parentNode) {
+        var scriptEl = doc.createElement('script');
+        var stype = el.getAttribute('type');
+        if (stype) scriptEl.setAttribute('type', stype);
+        // 직렬화 시 </script> 로 조기 종료되는 것 방지(문자열 리터럴 내 등장 대비)
+        scriptEl.textContent = String(js).replace(/<\/(script)/gi, '<\\/$1');
+        el.parentNode.replaceChild(scriptEl, el);
+      }
+    } else {
+      u = await assetUrl(ssrc, true);
       if (u) el.setAttribute('src', u);
     }
   }
   var media = doc.querySelectorAll('img[src], source[src], video[src], audio[src]');
   for (i = 0; i < media.length; i++) {
     el = media[i];
-    if (isRelative(el.getAttribute('src'))) {
-      u = await assetUrl(el.getAttribute('src'), false);
+    var msrc = el.getAttribute('src');
+    if (!isRelative(msrc)) continue;
+    if (inline) {
+      var d = await assetDataUrl(msrc);
+      if (d) el.setAttribute('src', d);
+    } else {
+      u = await assetUrl(msrc, false);
       if (u) el.setAttribute('src', u);
     }
   }
@@ -180,12 +248,13 @@ async function renderCanvas(opts) {
 
   var src = draftHtml != null ? parseHtml(draftHtml) : pristineDoc;
   if (!src) return;
-  var html = await buildRenderHtml(src);
-  if (token !== renderToken) return;   // 그 사이 새 렌더 요청됨
 
   // 초안(AI 응답·버전 미리보기)은 신뢰할 수 없는 입력 → null-origin sandbox 로 격리.
   // 스크립트는 실행되지만 admin 오리진의 IndexedDB(API 키·계정)에 접근할 수 없다.
+  // sandbox 프레임은 부모 blob: URL을 못 읽으므로 자산을 인라인으로 삽입(inline:true).
   var sandboxed = draftHtml != null;
+  var html = await buildRenderHtml(src, { inline: sandboxed });
+  if (token !== renderToken) return;   // 그 사이 새 렌더 요청됨
   if (sandboxed) f.setAttribute('sandbox', 'allow-scripts');
   else f.removeAttribute('sandbox');
 
@@ -757,6 +826,8 @@ Admin.editor = {
   invalidateAssets: function () {
     assetCache.forEach(function (u) { try { URL.revokeObjectURL(u); } catch (e) {} });
     assetCache.clear();
+    assetTextCache.clear();
+    assetDataCache.clear();
   },
 
   rerender: function () { return renderCanvas({ keepScroll: true }); }

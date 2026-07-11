@@ -30,6 +30,11 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=ROOT, **kwargs)
 
+    def end_headers(self):
+        # 개발 서버: 브라우저가 이전 JS/CSS를 캐시해 수정본이 반영 안 되는 것을 막는다.
+        self.send_header("Cache-Control", "no-store, must-revalidate")
+        super().end_headers()
+
     def log_message(self, fmt, *args):
         sys.stdout.write("  %s\n" % (fmt % args))
 

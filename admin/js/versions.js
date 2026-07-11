@@ -16,7 +16,8 @@
     code: '코드',
     ai: 'AI',
     rollback: '롤백',
-    baseline: '원본'
+    baseline: '원본',
+    publish: '게시'
   };
 
   var LCS_CAP = 4000000; // n*m 이 이 값을 넘으면 LCS 생략(메모리 방어)

@@ -571,7 +571,65 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   background: rgba(75, 138, 114, .16);
   color: var(--c-add);
 }
+/* 게시(라이브 반영) — 채운 초록으로 강조 */
+.badge-publish {
+  background: #2b8a5e;
+  color: #ffffff;
+}
 /* baseline / login / logout / export → 기본 중립 유지 */
+
+/* ═══════════ 게시 패널 ═══════════ */
+.gh-setup-title, .side-subhead {
+  font-size: var(--step--1);
+  font-weight: 600;
+  color: var(--text);
+  margin: 4px 2px 6px;
+}
+.side-subhead {
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+.gh-status {
+  font-size: var(--step--1);
+  color: var(--text-2);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 7px 9px;
+  margin-bottom: 8px;
+  word-break: break-all;
+}
+.gh-history { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+.gh-row {
+  padding: 7px 9px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  font-size: var(--step--1);
+}
+.gh-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 3px; }
+.gh-when { color: var(--text-3); }
+.gh-who { color: var(--text-2); font-weight: 600; }
+.gh-sha { color: var(--text-3); }
+.gh-msg { color: var(--text); word-break: break-word; }
+
+/* 게시 버튼(topbar) — 골드 강조 */
+.btn-publish {
+  min-height: 32px;
+  padding: 0 13px;
+  border: 1px solid var(--accent-gold);
+  border-radius: var(--r-sm);
+  background: rgba(201, 162, 39, .1);
+  color: #8a6d0d;
+  font-size: var(--step--1);
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn-publish:hover { background: rgba(201, 162, 39, .2); }
+.btn-publish:disabled { opacity: .5; cursor: default; }
+:root[data-theme="dark"] .btn-publish { color: var(--accent-gold); }
 
 /* ═══════════ 중앙 캔버스 열 ═══════════ */
 #canvasCol {

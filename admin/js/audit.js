@@ -15,7 +15,8 @@
     'rollback': '롤백',
     'ai-apply': 'AI 적용',
     'export': '내보내기',
-    'site-open': '사이트 열기'
+    'site-open': '사이트 열기',
+    'publish': '게시'
   };
 
   function actionLabel(action) {

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <!-- 유출 차단 CSP: 캔버스(srcdoc)도 이 정책을 상속 — 임의 외부 호스트로의
      fetch/img 전송을 차단한다. file:// 직접 열람을 위해 file: 스킴 허용. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self' file:; script-src 'self' file: 'unsafe-inline' blob:; style-src 'self' file: 'unsafe-inline' blob: https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' file: data: https://cdn.jsdelivr.net https://fonts.gstatic.com; img-src 'self' file: data: blob:; media-src 'self' file: data: blob:; connect-src 'self' file: https://generativelanguage.googleapis.com; object-src 'none'; base-uri 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' file:; script-src 'self' file: 'unsafe-inline' blob:; style-src 'self' file: 'unsafe-inline' blob: https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' file: data: https://cdn.jsdelivr.net https://fonts.gstatic.com; img-src 'self' file: data: blob:; media-src 'self' file: data: blob:; connect-src 'self' file: https://generativelanguage.googleapis.com https://api.github.com; object-src 'none'; base-uri 'none'" />
 <title>YSME Admin Studio — 연세대학교 기계공학부</title>
 <meta name="description" content="연세대 기계공학부 사이트 관리자 편집 도구 — 비주얼 편집 · AI 초안 · 버전 관리 · 감사 기록" />
 <meta name="theme-color" content="#001a38" />
@@ -80,6 +80,7 @@
     <div class="topbar-spacer"></div>
     <span id="saveState" class="save-state mono" data-dirty="false">저장됨</span>
     <button id="btnSave" type="button" class="btn-primary" disabled>저장</button>
+    <button id="btnPublish" type="button" class="btn-publish" title="현재 페이지를 GitHub에 게시(배포 반영)">게시</button>
     <span id="userLabel" class="user-label mono"></span>
     <button id="btnToggleRight" type="button" class="btn-icon" title="우측 패널 접기/펼치기" aria-label="우측 패널 접기/펼치기" aria-pressed="false">◨</button>
     <button id="btnAdminTheme" type="button" class="btn-icon" aria-label="테마 전환" aria-pressed="false">◐</button>
@@ -94,6 +95,7 @@
         <button class="side-tab is-active" type="button" data-tab="pages" role="tab" aria-selected="true">페이지</button>
         <button class="side-tab" type="button" data-tab="versions" role="tab" aria-selected="false">버전</button>
         <button class="side-tab" type="button" data-tab="audit" role="tab" aria-selected="false">기록</button>
+        <button class="side-tab" type="button" data-tab="publish" role="tab" aria-selected="false">게시</button>
       </div>
 
       <div id="panelPages" class="side-panel" role="tabpanel">
@@ -109,6 +111,27 @@
       <div id="panelAudit" class="side-panel" role="tabpanel" hidden>
         <div id="auditList" class="audit-list"></div>
         <button id="btnExportAudit" type="button" class="btn-ghost btn-block">감사 기록 내보내기 (JSON)</button>
+      </div>
+
+      <div id="panelPublish" class="side-panel" role="tabpanel" hidden>
+        <div id="ghSetup" hidden>
+          <p class="gh-setup-title">GitHub 게시 연결</p>
+          <p class="insp-note">「게시」를 누르면 현재 페이지가 저장소에 커밋되어 배포 사이트에 반영됩니다. 토큰은 이 브라우저에만 저장됩니다(fine-grained PAT, Contents 읽기/쓰기 권한 권장).</p>
+          <div class="field"><label for="ghToken">액세스 토큰</label><input id="ghToken" type="password" autocomplete="off" placeholder="github_pat_..." /></div>
+          <div class="field"><label for="ghOwner">소유자/조직</label><input id="ghOwner" type="text" autocomplete="off" placeholder="todo0157" /></div>
+          <div class="field"><label for="ghRepo">저장소</label><input id="ghRepo" type="text" autocomplete="off" placeholder="yonsei-me-homepage-competition" /></div>
+          <div class="field"><label for="ghBranch">브랜치</label><input id="ghBranch" type="text" autocomplete="off" value="main" placeholder="main" /></div>
+          <div class="field"><label for="ghBasePath">사이트 폴더 경로 <span class="insp-note">(저장소 기준, 예: prototype-v3)</span></label><input id="ghBasePath" type="text" autocomplete="off" placeholder="prototype-v3" /></div>
+          <p class="form-err" id="ghSetupErr" role="alert"></p>
+          <button id="btnGhConnect" type="button" class="btn-primary btn-block">연결</button>
+        </div>
+        <div id="ghConnected" hidden>
+          <div id="ghStatus" class="gh-status mono"></div>
+          <button id="btnPublishCurrent" type="button" class="btn-primary btn-block">현재 페이지 게시</button>
+          <p class="side-subhead">게시 기록 (이 파일)</p>
+          <div id="ghHistory" class="gh-history"></div>
+          <button id="btnGhChange" type="button" class="btn-ghost btn-block">연결 정보 변경</button>
+        </div>
       </div>
     </aside>
 
@@ -229,6 +252,7 @@
 <script src="js/versions.js" defer></script>
 <script src="js/editor.js" defer></script>
 <script src="js/ai.js" defer></script>
+<script src="js/github.js" defer></script>
 <script src="js/app.js" defer></script>
 <script src="js/layout.js" defer></script>
 </body>

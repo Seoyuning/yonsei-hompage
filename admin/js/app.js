@@ -374,6 +374,7 @@ document.querySelectorAll('.side-tab').forEach(function (tab) {
     $('panelPages').hidden = key !== 'pages';
     $('panelVersions').hidden = key !== 'versions';
     $('panelAudit').hidden = key !== 'audit';
+    $('panelPublish').hidden = key !== 'publish';
     if (key === 'versions') Admin.versions.renderList();
     if (key === 'audit') Admin.audit.renderList();
   });
@@ -423,6 +424,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (Admin.auth.current()) showWorkspace();
   });
   if (Admin.ai && Admin.ai.init) Admin.ai.init();
+  if (Admin.github && Admin.github.init) Admin.github.init();
 });
 
 })();

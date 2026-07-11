@@ -233,8 +233,12 @@
       Admin.bus.emit('ai:applyDraft', { html: html });
       hideDraftBar();
     } else if (a === 'diff') {
-      if (Admin.versions && typeof Admin.versions.showDiff === 'function') {
-        Admin.versions.showDiff(getPageHtml(), html, 'AI 초안 v' + ver + ' ↔ 현재 페이지');
+      if (Admin.versions && typeof Admin.versions.showCompare === 'function') {
+        Admin.versions.showCompare(getPageHtml(), html, {
+          header: 'AI 초안 v' + ver + ' 비교',
+          oldLabel: '현재 페이지',
+          newLabel: 'AI 초안 v' + ver
+        });
       } else if (Admin.toast) {
         Admin.toast('비교 기능을 사용할 수 없습니다.', 'err');
       }

@@ -756,6 +756,13 @@ Admin.editor = {
     return serialize(cleanClone());
   },
 
+  /* 임의 HTML을 자산 인라인 포함 독립 렌더용 문서로 변환(시각 비교 iframe용, 비파괴).
+     sandbox 프레임에서 렌더되므로 CSS/JS는 인라인(inline:true)으로 삽입한다. */
+  buildStandaloneHtml: async function (html) {
+    var doc = parseHtml(html == null ? '' : html);
+    return await buildRenderHtml(doc, { inline: true });
+  },
+
   currentPath: function () { return path; },
 
   setMode: function (m) {

@@ -340,6 +340,13 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   position: relative;   /* 스플리터 절대배치 기준 */
 }
 
+/* 열 고정: 한 패널을 display:none 으로 접어도 auto-placement 로 나머지가
+   열을 당겨오지 않도록 각 패널을 자기 열에 고정한다(좌측 접기 시 캔버스가
+   0px 열로 밀려 사라지던 버그 방지). */
+#sidebar    { grid-column: 1; }
+#canvasCol  { grid-column: 2; }
+#rightPanel { grid-column: 3; }
+
 /* ── 패널 리사이즈 스플리터 + 접기 ── */
 .wg-split {
   position: absolute;
@@ -1049,6 +1056,66 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   padding: 12px 18px;
   border-top: 1px solid var(--line);
   background: var(--surface-2);
+}
+
+/* ═══════════ 비교 모달(화면 비교 / 코드 비교) ═══════════ */
+.modal-card.modal-wide { max-width: min(1280px, 96vw); }
+.cmp-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.cmp-modes { display: flex; gap: 4px; flex: 0 0 auto; }
+.cmp-mode {
+  min-height: 28px;
+  padding: 0 11px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  color: var(--text-2);
+  font-size: var(--step--1);
+  cursor: pointer;
+}
+.cmp-mode:hover { color: var(--text); background: var(--surface-2); }
+.cmp-mode.is-active {
+  color: #ffffff;
+  background: var(--yonsei-800);
+  border-color: var(--yonsei-800);
+}
+:root[data-theme="dark"] .cmp-mode.is-active { background: var(--yonsei-600); border-color: var(--yonsei-600); }
+.cmp-visual { display: flex; gap: 10px; }
+.cmp-pane {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  background: var(--surface);
+}
+.cmp-pane-label {
+  padding: 5px 10px;
+  font-size: var(--step--1);
+  font-weight: 600;
+  color: var(--text-2);
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--line);
+}
+.cmp-pane-label--new { color: var(--brand); }
+.cmp-frame {
+  width: 100%;
+  height: 66vh;
+  border: 0;
+  background: #ffffff;
+  display: block;
+}
+@media (max-width: 860px) {
+  .cmp-visual { flex-direction: column; }
+  .cmp-frame { height: 44vh; }
 }
 
 /* ═══════════ 디프 뷰(버전 diff 모달) ═══════════ */

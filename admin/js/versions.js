@@ -257,18 +257,16 @@
     var header = rec.path + ' · ' + originLabel + ' · ' + ts;
     var current = await currentContentFor(rec.path);
     if (current == null) {
-      openDiffModal(header, '<p class="insp-note">현재 파일 내용을 읽을 수 없어 비교할 수 없습니다.</p>');
+      showCompare(rec.content, rec.content, { header: header, note: '현재 파일 내용을 읽을 수 없어 현재본과 비교할 수 없습니다.' });
       return;
     }
-    // rec(과거) → 현재(현행) 방향 디프
-    var diff = diffLines(rec.content, current);
-    openDiffModal(header, buildDiffView(diff));
+    // 이 버전(과거) ↔ 현재(현행)
+    showCompare(rec.content, current, { header: header, oldLabel: '이 버전 (' + originLabel + ')', newLabel: '현재' });
   }
 
-  // 임의의 두 내용 비교 모달 (ai.js 등 외부에서 재사용)
+  // 임의의 두 내용 비교 (ai.js 등 외부 재사용). 기본=화면 비교, 토글로 코드 비교.
   function showDiff(oldStr, newStr, headerText) {
-    var diff = diffLines(oldStr == null ? '' : oldStr, newStr == null ? '' : newStr);
-    openDiffModal(headerText || '비교', buildDiffView(diff));
+    showCompare(oldStr, newStr, { header: headerText || '비교' });
   }
 
   // 변경부 주변 ±2줄만 남기고 사이는 접기
@@ -323,40 +321,102 @@
     return parts.join('');
   }
 
-  // ── 디프 모달(공유 #modalRoot 직접 제어, 확인 버튼만 노출) ──
-  var modalOnKey = null;
-  var modalOnBackdrop = null;
+  // ── 비교 모달(공유 #modalRoot 직접 제어) ──
+  //   기본 = 화면(UI) 비교: 두 내용을 실제 렌더한 iframe 을 나란히 보여준다.
+  //   토글 = 코드 비교: 기존 LCS 라인 디프.
+  var cmpOnKey = null;
+  var cmpOnBackdrop = null;
 
-  function openDiffModal(headerText, innerHtml) {
+  function showCompare(oldHtml, newHtml, opts) {
+    opts = opts || {};
+    var header = opts.header || '비교';
+    var oldLabel = opts.oldLabel || '현재';
+    var newLabel = opts.newLabel || '변경본';
+
     var root = document.querySelector('#modalRoot');
     var body = document.querySelector('#modalBody');
     var ok = document.querySelector('#modalOk');
     var cancel = document.querySelector('#modalCancel');
+    var card = root ? root.querySelector('.modal-card') : null;
     if (!root || !body || !ok) return;
 
-    body.innerHTML =
-      '<p class="diff-modal-head mono">' + esc(headerText) + '</p>' +
-      innerHtml;
-
-    if (cancel) cancel.hidden = true;      // 확인(닫기) 버튼만 노출
+    if (card) card.classList.add('modal-wide');
+    if (cancel) cancel.hidden = true;      // 닫기 버튼만 노출
     ok.textContent = '닫기';
+
+    var toggleHtml = opts.note ? '' :
+      '<div class="cmp-modes" role="tablist">' +
+        '<button type="button" class="cmp-mode is-active" data-mode="visual">화면 비교</button>' +
+        '<button type="button" class="cmp-mode" data-mode="code">코드 비교</button>' +
+      '</div>';
+    body.innerHTML =
+      '<div class="cmp-head"><span class="diff-modal-head mono">' + esc(header) + '</span>' + toggleHtml + '</div>' +
+      '<div class="cmp-body" id="cmpBody"></div>';
     root.hidden = false;
 
-    ok.addEventListener('click', closeDiffModal);
-    modalOnKey = function (e) { if (e.key === 'Escape') closeDiffModal(); };
-    document.addEventListener('keydown', modalOnKey);
-    modalOnBackdrop = function (e) { if (e.target === root) closeDiffModal(); };
-    root.addEventListener('mousedown', modalOnBackdrop);
+    var cmpBody = body.querySelector('#cmpBody');
+    var codeCache = null;
+
+    function renderVisual() {
+      cmpBody.innerHTML =
+        '<div class="cmp-visual">' +
+          '<div class="cmp-pane"><div class="cmp-pane-label">' + esc(oldLabel) + '</div>' +
+            '<iframe class="cmp-frame" sandbox="allow-scripts" title="' + esc(oldLabel) + '"></iframe></div>' +
+          '<div class="cmp-pane"><div class="cmp-pane-label cmp-pane-label--new">' + esc(newLabel) + '</div>' +
+            '<iframe class="cmp-frame" sandbox="allow-scripts" title="' + esc(newLabel) + '"></iframe></div>' +
+        '</div>';
+      var frames = cmpBody.querySelectorAll('.cmp-frame');
+      renderFrame(frames[0], oldHtml);
+      renderFrame(frames[1], newHtml);
+    }
+
+    async function renderFrame(frame, html) {
+      if (!frame) return;
+      var out = html == null ? '' : html;
+      if (Admin.editor && typeof Admin.editor.buildStandaloneHtml === 'function') {
+        try { out = await Admin.editor.buildStandaloneHtml(html); } catch (e) { out = html == null ? '' : html; }
+      }
+      frame.srcdoc = out;
+    }
+
+    function renderCode() {
+      if (codeCache == null) {
+        codeCache = buildDiffView(diffLines(oldHtml == null ? '' : oldHtml, newHtml == null ? '' : newHtml));
+      }
+      cmpBody.innerHTML = codeCache;
+    }
+
+    if (opts.note) {
+      cmpBody.innerHTML = '<p class="insp-note">' + esc(opts.note) + '</p>';
+    } else {
+      var modes = body.querySelector('.cmp-modes');
+      if (modes) modes.addEventListener('click', function (e) {
+        var b = e.target && e.target.closest ? e.target.closest('.cmp-mode') : null;
+        if (!b) return;
+        var list = body.querySelectorAll('.cmp-mode');
+        for (var i = 0; i < list.length; i++) list[i].classList.toggle('is-active', list[i] === b);
+        if (b.getAttribute('data-mode') === 'code') renderCode(); else renderVisual();
+      });
+      renderVisual();
+    }
+
+    ok.addEventListener('click', closeCompare);
+    cmpOnKey = function (e) { if (e.key === 'Escape') closeCompare(); };
+    document.addEventListener('keydown', cmpOnKey);
+    cmpOnBackdrop = function (e) { if (e.target === root) closeCompare(); };
+    root.addEventListener('mousedown', cmpOnBackdrop);
   }
 
-  function closeDiffModal() {
+  function closeCompare() {
     var root = document.querySelector('#modalRoot');
     var body = document.querySelector('#modalBody');
     var ok = document.querySelector('#modalOk');
     var cancel = document.querySelector('#modalCancel');
-    if (ok) ok.removeEventListener('click', closeDiffModal);
-    if (modalOnKey) { document.removeEventListener('keydown', modalOnKey); modalOnKey = null; }
-    if (root && modalOnBackdrop) { root.removeEventListener('mousedown', modalOnBackdrop); modalOnBackdrop = null; }
+    var card = root ? root.querySelector('.modal-card') : null;
+    if (ok) ok.removeEventListener('click', closeCompare);
+    if (cmpOnKey) { document.removeEventListener('keydown', cmpOnKey); cmpOnKey = null; }
+    if (root && cmpOnBackdrop) { root.removeEventListener('mousedown', cmpOnBackdrop); cmpOnBackdrop = null; }
+    if (card) card.classList.remove('modal-wide');
     if (root) root.hidden = true;
     if (body) body.innerHTML = '';
     // core 의 confirm/prompt 를 위해 원상 복구
@@ -411,7 +471,8 @@
     get: get,
     renderList: renderList,
     diffLines: diffLines,
-    showDiff: showDiff
+    showDiff: showDiff,
+    showCompare: showCompare
   };
 
   wire();

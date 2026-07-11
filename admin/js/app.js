@@ -354,8 +354,11 @@ Admin.bus.on('ai:applyDraft', async function (d) {
   var path = Admin.editor.currentPath();
   if (!path) { Admin.toast('열려 있는 페이지가 없습니다.', 'err'); return; }
   await Admin.editor.loadPage(path, d.html, { markDirty: true });
-  await Admin.audit.log('ai-apply', path, 'AI 초안 적용 (미저장 상태)');
-  Admin.toast('AI 초안이 적용되었습니다. 확인 후 「저장」을 누르세요.', 'ok');
+  // AI 적용분을 버전으로 즉시 기록(origin='ai'). 이후 동일 내용 저장은 dedupe 되어 중복 안 생김.
+  var rec = await Admin.versions.snapshot(path, d.html, { origin: 'ai', note: 'AI 초안 적용' });
+  await Admin.audit.log('ai-apply', path, 'AI 초안 적용 (버전 기록됨)');
+  Admin.versions.renderList();   // 버전 패널 즉시 갱신(활성 아니어도 #versionList 갱신)
+  Admin.toast('AI 초안이 적용되고 버전에 기록되었습니다. 확인 후 「저장」을 누르세요.', 'ok');
   updateSaveUi();
 });
 

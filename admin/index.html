@@ -74,12 +74,14 @@
 
   <header id="topbar">
     <p class="topbar-brand"><span class="brand-dot" aria-hidden="true"></span>YSME ADMIN STUDIO</p>
+    <button id="btnToggleLeft" type="button" class="btn-icon" title="좌측 패널 접기/펼치기" aria-label="좌측 패널 접기/펼치기" aria-pressed="false">◧</button>
     <button id="btnOpenSite" type="button" class="btn-ghost">사이트 폴더 열기</button>
     <span id="siteLabel" class="site-label mono"></span>
     <div class="topbar-spacer"></div>
     <span id="saveState" class="save-state mono" data-dirty="false">저장됨</span>
     <button id="btnSave" type="button" class="btn-primary" disabled>저장</button>
     <span id="userLabel" class="user-label mono"></span>
+    <button id="btnToggleRight" type="button" class="btn-icon" title="우측 패널 접기/펼치기" aria-label="우측 패널 접기/펼치기" aria-pressed="false">◨</button>
     <button id="btnAdminTheme" type="button" class="btn-icon" aria-label="테마 전환" aria-pressed="false">◐</button>
     <button id="btnLogout" type="button" class="btn-ghost">로그아웃</button>
   </header>
@@ -200,6 +202,10 @@
       </div>
     </aside>
 
+    <!-- 패널 너비 조절 스플리터(드래그) — layout.js가 배선 -->
+    <div class="wg-split wg-split-left" id="wgSplitLeft" role="separator" aria-orientation="vertical" aria-label="좌측 패널 너비 조절" tabindex="0"></div>
+    <div class="wg-split wg-split-right" id="wgSplitRight" role="separator" aria-orientation="vertical" aria-label="우측 패널 너비 조절" tabindex="0"></div>
+
   </div>
 </div>
 
@@ -224,5 +230,6 @@
 <script src="js/editor.js" defer></script>
 <script src="js/ai.js" defer></script>
 <script src="js/app.js" defer></script>
+<script src="js/layout.js" defer></script>
 </body>
 </html>

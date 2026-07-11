@@ -252,14 +252,23 @@
   }
 
   async function onDiff(rec) {
+    var originLabel = ORIGIN_LABEL[rec.origin] || rec.origin;
+    var ts = (util && util.fmtTime) ? util.fmtTime(rec.ts) : String(rec.ts);
+    var header = rec.path + ' · ' + originLabel + ' · ' + ts;
     var current = await currentContentFor(rec.path);
     if (current == null) {
-      openDiffModal(rec, '<p class="insp-note">현재 파일 내용을 읽을 수 없어 비교할 수 없습니다.</p>');
+      openDiffModal(header, '<p class="insp-note">현재 파일 내용을 읽을 수 없어 비교할 수 없습니다.</p>');
       return;
     }
     // rec(과거) → 현재(현행) 방향 디프
     var diff = diffLines(rec.content, current);
-    openDiffModal(rec, buildDiffView(diff));
+    openDiffModal(header, buildDiffView(diff));
+  }
+
+  // 임의의 두 내용 비교 모달 (ai.js 등 외부에서 재사용)
+  function showDiff(oldStr, newStr, headerText) {
+    var diff = diffLines(oldStr == null ? '' : oldStr, newStr == null ? '' : newStr);
+    openDiffModal(headerText || '비교', buildDiffView(diff));
   }
 
   // 변경부 주변 ±2줄만 남기고 사이는 접기
@@ -268,7 +277,7 @@
     var hasChange = false;
     for (i = 0; i < n; i++) { if (diff[i].type !== 'same') { hasChange = true; break; } }
     if (!hasChange) {
-      return '<p class="insp-note">선택한 버전과 현재 내용이 동일합니다.</p>';
+      return '<p class="insp-note">두 내용이 동일합니다 (변경 사항 없음).</p>';
     }
 
     var CTX = 2;
@@ -318,17 +327,15 @@
   var modalOnKey = null;
   var modalOnBackdrop = null;
 
-  function openDiffModal(rec, innerHtml) {
+  function openDiffModal(headerText, innerHtml) {
     var root = document.querySelector('#modalRoot');
     var body = document.querySelector('#modalBody');
     var ok = document.querySelector('#modalOk');
     var cancel = document.querySelector('#modalCancel');
     if (!root || !body || !ok) return;
 
-    var originLabel = ORIGIN_LABEL[rec.origin] || esc(rec.origin);
-    var ts = (util && util.fmtTime) ? util.fmtTime(rec.ts) : String(rec.ts);
     body.innerHTML =
-      '<p class="diff-modal-head mono">' + esc(rec.path) + ' · ' + originLabel + ' · ' + esc(ts) + '</p>' +
+      '<p class="diff-modal-head mono">' + esc(headerText) + '</p>' +
       innerHtml;
 
     if (cancel) cancel.hidden = true;      // 확인(닫기) 버튼만 노출
@@ -403,7 +410,8 @@
     list: list,
     get: get,
     renderList: renderList,
-    diffLines: diffLines
+    diffLines: diffLines,
+    showDiff: showDiff
   };
 
   wire();

@@ -337,7 +337,42 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   grid-template-columns: var(--side-w) minmax(0, 1fr) var(--right-w);
   min-height: 0;
   overflow: hidden;
+  position: relative;   /* 스플리터 절대배치 기준 */
 }
+
+/* ── 패널 리사이즈 스플리터 + 접기 ── */
+.wg-split {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 9px;
+  z-index: 40;
+  cursor: col-resize;
+  background: transparent;
+}
+.wg-split::after {          /* 얇은 그립 라인(경계선 위) */
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0; left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  background: transparent;
+  transition: background .12s ease;
+}
+.wg-split:hover::after,
+.wg-split.dragging::after,
+.wg-split:focus-visible::after { background: var(--yonsei-400); }
+.wg-split:focus-visible { outline: none; }
+.wg-split-left  { left: var(--side-w);  transform: translateX(-50%); }
+.wg-split-right { right: var(--right-w); transform: translateX(50%); }
+
+#workGrid.left-collapsed  #sidebar,
+#workGrid.left-collapsed  .wg-split-left  { display: none; }
+#workGrid.right-collapsed #rightPanel,
+#workGrid.right-collapsed .wg-split-right { display: none; }
+
+/* 접힘 토글 버튼 눌림 상태 */
+.btn-icon[aria-pressed="true"] { color: var(--brand); background: var(--surface-2); }
 
 /* ═══════════ 사이드바(좌) ═══════════ */
 #sidebar {
@@ -852,6 +887,25 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   font-size: var(--step--1);
   color: var(--brand);
 }
+
+/* 대화별 초안 액션(미리보기·적용·비교) */
+.ai-draft-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 8px;
+}
+.ai-act {
+  min-height: 26px;
+  padding: 0 9px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  color: var(--text-2);
+  font-size: var(--step--1);
+  cursor: pointer;
+}
+.ai-act:hover { color: var(--text); background: var(--surface-2); border-color: var(--text-3); }
 
 /* 로딩 점 3개 */
 .ai-msg--pending .ai-msg-body {

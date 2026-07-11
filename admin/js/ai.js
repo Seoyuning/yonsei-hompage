@@ -1,5 +1,8 @@
 /* ai.js — Gemini 챗 패널. window.Admin.ai 에 부착.
-   classic script(ES 모듈 금지). core/store/editor/bus 계약은 SPEC 참조. */
+   classic script(ES 모듈 금지). core/store/editor/versions/bus 계약은 SPEC 참조.
+
+   v2: 대화를 페이지별로 IndexedDB(settings)에 영속화 → 새로고침 후 복원·이어가기.
+       각 모델 응답의 초안마다 미리보기/적용/비교 액션 제공(최신뿐 아니라 전체). */
 (function () {
   'use strict';
 
@@ -28,13 +31,18 @@
   var els = null;              // 캐시된 DOM 참조
   var apiKey = '';            // 메모리 보관(감사/버전에 절대 기록 안 함)
   var modelName = DEFAULT_MODEL;
-  var history = [];           // Gemini contents 배열 {role, parts:[{text}]}
-  var draft = null;           // 마지막으로 추출된 HTML 초안
-  var draftVersion = 0;       // 초안 버전 카운터
+
+  // 대화 상태 — 페이지별로 IndexedDB(settings)에 영속화
+  //   history : Gemini contents 배열 {role, parts:[{text}]} (API 이어가기용)
+  //   turns   : 표시용 대화록 [{role:'user'|'model', text, ver}] (ver>0이면 초안 보유)
+  var convo = { path: null, history: [], turns: [], draftVersion: 0 };
+  var draftsByVer = {};       // ver(number) → 초안 HTML
+  var latestDraft = null;     // 하단 초안 바가 가리키는 최신 초안
+
   var pendingElement = null;  // 다음 전송 1회에 첨부할 요소 컨텍스트
   var sending = false;        // 중복 전송 방지
   var wired = false;          // 이벤트 배선 1회 보장
-  var skipNextReset = false;  // 초안 적용 직후의 page:loaded 는 대화 리셋 대상이 아님
+  var skipNextReset = false;  // 초안 적용 직후의 page:loaded 는 대화 복원 대상이 아님
 
   function esc(s) { return Admin.util.escapeHtml(String(s == null ? '' : s)); }
 
@@ -86,6 +94,27 @@
     return '';
   }
 
+  // ── 영속화 ──
+  function siteName() {
+    try {
+      return (Admin.fs && Admin.fs.siteName && Admin.fs.siteName()) ||
+        (Admin.state && Admin.state.sitePath) || '';
+    } catch (e) { return ''; }
+  }
+  function convoKey(path) { return 'ai-conv:' + siteName() + ':' + (path || ''); }
+
+  function persist() {
+    if (!convo.path) return;
+    try {
+      Admin.store.setSetting(convoKey(convo.path), {
+        history: convo.history,
+        turns: convo.turns,
+        draftVersion: convo.draftVersion,
+        drafts: draftsByVer
+      });
+    } catch (e) { /* 저장 실패는 대화를 막지 않음 */ }
+  }
+
   // ── 메시지 렌더 ──
   function scrollBottom() {
     if (els.messages) els.messages.scrollTop = els.messages.scrollHeight;
@@ -112,12 +141,11 @@
   }
 
   function appendSystem(text) {
-    // 시스템 안내는 model 버블에 --system 보조 클래스로 표시(미정의 시 기본 스타일로 열화).
+    // 시스템 안내는 model 버블에 --system 보조 클래스로 표시(영속화 대상 아님).
     appendMsg('model', textToHtml(text), 'ai-msg--system');
   }
 
   function renderPending() {
-    // 점 3개: admin.css 의 ::before/::after + .ai-dot 조합
     return appendMsg('model', '<span class="ai-dot" aria-hidden="true"></span>', 'ai-msg--pending');
   }
 
@@ -168,11 +196,49 @@
   function showDraftBar() {
     if (!els.draftBar) return;
     var chip = els.draftBar.querySelector('.draft-chip');
-    if (chip) chip.textContent = 'AI 초안 v' + draftVersion + ' 준비됨';
+    if (chip) chip.textContent = '최신 AI 초안 v' + convo.draftVersion + ' 준비됨';
     els.draftBar.hidden = false;
   }
   function hideDraftBar() {
     if (els.draftBar) els.draftBar.hidden = true;
+  }
+
+  // ── 대화별 초안 액션(각 모델 메시지에 부착) ──
+  function attachDraftActions(node, ver) {
+    if (!node || draftsByVer[ver] == null) return;
+    var body = node.querySelector('.ai-msg-body') || node;
+    if (body.querySelector('.ai-draft-acts')) return;   // 중복 방지
+    var row = document.createElement('div');
+    row.className = 'ai-draft-acts';
+    row.innerHTML =
+      '<button type="button" class="ai-act" data-a="preview">미리보기</button>' +
+      '<button type="button" class="ai-act" data-a="apply">적용</button>' +
+      '<button type="button" class="ai-act" data-a="diff">비교</button>';
+    body.appendChild(row);
+    row.addEventListener('click', function (e) {
+      var b = e.target && e.target.closest ? e.target.closest('.ai-act') : null;
+      if (b) draftAction(b.getAttribute('data-a'), ver);
+    });
+  }
+
+  function draftAction(a, ver) {
+    var html = draftsByVer[ver];
+    if (html == null) return;
+    if (a === 'preview') {
+      if (Admin.editor && typeof Admin.editor.previewDraft === 'function') {
+        Admin.editor.previewDraft(html, { label: 'AI 초안 v' + ver });
+      }
+    } else if (a === 'apply') {
+      if (Admin.editor && Admin.editor.currentPath && Admin.editor.currentPath()) skipNextReset = true;
+      Admin.bus.emit('ai:applyDraft', { html: html });
+      hideDraftBar();
+    } else if (a === 'diff') {
+      if (Admin.versions && typeof Admin.versions.showDiff === 'function') {
+        Admin.versions.showDiff(getPageHtml(), html, 'AI 초안 v' + ver + ' ↔ 현재 페이지');
+      } else if (Admin.toast) {
+        Admin.toast('비교 기능을 사용할 수 없습니다.', 'err');
+      }
+    }
   }
 
   // ── 요소 스코프 컨텍스트 칩 ──
@@ -233,7 +299,7 @@
     // URL에 키가 포함되므로 이 문자열은 절대 로그/감사/에러메시지에 노출하지 않는다.
     var url = API_BASE + encodeURIComponent(modelName) + ':generateContent?key=' + encodeURIComponent(apiKey);
     var body = {
-      contents: history,
+      contents: convo.history,
       generationConfig: { temperature: 0.4, maxOutputTokens: 65536 }
     };
     var res;
@@ -263,7 +329,7 @@
     if (!text) return;
     if (!hasKey()) { showSetup(); return; }
 
-    var first = history.length === 0;
+    var first = convo.history.length === 0;
 
     // API용 메시지 조립(표시는 사용자가 입력한 text만, 프리앰블/HTML/요소컨텍스트는 API에만).
     var pieces = [];
@@ -283,24 +349,32 @@
 
     els.input.value = '';
     renderUser(text);
-    history.push({ role: 'user', parts: [{ text: apiText }] });
+    convo.turns.push({ role: 'user', text: text });
+    convo.history.push({ role: 'user', parts: [{ text: apiText }] });
+    persist();
 
     var pend = renderPending();
     setSending(true);
     try {
       var reply = await callGemini();
-      history.push({ role: 'model', parts: [{ text: reply }] });
+      convo.history.push({ role: 'model', parts: [{ text: reply }] });
       var extracted = extractLastHtmlFence(reply);
-      var ver = draftVersion;
+      var ver = 0;
       if (extracted != null) {
-        draft = extracted;
-        ver = ++draftVersion;
+        ver = ++convo.draftVersion;
+        draftsByVer[ver] = extracted;
+        latestDraft = extracted;
         showDraftBar();
       }
+      convo.turns.push({ role: 'model', text: reply, ver: ver });
       finalizeModel(pend, reply, ver);
+      if (ver) attachDraftActions(pend, ver);
+      persist();
     } catch (e) {
-      // 실패한 user 턴을 이력에서 되돌려 role 교대 규칙 유지(다음 전송이 온전한 첫 턴/교대가 되도록)
-      history.pop();
+      // 실패한 user 턴을 이력·대화록에서 되돌려 role 교대 규칙 유지(영속화도 정합 유지)
+      convo.history.pop();
+      convo.turns.pop();
+      persist();
       finalizeError(pend, (e && e.message) ? e.message : '요청에 실패했습니다.');
     } finally {
       setSending(false);
@@ -332,20 +406,63 @@
     if (els.input) els.input.focus();
   }
 
-  // ── 대화/초안 초기화(페이지 컨텍스트 변경 시) ──
-  function resetConversation(path) {
-    history = [];
-    draft = null;
-    draftVersion = 0;
-    hideDraftBar();
-    clearCtx();
-    if (els.messages) els.messages.innerHTML = '';
+  // ── 대화 렌더(turns 로부터 재구성) ──
+  function renderConvo() {
+    if (!els.messages) return;
+    els.messages.innerHTML = '';
+    for (var i = 0; i < convo.turns.length; i++) {
+      var t = convo.turns[i];
+      if (t.role === 'user') {
+        renderUser(t.text);
+      } else if (t.role === 'model') {
+        var node = appendMsg('model', renderModelBody(t.text, t.ver || 0));
+        if (t.ver && draftsByVer[t.ver] != null) attachDraftActions(node, t.ver);
+      }
+    }
+    scrollBottom();
+  }
+
+  function welcomeText(path) {
     var name = '';
     try { name = path && Admin.util.basename ? Admin.util.basename(path) : (path || ''); } catch (e) {}
-    var msg = name
-      ? '「' + name + '」 페이지를 불러왔습니다. 요청을 입력하면 페이지 전체를 반영한 수정본을 제안합니다.'
-      : '페이지를 불러왔습니다. 요청을 입력하면 페이지 전체를 반영한 수정본을 제안합니다.';
-    appendSystem(msg);
+    return name
+      ? '「' + name + '」 페이지입니다. 요청을 입력하면 페이지 전체를 반영한 수정본을 제안합니다.'
+      : '요청을 입력하면 페이지 전체를 반영한 수정본을 제안합니다.';
+  }
+
+  // ── 페이지별 대화 로드/복원 ──
+  async function loadConvo(path) {
+    convo.path = path;
+    convo.history = [];
+    convo.turns = [];
+    convo.draftVersion = 0;
+    draftsByVer = {};
+    latestDraft = null;
+
+    var saved = null;
+    try { saved = await Admin.store.getSetting(convoKey(path)); } catch (e) { saved = null; }
+    if (saved && (saved.turns || saved.history)) {
+      convo.history = saved.history || [];
+      convo.turns = saved.turns || [];
+      convo.draftVersion = saved.draftVersion || 0;
+      draftsByVer = saved.drafts || {};
+    }
+
+    if (els.messages) els.messages.innerHTML = '';
+    clearCtx();
+    if (convo.turns.length) {
+      renderConvo();
+      appendSystem('이전 대화를 불러왔습니다. 이어서 요청하면 대화가 계속됩니다. (각 초안의 미리보기·적용·비교 버튼은 그대로 사용할 수 있습니다.)');
+      if (convo.draftVersion && draftsByVer[convo.draftVersion] != null) {
+        latestDraft = draftsByVer[convo.draftVersion];
+        showDraftBar();
+      } else {
+        hideDraftBar();
+      }
+    } else {
+      hideDraftBar();
+      appendSystem(welcomeText(path));
+    }
   }
 
   // ── 배선 ──
@@ -372,23 +489,20 @@
       });
     }
 
+    // 하단 초안 바 = 최신 초안 빠른 실행
     if (els.btnPreview) els.btnPreview.addEventListener('click', function () {
-      if (draft && Admin.editor && typeof Admin.editor.previewDraft === 'function') {
-        Admin.editor.previewDraft(draft, { label: 'AI 초안' });
+      if (latestDraft && Admin.editor && typeof Admin.editor.previewDraft === 'function') {
+        Admin.editor.previewDraft(latestDraft, { label: 'AI 초안 v' + convo.draftVersion });
       }
     });
     if (els.btnApply) els.btnApply.addEventListener('click', function () {
-      if (!draft) return;
-      // 적용은 app.js가 editor.loadPage 로 처리 → page:loaded 발생.
-      // 그 1회는 대화 리셋을 건너뛰어 피드백 루프를 유지한다.
-      if (Admin.editor && Admin.editor.currentPath && Admin.editor.currentPath()) {
-        skipNextReset = true;
-      }
-      Admin.bus.emit('ai:applyDraft', { html: draft });
+      if (!latestDraft) return;
+      if (Admin.editor && Admin.editor.currentPath && Admin.editor.currentPath()) skipNextReset = true;
+      Admin.bus.emit('ai:applyDraft', { html: latestDraft });
+      hideDraftBar();
     });
     if (els.btnDiscard) els.btnDiscard.addEventListener('click', function () {
       if (Admin.editor && typeof Admin.editor.exitDraft === 'function') Admin.editor.exitDraft();
-      draft = null;
       hideDraftBar();
     });
 
@@ -400,16 +514,15 @@
       if (els.input) els.input.focus();
     });
 
-    // 페이지 로드 시 대화/초안 초기화 + 안내 1줄 (초안 적용 직후 1회는 유지)
+    // 페이지 로드 시 해당 페이지 대화 복원(초안 적용 직후 1회는 유지)
     Admin.bus.on('page:loaded', function (data) {
       if (skipNextReset) {
         skipNextReset = false;
-        draft = null;
         hideDraftBar();
         appendSystem('초안이 페이지에 적용되었습니다. 이어서 피드백을 주시면 적용된 상태를 기준으로 다시 제안합니다.');
         return;
       }
-      resetConversation(data && data.path);
+      loadConvo(data && data.path);
     });
   }
 
@@ -425,8 +538,14 @@
         if (m) modelName = m;
       } catch (e) { /* 저장소 미준비 시 설정 뷰로 진행 */ }
       if (hasKey()) showChat(); else showSetup();
+      // 이미 페이지가 열려 있으면(패널 지연 초기화 등) 현재 페이지 대화 복원
+      try {
+        if (Admin.editor && Admin.editor.currentPath && Admin.editor.currentPath()) {
+          loadConvo(Admin.editor.currentPath());
+        }
+      } catch (e) {}
     },
-    hasDraft: function () { return !!draft; }
+    hasDraft: function () { return !!latestDraft; }
   };
 
   Admin.ai = api;

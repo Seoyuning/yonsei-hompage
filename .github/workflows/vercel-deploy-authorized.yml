@@ -69,13 +69,11 @@ jobs:
           echo "⚠️ 비인가 작성자(${tip_email}) → 인가 이메일로 배포 트리거."
           git config user.name  "${TRIGGER_NAME}"
           git config user.email "${TRIGGER_EMAIL}"
-          git commit --allow-empty -m "chore(auto): Vercel 배포 트리거 [auto-deploy-trigger]
-
-비인가 작성자 커밋(${tip_sha} ${tip_author} <${tip_email}>)을 Vercel 인가
-이메일(${TRIGGER_EMAIL})로 재배포한다. Vercel 팀원이 아닌 작성자의 push 는
-자동배포되지 않으므로, 이 빈 커밋으로 최신 트리를 정상 배포한다.
-
-원본: ${tip_sha} \"${tip_subject}\""
+          git commit --allow-empty \
+            -m "chore(auto): Vercel 배포 트리거 [auto-deploy-trigger]" \
+            -m "비인가 작성자 커밋(${tip_sha} ${tip_author} <${tip_email}>)을 Vercel 인가 이메일(${TRIGGER_EMAIL})로 재배포한다." \
+            -m "Vercel 팀원이 아닌 작성자의 push 는 자동배포되지 않으므로, 이 빈 커밋으로 최신 트리를 정상 배포한다." \
+            -m "원본: ${tip_sha} ${tip_subject}"
 
           if git push origin HEAD:main; then
             echo "🚀 배포 트리거 커밋 push 완료 — Vercel 자동배포 시작됨."

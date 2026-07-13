@@ -1,0 +1,84 @@
+name: Vercel 자동배포 보정 (비인가 작성자 커밋)
+
+# 목적:
+#   seoyuning 등 "Vercel 팀원이 아닌" 작성자가 main 에 push 하면 Vercel 이
+#   그 커밋을 자동배포하지 않는다(작성자 이메일이 팀에 없기 때문).
+#   이 워크플로는 push 의 tip 커밋 작성자를 검사해, 인가 이메일이 아니면
+#   인가 이메일로 "빈 배포-트리거 커밋"을 자동으로 얹어 다시 push 한다.
+#   → 최신 트리(비인가 작성자의 변경 포함)가 정상 배포된다.
+#
+# 무한 루프가 없는 이유:
+#   기본 GITHUB_TOKEN 으로 만든 push 는 다른 워크플로 실행을 트리거하지 않는다
+#   (GitHub 정책). 반면 Vercel 의 GitHub App 은 push 웹훅을 정상 수신하므로
+#   배포는 정상적으로 일어난다. (추가 안전장치로 커밋 메시지 마커도 검사한다.)
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: auto-deploy-trigger-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  retrigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 체크아웃 (GITHUB_TOKEN push 자격 유지)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          # persist-credentials 기본값 true → 이 토큰으로 push 가능
+
+      - name: 인가 이메일 확인 후 필요 시 배포 트리거 커밋
+        env:
+          # Vercel 자동배포가 인가된 이메일 목록. 팀원이 늘면 쉼표로 추가.
+          AUTHORIZED_EMAILS: "thf5662@gmail.com"
+          # 트리거 커밋에 사용할 인가 이메일(작성자/커미터)
+          TRIGGER_NAME: "권창한"
+          TRIGGER_EMAIL: "thf5662@gmail.com"
+        run: |
+          set -euo pipefail
+
+          tip_email="$(git log -1 --format='%ae')"
+          tip_sha="$(git rev-parse --short HEAD)"
+          tip_author="$(git log -1 --format='%an')"
+          tip_subject="$(git log -1 --format='%s')"
+          echo "tip: ${tip_sha} by ${tip_author} <${tip_email}> — ${tip_subject}"
+
+          # 1) 이미 인가 이메일이면 그대로 Vercel 이 자동배포함 → 아무 작업 안 함
+          IFS=',' read -ra allow <<< "${AUTHORIZED_EMAILS}"
+          for e in "${allow[@]}"; do
+            e_trim="$(echo "${e}" | xargs)"
+            if [ "${tip_email}" = "${e_trim}" ]; then
+              echo "✅ 인가 이메일(${tip_email}) → 그대로 자동배포됨. no-op."
+              exit 0
+            fi
+          done
+
+          # 2) 안전장치: 이미 트리거 커밋이면 재작업 금지
+          if git log -1 --format='%s%n%b' | grep -q '\[auto-deploy-trigger\]'; then
+            echo "ℹ️ 이미 배포 트리거 커밋 → skip."
+            exit 0
+          fi
+
+          # 3) 비인가 작성자 → 인가 이메일로 빈 트리거 커밋 생성 후 push
+          echo "⚠️ 비인가 작성자(${tip_email}) → 인가 이메일로 배포 트리거."
+          git config user.name  "${TRIGGER_NAME}"
+          git config user.email "${TRIGGER_EMAIL}"
+          git commit --allow-empty -m "chore(auto): Vercel 배포 트리거 [auto-deploy-trigger]
+
+비인가 작성자 커밋(${tip_sha} ${tip_author} <${tip_email}>)을 Vercel 인가
+이메일(${TRIGGER_EMAIL})로 재배포한다. Vercel 팀원이 아닌 작성자의 push 는
+자동배포되지 않으므로, 이 빈 커밋으로 최신 트리를 정상 배포한다.
+
+원본: ${tip_sha} \"${tip_subject}\""
+
+          if git push origin HEAD:main; then
+            echo "🚀 배포 트리거 커밋 push 완료 — Vercel 자동배포 시작됨."
+          else
+            echo "↩️ push 거부(그새 새 커밋 발생) — 다음 push 워크플로가 처리. 무시."
+          fi

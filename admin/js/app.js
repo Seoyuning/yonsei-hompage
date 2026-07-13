@@ -33,7 +33,7 @@ Admin.bus.on('auth:login', function () {
   if (!Admin.fs.isReady()) {
     Admin.fs.reconnect(false).then(function (ok) {
       if (!ok) {
-        Admin.toast('「사이트 폴더 열기」로 편집할 사이트(prototype-v3)를 선택하세요.', 'info');
+        Admin.toast('「사이트 폴더 열기」로 편집할 사이트(prototype-v3 또는 design-candidates)를 선택하세요.', 'info');
       }
     });
   }

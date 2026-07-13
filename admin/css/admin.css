@@ -878,6 +878,13 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 }
 
 .insp-row { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* 글자 크기 스테퍼 (−  [입력]  ＋  기본) */
+.insp-fs-row { display: flex; gap: 6px; align-items: stretch; }
+.insp-fs-row .insp-input { flex: 1; min-width: 0; text-align: center; }
+.insp-fs-row .insp-btn { flex: none; min-width: 34px; }
+.insp-fs-row input[type="number"]::-webkit-outer-spin-button,
+.insp-fs-row input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .insp-btn {
   min-height: 30px;
   padding: 0 10px;

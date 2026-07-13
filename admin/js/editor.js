@@ -577,11 +577,27 @@ function renderInspector(el, editable) {
     }).join('');
   }
   var st = (pris && pris.style) ? pris.style : { color: '', backgroundColor: '', textAlign: '', display: '' };
+  /* 글자 크기: 인라인 px 값이 있으면 그 값, 없으면 계산된 크기를 placeholder로 */
+  var fsMatch = /^([\d.]+)px$/.exec(st.fontSize || '');
+  var fsVal = fsMatch ? Math.round(parseFloat(fsMatch[1])) : '';
+  var fsPh = '';
+  try {
+    var elWin = el.ownerDocument.defaultView;
+    fsPh = Math.round(parseFloat(elWin.getComputedStyle(el).fontSize)) || '';
+  } catch (e) {}
   h += '<div class="insp-sec"><p class="insp-sec-title">스타일 (디자인 토큰)</p>' +
     '<div class="insp-field"><label>글자 색</label><select class="insp-select" data-style="color">' +
     optHtml(COLOR_TOKENS, st.color || '') + '</select></div>' +
     '<div class="insp-field"><label>배경 색</label><select class="insp-select" data-style="backgroundColor">' +
     optHtml(BG_TOKENS, st.backgroundColor || '') + '</select></div>' +
+    '<div class="insp-field"><label>글자 크기 (px)</label>' +
+    '<div class="insp-fs-row">' +
+    '<button type="button" class="insp-btn" data-fs="-1" aria-label="글자 크기 1px 줄이기">−</button>' +
+    '<input class="insp-input" id="inspFontSize" type="number" min="8" max="200" step="1" value="' + fsVal + '" placeholder="' + fsPh + '" aria-label="글자 크기(px)" />' +
+    '<button type="button" class="insp-btn" data-fs="1" aria-label="글자 크기 1px 키우기">＋</button>' +
+    '<button type="button" class="insp-btn" data-fs="reset">기본</button>' +
+    '</div>' +
+    '<p class="insp-note">비우거나 「기본」을 누르면 원래 크기' + (fsPh ? '(현재 ' + fsPh + 'px)' : '') + '를 따릅니다.</p></div>' +
     '<div class="insp-field"><label>정렬</label><select class="insp-select" data-style="textAlign">' +
     '<option value=""' + (!st.textAlign ? ' selected' : '') + '>기본(좌측)</option>' +
     '<option value="center"' + (st.textAlign === 'center' ? ' selected' : '') + '>중앙</option>' +
@@ -646,6 +662,40 @@ function wireInspector(eid, editable) {
       pushHistory();
     });
   });
+
+  /* 글자 크기: 입력·스테퍼·기본 복원 → 인라인 font-size(px) */
+  var fsInput = body.querySelector('#inspFontSize');
+  function applyFontSize(v) {
+    var live = liveEl(eid), pris = pristineEl(eid);
+    if (!live || !pris) return;
+    if (v === '' || v == null || isNaN(v)) {
+      live.style.fontSize = '';
+      pris.style.fontSize = '';
+    } else {
+      v = Math.min(200, Math.max(8, Math.round(v)));
+      if (fsInput) fsInput.value = v;
+      live.style.fontSize = v + 'px';
+      pris.style.fontSize = v + 'px';
+    }
+    syncStyleAttr(live, pris);
+    pushHistoryDebounced();
+    var f = getFrame();
+    if (selBox && f) positionBox(selBox, live, f.contentWindow);
+  }
+  if (fsInput) {
+    fsInput.addEventListener('input', U.debounce(function () {
+      applyFontSize(fsInput.value === '' ? '' : parseFloat(fsInput.value));
+    }, 250));
+    body.querySelectorAll('[data-fs]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var d = btn.getAttribute('data-fs');
+        if (d === 'reset') { fsInput.value = ''; applyFontSize(''); return; }
+        var cur = parseFloat(fsInput.value);
+        if (isNaN(cur)) cur = parseFloat(fsInput.placeholder) || 16;
+        applyFontSize(cur + parseInt(d, 10));
+      });
+    });
+  }
 
   var hide = body.querySelector('#inspHide');
   if (hide) {

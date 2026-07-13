@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>연세대학교 기계공학부 — 제도 시트 D</title>
+<meta name="description" content="연세대학교 기계공학부. 고체·열·유체·동역학, 네 개의 역학을 도면 위로 옮기는 60년의 작업. 교수 33명, 연구실 33개, 여섯 갈래의 연구." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Nanum+Pen+Script&display=swap" rel="stylesheet" />
+<style>
+/* ═══════════════════════════════════════════════════════════
+   제도 시트 D  —  REV D.2
+   지난 리비전에서 여백을 다시 재고 표제란을 붙였다.
+   기구 여섯 기는 그대로 잘 돌고 있음.
+   ═══════════════════════════════════════════════════════════ */
+:root{
+  --ink:#17181c;
+  --ink-2:#70747e;
+  --paper:#fcfcfa;
+  --hairline:#e2e2dc;
+  --blue:#1b57b5;
+  --blue-soft:rgba(27,87,181,.05);
+  --pencil:#83878f;
+  --stamp:#c34f3d;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --font-sans:"Pretendard Variable",system-ui,sans-serif;
+  --font-pen:"Nanum Pen Script",cursive;
+  --sec-y:clamp(6rem,4rem + 9vw,12rem);
+  --ease-grand:cubic-bezier(.2,1.2,.3,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:var(--font-sans);color:var(--ink);background:var(--paper);line-height:1.75;word-break:keep-all;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+.mono{font-family:var(--font-mono)}
+.wrap{max-width:1160px;margin-inline:auto;padding-inline:clamp(1.5rem,1rem + 4vw,4rem)}
+
+/* 제도지 좌우 여백선 */
+body::before,body::after{content:"";position:fixed;top:0;bottom:0;width:1px;background:var(--hairline);z-index:1;pointer-events:none}
+body::before{left:clamp(.8rem,3vw,2.4rem)}
+body::after{right:clamp(.8rem,3vw,2.4rem)}
+
+/* 연필 메모 — 사람 손 */
+.pencil{font-family:var(--font-pen);color:var(--pencil);font-size:1.15rem;line-height:1.3;rotate:-2deg;display:inline-block;letter-spacing:0}
+
+/* ── 헤더 ── */
+header{position:sticky;top:0;z-index:40;background:rgba(252,252,250,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline)}
+.hd{display:flex;align-items:center;gap:2rem;padding-block:1.3rem}
+.brand{display:flex;align-items:baseline;gap:.8rem}
+.brand b{font-size:1rem;letter-spacing:-.01em}
+.brand small{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.14em;color:var(--ink-2);text-transform:uppercase}
+nav.main{display:flex;gap:1.9rem;margin-left:auto}
+nav.main a{font-size:.88rem;font-weight:500;color:var(--ink-2);transition:.15s;position:relative;padding-block:.3rem}
+nav.main a:hover{color:var(--ink)}
+nav.main a::after{content:"";position:absolute;left:0;right:100%;bottom:0;height:1.5px;background:var(--blue);transition:right .25s}
+nav.main a:hover::after{right:0}
+
+/* ── 히어로 — 좌 본문 · 우 표제란 ── */
+.hero{padding-block:clamp(6rem,4rem + 10vw,12rem) clamp(5rem,3.5rem + 8vw,10rem)}
+.hero-grid{display:grid;grid-template-columns:1.6fr .9fr;gap:clamp(3rem,2rem + 5vw,7rem);align-items:end}
+.sheetno{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.18em;color:var(--blue);margin-bottom:2.4rem;display:flex;align-items:center;gap:1rem}
+.sheetno::before{content:"";width:34px;height:1px;background:var(--blue)}
+h1.title{font-size:clamp(2.4rem,1.1rem + 4.2vw,4.6rem);line-height:1.08;letter-spacing:-.035em;font-weight:800;position:relative}
+h1.title .dot{color:var(--blue)}
+/* 기준면 기호 △ — 도면의 datum mark */
+h1.title::after{content:"▽";position:absolute;left:.1em;bottom:-1.1em;font-size:.85rem;color:var(--pencil)}
+.title-note{position:absolute;right:-.5rem;top:-2.2rem}
+.lede{max-width:46ch;margin-top:3.2rem;color:#494e58;font-size:clamp(1rem,.95rem + .35vw,1.16rem)}
+.lede b{font-weight:600;color:var(--ink)}
+.hero-actions{display:flex;gap:1.6rem;flex-wrap:wrap;margin-top:3rem;align-items:center}
+.btn{font-size:.9rem;font-weight:600;padding:.9rem 1.7rem;transition:.18s;display:inline-flex;gap:.6rem;align-items:center;border:1px solid var(--ink)}
+.btn--fill{background:var(--ink);color:var(--paper)}
+.btn--fill:hover{background:var(--blue);border-color:var(--blue)}
+.textlink{font-size:.9rem;font-weight:600;border-bottom:1px solid var(--ink);padding-bottom:.2rem;transition:.15s}
+.textlink:hover{color:var(--blue);border-color:var(--blue)}
+
+/* 표제란 (標題欄) */
+.titleblock{border:1.5px solid var(--ink);font-size:.8rem;background:#fff}
+.titleblock .tb-cap{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.16em;color:var(--paper);background:var(--ink);padding:.5rem .9rem;display:flex;justify-content:space-between}
+.titleblock dl{display:grid;grid-template-columns:5.2rem 1fr;margin:0}
+.titleblock dt{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.1em;color:var(--ink-2);padding:.65rem .9rem;border-top:1px solid var(--hairline);align-self:center}
+.titleblock dd{padding:.65rem .9rem .65rem 0;border-top:1px solid var(--hairline);font-weight:500}
+.titleblock dd small{font-family:var(--font-mono);font-size:.66rem;color:var(--ink-2);margin-left:.5rem}
+.titleblock .empty{color:var(--ink-2);font-weight:400;position:relative}
+.titleblock .empty .pencil{position:absolute;right:.8rem;top:.15rem;font-size:1.05rem}
+
+/* ── 섹션 공통 ── */
+.section{padding-block:var(--sec-y);border-top:1px solid var(--hairline)}
+.sec-head{display:grid;grid-template-columns:10rem 1fr;gap:2rem;margin-bottom:clamp(3rem,2rem + 4vw,5.5rem)}
+.sec-num{font-family:var(--font-mono);font-size:.72rem;color:var(--blue);letter-spacing:.14em}
+.sec-head h2{font-size:clamp(1.8rem,1rem + 3.4vw,3.2rem);letter-spacing:-.03em;font-weight:800;line-height:1.12}
+.sec-head p{color:var(--ink-2);margin-top:1rem;max-width:46ch}
+
+/* ═══ 기구 스테이션 6 ═══ */
+.stations-wrap{position:relative}
+.stations{display:grid;grid-template-columns:repeat(6,1fr);border:1px solid var(--ink)}
+.station{
+  position:relative;display:flex;flex-direction:column;align-items:center;gap:1.6rem;
+  padding:clamp(2rem,1.5rem + 1.5vw,3rem) 1rem clamp(1.6rem,1.2rem + 1vw,2.2rem);
+  border-right:1px solid var(--hairline);transition:background .25s;
+}
+.station:last-child{border-right:0}
+.station:hover,.station:focus-visible{background:var(--blue-soft)}
+.station .mech{width:min(104px,100%);color:var(--ink);transition:transform .45s var(--ease-grand),color .25s}
+.station:hover .mech,.station:focus-visible .mech{transform:scale(1.14);color:var(--blue)}
+.station .tag{display:flex;align-items:baseline;gap:.6rem;font-size:.86rem;font-weight:600;letter-spacing:-.01em;text-align:center}
+.station .tag i{font-style:normal;font-family:var(--font-mono);font-size:.66rem;color:var(--blue)}
+.rot{animation:rot 26s linear infinite;transform-origin:center;transform-box:fill-box}
+.rot.rev{animation-name:rotr;animation-duration:34s}
+@keyframes rot{to{transform:rotate(360deg)}}
+@keyframes rotr{to{transform:rotate(-360deg)}}
+@media (prefers-reduced-motion:reduce){.rot,.rot.rev{animation:none}.station .mech{transition:none}}
+/* 03번 기어 검수 도장 */
+.station .qc{position:absolute;top:.7rem;right:.8rem;width:30px;height:30px;border:1.5px solid var(--stamp);border-radius:50%;display:grid;place-items:center;color:var(--stamp);font-size:.72rem;font-weight:700;rotate:8deg;opacity:.55}
+
+/* ── 제도 콜아웃 팝업 ── */
+.pop{
+  position:absolute;bottom:calc(100% + 20px);left:50%;translate:-50% 0;
+  width:min(330px,84vw);background:#fff;border:1px solid var(--ink);
+  box-shadow:12px 12px 0 -2px rgba(23,24,28,.07),0 30px 60px -18px rgba(23,24,28,.3);
+  padding:1.7rem 1.6rem 1.5rem;text-align:left;z-index:6;
+  opacity:0;visibility:hidden;pointer-events:none;
+  transform:translateY(16px) scale(.9);transform-origin:bottom center;filter:blur(5px);
+  transition:opacity .35s var(--ease-grand),transform .35s var(--ease-grand),filter .35s var(--ease-grand),visibility 0s .35s;
+}
+.station:hover .pop,.station:focus-visible .pop{
+  opacity:1;visibility:visible;transform:translateY(0) scale(1);filter:blur(0);
+  transition:opacity .35s var(--ease-grand),transform .35s var(--ease-grand),filter .35s var(--ease-grand),visibility 0s 0s;
+}
+.pop::after{content:"";position:absolute;top:100%;left:50%;width:1px;height:20px;background:var(--ink)}
+.pop::before{content:"";position:absolute;top:100%;left:calc(50% - 3px);margin-top:18px;width:7px;height:7px;border-radius:50%;border:1px solid var(--ink);background:#fff}
+.station:nth-child(1) .pop{left:0;translate:0 0;transform-origin:bottom left}
+.station:nth-child(2) .pop{left:-40%;translate:0 0}
+.station:nth-child(5) .pop{left:auto;right:-40%;translate:0 0}
+.station:nth-child(6) .pop{left:auto;right:0;translate:0 0;transform-origin:bottom right}
+.station:nth-child(1) .pop::after,.station:nth-child(1) .pop::before{left:calc(50% + 60px)}
+.station:nth-child(6) .pop::after,.station:nth-child(6) .pop::before{left:calc(50% - 60px)}
+.pop .wm{position:absolute;top:.4rem;right:.9rem;font-family:var(--font-mono);font-size:3.4rem;font-weight:600;color:var(--hairline);line-height:1;letter-spacing:-.05em}
+.pop .ey{font-family:var(--font-mono);font-size:.64rem;letter-spacing:.14em;color:var(--blue);text-transform:uppercase}
+.pop h3{font-size:1.3rem;font-weight:800;letter-spacing:-.02em;margin-top:.7rem;position:relative}
+.pop .en{font-family:var(--font-mono);font-size:.64rem;color:var(--ink-2);letter-spacing:.08em;margin-top:.3rem;text-transform:uppercase}
+.pop .desc{font-size:.88rem;color:#494e58;margin-top:1rem;line-height:1.65}
+.pop .go{display:inline-flex;align-items:center;gap:.5rem;font-size:.84rem;font-weight:600;color:var(--blue);margin-top:1.2rem;border-bottom:1px solid var(--blue);padding-bottom:.15rem}
+@media (hover:none){.pop{display:none}}
+#research{position:relative}
+#research:has(.station:hover),#research:has(.station:focus-visible){z-index:45}
+
+.stations-foot{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;margin-top:1.3rem;flex-wrap:wrap}
+.stations-hint{font-family:var(--font-mono);font-size:.7rem;color:var(--ink-2);letter-spacing:.06em}
+.stations-note{margin-right:1rem}
+
+/* ═══ 분야 설명 ═══ */
+.cluster-detail{scroll-margin-top:6.5rem;display:grid;grid-template-columns:9rem 1.35fr 1fr;gap:clamp(2rem,1.5rem + 2.5vw,4rem);align-items:start;padding-block:clamp(3.2rem,2.5rem + 3vw,5rem);border-top:1px solid var(--hairline)}
+.cluster-detail:first-of-type{border-top:2px solid var(--ink)}
+.cluster-detail .mini{color:var(--ink-2);width:100%;max-width:8.5rem}
+.cluster-detail .no{font-family:var(--font-mono);font-size:.7rem;color:var(--blue);letter-spacing:.12em;display:block;margin-bottom:1.2rem}
+.cluster-detail h3{font-size:clamp(1.4rem,1rem + 1.6vw,2rem);font-weight:800;letter-spacing:-.02em}
+.cluster-detail .en{font-family:var(--font-mono);font-size:.68rem;color:var(--ink-2);letter-spacing:.08em;margin-top:.4rem;text-transform:uppercase}
+.cluster-detail .desc{color:#494e58;margin-top:1.3rem;max-width:52ch}
+.cluster-detail .labs .k{font-family:var(--font-mono);font-size:.64rem;letter-spacing:.12em;color:var(--ink-2);text-transform:uppercase;border-bottom:1px solid var(--ink);padding-bottom:.6rem;display:flex;justify-content:space-between}
+.cluster-detail .labs .k b{color:var(--blue)}
+.cluster-detail .labs ul{list-style:none;padding:0;margin:.9rem 0 0;display:flex;flex-wrap:wrap;gap:.45rem}
+.cluster-detail .labs li{font-family:var(--font-mono);font-size:.74rem;border:1px solid var(--hairline);padding:.3rem .65rem;color:#494e58;transition:.15s}
+.cluster-detail .labs li:hover{border-color:var(--blue);color:var(--blue)}
+.backtop{font-family:var(--font-mono);font-size:.68rem;color:var(--ink-2);letter-spacing:.08em;display:inline-flex;gap:.5rem;margin-top:1.4rem}
+.backtop:hover{color:var(--blue)}
+
+/* ── 계측 — 비대칭 ── */
+.figures{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:clamp(2rem,1rem + 3vw,4rem);align-items:end;position:relative}
+.fig .n{font-family:var(--font-mono);font-size:clamp(2.4rem,1rem + 4.5vw,4rem);font-weight:600;letter-spacing:-.04em;line-height:1;border-bottom:1px solid var(--ink);padding-bottom:1.2rem}
+.fig--lead .n{font-size:clamp(4rem,2rem + 8vw,7.5rem);color:var(--blue);border-bottom-width:2px;border-color:var(--ink)}
+.fig .l{font-size:.9rem;color:var(--ink-2);margin-top:1rem}
+.fig .s{font-family:var(--font-mono);font-size:.62rem;color:#a5a8af;margin-top:.4rem;letter-spacing:.04em}
+.fig-note{grid-column:1 / -1;font-size:.84rem;color:var(--ink-2);margin-top:1.2rem;max-width:52ch}
+.fig-note .pencil{margin-left:.8rem;font-size:1.2rem}
+
+/* ── 승인란 (CTA) ── */
+.approve{display:grid;grid-template-columns:1.3fr 1fr;gap:clamp(3rem,2rem + 4vw,6rem);align-items:center}
+.approve h2{font-size:clamp(1.9rem,1rem + 3.6vw,3.2rem);letter-spacing:-.03em;font-weight:800;line-height:1.18}
+.approve h2 .blue{color:var(--blue)}
+.approve p{color:var(--ink-2);margin-top:1.5rem;max-width:44ch}
+.approve .hero-actions{margin-top:2.6rem}
+.signbox{border:1.5px solid var(--ink);background:#fff;position:relative}
+.signbox .sb-cap{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.16em;background:var(--ink);color:var(--paper);padding:.5rem .9rem;display:flex;justify-content:space-between}
+.signbox .sb-body{padding:2.2rem 1.6rem 1.6rem;min-height:9rem;display:flex;flex-direction:column;justify-content:flex-end;gap:.6rem}
+.signbox .line{border-bottom:1px solid var(--ink-2);height:2.6rem;position:relative}
+.signbox .line .pencil{position:absolute;right:.4rem;bottom:.3rem;font-size:1.3rem;rotate:-3deg}
+.signbox .who{font-family:var(--font-mono);font-size:.64rem;color:var(--ink-2);letter-spacing:.1em;display:flex;justify-content:space-between}
+
+/* ── 푸터 — 리비전 테이블 ── */
+footer{border-top:1.5px solid var(--ink);padding-block:3.5rem 4rem}
+.rev-table{width:100%;border-collapse:collapse;font-family:var(--font-mono);font-size:.72rem;letter-spacing:.03em}
+.rev-table caption{text-align:left;font-size:.62rem;letter-spacing:.16em;color:var(--ink-2);padding-bottom:.8rem;text-transform:uppercase}
+.rev-table th{text-align:left;font-weight:500;color:var(--ink-2);font-size:.62rem;letter-spacing:.1em;padding:.5rem .8rem .5rem 0;border-bottom:1px solid var(--ink)}
+.rev-table td{padding:.65rem .8rem .65rem 0;border-bottom:1px solid var(--hairline);color:#494e58;vertical-align:top}
+.rev-table td:first-child{color:var(--blue);font-weight:600}
+.foot-meta{display:flex;gap:1.8rem;flex-wrap:wrap;justify-content:space-between;font-family:var(--font-mono);font-size:.7rem;color:var(--ink-2);letter-spacing:.04em;margin-top:2.6rem}
+
+@media(max-width:960px){
+  .hero-grid{grid-template-columns:1fr;align-items:start}
+  .titleblock{max-width:26rem}
+  .stations{grid-template-columns:repeat(3,1fr)}
+  .station:nth-child(3){border-right:0}
+  .station:nth-child(-n+3){border-bottom:1px solid var(--hairline)}
+  .cluster-detail{grid-template-columns:7rem 1fr}
+  .cluster-detail .labs{grid-column:2}
+  .figures{grid-template-columns:1fr 1fr}
+  .approve{grid-template-columns:1fr}
+  .signbox{max-width:26rem}
+}
+@media(max-width:860px){
+  nav.main{display:none}
+  .sec-head{grid-template-columns:1fr;gap:1rem}
+}
+@media(max-width:560px){
+  .stations{grid-template-columns:1fr 1fr}
+  .station:nth-child(3){border-right:1px solid var(--hairline)}
+  .station:nth-child(even){border-right:0}
+  .station:nth-child(-n+4){border-bottom:1px solid var(--hairline)}
+  .cluster-detail{grid-template-columns:1fr}
+  .cluster-detail .mini{max-width:6.5rem}
+  .cluster-detail .labs{grid-column:1}
+  .title-note{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- 기구 라인아트 심볼 (6 클러스터) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <g id="m-solid" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M60 14 v16 M53 24 l7 8 7-8" />
+      <line x1="12" y1="46" x2="108" y2="46"/>
+      <line x1="12" y1="82" x2="108" y2="82"/>
+      <path d="M12 82 L28 46 L44 82 L60 46 L76 82 L92 46 L108 82"/>
+      <circle cx="12" cy="82" r="3.4" fill="currentColor" stroke="none"/>
+      <circle cx="108" cy="82" r="3.4" fill="currentColor" stroke="none"/>
+      <path d="M4 96 h20 M96 96 h20" stroke-width="2"/>
+    </g>
+    <g id="m-thermal" fill="none" stroke="currentColor" stroke-width="2.4">
+      <circle cx="60" cy="60" r="44" stroke-dasharray="3 7" stroke-width="1.6"/>
+      <g class="rot">
+        <circle cx="60" cy="60" r="32"/>
+        <path d="M60 28 Q74 46 60 60"/><path d="M92 60 Q74 74 60 60"/>
+        <path d="M60 92 Q46 74 60 60"/><path d="M28 60 Q46 46 60 60"/>
+        <path d="M82 38 Q80 58 60 60"/><path d="M82 82 Q62 80 60 60"/>
+        <path d="M38 82 Q40 62 60 60"/><path d="M38 38 Q58 40 60 60"/>
+      </g>
+      <circle cx="60" cy="60" r="6.5" fill="currentColor" stroke="none"/>
+    </g>
+    <g id="m-manuf" fill="none" stroke="currentColor">
+      <g class="rot">
+        <circle cx="47" cy="52" r="30" stroke-width="9" stroke-dasharray="7.85 7.85"/>
+        <circle cx="47" cy="52" r="19" stroke-width="2.4"/>
+        <line x1="47" y1="37" x2="47" y2="67" stroke-width="2"/>
+        <line x1="32" y1="52" x2="62" y2="52" stroke-width="2"/>
+      </g>
+      <circle cx="47" cy="52" r="5" fill="currentColor" stroke="none"/>
+      <g class="rot rev">
+        <circle cx="88" cy="86" r="17" stroke-width="7" stroke-dasharray="5.34 5.34"/>
+        <circle cx="88" cy="86" r="9" stroke-width="2.2"/>
+      </g>
+      <circle cx="88" cy="86" r="3.4" fill="currentColor" stroke="none"/>
+    </g>
+    <g id="m-nanobio" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round">
+      <polygon points="60,26 88,42 88,74 60,90 32,74 32,42"/>
+      <line x1="60" y1="26" x2="60" y2="58"/>
+      <line x1="88" y1="74" x2="60" y2="58"/>
+      <line x1="32" y1="74" x2="60" y2="58"/>
+      <circle cx="60" cy="58" r="6" fill="currentColor" stroke="none"/>
+      <circle cx="60" cy="26" r="4" fill="currentColor" stroke="none"/>
+      <circle cx="88" cy="42" r="4" fill="currentColor" stroke="none"/>
+      <circle cx="88" cy="74" r="4" fill="currentColor" stroke="none"/>
+      <circle cx="60" cy="90" r="4" fill="currentColor" stroke="none"/>
+      <circle cx="32" cy="74" r="4" fill="currentColor" stroke="none"/>
+      <circle cx="32" cy="42" r="4" fill="currentColor" stroke="none"/>
+    </g>
+    <g id="m-optics" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+      <path d="M56 24 C72 40 72 80 56 96 C40 80 40 40 56 24 Z"/>
+      <path d="M8 40 H44 L100 60" stroke-width="1.8"/>
+      <path d="M8 60 H42 L100 60" stroke-width="1.8"/>
+      <path d="M8 80 H44 L100 60" stroke-width="1.8"/>
+      <circle cx="100" cy="60" r="4" fill="currentColor" stroke="none"/>
+      <path d="M100 44 v-8 M100 84 v8" stroke-width="1.6"/>
+    </g>
+    <g id="m-dyn" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M28 98 h48"/>
+      <path d="M38 98 L52 82 L66 98"/>
+      <line x1="52" y1="80" x2="76" y2="46"/>
+      <line x1="76" y1="46" x2="102" y2="62"/>
+      <circle cx="52" cy="80" r="6"/>
+      <circle cx="76" cy="46" r="5"/>
+      <path d="M102 62 l6 -8 M102 62 l8 4" stroke-width="2.2"/>
+      <path d="M40 40 A38 38 0 0 1 78 24" stroke-dasharray="3 6" stroke-width="1.6"/>
+    </g>
+  </defs>
+</svg>
+
+<header><div class="wrap hd">
+  <a class="brand" href="#">
+    <b>연세대학교 기계공학부</b>
+    <small>School of Mechanical Engineering</small>
+  </a>
+  <nav class="main">
+    <a href="#">소개</a><a href="#">교육</a><a href="#research">연구</a><a href="#">구성원</a><a href="#">소식</a><a href="#">입학·진로</a>
+  </nav>
+</div></header>
+
+<section class="hero"><div class="wrap hero-grid">
+  <div>
+    <p class="sheetno">SHEET 01 · 도면번호 YSME—D—2026 · 3차 검토본</p>
+    <h1 class="title">
+      1962년부터,<br>기계는 세상을<br>움직여 왔습니다<span class="dot">.</span>
+      <span class="title-note pencil">자간 −3.5%, 이대로 확정 ✓</span>
+    </h1>
+    <p class="lede">고체, 열, 유체, 동역학. 네 개의 역학을 도면 위로 옮기는 60년의 작업입니다.
+      전임 교수 <b>33명</b>이 <b>33개 연구실</b>을 이끌고, 연구실은 여섯 갈래로 맞물려 돌아갑니다.
+      여기 적힌 숫자는 전부 학부 공식 페이지에서 확인하고, 확인한 날짜를 함께 적어 둡니다.</p>
+    <div class="hero-actions">
+      <a class="btn btn--fill" href="#research">여섯 개의 기구 보기</a>
+      <a class="textlink" href="#">학부 소개</a>
+    </div>
+  </div>
+  <aside class="titleblock" aria-label="표제란">
+    <div class="tb-cap"><span>표제란 · TITLE BLOCK</span><span>REV D.2</span></div>
+    <dl>
+      <dt>도면명</dt><dd>기계공학부 — 홈</dd>
+      <dt>축척</dt><dd>1 : 1<small>단위 없음 · WEB</small></dd>
+      <dt>작성</dt><dd>팀 DATUM<small>26.07.11</small></dd>
+      <dt>검토</dt><dd>권창한<small>26.07.12</small></dd>
+      <dt>승인</dt><dd class="empty">(비어 있음)<span class="pencil">아직!</span></dd>
+    </dl>
+  </aside>
+</div></section>
+
+<!-- ═══ SHEET 02 · 기구 배치도 ═══ -->
+<section class="section" id="research"><div class="wrap">
+  <div class="sec-head">
+    <span class="sec-num">SHEET 02 / 기구 배치도</span>
+    <div>
+      <h2>여섯 개의 기구,<br>여섯 갈래의 연구</h2>
+      <p>기구 여섯 기가 각자 하나의 연구 분야를 맡고 있습니다.
+        커서를 올리면 담당 분야를 보고하고, 누르면 상세 설명으로 안내합니다.</p>
+    </div>
+  </div>
+
+  <div class="stations-wrap">
+  <div class="stations">
+    <a class="station" href="#c-solid">
+      <svg class="mech" viewBox="0 0 120 120" aria-hidden="true"><use href="#m-solid"/></svg>
+      <span class="tag"><i>01</i>고체·구조</span>
+      <span class="pop" role="tooltip">
+        <span class="wm">01</span>
+        <span class="ey">Cluster 01 · 7 Labs</span>
+        <h3>고체·구조·재료역학</h3>
+        <p class="en">Solid Mechanics & Design</p>
+        <p class="desc">재료가 힘을 받아 변형되고 파괴에 이르는 전 과정. 견디는 것의 과학입니다.</p>
+        <span class="go">분야 설명 보기 →</span>
+      </span>
+    </a>
+    <a class="station" href="#c-thermal">
+      <svg class="mech" viewBox="0 0 120 120" aria-hidden="true"><use href="#m-thermal"/></svg>
+      <span class="tag"><i>02</i>열·유체</span>
+      <span class="pop" role="tooltip">
+        <span class="wm">02</span>
+        <span class="ey">Cluster 02 · 7 Labs</span>
+        <h3>열·유체·에너지</h3>
+        <p class="en">Thermal / Fluids / Energy</p>
+        <p class="desc">열이 전달되고 유체가 흐르는 모든 경로. 엔진에서 연료전지까지 다룹니다.</p>
+        <span class="go">분야 설명 보기 →</span>
+      </span>
+    </a>
+    <a class="station" href="#c-manuf">
+      <span class="qc" aria-hidden="true">檢</span>
+      <svg class="mech" viewBox="0 0 120 120" aria-hidden="true"><use href="#m-manuf"/></svg>
+      <span class="tag"><i>03</i>생산·제조</span>
+      <span class="pop" role="tooltip">
+        <span class="wm">03</span>
+        <span class="ey">Cluster 03 · 4 Labs</span>
+        <h3>생산·정밀제조</h3>
+        <p class="en">Manufacturing & Tribology</p>
+        <p class="desc">마찰, 가공, 공정 시스템. 도면을 실물로 만드는 기술입니다.</p>
+        <span class="go">분야 설명 보기 →</span>
+      </span>
+    </a>
+    <a class="station" href="#c-nanobio">
+      <svg class="mech" viewBox="0 0 120 120" aria-hidden="true"><use href="#m-nanobio"/></svg>
+      <span class="tag"><i>04</i>나노·바이오</span>
+      <span class="pop" role="tooltip">
+        <span class="wm">04</span>
+        <span class="ey">Cluster 04 · 6 Labs</span>
+        <h3>마이크로·나노·바이오</h3>
+        <p class="en">Micro / Nano / Bio</p>
+        <p class="desc">나노 공정에서 바이오칩까지. 보이지 않는 스케일의 기계를 만듭니다.</p>
+        <span class="go">분야 설명 보기 →</span>
+      </span>
+    </a>
+    <a class="station" href="#c-optics">
+      <svg class="mech" viewBox="0 0 120 120" aria-hidden="true"><use href="#m-optics"/></svg>
+      <span class="tag"><i>05</i>광학·계측</span>
+      <span class="pop" role="tooltip">
+        <span class="wm">05</span>
+        <span class="ey">Cluster 05 · 4 Labs</span>
+        <h3>광학·이미징·계측</h3>
+        <p class="en">Optics / Imaging / Sensing</p>
+        <p class="desc">빛으로 재고, 보이지 않는 것을 봅니다. 이미징과 정밀 계측의 최전선.</p>
+        <span class="go">분야 설명 보기 →</span>
+      </span>
+    </a>
+    <a class="station" href="#c-dyn">
+      <svg class="mech" viewBox="0 0 120 120" aria-hidden="true"><use href="#m-dyn"/></svg>
+      <span class="tag"><i>06</i>동역학·로보</span>
+      <span class="pop" role="tooltip">
+        <span class="wm">06</span>
+        <span class="ey">Cluster 06 · 5 Labs</span>
+        <h3>동역학·제어·로보·AI</h3>
+        <p class="en">Dynamics / Control / Robotics / AI</p>
+        <p class="desc">움직임을 예측하고 제어하고 학습시킵니다. 로보틱스와 지능 시스템.</p>
+        <span class="go">분야 설명 보기 →</span>
+      </span>
+    </a>
+  </div>
+  </div>
+  <div class="stations-foot">
+    <span class="stations-hint">HOVER — 기구 콜아웃 · CLICK — 분야 설명</span>
+    <span class="pencil stations-note">터빈은 한 바퀴에 26초. 03번 기어 검수 끝 ✓</span>
+  </div>
+</div></section>
+
+<!-- ═══ SHEET 03 · 분야 설명 ═══ -->
+<section class="section"><div class="wrap">
+  <div class="sec-head">
+    <span class="sec-num">SHEET 03 / 분야 설명</span>
+    <div>
+      <h2>분야 설명</h2>
+      <p>여섯 분야의 교수진 명단은 2026년 6월 30일 학부 공식 페이지 기준입니다.</p>
+    </div>
+  </div>
+
+  <article class="cluster-detail" id="c-solid">
+    <svg class="mini" viewBox="0 0 120 120" aria-hidden="true"><use href="#m-solid"/></svg>
+    <div>
+      <span class="no">CLUSTER 01 — SOLID</span>
+      <h3>고체·구조·재료역학</h3>
+      <p class="en">Solid Mechanics & Design</p>
+      <p class="desc">재료가 힘을 받아 변형되고 파괴에 이르는 전 과정을 다룹니다. 전산재료역학과 멀티스케일 해석,
+        구조 최적설계와 생체역학까지. 더 가볍고 더 강한 구조는 여기서 나옵니다.</p>
+      <a class="backtop" href="#research">↑ 기구 배치도로</a>
+    </div>
+    <div class="labs">
+      <p class="k">FACULTY<b>7</b></p>
+      <ul><li>강건욱</li><li>김석</li><li>유정훈</li><li>이종수</li><li>이형석</li><li>장용훈</li><li>전흥재</li></ul>
+    </div>
+  </article>
+
+  <article class="cluster-detail" id="c-thermal">
+    <svg class="mini" viewBox="0 0 120 120" aria-hidden="true"><use href="#m-thermal"/></svg>
+    <div>
+      <span class="no">CLUSTER 02 — THERMAL</span>
+      <h3>열·유체·에너지</h3>
+      <p class="en">Thermal / Fluids / Energy</p>
+      <p class="desc">열이 전달되고 유체가 흐르는 모든 경로를 해석합니다. 난류와 연소, 열관리와 에너지 변환 시스템.
+        엔진에서 연료전지까지, 에너지가 이동하는 방식을 설계합니다.</p>
+      <a class="backtop" href="#research">↑ 기구 배치도로</a>
+    </div>
+    <div class="labs">
+      <p class="k">FACULTY<b>7</b></p>
+      <ul><li>김우철</li><li>김원정</li><li>송순호</li><li>이남규</li><li>이준상</li><li>이창훈</li><li>홍종섭</li></ul>
+    </div>
+  </article>
+
+  <article class="cluster-detail" id="c-manuf">
+    <svg class="mini" viewBox="0 0 120 120" aria-hidden="true"><use href="#m-manuf"/></svg>
+    <div>
+      <span class="no">CLUSTER 03 — MANUFACTURING</span>
+      <h3>생산·정밀제조</h3>
+      <p class="en">Manufacturing & Tribology</p>
+      <p class="desc">마찰과 마모를 다루는 트라이볼로지부터 정밀 가공과 공정 시스템까지.
+        도면 위의 설계를 미크론 정밀도의 실물로 만드는, 제조의 처음과 끝입니다.</p>
+      <a class="backtop" href="#research">↑ 기구 배치도로</a>
+    </div>
+    <div class="labs">
+      <p class="k">FACULTY<b>4</b></p>
+      <ul><li>김대은</li><li>김해진</li><li>민병권</li><li>윤준영</li></ul>
+    </div>
+  </article>
+
+  <article class="cluster-detail" id="c-nanobio">
+    <svg class="mini" viewBox="0 0 120 120" aria-hidden="true"><use href="#m-nanobio"/></svg>
+    <div>
+      <span class="no">CLUSTER 04 — NANO / BIO</span>
+      <h3>마이크로·나노·바이오</h3>
+      <p class="en">Micro / Nano / Bio</p>
+      <p class="desc">눈에 보이지 않는 스케일에서 작동하는 기계를 만듭니다. MEMS와 나노 공정,
+        바이오칩과 에너지 소자. 마이크로미터 아래의 세계에서 새 기능을 설계합니다.</p>
+      <a class="backtop" href="#research">↑ 기구 배치도로</a>
+    </div>
+    <div class="labs">
+      <p class="k">FACULTY<b>6</b></p>
+      <ul><li>강신일</li><li>김용준</li><li>김종백</li><li>류원형</li><li>전성찬</li><li>정효일</li></ul>
+    </div>
+  </article>
+
+  <article class="cluster-detail" id="c-optics">
+    <svg class="mini" viewBox="0 0 120 120" aria-hidden="true"><use href="#m-optics"/></svg>
+    <div>
+      <span class="no">CLUSTER 05 — OPTICS</span>
+      <h3>광학·이미징·계측</h3>
+      <p class="en">Optics / Imaging / Sensing</p>
+      <p class="desc">빛을 도구로 세상을 측정합니다. 계산 이미징과 나노 광전자, 양자 광학과 정밀 센싱.
+        보이지 않던 것을 보이게 만드는 계측의 최전선입니다.</p>
+      <a class="backtop" href="#research">↑ 기구 배치도로</a>
+    </div>
+    <div class="labs">
+      <p class="k">FACULTY<b>4</b></p>
+      <ul><li>김경식</li><li>김영주</li><li>주철민</li><li>현재상</li></ul>
+    </div>
+  </article>
+
+  <article class="cluster-detail" id="c-dyn">
+    <svg class="mini" viewBox="0 0 120 120" aria-hidden="true"><use href="#m-dyn"/></svg>
+    <div>
+      <span class="no">CLUSTER 06 — DYNAMICS</span>
+      <h3>동역학·제어·로보·AI</h3>
+      <p class="en">Dynamics / Control / Robotics / AI</p>
+      <p class="desc">움직임을 예측하고, 제어하고, 학습시킵니다. 진동과 동역학 해석에서 로보틱스,
+        기계학습 기반 제어까지. 스스로 판단하는 기계 시스템을 만듭니다.</p>
+      <a class="backtop" href="#research">↑ 기구 배치도로</a>
+    </div>
+    <div class="labs">
+      <p class="k">FACULTY<b>5</b></p>
+      <ul><li>민경민</li><li>박노철</li><li>신동준</li><li>양현석</li><li>최종은</li></ul>
+    </div>
+  </article>
+</div></section>
+
+<!-- ═══ SHEET 04 · 계측 ═══ -->
+<section class="section"><div class="wrap">
+  <div class="sec-head">
+    <span class="sec-num">SHEET 04 / 계측</span>
+    <div><h2>숫자로 재는 학부</h2></div>
+  </div>
+  <div class="figures">
+    <div class="fig fig--lead"><div class="n">1962</div><div class="l">기계공학과 분리, 그 해부터</div><div class="s">history.do</div></div>
+    <div class="fig"><div class="n">33</div><div class="l">전임 교수</div><div class="s">faculty_list.do</div></div>
+    <div class="fig"><div class="n">33</div><div class="l">연구실</div><div class="s">lab2.do</div></div>
+    <div class="fig"><div class="n">130</div><div class="l">졸업 학점</div><div class="s">graduation.do</div></div>
+    <p class="fig-note">* 2026년 6월 30일에 학부 공식 페이지를 열어 놓고 하나씩 세었습니다.
+      다음 확인은 9월 개강 전으로 잡아 두었습니다.<span class="pencil">직접 셌음</span></p>
+  </div>
+</div></section>
+
+<!-- ═══ 승인란 ═══ -->
+<section class="section"><div class="wrap approve">
+  <div>
+    <h2>이 도면의 승인란은<br><span class="blue">비워 두었습니다.</span></h2>
+    <p>다음 리비전을 그릴 사람을 찾고 있습니다. 학부 입학부터 대학원 진학까지,
+      들어오는 경로는 여섯 갈래보다 많습니다.</p>
+    <div class="hero-actions">
+      <a class="btn btn--fill" href="#">입학·진로 안내</a>
+      <a class="textlink" href="#">오시는 길</a>
+    </div>
+  </div>
+  <div class="signbox" aria-hidden="true">
+    <div class="sb-cap"><span>승인 · APPROVAL</span><span>REV E — ?</span></div>
+    <div class="sb-body">
+      <div class="line"><span class="pencil">여기에 서명</span></div>
+      <div class="who"><span>서명 / SIGNATURE</span><span>일자 / DATE</span></div>
+    </div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <table class="rev-table">
+    <caption>Revision History · 개정 이력</caption>
+    <thead><tr><th style="width:5rem">REV</th><th style="width:7rem">일자</th><th>내용</th><th style="width:6rem">작성</th></tr></thead>
+    <tbody>
+      <tr><td>A.0</td><td>26.07.11</td><td>최초 발행 — 도면 방향 확정</td><td>DATUM</td></tr>
+      <tr><td>D.1</td><td>26.07.12</td><td>기구 스테이션 6기 설치, 분야 설명 연결</td><td>권</td></tr>
+      <tr><td>D.2</td><td>26.07.12</td><td>여백 재측정, 표제란·승인란 추가</td><td>권</td></tr>
+      <tr><td>D.3</td><td>26.07.13</td><td>관리 콘솔(Admin Studio) 연결 — 조교도 코드 없이 이 시트를 고칠 수 있음</td><td>권</td></tr>
+    </tbody>
+  </table>
+  <div class="foot-meta">
+    <span>© 2026 연세대학교 기계공학부 · 서울 서대문구 연세로 50</span>
+    <span>학부 02-2123-4426 · 대학원 02-2123-2810</span>
+    <span><a href="../admin/index.html" class="textlink" style="font-size:.7rem;border-bottom-width:1px">관리 콘솔 ↗</a> · SHEET D · SCALE 1:1</span>
+  </div>
+</div></footer>
+
+</body>
+</html>

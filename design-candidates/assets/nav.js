@@ -35,17 +35,18 @@
     '.ynav-spy{justify-self:end;text-align:right;pointer-events:auto}' +
     '.ynav-spy .lab{display:block;font-size:.58rem;letter-spacing:.24em;color:var(--dimmer,#484d55);text-transform:uppercase}' +
     '.ynav-spy .val{display:block;font-family:var(--kr);font-size:.96rem;font-weight:600;color:var(--coral,#e2593c);margin-top:.15rem;transition:opacity .2s}' +
+    '[id]{scroll-margin-top:5.5rem}' +
     '@media(max-width:920px){.ynav-menu,.ynav-spy{display:none}.ynav{grid-template-columns:1fr}}';
   var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
 
   /* ── 2. 메뉴 정의 ── */
   var MENU = [
-    { t: '소개', h: 'G-about.html', key: 'about', sub: [['학과장 인사말 · 비전', 'G-about.html'], ['주요 연혁', 'G-about.html'], ['오시는 길', 'G-about.html']] },
-    { t: '교육', h: 'G-academics.html', key: 'academics', sub: [['교육과정 · 이수체계', 'G-academics.html'], ['전공 교과', 'G-academics.html'], ['대학원 교과', 'G-academics.html']] },
-    { t: '연구', h: 'G-research.html', key: 'research', sub: [['연구실 33', 'G-research.html'], ['여섯 개 분야', 'G-research.html']] },
+    { t: '소개', h: 'G-about.html', key: 'about', sub: [['학과장 인사말', 'G-about.html#greeting'], ['비전 · 교육철학', 'G-about.html#vision'], ['조직 · 행정', 'G-about.html#organization'], ['주요 연혁', 'G-about.html#history']] },
+    { t: '교육', h: 'G-academics.html', key: 'academics', sub: [['교육과정 개관', 'G-academics.html#curriculum'], ['이수 체계도', 'G-academics.html#roadmap'], ['전공 교과', 'G-academics.html#courses'], ['대학원 교과', 'G-academics.html#grad']] },
+    { t: '연구', h: 'G-research.html', key: 'research', sub: [['여섯 개 분야', 'G-research.html#clusters'], ['연구실 전체', 'G-research.html#clusterBlocks']] },
     { t: '구성원', h: 'G-people.html', key: 'people', sub: [['교수진 디렉토리', 'G-people.html']] },
-    { t: '소식', h: 'G-news.html', key: 'news', sub: [['공지사항', 'G-news.html'], ['뉴스 · 세미나', 'G-news.html']] },
-    { t: '입학', h: 'G-admissions.html', key: 'admissions', join: true, sub: [['학부 · 대학원 입학', 'G-admissions.html'], ['장학 안내', 'G-admissions.html#scholarships'], ['취업 정보', 'G-admissions.html#jobs']] }
+    { t: '소식', h: 'G-news.html', key: 'news', sub: [['공지사항', 'G-news.html#feed'], ['세미나 · 행사', 'G-news.html#sched'], ['연구 성과', 'G-news.html#hi']] },
+    { t: '입학', h: 'G-admissions.html', key: 'admissions', join: true, sub: [['학부 입학', 'G-admissions.html#undergraduate'], ['대학원 진학', 'G-admissions.html#graduate'], ['장학 안내', 'G-admissions.html#scholarships'], ['취업 정보', 'G-admissions.html#jobs']] }
   ];
   var path = (location.pathname.split('/').pop() || '').toLowerCase();
   var pageName = { 'g-about.html': '소개', 'g-academics.html': '교육', 'g-research.html': '연구', 'g-people.html': '구성원', 'g-news.html': '소식', 'g-admissions.html': '입학' };
@@ -90,6 +91,19 @@
         }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
         secs.forEach(function (s) { io.observe(s); });
       }
+    }
+    /* 앵커(#섹션)로 진입 시 — JS로 렌더되는 섹션 대응해 콘텐츠 렌더 후 재스크롤 */
+    if (location.hash && location.hash.length > 1) {
+      var reScroll = function () {
+        var t = null;
+        try { t = document.getElementById(decodeURIComponent(location.hash.slice(1))); } catch (e) {}
+        if (t) {
+          var y = t.getBoundingClientRect().top + (window.pageYOffset || document.documentElement.scrollTop) - 76;
+          try { window.scrollTo({ top: y, behavior: 'instant' }); } catch (e) { window.scrollTo(0, y); }
+        }
+      };
+      [120, 350, 700].forEach(function (d) { setTimeout(reScroll, d); });
+      window.addEventListener('load', function () { setTimeout(reScroll, 100); });
     }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount); else mount();

@@ -17,7 +17,7 @@ document.documentElement.classList.add('js');})();
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Serif+KR:wght@400;500;600&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/main.css?v=d9" />
+<link rel="stylesheet" href="assets/css/main.css?v=d10" />
 </head>
 <body>
 <a class="skip" href="#main" data-i18n="ui.skip">본문 바로가기</a>
@@ -39,6 +39,7 @@ document.documentElement.classList.add('js');})();
               <a href="about.html">학과장 인사말 · 비전</a>
               <a href="history.html">연혁 — Since 1962</a>
               <a href="contact.html">오시는 길 · 연락처</a>
+              <a href="staff.html">교직원 · 행정팀</a>
             </div>
             <div class="mega-aside">
               <p class="mega-desc">기독교 정신을 바탕으로 창의적 설계 역량과 글로벌 리더십을 갖춘 공학 인재를 양성합니다.</p>
@@ -53,6 +54,8 @@ document.documentElement.classList.add('js');})();
               <a href="academics.html">교육과정 · 이수체계</a>
               <a href="academics.html#courses">전공필수 교과목</a>
               <a href="academics.html#abeek">ABEEK 공학교육인증</a>
+              <a href="graduate.html">대학원 교과 · 졸업요건</a>
+              <a href="scholarships.html">장학 안내</a>
             </div>
             <div class="mega-aside">
               <p class="mega-desc">고체·열·유체·동역학 4대 역학에서 창의제품설계·학사논문까지, 종합 설계 능력을 완성합니다.</p>
@@ -67,7 +70,6 @@ document.documentElement.classList.add('js');})();
               <a href="research.html">연구실 33 — Lab Explorer</a>
               <a href="research.html#clusters">6개 연구 클러스터</a>
               <a href="lab.html">대표 연구실 소개</a>
-              <a href="engineering.html">공학 사양서 /engineering</a>
             </div>
             <div class="mega-aside">
               <p class="mega-desc">고체에서 유체, 나노에서 로보틱스까지 — 33개 연구실이 6개 분야로 맞물려 작동합니다.</p>
@@ -95,6 +97,7 @@ document.documentElement.classList.add('js');})();
               <a href="news.html">공지사항</a>
               <a href="news.html#news">뉴스 · 연구성과</a>
               <a href="news.html#seminar">세미나</a>
+              <a href="careers.html">취업 정보</a>
             </div>
             <div class="mega-aside">
               <p class="mega-desc">학부·대학원 공지, 연구 뉴스, BK 세미나를 한 허브에서 확인하세요.</p>
@@ -189,65 +192,101 @@ document.documentElement.classList.add('js');})();
         <span aria-current="page">소식</span>
       </nav>
       <h1 id="news-title" class="reveal">공지와 뉴스</h1>
-      <p class="page-hero-lede reveal">학부·대학원 공지, 연구 뉴스, 세미나 안내를 한곳에 모았습니다. 카테고리로 걸러 보실 수 있습니다.</p>
+      <p class="page-hero-lede reveal">학부·대학원 공지, 연구 뉴스, 세미나·행사 안내를 한곳에 모았습니다. 각 항목은 공식 사이트 원문으로 연결됩니다.</p>
+      <nav class="chip-row reveal" aria-label="페이지 내 이동" style="margin-top:var(--sp-5)">
+        <a class="chip" href="#notice">공지사항</a>
+        <a class="chip" href="#news">뉴스 · 연구성과</a>
+        <a class="chip" href="#seminar">세미나</a>
+        <a class="chip" href="#event">행사</a>
+      </nav>
     </div>
   </div>
 </section>
 
-<!-- ═══ §A 뉴스룸 리드 — 고정 공지 + 최신 뉴스 대형 피처 카드 ═══ -->
-<section class="section section--tight" aria-labelledby="feat-h">
+<!-- ═══ §A 공지사항 — 학부 / 대학원 두 묶음 (탭) ═══ -->
+<section class="section section--tight" aria-labelledby="notice-h">
   <div class="container">
-    <h2 id="feat-h" class="visually-hidden">주요 소식</h2>
-    <div class="grid12" style="row-gap:var(--sp-8)">
-      <div class="col-7 reveal">
-        <p class="overline mb-4">고정 공지</p>
-        <div id="leadFeature">
-          <noscript><p class="muted">주요 공지는 <a class="link-sweep" href="#archive">아래 통합 아카이브</a>에서 확인하세요.</p></noscript>
-        </div>
-      </div>
-      <div class="col-4 col-start-9 reveal" style="--reveal-delay:.15s">
-        <p class="overline mb-4">연구 뉴스</p>
-        <div class="feature-side" id="sideFeature"></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══ §B 통합 아카이브 — 카테고리 필터 + 리스트 행 ═══ -->
-<section class="section section--alt" aria-labelledby="archive-h">
-  <div class="container">
-    <span id="archive" class="filter-anchor" aria-hidden="true"></span>
     <span id="notice" class="filter-anchor" aria-hidden="true"></span>
-    <span id="news" class="filter-anchor" aria-hidden="true"></span>
-    <span id="seminar" class="filter-anchor" aria-hidden="true"></span>
     <div class="sec-head reveal">
-      <span class="sec-num">통합 아카이브</span>
+      <span class="sec-num">Notices</span>
       <div class="sec-body">
-        <h2 id="archive-h" class="sec-title">통합 아카이브</h2>
-        <p class="sec-sub">고정 공지가 최상단, 이후 게시일 내림차순. 최근 14일 이내 게시물에는 NEW 배지가 붙습니다.</p>
+        <h2 id="notice-h" class="sec-title">공지사항</h2>
+        <p class="sec-sub">학부·대학원 공지를 게시일 내림차순으로 정리했습니다. 각 묶음의 대표 항목을 노출하며, 제목을 누르면 공식 사이트 원문으로 이동합니다.</p>
       </div>
     </div>
 
-    <div class="filter-bar reveal" role="group" aria-label="카테고리 필터">
-      <button class="pill" type="button" data-cat="all" aria-pressed="true">전체 <span class="pill-n"></span></button>
-      <button class="pill" type="button" data-cat="학부" aria-pressed="false">학부공지 <span class="pill-n"></span></button>
-      <button class="pill" type="button" data-cat="대학원" aria-pressed="false">대학원공지 <span class="pill-n"></span></button>
-      <button class="pill" type="button" data-cat="뉴스" aria-pressed="false">뉴스 <span class="pill-n"></span></button>
-      <button class="pill" type="button" data-cat="세미나" aria-pressed="false">세미나 <span class="pill-n"></span></button>
-      <span class="news-count" id="newsCount" aria-live="polite" role="status"></span>
+    <div class="filter-bar reveal" role="tablist" aria-label="공지 구분">
+      <button class="pill" type="button" role="tab" id="tab-ug" aria-selected="true" aria-pressed="true" aria-controls="noticeUGList" data-notice="ug">학부 <span class="pill-n" id="ugCount"></span></button>
+      <button class="pill" type="button" role="tab" id="tab-grad" aria-selected="false" aria-pressed="false" aria-controls="noticeGradList" data-notice="grad" tabindex="-1">대학원 <span class="pill-n" id="gradCount"></span></button>
     </div>
 
     <div class="reveal">
-      <div class="post-list" id="archiveList">
-        <noscript><p class="muted" style="padding:var(--sp-4) 0">이 목록은 브라우저 스크립트로 렌더링됩니다. 원문은 me.yonsei.ac.kr → 커뮤니티 → 공지사항·뉴스·세미나에서 확인하세요.</p></noscript>
+      <div class="post-list" id="noticeUGList" role="tabpanel" aria-labelledby="tab-ug">
+        <noscript><p class="muted" style="padding:var(--sp-4) 0">학부 공지 원문은 <a class="link-sweep" href="https://me.yonsei.ac.kr/me/community/notice.do" target="_blank" rel="noopener">me.yonsei.ac.kr 공지사항 ↗</a>에서 확인하세요.</p></noscript>
       </div>
-      <div class="archive-empty" id="archiveEmpty" hidden>
-        <p>조건에 맞는 소식이 없습니다.</p>
-        <p class="muted" style="margin-top:var(--sp-2)">다른 카테고리를 선택하거나 필터를 초기화해 보세요.</p>
-        <button class="btn btn--ghost btn--sm" id="resetFilter" type="button" style="margin-top:var(--sp-4)">필터 초기화</button>
+      <div class="post-list" id="noticeGradList" role="tabpanel" aria-labelledby="tab-grad" hidden>
+        <noscript><p class="muted" style="padding:var(--sp-4) 0">대학원 공지 원문은 <a class="link-sweep" href="https://me.yonsei.ac.kr/me/community/notice_graduate.do" target="_blank" rel="noopener">me.yonsei.ac.kr 대학원 공지 ↗</a>에서 확인하세요.</p></noscript>
       </div>
-      <p class="spec-note" style="margin-top:var(--sp-4)">상세 본문은 운영본에서 원문과 연동될 예정입니다.</p>
+      <p class="notice-more reveal" id="noticeMore" style="margin-top:var(--sp-4);display:flex;align-items:center;gap:var(--sp-4);flex-wrap:wrap">
+        <a class="btn btn--ghost btn--sm" href="https://me.yonsei.ac.kr/me/community/notice.do" target="_blank" rel="noopener">전체 공지 보기 <span class="arr" aria-hidden="true">↗</span></a>
+      </p>
     </div>
+  </div>
+</section>
+
+<!-- ═══ §B 뉴스 · 연구성과 (newsList) — 카드 ═══ -->
+<section class="section section--alt" aria-labelledby="news-h">
+  <div class="container">
+    <span id="news" class="filter-anchor" aria-hidden="true"></span>
+    <div class="sec-head reveal">
+      <span class="sec-num">Research News</span>
+      <div class="sec-body">
+        <h2 id="news-h" class="sec-title">뉴스 · 연구성과</h2>
+        <p class="sec-sub">연구실의 대표 성과와 학부 소식을 게시일 내림차순으로 모았습니다.</p>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="cards-3" id="newsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,17rem),1fr));gap:var(--sp-5)">
+        <noscript><p class="muted">연구 뉴스 원문은 <a class="link-sweep" href="https://me.yonsei.ac.kr/me/community/news.do" target="_blank" rel="noopener">me.yonsei.ac.kr 뉴스 ↗</a>에서 확인하세요.</p></noscript>
+      </div>
+      <p class="news-count" id="newsGridCount" style="margin-top:var(--sp-4)"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ §C 세미나 + 행사 — 리스트 두 열 ═══ -->
+<section class="section section--tight" aria-labelledby="events-h">
+  <div class="container">
+    <span id="seminar" class="filter-anchor" aria-hidden="true"></span>
+    <h2 id="events-h" class="visually-hidden">세미나와 행사</h2>
+    <div class="grid12" style="row-gap:var(--sp-10)">
+      <div class="col-6 reveal">
+        <div class="sec-head" style="margin-bottom:var(--sp-5)">
+          <span class="sec-num">Seminars</span>
+          <div class="sec-body">
+            <h3 id="seminar-h" class="sec-title" style="font-size:var(--step-1)">세미나</h3>
+            <p class="sec-sub">학부·대학원·BK21 세미나 안내입니다.</p>
+          </div>
+        </div>
+        <div class="post-list" id="seminarList" aria-labelledby="seminar-h">
+          <noscript><p class="muted" style="padding:var(--sp-4) 0">세미나 원문은 <a class="link-sweep" href="https://me.yonsei.ac.kr/me/community/seminar.do" target="_blank" rel="noopener">me.yonsei.ac.kr 세미나 ↗</a>에서 확인하세요.</p></noscript>
+        </div>
+      </div>
+      <div class="col-6 reveal" style="--reveal-delay:.15s">
+        <span id="event" class="filter-anchor" aria-hidden="true"></span>
+        <div class="sec-head" style="margin-bottom:var(--sp-5)">
+          <span class="sec-num">Events</span>
+          <div class="sec-body">
+            <h3 id="event-h" class="sec-title" style="font-size:var(--step-1)">행사</h3>
+            <p class="sec-sub">포럼·워크숍·특강 등 학부 행사 안내입니다.</p>
+          </div>
+        </div>
+        <div class="post-list" id="eventList" aria-labelledby="event-h">
+          <noscript><p class="muted" style="padding:var(--sp-4) 0">행사 원문은 <a class="link-sweep" href="https://me.yonsei.ac.kr/me/community/seminar_graduate1.do" target="_blank" rel="noopener">me.yonsei.ac.kr 행사 ↗</a>에서 확인하세요.</p></noscript>
+        </div>
+      </div>
+    </div>
+    <p class="spec-note" style="margin-top:var(--sp-8)">모든 항목은 연세대학교 기계공학부 공식 사이트(me.yonsei.ac.kr) 원문으로 연결됩니다.</p>
   </div>
 </section>
 
@@ -285,7 +324,6 @@ document.documentElement.classList.add('js');})();
           <li><a href="about.html">학과장 인사말</a></li>
           <li><a href="history.html">연혁</a></li>
           <li><a href="contact.html">오시는 길</a></li>
-          <li><a href="engineering.html">공학 사양서</a></li>
         </ul>
       </nav>
       <nav class="footer-col" aria-label="정책·안내">
@@ -306,114 +344,123 @@ document.documentElement.classList.add('js');})();
 
 <p id="langNote" hidden class="visually-hidden" aria-live="polite">English navigation applied. Full English content is in preparation.</p>
 
-<script src="assets/js/data.js?v=d9" defer></script>
-<script src="assets/js/main.js?v=d9" defer></script>
+<script src="assets/js/data.js?v=d10" defer></script>
+<script src="assets/js/main.js?v=d10" defer></script>
 <script defer>
-/* ═══ news 전용 — 피처 카드 + 카테고리 필터 (data.js 단일 소스) ═══ */
+/* ═══ news 전용 — 공지(탭) · 뉴스 · 세미나 · 행사 (data.js 실데이터 단일 소스) ═══ */
 window.addEventListener('DOMContentLoaded', function () {
   'use strict';
   var D = window.YSME, UI = window.YSMEUI;
   if (!D || !UI) return;
 
-  var byDate = function (a, b) { return b.date.localeCompare(a.date); };
+  var esc = UI.escapeHtml;
+  var byDate = function (a, b) { return String(b.date || '').localeCompare(String(a.date || '')); };
+  var newBadge = function (d) { return UI.isNew(d, 14) ? '<span class="new-badge">NEW</span>' : ''; };
   var artKinds = ['wave', 'turbine', 'gear', 'grid'];
-  var newBadge = function (iso) { return UI.isNew(iso, 14) ? '<span class="badge badge--gold">NEW</span>' : ''; };
 
-  /* ── 리드 피처: 고정 공지 ── */
-  var lead = document.getElementById('leadFeature');
-  var pinned = D.posts.filter(function (p) { return p.pinned; })[0] || D.posts.slice().sort(byDate)[0];
-  if (lead && pinned) {
-    lead.innerHTML = '<a class="article-card article-card--lead" href="#archive">' +
-      '<div class="ph ph--16x9">' + UI.lineArt('grid') +
-        '<span class="ph-tag">PINNED · 고정</span>' +
-        '<span class="ph-cap">NOTICE — ' + UI.escapeHtml(pinned.cat) + '</span></div>' +
-      '<div class="article-body">' +
-        '<span class="article-cat">고정 공지 ' + newBadge(pinned.date) + '</span>' +
-        '<h3 class="article-title">' + UI.escapeHtml(pinned.title) + '</h3>' +
-        '<time class="article-date" datetime="' + pinned.date + '">' + UI.fmtDate(pinned.date) + '</time>' +
-      '</div></a>';
+  /* 공지 행: 첨부표시 + 제목(url→외부링크) + 날짜 (grid: auto 1fr auto) */
+  function noticeRow(p) {
+    var att = p.att
+      ? '<span class="post-cat" title="첨부파일 있음" aria-label="첨부파일 있음">첨부</span>'
+      : '<span class="post-cat" aria-hidden="true" style="visibility:hidden">첨부</span>';
+    var titleInner = esc(p.title) + ' ' + newBadge(p.date);
+    var title = p.url
+      ? '<a class="post-title" href="' + esc(p.url) + '" target="_blank" rel="noopener">' + titleInner + ' <span aria-hidden="true">↗</span></a>'
+      : '<span class="post-title">' + titleInner + '</span>';
+    return '<div class="post-row">' + att + title +
+      '<time class="post-date" datetime="' + esc(p.date) + '">' + UI.fmtDate(p.date) + '</time></div>';
   }
 
-  /* ── 사이드 피처: 최신 뉴스 2건 ── */
-  var side = document.getElementById('sideFeature');
-  if (side) {
-    var latest = D.posts.filter(function (p) { return p.cat === '뉴스'; }).sort(byDate).slice(0, 2);
-    side.innerHTML = latest.map(function (n, i) {
-      return '<a class="article-card" href="#archive">' +
-        '<div class="ph">' + UI.lineArt(artKinds[i % artKinds.length]) +
-          '<span class="ph-tag">뉴스</span></div>' +
+  /* 단순 리스트 행(세미나·행사): 제목(url→외부링크) + 날짜 */
+  function linkRow(p) {
+    var titleInner = esc(p.title) + ' ' + newBadge(p.date);
+    var title = p.url
+      ? '<a class="post-title" href="' + esc(p.url) + '" target="_blank" rel="noopener">' + titleInner + ' <span aria-hidden="true">↗</span></a>'
+      : '<span class="post-title">' + titleInner + '</span>';
+    return '<div class="post-row" style="grid-template-columns:1fr auto">' + title +
+      '<time class="post-date" datetime="' + esc(p.date) + '">' + UI.fmtDate(p.date) + '</time></div>';
+  }
+
+  /* ── 공지사항: 학부 / 대학원 탭 ── */
+  var ug = (D.noticesUG || []).slice().sort(byDate);
+  var grad = (D.noticesGrad || []).slice().sort(byDate);
+  var ugEl = document.getElementById('noticeUGList');
+  var gradEl = document.getElementById('noticeGradList');
+  var TOP = 10;
+
+  function fillNotices(el, arr) {
+    if (!el) return;
+    var head = arr.slice(0, TOP).map(noticeRow).join('');
+    var foot = arr.length > TOP
+      ? '<p class="spec-note" style="margin-top:var(--sp-4)">대표 ' + Math.min(TOP, arr.length) + '건 표시 · 전체 ' + arr.length + '건</p>'
+      : '<p class="spec-note" style="margin-top:var(--sp-4)">전체 ' + arr.length + '건</p>';
+    el.innerHTML = head + foot;
+  }
+  fillNotices(ugEl, ug);
+  fillNotices(gradEl, grad);
+  var ugCount = document.getElementById('ugCount'); if (ugCount) ugCount.textContent = ug.length;
+  var gradCount = document.getElementById('gradCount'); if (gradCount) gradCount.textContent = grad.length;
+
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.pill[role="tab"][data-notice]'));
+  function selectNotice(which) {
+    tabs.forEach(function (t) {
+      var on = t.dataset.notice === which;
+      t.setAttribute('aria-selected', String(on));
+      t.setAttribute('aria-pressed', String(on));
+      t.tabIndex = on ? 0 : -1;
+    });
+    if (ugEl) ugEl.hidden = which !== 'ug';
+    if (gradEl) gradEl.hidden = which !== 'grad';
+  }
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () { selectNotice(t.dataset.notice); });
+    t.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        var next = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+        selectNotice(next.dataset.notice); next.focus();
+      }
+    });
+  });
+
+  /* ── 뉴스 · 연구성과: 카드 ── */
+  var newsGrid = document.getElementById('newsGrid');
+  var news = (D.newsList || []).slice().sort(byDate);
+  if (newsGrid) {
+    newsGrid.innerHTML = news.map(function (n, i) {
+      var art = UI.lineArt(artKinds[i % artKinds.length]);
+      var media = n.thumb
+        ? '<div class="ph"><img src="' + esc(n.thumb) + '" alt="" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover" onerror="this.remove()"></div>'
+        : '<div class="ph">' + art + '<span class="ph-tag">뉴스</span></div>';
+      var open = n.url ? '<a class="article-card" href="' + esc(n.url) + '" target="_blank" rel="noopener">' : '<div class="article-card">';
+      var close = n.url ? '</a>' : '</div>';
+      return open + media +
         '<div class="article-body">' +
           '<span class="article-cat">Research News ' + newBadge(n.date) + '</span>' +
-          '<h3 class="article-title">' + UI.escapeHtml(n.title) + '</h3>' +
-          '<time class="article-date" datetime="' + n.date + '">' + UI.fmtDate(n.date) + '</time>' +
-        '</div></a>';
+          '<h3 class="article-title">' + esc(n.title) + (n.url ? ' <span aria-hidden="true">↗</span>' : '') + '</h3>' +
+          '<time class="article-date" datetime="' + esc(n.date) + '">' + UI.fmtDate(n.date) + '</time>' +
+        '</div>' + close;
     }).join('');
   }
+  var newsGridCount = document.getElementById('newsGridCount');
+  if (newsGridCount) newsGridCount.textContent = '전체 ' + news.length + '건';
 
-  /* ── 통합 아카이브: 정렬 + 필터 ── */
-  var listEl = document.getElementById('archiveList');
-  var emptyEl = document.getElementById('archiveEmpty');
-  var countEl = document.getElementById('newsCount');
-  var pills = Array.prototype.slice.call(document.querySelectorAll('.pill[data-cat]'));
-  if (!listEl) return;
+  /* ── 세미나 + 행사 ── */
+  var seminarEl = document.getElementById('seminarList');
+  var seminars = (D.seminars || []).slice().sort(byDate);
+  if (seminarEl) seminarEl.innerHTML = seminars.map(linkRow).join('') +
+    '<p class="spec-note" style="margin-top:var(--sp-4)">전체 ' + seminars.length + '건</p>';
 
-  var posts = D.posts.slice().sort(function (a, b) {
-    var pa = a.pinned ? 1 : 0, pb = b.pinned ? 1 : 0;
-    if (pa !== pb) return pb - pa;
-    return b.date.localeCompare(a.date);
-  });
-  var state = { cat: 'all' };
+  var eventEl = document.getElementById('eventList');
+  var events = (D.events || []).slice().sort(byDate);
+  if (eventEl) eventEl.innerHTML = events.map(linkRow).join('') +
+    '<p class="spec-note" style="margin-top:var(--sp-4)">전체 ' + events.length + '건</p>';
 
-  /* 카테고리별 카운트 (하드코딩 금지 — 데이터 집계) */
-  var counts = { all: posts.length };
-  posts.forEach(function (p) { counts[p.cat] = (counts[p.cat] || 0) + 1; });
-  pills.forEach(function (pill) {
-    var n = pill.querySelector('.pill-n');
-    if (n) n.textContent = counts[pill.dataset.cat] != null ? counts[pill.dataset.cat] : 0;
-  });
-
-  function rowHtml(p) {
-    var badge = newBadge(p.date);
-    var pin = p.pinned ? '<span class="badge">고정</span>' : '';
-    return '<a class="post-row' + (p.pinned ? ' post-row--pinned' : '') + '" href="#archive">' +
-      '<span class="post-cat">' + UI.escapeHtml(p.cat) + '</span>' +
-      '<span class="post-title">' + UI.escapeHtml(p.title) + badge + pin + '</span>' +
-      '<time class="post-date" datetime="' + p.date + '">' + UI.fmtDate(p.date) + '</time></a>';
-  }
-
-  function render() {
-    var hits = posts.filter(function (p) { return state.cat === 'all' || p.cat === state.cat; });
-    listEl.innerHTML = hits.map(rowHtml).join('');
-    var isEmpty = hits.length === 0;
-    listEl.hidden = isEmpty;
-    if (emptyEl) emptyEl.hidden = !isEmpty;
-    if (countEl) {
-      var lbl = state.cat === 'all' ? '전체' : state.cat;
-      countEl.textContent = lbl + ' ' + hits.length + '건 / 전체 ' + posts.length + '건';
-    }
-  }
-
-  function setCat(cat) {
-    state.cat = cat;
-    pills.forEach(function (pill) { pill.setAttribute('aria-pressed', String(pill.dataset.cat === cat)); });
-    render();
-  }
-  pills.forEach(function (pill) {
-    pill.addEventListener('click', function () { setCat(pill.dataset.cat); });
-  });
-  var resetBtn = document.getElementById('resetFilter');
-  if (resetBtn) resetBtn.addEventListener('click', function () { setCat('all'); });
-
-  /* 해시 딥링크: 메가메뉴 #news·#seminar·#notice → 필터 프리셋 */
+  /* 해시 딥링크: 메가메뉴 #notice → 학부 탭 프리셋 */
   function applyHash() {
-    var h = window.location.hash;
-    if (h === '#news') setCat('뉴스');
-    else if (h === '#seminar') setCat('세미나');
-    else if (h === '#notice') setCat('학부');
+    if (window.location.hash === '#notice') selectNotice('ug');
   }
   window.addEventListener('hashchange', applyHash);
-
-  render();
   applyHash();
 });
 </script>

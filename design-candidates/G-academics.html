@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>[시안 G · 관제] 교육과정 · 학사 안내 — 연세대학교 기계공학부</title>
-<meta name="description" content="Design candidate G — Console / 관제. 교육과정 페이지. 졸업 130학점, 전공필수 8과목, 4대 역학, 교과목 이수체계도(선수관계 커넥터·노드 팝업). 다크 관제 HUD · 모노 텔레메트리 · 코랄 액센트." />
+<meta name="description" content="Design candidate G — Console / 관제. 교육과정 페이지. 졸업 130학점, 4대 역학, 학년·학기별 교과목 이수체계도(49), 학부 전공 교과 40과목·대학원 183과목. 다크 관제 HUD · 모노 텔레메트리 · 코랄 액센트." />
 <meta name="theme-color" content="#08090c" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -16,9 +16,9 @@
    G-console.html / G-people.html 토큰·톤 계승:
    검정 #08090c · 모노 텔레메트리 · 코랄 #e2593c · 헤어라인 ·
    HUD 코너 · 코랄 데이터바.
-   핵심: 교과목 이수체계도 — 학년 열(2/3/4) 노드 + 선수관계
-   커넥터(SVG 직교 경로 + 화살촉) + 노드 클릭 → 상세 팝업.
-   prototype-v3 academics의 courseMap 인터랙션을 관제 톤으로 재현.
+   데이터: 공유 단일 소스 window.YSME(data.js) — curriculum(49)
+   학년·학기 그리드, coursesUG(40) 검색·필터 카드, coursesGrad(183)
+   요약. 6 연구 분야(clusters) 새 taxonomy 정합.
    ═══════════════════════════════════════════════════════════ */
 :root{
   --bg:#08090c;
@@ -165,71 +165,7 @@ a{color:inherit;text-decoration:none}
 .mech::after{content:"";position:absolute;top:1.4rem;right:1.4rem;width:8px;height:8px;
   border-top:1px solid var(--coral);border-right:1px solid var(--coral);opacity:.55}
 
-/* ══ §03 교과목 이수체계도 (핵심 인터랙션) ══ */
-.cmap{position:relative}
-.cmap-hint{font-family:var(--kr);font-size:.78rem;color:var(--dim);margin-top:1rem;line-height:1.6}
-.cmap-hint .k{font-family:var(--mono);color:var(--coral);font-size:.9em;letter-spacing:.04em}
-.cmap-board{position:relative;border:1px solid var(--line);background:
-  linear-gradient(var(--panel-2),var(--panel-2)) padding-box,
-  repeating-linear-gradient(0deg,transparent 0 31px,var(--line-soft) 31px 32px),
-  repeating-linear-gradient(90deg,transparent 0 31px,var(--line-soft) 31px 32px);
-  background-color:var(--panel-2);
-  padding:1.4rem clamp(.8rem,.4rem + 1vw,1.4rem) 1.6rem;overflow:hidden}
-.cmap-board::before,.cmap-board::after{content:"";position:absolute;width:12px;height:12px;pointer-events:none;z-index:4}
-.cmap-board::before{top:-1px;left:-1px;border-top:1px solid var(--coral);border-left:1px solid var(--coral)}
-.cmap-board::after{bottom:-1px;right:-1px;border-bottom:1px solid var(--coral);border-right:1px solid var(--coral)}
-/* SVG 커넥터 레이어 */
-.cmap-links{position:absolute;inset:0;width:100%;height:100%;z-index:1;color:var(--dimmer);pointer-events:none}
-.cmap-link{fill:none;stroke:currentColor;stroke-width:1;opacity:.55;transition:stroke .15s,opacity .15s}
-.cmap-link.is-hot{stroke:var(--coral);opacity:1;stroke-width:1.4}
-/* 열 그리드 */
-.cmap-grid{position:relative;z-index:2;display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1.4rem,1rem + 3vw,4rem)}
-.cmap-col{min-width:0}
-.cmap-col-head{margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--line-soft)}
-.cmap-col-label{font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
-.cmap-col-label .c{color:var(--coral)}
-.cmap-col-body{display:flex;flex-direction:column;gap:1.1rem}
-/* 노드 */
-.cmap-node{display:block;width:100%;text-align:left;cursor:pointer;position:relative;
-  background:var(--panel);border:1px solid var(--line);color:var(--txt);
-  padding:.75rem .85rem;font-family:var(--mono);transition:border-color .15s,background .15s,transform .12s}
-.cmap-node:hover{border-color:var(--dim);background:var(--panel-2)}
-.cmap-node:hover .cmap-node-code{color:var(--coral)}
-.cmap-node.is-active{border-color:var(--coral);background:var(--coral-soft);box-shadow:0 0 0 1px var(--coral)}
-.cmap-node.is-active .cmap-node-code{color:var(--coral)}
-.cmap-node.is-dim{opacity:.4}
-.cmap-node-code{display:block;font-size:.6rem;letter-spacing:.08em;color:var(--dim);transition:color .15s;font-variant-numeric:tabular-nums}
-.cmap-node-name{display:block;font-family:var(--kr);font-weight:600;font-size:.95rem;color:var(--txt-hi);margin-top:.28rem;line-height:1.25}
-.cmap-node-cr{display:block;font-size:.58rem;letter-spacing:.06em;color:var(--dim);margin-top:.35rem}
-/* 노드 상단 커넥터 포트 마커 */
-.cmap-node::after{content:"";position:absolute;top:-1px;right:-1px;width:5px;height:5px;
-  border-top:1px solid var(--dimmer);border-right:1px solid var(--dimmer)}
-.cmap-node.is-active::after{border-color:var(--coral)}
-
-/* 상세 팝업 (관제 dialog) */
-.cmap-detail{position:absolute;z-index:6;right:clamp(.8rem,.4rem + 1vw,1.4rem);bottom:clamp(.8rem,.4rem + 1vw,1.4rem);
-  width:min(24rem,calc(100% - 2rem));background:#05060a;border:1px solid var(--coral);
-  box-shadow:0 20px 60px -20px rgba(0,0,0,.9);padding:1.15rem 1.2rem 1.3rem}
-.cmap-detail::before{content:"";position:absolute;top:-1px;left:-1px;width:10px;height:10px;
-  border-top:1px solid var(--coral);border-left:1px solid var(--coral)}
-.cmap-detail-close{position:absolute;top:.5rem;right:.5rem;width:1.8rem;height:1.8rem;
-  display:grid;place-items:center;cursor:pointer;background:transparent;border:1px solid var(--line);
-  color:var(--dim);font-size:1rem;line-height:1;transition:border-color .15s,color .15s}
-.cmap-detail-close:hover{border-color:var(--coral);color:var(--coral)}
-.cmap-detail-code{font-size:.62rem;letter-spacing:.14em;color:var(--coral);text-transform:uppercase}
-.cmap-detail-name{font-family:var(--kr);font-weight:800;font-size:1.25rem;color:#fff;margin-top:.3rem;line-height:1.2}
-.cmap-detail-meta{display:flex;gap:1.4rem;margin-top:.95rem;padding:.7rem 0;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);flex-wrap:wrap}
-.cmap-detail-meta > div{min-width:0}
-.cmap-detail-meta dt{font-size:.54rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
-.cmap-detail-meta dd{font-family:var(--kr);font-size:.86rem;color:var(--txt-hi);margin-top:.28rem}
-.cmap-detail-desc{font-family:var(--kr);font-size:.88rem;color:var(--txt);line-height:1.7;margin-top:.9rem}
-.cmap-detail-pre{margin-top:1rem;display:flex;flex-wrap:wrap;gap:.4rem;align-items:center}
-.cmap-pre-k{font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-right:.3rem}
-.cmap-pre{font-family:var(--kr);font-size:.72rem;color:var(--txt);
-  border:1px solid var(--line);padding:.22rem .5rem;white-space:nowrap}
-.cmap-pre--none{color:var(--dim);border-style:dashed}
-
-/* ── §04 전공필수 교과목 표 ── */
+/* ── §04 전공 교과목 표 (참고용 스펙 테이블 스타일) ── */
 .table-scroll{border:1px solid var(--line);overflow-x:auto}
 table.spec{width:100%;border-collapse:collapse;font-size:.8rem;min-width:40rem}
 table.spec caption{text-align:left}
@@ -249,6 +185,73 @@ table.spec tbody tr:hover{background:rgba(255,255,255,.025)}
 .badge-gold{display:inline-block;font-family:var(--mono);font-size:.56rem;letter-spacing:.08em;text-transform:uppercase;
   padding:.16rem .45rem;border:1px solid var(--c-manuf);color:var(--c-manuf);white-space:nowrap}
 .table-note{font-family:var(--kr);font-size:.78rem;color:var(--dim);margin-top:1rem;line-height:1.6}
+/* 구분 뱃지 (전필/전선/대교) */
+.cur-badge{display:inline-block;font-family:var(--mono);font-size:.54rem;letter-spacing:.08em;text-transform:uppercase;
+  padding:.16rem .45rem;border:1px solid var(--line);color:var(--dim);white-space:nowrap}
+.cur-badge.t-req{border-color:var(--coral-line);color:var(--coral)}
+.cur-badge.t-sel{border-color:var(--c-nanobio);color:var(--c-nanobio)}
+.cur-badge.t-gen{border-color:var(--line);color:var(--dim)}
+
+/* ── §03 이수체계도 — 학년·학기 그리드 ── */
+.cur-legend{display:flex;gap:.7rem;flex-wrap:wrap;margin-bottom:1.4rem}
+.cur-groups{display:grid;grid-template-columns:repeat(auto-fill,minmax(21rem,1fr));gap:1px;
+  background:var(--line-soft);border:1px solid var(--line)}
+.cur-group{background:var(--panel-2);position:relative}
+.cur-group-head{display:flex;justify-content:space-between;align-items:baseline;gap:.8rem;
+  padding:.75rem .95rem;border-bottom:1px solid var(--line-soft)}
+.cur-group-title{font-family:var(--kr);font-weight:700;font-size:.92rem;color:var(--txt-hi)}
+.cur-group-title .c{color:var(--coral)}
+.cur-group-meta{font-family:var(--mono);font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);white-space:nowrap;font-variant-numeric:tabular-nums}
+.cur-item{display:grid;grid-template-columns:1fr auto;align-items:baseline;gap:.7rem;
+  padding:.55rem .95rem;border-bottom:1px solid var(--line-soft)}
+.cur-item:last-child{border-bottom:0}
+.cur-item .ci-main{min-width:0}
+.cur-item .ci-code{font-family:var(--mono);font-size:.56rem;letter-spacing:.06em;color:var(--dim);font-variant-numeric:tabular-nums}
+.cur-item .ci-name{font-family:var(--kr);font-weight:600;font-size:.86rem;color:var(--txt-hi);margin-top:.15rem;line-height:1.3}
+.cur-item .ci-side{display:flex;flex-direction:column;align-items:flex-end;gap:.3rem;flex:none;text-align:right}
+.cur-item .ci-cr{font-family:var(--mono);font-size:.62rem;color:var(--txt);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* ── §05 학부 전공 교과 — 검색·필터·카드 ── */
+.ug-toolbar{display:flex;gap:.8rem;align-items:center;flex-wrap:wrap;margin-bottom:1.4rem}
+.ug-search{flex:1 1 16rem;min-width:0;position:relative}
+.ug-search input{width:100%;font-family:var(--mono);font-size:.78rem;letter-spacing:.02em;color:var(--txt-hi);
+  background:var(--panel-2);border:1px solid var(--line);padding:.6rem .85rem .6rem 2rem;transition:border-color .15s}
+.ug-search input::placeholder{color:var(--dimmer)}
+.ug-search input:focus{outline:none;border-color:var(--coral)}
+.ug-search::before{content:"⌕";position:absolute;left:.7rem;top:50%;transform:translateY(-50%);color:var(--dim);font-size:.95rem;pointer-events:none}
+.ug-pills{display:flex;gap:.4rem;flex-wrap:wrap}
+.ug-pill{font-family:var(--mono);font-size:.6rem;letter-spacing:.06em;color:var(--dim);cursor:pointer;
+  background:transparent;border:1px solid var(--line);padding:.42rem .7rem;transition:border-color .15s,color .15s;white-space:nowrap}
+.ug-pill:hover{border-color:var(--dim);color:var(--txt-hi)}
+.ug-pill[aria-pressed="true"]{border-color:var(--coral);color:var(--coral)}
+.ug-pill .n{color:var(--dimmer);margin-left:.35em;font-variant-numeric:tabular-nums}
+.ug-pill[aria-pressed="true"] .n{color:var(--coral)}
+.ug-status{font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);white-space:nowrap;font-variant-numeric:tabular-nums}
+.ug-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(19rem,1fr));gap:1px;
+  background:var(--line-soft);border:1px solid var(--line)}
+.ug-card{background:var(--panel-2);padding:1.05rem 1.1rem 1.2rem;position:relative;transition:background .15s}
+.ug-card:hover{background:var(--panel)}
+.ug-card-top{display:flex;justify-content:space-between;align-items:center;gap:.6rem}
+.ug-card-code{font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;color:var(--dim);font-variant-numeric:tabular-nums}
+.ug-card-name{font-family:var(--kr);font-weight:700;font-size:1.02rem;color:var(--txt-hi);margin-top:.6rem;line-height:1.25}
+.ug-card-en{font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin-top:.3rem;line-height:1.4}
+.ug-card-desc{font-family:var(--kr);font-size:.8rem;color:var(--txt);line-height:1.6;margin-top:.75rem;
+  display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.ug-empty{grid-column:1/-1;background:var(--panel-2);padding:2rem;text-align:center;
+  font-family:var(--kr);font-size:.86rem;color:var(--dim)}
+
+/* ── §06 대학원 교과 요약 카드 ── */
+.grad-card{border:1px solid var(--line);background:var(--panel-2);position:relative;
+  display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:center;padding:1.6rem clamp(1.2rem,.8rem + 1vw,2rem)}
+.grad-card::before,.grad-card::after{content:"";position:absolute;width:9px;height:9px;pointer-events:none}
+.grad-card::before{top:-1px;left:-1px;border-top:1px solid var(--coral);border-left:1px solid var(--coral)}
+.grad-card::after{bottom:-1px;right:-1px;border-bottom:1px solid var(--coral);border-right:1px solid var(--coral)}
+.grad-num{font-family:var(--mono);font-weight:300;font-size:clamp(2.6rem,1.6rem + 4vw,4rem);line-height:.9;
+  color:var(--txt-hi);font-variant-numeric:tabular-nums}
+.grad-num .u{color:var(--coral);font-size:.28em;margin-left:.25em;letter-spacing:.1em;vertical-align:.4em}
+.grad-body .glab{font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;color:var(--coral)}
+.grad-body p{font-family:var(--kr);font-size:.9rem;color:var(--txt);line-height:1.7;margin-top:.6rem;max-width:44rem}
+.grad-body p b{color:var(--txt-hi);font-weight:600}
 
 /* ── 하단 HUD (카운터 텔레메트리) ── */
 .hud-bottom{border-top:1px solid var(--line);margin-top:1.2rem;
@@ -277,11 +280,9 @@ table.spec tbody tr:hover{background:rgba(255,255,255,.025)}
   .foot-tl{text-align:left}
 }
 @media (max-width:680px){
-  /* 이수체계도: 열 스택. 세로 도면 흐름으로 전환, SVG 커넥터 숨김(가독성 우선) */
-  .cmap-grid{grid-template-columns:1fr;gap:1.3rem}
-  .cmap-links{display:none}
-  .cmap-col{border-left:1px solid var(--line-soft);padding-left:1rem}
-  .cmap-detail{position:static;width:100%;margin-top:1.2rem;box-shadow:none}
+  .grad-card{grid-template-columns:1fr;gap:1rem}
+  .ug-toolbar{flex-direction:column;align-items:stretch}
+  .ug-status{align-self:flex-end}
 }
 </style>
 </head>
@@ -292,7 +293,7 @@ table.spec tbody tr:hover{background:rgba(255,255,255,.025)}
 <header class="hud-top">
   <div class="tl">
     <div class="row"><span><b>연세대학교 기계공학부</b></span><span>교육</span></div>
-    <div class="row"><span>졸업 <b class="tnum">130</b>학점</span><span class="dim">·</span><span>전공필수 <b>8</b>과목</span></div>
+    <div class="row"><span>졸업 <b class="tnum">130</b>학점</span><span class="dim">·</span><span>학부 전공 <b id="hudUgCount" class="tnum">40</b>과목</span></div>
   </div>
   <div class="crest">
     <a href="G-console.html" aria-label="관제 홈으로">
@@ -310,14 +311,15 @@ table.spec tbody tr:hover{background:rgba(255,255,255,.025)}
       <a href="G-console.html">홈</a><span class="sep">/</span><b>교육</b>
     </nav>
     <h1 id="ptitle" class="kr">고체·열·유체·동역학,<br>네 개의 기둥</h1>
-    <p class="lede kr">네 개의 역학이 <span class="u">창의제품설계</span>로 맞물리고 학사논문으로 완성됩니다. 졸업 <b>130학점</b>의 이수 체계와 전공필수 8과목의 선수관계를 하나의 관제 도면처럼 정리했습니다.</p>
+    <p class="lede kr">네 개의 역학이 <span class="u">창의제품설계</span>로 맞물리고 연구논문으로 완성됩니다. 졸업 <b>130학점</b>의 이수 체계를 학년·학기별 도면으로, 학부 전공 <b>40과목</b>과 대학원 <b>183과목</b>을 하나의 관제 콘솔에 정리했습니다.</p>
   </section>
 
   <nav class="jumpnav" aria-label="페이지 내 이동">
     <a href="#curriculum">교육과정 개관</a>
     <a href="#mechanics">4대 역학</a>
     <a href="#roadmap">이수체계도</a>
-    <a href="#courses">전공필수 교과목</a>
+    <a href="#courses">학부 전공 교과</a>
+    <a href="#grad">대학원 교과</a>
   </nav>
 
   <!-- §01 교육과정 개관 -->
@@ -326,21 +328,21 @@ table.spec tbody tr:hover{background:rgba(255,255,255,.025)}
       <span class="sec-num">01 · 개관</span>
       <div class="sec-body">
         <h2 id="cur-h" class="sec-title">교육과정 개관</h2>
-        <p class="sec-sub">기초 과학·공학 소양에서 4대 역학, 종합설계, 학사논문까지 4년의 이수 흐름입니다.</p>
+        <p class="sec-sub">기초 과학·공학 소양에서 4대 역학, 종합설계, 연구논문까지 4년의 이수 흐름입니다.</p>
       </div>
     </div>
     <div class="overview">
       <div>
         <p class="lede">기계공학은 세상의 거의 모든 움직임을 다룹니다. 교육과정은 그 움직임을 해석하는 <span class="u">에너지·재료·설계·제어</span>의 언어를 단계적으로 익히도록 설계되어 있습니다.</p>
-        <p class="body">1·2학년의 기초 위에 <b>고체역학·열역학·유체역학·동역학</b>의 4대 역학을 세우고, 4학년의 창의제품설계(캡스톤)에서 이 역학들을 하나의 제품으로 종합합니다. 마지막으로 학사논문이 학부 연구를 매듭짓습니다. 졸업 요건은 총 <b>130학점</b>이며, 전공필수 8과목(총 <b>24학점</b>)이 이 흐름의 골격을 이룹니다.</p>
+        <p class="body">1·2학년의 기초 위에 <b>고체역학·열역학·유체역학·동역학</b>의 4대 역학을 세우고, 4학년의 창의제품설계(캡스톤)에서 이 역학들을 하나의 제품으로 종합합니다. 마지막으로 연구논문이 학부 연구를 매듭짓습니다. 졸업 요건은 총 <b>130학점</b>이며, 학부 전공 <b>40과목</b>과 대학원 <b>183과목</b>이 4년의 이수 흐름과 그 이후의 연구를 잇습니다.</p>
         <a class="arrow kr" href="#mechanics">4대 역학 보기 <span aria-hidden="true">→</span></a>
       </div>
-      <div class="datapanel" aria-label="졸업 요건 데이터">
-        <div class="dp-head"><span>졸업 요건</span></div>
+      <div class="datapanel" aria-label="교육과정 데이터">
+        <div class="dp-head"><span>교육과정 텔레메트리</span></div>
         <div class="dp-row"><span>졸업 학점</span><span class="val"><span data-count="130">0</span></span></div>
-        <div class="dp-row"><span>전공필수</span><span class="val"><span data-count="8">0</span><span class="u">과목</span></span></div>
-        <div class="dp-row"><span>전공필수 학점</span><span class="val"><span data-count="24">0</span></span></div>
-        <div class="dp-row"><span>ABEEK 인증 가입</span><span class="val gold"><span data-count="2003" data-plain="1">0</span></span></div>
+        <div class="dp-row"><span>학부 전공 교과</span><span class="val"><span data-count="40">0</span><span class="u">과목</span></span></div>
+        <div class="dp-row"><span>대학원 교과</span><span class="val"><span data-count="183">0</span><span class="u">과목</span></span></div>
+        <div class="dp-row"><span>Since</span><span class="val gold"><span data-count="1962" data-plain="1">0</span></span></div>
       </div>
     </div>
   </section>
@@ -357,43 +359,68 @@ table.spec tbody tr:hover{background:rgba(255,255,255,.025)}
     <div class="mech-grid" id="mechGrid"></div>
   </section>
 
-  <!-- §03 교과목 이수체계도 (핵심 인터랙션) -->
+  <!-- §03 교과목 이수체계도 — 학년·학기 그리드 (curriculum 49) -->
   <section class="section" id="roadmap" aria-labelledby="rm-h">
     <div class="sec-head">
       <span class="sec-num">03 · 도면</span>
       <div class="sec-body">
         <h2 id="rm-h" class="sec-title">교과목 이수체계도</h2>
-        <p class="sec-sub">전공필수 8과목을 권장 학년(2/3/4)별 열에 배치하고 선수관계를 커넥터로 이었습니다. 과목 노드를 클릭하면 개요·학점·선수과목 상세가 열립니다.</p>
+        <p class="sec-sub">학년·학기별 이수 교과를 관제 도면처럼 배치했습니다. 각 과목의 코드·과목명·구분·학점·시수를 표기했습니다. 구분: 대교(대학교양·공통기초) · 전필(전공필수) · 전선(전공선택).</p>
       </div>
     </div>
-    <div class="cmap">
-      <div class="cmap-board" id="courseMap" role="group" aria-label="전공필수 교과목 이수체계도">
-        <noscript><p class="dim">과목별 상세는 아래 <a href="#courses" style="color:var(--coral)">전공필수 교과목 표</a>에서 확인하세요.</p></noscript>
-      </div>
-      <p class="cmap-hint">노드를 클릭하거나 키보드로 선택(<span class="k">Enter</span>)하면 상세가 열립니다. 커넥터는 <span class="k">선수과목 → 후수과목</span>의 흐름이며, 선택한 과목과 연결된 선수 경로가 코랄로 강조됩니다. 닫기는 <span class="k">ESC</span>.</p>
+    <div class="cur-legend" aria-hidden="true">
+      <span class="cur-badge t-req">전필</span>
+      <span class="cur-badge t-sel">전선</span>
+      <span class="cur-badge t-gen">대교</span>
     </div>
+    <div id="curriculumGrid" role="group" aria-label="학년·학기별 교과목 이수체계도">
+      <noscript><p class="dim">교과목 상세는 아래 <a href="#courses" style="color:var(--coral)">학부 전공 교과</a> 목록에서 확인하세요.</p></noscript>
+    </div>
+    <p class="table-note">시수 표기는 <span class="mono" style="color:var(--txt-hi)">강의(실습)</span> 형식입니다 · 전체 개설 교과목과 세부 기준은 연세포털 학사요람을 따릅니다.</p>
   </section>
 
-  <!-- §04 전공필수 교과목 표 -->
+  <!-- §04 학부 전공 교과 (coursesUG 40) -->
   <section class="section" id="courses" aria-labelledby="crs-h">
     <div class="sec-head">
       <span class="sec-num">04 · 교과목</span>
       <div class="sec-body">
-        <h2 id="crs-h" class="sec-title">전공필수 교과목</h2>
-        <p class="sec-sub">전공필수 8과목 — 코드·과목명·구분·권장 학년·학점·연계 분야. 연계 분야는 연구실 명칭 기반 자체 분류(6 클러스터)입니다.</p>
+        <h2 id="crs-h" class="sec-title">학부 전공 교과</h2>
+        <p class="sec-sub">학부 전공 교과목 — 코드·국문·영문명과 교과 개요. 구분(전공필수·전공선택)으로 걸러 보거나 코드·과목명으로 검색할 수 있습니다.</p>
       </div>
     </div>
-    <div class="table-scroll">
-      <table class="spec">
-        <caption class="visually-hidden">전공필수 교과목 목록 — 코드, 과목명, 구분, 권장 학년, 학점, 연계 분야</caption>
-        <thead><tr>
-          <th scope="col">코드</th><th scope="col">과목명</th><th scope="col">구분</th>
-          <th scope="col">권장 학년</th><th scope="col">학점</th><th scope="col">연계 분야</th>
-        </tr></thead>
-        <tbody id="courseRows"></tbody>
-      </table>
+    <div class="ug-toolbar">
+      <label class="ug-search"><span class="visually-hidden">전공 교과 검색</span>
+        <input type="search" id="ugSearch" placeholder="코드 · 과목명 · 영문명 검색" autocomplete="off" />
+      </label>
+      <div class="ug-pills" id="ugPills" role="group" aria-label="구분 필터">
+        <button type="button" class="ug-pill" data-ug-type="" aria-pressed="true">전체 <span class="n" id="ugCountAll"></span></button>
+        <button type="button" class="ug-pill" data-ug-type="전공필수" aria-pressed="false">전공필수 <span class="n" id="ugCountReq"></span></button>
+        <button type="button" class="ug-pill" data-ug-type="전공선택" aria-pressed="false">전공선택 <span class="n" id="ugCountSel"></span></button>
+      </div>
+      <span class="ug-status mono" id="ugStatus" role="status" aria-live="polite"></span>
     </div>
-    <p class="table-note">전공필수 8과목 합계 <b style="color:var(--txt-hi)">24학점</b> · 전체 개설 교과목과 세부 기준은 연세포털 학사요람을 따릅니다.</p>
+    <div class="ug-grid" id="ugCourseList">
+      <noscript><p class="ug-empty">전공 교과 목록은 JavaScript 활성 시 표시됩니다.</p></noscript>
+    </div>
+    <p class="table-note">학점은 학사요람 기준(연도별 상이)으로 본 목록에서는 표기를 생략했습니다 · 세부 기준은 연세포털 학사요람을 따릅니다.</p>
+  </section>
+
+  <!-- §05 대학원 교과 요약 -->
+  <section class="section" id="grad" aria-labelledby="grad-h">
+    <div class="sec-head">
+      <span class="sec-num">05 · 대학원</span>
+      <div class="sec-body">
+        <h2 id="grad-h" class="sec-title">대학원 교과</h2>
+        <p class="sec-sub">대학원 과정에서 개설되는 전공 교과의 총량입니다. 코드·국문명·영문명·학점의 전체 목록은 학사요람·연세포털에서 확인할 수 있습니다.</p>
+      </div>
+    </div>
+    <div class="grad-card">
+      <div class="grad-num"><span data-count="183">0</span><span class="u">과목</span></div>
+      <div class="grad-body">
+        <div class="glab mono">GRADUATE COURSES</div>
+        <p>대학원 개설 교과목 <b>총 183과목</b>. 4대 역학의 심화부터 마이크로·나노, 로보틱스·제어, 바이오·포토닉스까지 6개 연구 분야를 아우르는 심화 트랙으로 구성됩니다. 전체 목록의 즉시 검색은 학부 전공 교과(§04)와 동일한 방식으로 제공되며, 상세는 학사요람을 따릅니다.</p>
+      </div>
+    </div>
   </section>
 
   <!-- 하단 HUD 텔레메트리 -->
@@ -405,12 +432,12 @@ table.spec tbody tr:hover{background:rgba(255,255,255,.025)}
           <div class="num"><span data-count="130">0</span></div>
         </div>
         <div class="ct">
-          <div class="lab">전공필수 · 학점</div>
-          <div class="num"><span data-count="8">0</span> · <span data-count="24">0</span></div>
+          <div class="lab">학부 · 대학원 교과</div>
+          <div class="num"><span data-count="40">0</span> · <span data-count="183">0</span></div>
         </div>
         <div class="ct">
-          <div class="lab">ABEEK · SINCE</div>
-          <div class="num tnum">2003 · 1962</div>
+          <div class="lab">SINCE</div>
+          <div class="num tnum">1962</div>
         </div>
       </div>
       <div class="foot-tl">
@@ -421,249 +448,165 @@ table.spec tbody tr:hover{background:rgba(255,255,255,.025)}
   </footer>
 </main>
 
+<!-- 단일 데이터 소스 (window.YSME) -->
+<script src="../prototype-v3/assets/js/data.js?v=d10"></script>
 <script>
 (function(){
   'use strict';
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  /* ── 데이터 (data.js 실측 인라인) ── */
-  var clusters = [
-    { id:'solid',   ko:'고체·구조·재료역학',   en:'Solid Mechanics & Design' },
-    { id:'thermal', ko:'열·유체·에너지',       en:'Thermal / Fluids / Energy' },
-    { id:'manuf',   ko:'생산·정밀제조',        en:'Manufacturing & Tribology' },
-    { id:'nanobio', ko:'마이크로·나노·바이오', en:'Micro / Nano / Bio' },
-    { id:'optics',  ko:'광학·이미징·계측',     en:'Optics / Imaging / Sensing' },
-    { id:'dyn',     ko:'동역학·제어·로보·AI',  en:'Dynamics / Control / Robotics / AI' }
-  ];
-  var CVAR = { solid:'--c-solid', thermal:'--c-thermal', manuf:'--c-manuf',
-               nanobio:'--c-nanobio', optics:'--c-optics', dyn:'--c-dyn' };
-  var clusterOf = {}; clusters.forEach(function(c){ clusterOf[c.id]=c; });
-
-  /* 전공필수 8과목 — data.js courses 실데이터 */
-  var courses = [
-    { code:'MEU2600', ko:'고체역학',      type:'전공필수', year:2, credits:3, prereq:[], desc:'재료가 하중을 받을 때의 응력·변형률과 파괴를 다룬다. 구조 해석과 기계 설계의 출발점.' },
-    { code:'MEU2610', ko:'열역학',        type:'전공필수', year:2, credits:3, prereq:[], desc:'에너지와 열·일의 변환 법칙을 배운다. 열기관·냉동·발전 등 에너지 시스템의 기반.' },
-    { code:'MEU2640', ko:'유체역학',      type:'전공필수', year:2, credits:3, prereq:[], desc:'유체의 흐름과 압력·유동을 해석한다. 유체기계·유동 설계의 토대.' },
-    { code:'MEU2650', ko:'동역학',        type:'전공필수', year:2, credits:3, prereq:[], desc:'물체의 운동과 힘의 관계를 다룬다. 진동·제어·로보틱스로 이어지는 역학.' },
-    { code:'MEU2104', ko:'기계공학실험1', type:'전공필수', year:2, credits:2, prereq:[], desc:'4대 역학의 원리를 실험으로 확인하고 계측·데이터 분석을 익힌다.' },
-    { code:'MEU3005', ko:'기계공학실험2', type:'전공필수', year:3, credits:2, prereq:['MEU2104'], desc:'심화 실험. 설계-제작-계측을 종합적으로 수행한다.' },
-    { code:'MEU4300', ko:'창의제품설계',  type:'전공필수', year:4, credits:3, prereq:['MEU2600','MEU2610','MEU2640','MEU2650'], desc:'팀 단위로 실제 제품을 기획·설계·제작하는 종합 설계 과목.' },
-    { code:'MEU4400', ko:'학사논문',      type:'전공필수', year:4, credits:3, prereq:['MEU4300'], desc:'지도교수와 함께 연구 주제를 탐구해 논문으로 완성한다.' }
-  ];
-
-  /* 페이지 메타 — 권장 학년·연계 클러스터·에디토리얼 서술 (academics.html META 계승) */
-  var META = {
-    MEU2600:{ cluster:'solid',   en:'Solid Mechanics' },
-    MEU2610:{ cluster:'thermal', en:'Thermodynamics' },
-    MEU2640:{ cluster:'thermal', en:'Fluid Mechanics' },
-    MEU2650:{ cluster:'dyn',     en:'Dynamics' },
-    MEU2104:{ badge:'실험 · 공통' },
-    MEU3005:{ badge:'실험 · 공통' },
-    MEU4300:{ cluster:'manuf',   en:'Capstone Design' },
-    MEU4400:{ badge:'종합 · 졸업연구' }
-  };
-  /* 4대 역학 특집 서술 */
-  var MECHDESC = {
-    MEU2600:'응력과 변형률 — 재료가 힘에 어떻게 버티고 변형되는가. 구조·설계 해석의 출발점이 되는 역학.',
-    MEU2610:'에너지와 엔트로피의 법칙 — 열기관과 에너지 시스템 해석의 기초가 되는 역학.',
-    MEU2640:'흐르는 것의 역학 — 유동의 지배 방정식과 해석. 열·유체 설계와 에너지 시스템의 기초.',
-    MEU2650:'움직임의 역학 — 운동학과 운동역학. 기구와 로봇, 진동을 다루는 모든 설계의 언어.'
-  };
-
-  var byCode = {};
-  courses.forEach(function(c){ byCode[c.code] = c; });
+  var D = (window.YSME || {});
 
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){
     return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
 
-  /* ── §02 4대 역학 렌더 ── */
+  /* ── 공유 데이터 참조 ── */
+  var coursesUG  = (D.coursesUG  || []);
+  var curriculum = (D.curriculum || []);
+  var clusters   = (D.clusters   || []);
+  var clusterOf = {}; clusters.forEach(function(c){ clusterOf[c.id]=c; });
+  var ugByCode = {}; coursesUG.forEach(function(c){ ugByCode[c.code]=c; });
+
+  /* 클러스터 id(6종) → 관제 팔레트 CSS 변수 매핑 */
+  var CVAR = { solid:'--c-solid', thermal:'--c-thermal', dynamics:'--c-dyn',
+               manufacturing:'--c-manuf', micro:'--c-nanobio', optics:'--c-optics' };
+
+  /* ── §02 4대 역학 — 학부 전공(coursesUG)에서 4대 역학 pillar 추출 + 에디토리얼 서술 ── */
+  var PILLARS = [
+    { code:'MEU2600', cluster:'solid',    desc:'응력과 변형률 — 재료가 힘에 어떻게 버티고 변형되는가. 구조·설계 해석의 출발점이 되는 역학.' },
+    { code:'MEU2610', cluster:'thermal',  desc:'에너지와 엔트로피의 법칙 — 열기관과 에너지 시스템 해석의 기초가 되는 역학.' },
+    { code:'MEU2640', cluster:'thermal',  desc:'흐르는 것의 역학 — 유동의 지배 방정식과 해석. 열·유체 설계와 에너지 시스템의 기초.' },
+    { code:'MEU2650', cluster:'dynamics', desc:'움직임의 역학 — 운동학과 운동역학. 기구와 로봇, 진동을 다루는 모든 설계의 언어.' }
+  ];
   var mechGrid = document.getElementById('mechGrid');
   if (mechGrid) {
-    var pillars = ['MEU2600','MEU2610','MEU2640','MEU2650'];
-    mechGrid.innerHTML = pillars.map(function(code,i){
-      var c = byCode[code] || {}, m = META[code] || {};
-      var clu = m.cluster ? (clusterOf[m.cluster] || {}) : {};
+    mechGrid.innerHTML = PILLARS.map(function(p,i){
+      var c = ugByCode[p.code] || {};
+      var clu = clusterOf[p.cluster] || {};
+      var cvar = CVAR[p.cluster] || '--coral';
       return '<article class="mech">'
         + '<span class="mech-idx" aria-hidden="true">0'+(i+1)+'</span>'
         + '<h3 class="mech-name">'+esc(c.ko||'')+'</h3>'
-        + '<p class="mech-en">'+esc(code)+'</p>'
-        + '<p class="mech-desc">'+esc(MECHDESC[code]||'')+'</p>'
-        + '<span class="mech-tag"><span class="dot" style="--tag-c:var('+CVAR[m.cluster]+')" aria-hidden="true"></span>'+esc(clu.ko||'')+'</span>'
+        + '<p class="mech-en">'+esc((c.en? c.en+' · ':'')+p.code)+'</p>'
+        + '<p class="mech-desc">'+esc(p.desc)+'</p>'
+        + '<span class="mech-tag"><span class="dot" style="--tag-c:var('+cvar+')" aria-hidden="true"></span>'+esc(clu.ko||'')+'</span>'
       + '</article>';
     }).join('');
   }
 
-  /* ── §03 교과목 이수체계도 — 학년 열 + 선수관계 커넥터 + 클릭 상세 ── */
-  var mapEl = document.getElementById('courseMap');
-  if (mapEl) {
-    var YEARS = [2,3,4];
-    var colsHtml = YEARS.map(function(y){
-      var items = courses.filter(function(c){ return c.year===y; });
-      var nodes = items.map(function(c){
-        var credits = (c.credits!=null) ? c.credits+'학점' : '';
-        return '<button type="button" class="cmap-node" id="node-'+c.code+'" data-code="'+c.code+'"'
-            + ' aria-haspopup="dialog" aria-expanded="false">'
-            + '<span class="cmap-node-code mono">'+esc(c.code)+'</span>'
-            + '<span class="cmap-node-name">'+esc(c.ko)+'</span>'
-            + '<span class="cmap-node-cr mono">'+esc(credits)+'</span>'
-          + '</button>';
-      }).join('');
-      return '<div class="cmap-col" data-year="'+y+'">'
-          + '<div class="cmap-col-head"><span class="cmap-col-label mono"><span class="c">'+y+'</span>학년</span></div>'
-          + '<div class="cmap-col-body">'+nodes+'</div>'
+  /* ── §03 교과목 이수체계도 — curriculum(49) 학년·학기 그리드 ── */
+  function curTypeMeta(t){
+    if(t==='전필') return {cls:'t-req', label:'전필'};
+    if(t==='전선') return {cls:'t-sel', label:'전선'};
+    return {cls:'t-gen', label:t||'대교'};
+  }
+  var curEl = document.getElementById('curriculumGrid');
+  if (curEl && curriculum.length) {
+    /* 등장 순서대로 학년||학기 그룹 구성 (year는 '3 & 4' 같은 문자열도 존재) */
+    var order = [], groups = {};
+    curriculum.forEach(function(c){
+      var k = String(c.year)+'||'+String(c.sem);
+      if(!groups[k]){ groups[k]=[]; order.push(k); }
+      groups[k].push(c);
+    });
+    var groupsHtml = order.map(function(k){
+      var items = groups[k];
+      var parts = k.split('||'), y = parts[0], s = parts[1];
+      var sum = 0;
+      items.forEach(function(c){ var n = parseFloat(c.credits); if(!isNaN(n)) sum += n; });
+      var rows = items.map(function(c){
+        var tm = curTypeMeta(c.type);
+        var cr = (c.credits!=null && c.credits!=='') ? esc(c.credits)+'학점' : '';
+        var hrs = (c.hours!=null && c.hours!=='') ? esc(c.hours) : '';
+        return '<div class="cur-item">'
+          + '<div class="ci-main">'
+            + '<span class="ci-code mono">'+esc(c.code)+'</span>'
+            + '<span class="ci-name">'+esc(c.ko)+'</span>'
+          + '</div>'
+          + '<div class="ci-side">'
+            + '<span class="cur-badge '+tm.cls+'">'+esc(tm.label)+'</span>'
+            + '<span class="ci-cr">'+cr+(hrs?' · '+hrs:'')+'</span>'
+          + '</div>'
         + '</div>';
-    }).join('');
-
-    mapEl.innerHTML =
-      '<svg class="cmap-links" aria-hidden="true" focusable="false" preserveAspectRatio="none"></svg>'
-      + '<div class="cmap-grid">'+colsHtml+'</div>'
-      + '<div class="cmap-detail" id="cmapDetail" role="dialog" aria-modal="false" aria-labelledby="cmapDetailName" hidden>'
-        + '<button type="button" class="cmap-detail-close" aria-label="상세 닫기">×</button>'
-        + '<div class="cmap-detail-body"></div>'
+      }).join('');
+      return '<div class="cur-group">'
+        + '<div class="cur-group-head">'
+          + '<span class="cur-group-title"><span class="c">'+esc(y)+'</span>학년 · '+esc(s)+'학기</span>'
+          + '<span class="cur-group-meta">'+items.length+'과목 · '+sum+'학점</span>'
+        + '</div>'
+        + rows
       + '</div>';
-
-    var svg = mapEl.querySelector('.cmap-links');
-    var detail = mapEl.querySelector('#cmapDetail');
-    var detailBody = detail.querySelector('.cmap-detail-body');
-    var closeBtn = detail.querySelector('.cmap-detail-close');
-    var nodeEls = Array.prototype.slice.call(mapEl.querySelectorAll('.cmap-node'));
-    var openCode = null;
-
-    /* 선수관계 폐포(선택 과목과 연결된 선수/후수 전체) — 강조용 */
-    function related(code){
-      var set = {}; set[code] = true;
-      /* 상류(선수) 재귀 */
-      (function up(cd){
-        var c = byCode[cd]; if(!c) return;
-        (c.prereq||[]).forEach(function(p){ if(!set[p]){ set[p]=true; up(p); } });
-      })(code);
-      /* 하류(후수) 재귀 */
-      (function down(cd){
-        courses.forEach(function(c){
-          if((c.prereq||[]).indexOf(cd)>-1 && !set[c.code]){ set[c.code]=true; down(c.code); }
-        });
-      })(code);
-      return set;
-    }
-
-    /* 커넥터 — 노드를 잇는 도면식 직교 경로 + 화살촉(SVG) */
-    function drawLinks(){
-      var box = mapEl.getBoundingClientRect();
-      if (!box.width) return;
-      svg.setAttribute('viewBox','0 0 '+box.width+' '+box.height);
-      var rel = openCode ? related(openCode) : null;
-      var parts = ['<defs><marker id="cmapArrow" viewBox="0 0 10 10" refX="9" refY="5" '
-        + 'markerWidth="7" markerHeight="7" orient="auto-start-reverse">'
-        + '<path d="M0 0 L10 5 L0 10 z" fill="currentColor"/></marker></defs>'];
-      courses.forEach(function(c){
-        (c.prereq||[]).forEach(function(pc){
-          var a = mapEl.querySelector('#node-'+pc);
-          var b = mapEl.querySelector('#node-'+c.code);
-          if(!a||!b) return;
-          var ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
-          var x1 = ra.right - box.left, y1 = ra.top + ra.height/2 - box.top;
-          var x2 = rb.left - box.left, y2 = rb.top + rb.height/2 - box.top;
-          var mx = x1 + (x2 - x1)/2;
-          var d = 'M'+x1+' '+y1+' H'+mx+' V'+y2+' H'+x2;
-          var hot = (rel && rel[c.code] && rel[pc]) ? ' is-hot' : '';
-          parts.push('<path class="cmap-link'+hot+'" d="'+d+'" marker-end="url(#cmapArrow)" '
-            + 'data-from="'+pc+'" data-to="'+c.code+'"/>');
-        });
-      });
-      svg.innerHTML = parts.join('');
-    }
-
-    function prereqNames(c){
-      return (c.prereq||[]).map(function(pc){
-        var p = byCode[pc];
-        return p ? p.ko+' ('+pc+')' : pc;
-      });
-    }
-
-    function openDetail(code){
-      var c = byCode[code];
-      if(!c) return;
-      var pre = prereqNames(c);
-      var preHtml = pre.length
-        ? pre.map(function(n){ return '<span class="cmap-pre">'+esc(n)+'</span>'; }).join('')
-        : '<span class="cmap-pre cmap-pre--none">없음</span>';
-      detailBody.innerHTML =
-        '<p class="cmap-detail-code mono">'+esc(c.code)+'</p>'
-        + '<h3 class="cmap-detail-name" id="cmapDetailName">'+esc(c.ko)+'</h3>'
-        + '<dl class="cmap-detail-meta">'
-          + '<div><dt class="mono">구분</dt><dd>'+esc(c.type||'전공필수')+'</dd></div>'
-          + '<div><dt class="mono">학년</dt><dd>'+esc((c.year||'')+'학년')+'</dd></div>'
-          + '<div><dt class="mono">학점</dt><dd>'+esc((c.credits!=null?c.credits:'')+'학점')+'</dd></div>'
-        + '</dl>'
-        + '<p class="cmap-detail-desc">'+esc(c.desc||'')+'</p>'
-        + '<div class="cmap-detail-pre"><span class="cmap-pre-k mono">선수과목</span>'+preHtml+'</div>';
-      detail.hidden = false;
-      var rel = related(code);
-      nodeEls.forEach(function(n){
-        var cd = n.dataset.code;
-        n.classList.toggle('is-active', cd===code);
-        n.classList.toggle('is-dim', !rel[cd]);
-        n.setAttribute('aria-expanded', cd===code ? 'true':'false');
-      });
-      openCode = code;
-      drawLinks();
-      closeBtn.focus();
-    }
-
-    function closeDetail(){
-      if(!openCode) return;
-      var focusBack = mapEl.querySelector('#node-'+openCode);
-      detail.hidden = true;
-      nodeEls.forEach(function(n){ n.classList.remove('is-active','is-dim'); n.setAttribute('aria-expanded','false'); });
-      openCode = null;
-      drawLinks();
-      if(focusBack) focusBack.focus();
-    }
-
-    nodeEls.forEach(function(n){
-      n.addEventListener('click', function(){
-        var code = n.dataset.code;
-        if(openCode===code){ closeDetail(); } else { openDetail(code); }
-      });
-    });
-    closeBtn.addEventListener('click', closeDetail);
-    document.addEventListener('keydown', function(e){
-      if(e.key==='Escape' && openCode){ closeDetail(); }
-    });
-
-    /* 레이아웃 후 커넥터 그리기 + 리사이즈 대응 */
-    var rafDraw = function(){ requestAnimationFrame(drawLinks); };
-    rafDraw();
-    var rt;
-    window.addEventListener('resize', function(){ clearTimeout(rt); rt=setTimeout(rafDraw,80); });
-    window.addEventListener('load', rafDraw);
-    if(document.fonts && document.fonts.ready){ document.fonts.ready.then(rafDraw); }
+    }).join('');
+    curEl.innerHTML = '<div class="cur-groups">'+groupsHtml+'</div>';
   }
 
-  /* ── §04 전공필수 교과목 표 ── */
-  var tbody = document.getElementById('courseRows');
-  if (tbody) {
-    tbody.innerHTML = courses.map(function(c){
-      var m = META[c.code] || {};
-      var cl = m.cluster ? clusterOf[m.cluster] : null;
-      var field = cl
-        ? '<span class="field-tag"><span class="dot" style="--tag-c:var('+CVAR[m.cluster]+')" aria-hidden="true"></span>'+esc(cl.ko)+'</span>'
-        : '<span class="badge-gold">'+esc(m.badge||'종합 · 졸업연구')+'</span>';
-      return '<tr>'
-        + '<td class="c-code">'+esc(c.code)+'</td>'
-        + '<td class="c-name">'+esc(c.ko)+'</td>'
-        + '<td class="c-type">'+esc(c.type)+'</td>'
-        + '<td class="c-year">'+esc(c.year)+'학년</td>'
-        + '<td class="c-cr">'+esc(c.credits)+'학점</td>'
-        + '<td>'+field+'</td>'
-      + '</tr>';
-    }).join('');
+  /* ── §04 학부 전공 교과 — coursesUG(40) 검색·구분 필터 카드 ── */
+  var ugList   = document.getElementById('ugCourseList');
+  var ugSearch = document.getElementById('ugSearch');
+  var ugStatus = document.getElementById('ugStatus');
+  var ugPills  = document.getElementById('ugPills');
+  if (ugList && coursesUG.length) {
+    var ug = coursesUG;
+    var ugTotal = ug.length;
+    var ugIdx = ug.map(function(c){
+      return (String(c.code)+' '+String(c.ko)+' '+String(c.en)).toLowerCase();
+    });
+    /* 카드 HTML 1회 조합 (학점은 전 과목 공란 → 지어내지 않고 표기 생략) */
+    var ugCards = ug.map(function(c){
+      var typeCls = (c.type==='전공필수') ? 't-req' : 't-sel';
+      var descHtml = c.desc ? '<p class="ug-card-desc">'+esc(c.desc)+'</p>' : '';
+      var enHtml = c.en ? '<p class="ug-card-en">'+esc(c.en)+'</p>' : '';
+      return '<article class="ug-card">'
+        + '<div class="ug-card-top">'
+          + '<span class="ug-card-code mono">'+esc(c.code)+'</span>'
+          + '<span class="cur-badge '+typeCls+'">'+esc(c.type)+'</span>'
+        + '</div>'
+        + '<h3 class="ug-card-name">'+esc(c.ko)+'</h3>'
+        + enHtml + descHtml
+      + '</article>';
+    });
+
+    var reqN = ug.filter(function(c){ return c.type==='전공필수'; }).length;
+    var selN = ug.filter(function(c){ return c.type==='전공선택'; }).length;
+    var cAll = document.getElementById('ugCountAll'); if(cAll) cAll.textContent = ugTotal;
+    var cReq = document.getElementById('ugCountReq'); if(cReq) cReq.textContent = reqN;
+    var cSel = document.getElementById('ugCountSel'); if(cSel) cSel.textContent = selN;
+    var hudUg = document.getElementById('hudUgCount'); if(hudUg) hudUg.textContent = ugTotal;
+
+    var ugType = '';
+    function ugRender(){
+      var q = (ugSearch && ugSearch.value || '').trim().toLowerCase();
+      var out = [], n = 0;
+      for(var i=0;i<ug.length;i++){
+        if(ugType && ug[i].type!==ugType) continue;
+        if(q && ugIdx[i].indexOf(q)<0) continue;
+        out.push(ugCards[i]); n++;
+      }
+      if(!n){
+        ugList.innerHTML = '<div class="ug-empty">‘'+esc(q)+'’ 조건에 맞는 교과목이 없습니다 — 검색어 또는 구분을 바꿔 보세요.</div>';
+      } else {
+        ugList.innerHTML = out.join('');
+      }
+      if(ugStatus){
+        ugStatus.textContent = (n===ugTotal ? '총 '+ugTotal+'과목' : n+' / '+ugTotal+'과목');
+      }
+    }
+    if(ugSearch) ugSearch.addEventListener('input', ugRender);
+    if(ugPills){
+      ugPills.addEventListener('click', function(e){
+        var btn = e.target.closest('.ug-pill'); if(!btn) return;
+        ugType = btn.getAttribute('data-ug-type') || '';
+        Array.prototype.forEach.call(ugPills.querySelectorAll('.ug-pill'), function(b){
+          b.setAttribute('aria-pressed', b===btn ? 'true':'false');
+        });
+        ugRender();
+      });
+    }
+    ugRender();
   }
 
   /* ── 카운트업 (reduced-motion 존중) ── */
   document.querySelectorAll('[data-count]').forEach(function(el){
     var target = parseInt(el.dataset.count,10);
-    var plain = el.dataset.plain === '1'; /* 연도 등: 천단위 구분 없이 그대로 */
     if(reduce){ el.textContent = target; return; }
     var t0=null, dur=1200;
     function step(t){

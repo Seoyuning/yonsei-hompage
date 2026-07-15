@@ -17,7 +17,24 @@ document.documentElement.classList.add('js');})();
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Serif+KR:wght@400;500;600&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/main.css?v=d9" />
+<link rel="stylesheet" href="assets/css/main.css?v=d10" />
+<style>
+  /* 랩 익스플로러 확장 필드 (research 전용, 기존 .lab-row 그리드 유지) */
+  .lab-item { border-bottom:1px solid var(--line-soft); }
+  .lab-item .lab-row { border-bottom:0; }
+  .lab-row-kws { display:flex; flex-wrap:wrap; gap:.35rem; margin-top:.5rem; }
+  .chip--sm {
+    display:inline-flex; align-items:center;
+    font-family:var(--font-mono); font-size:.66rem; letter-spacing:.02em;
+    padding:.15rem .5rem; border:1px solid var(--line); border-radius:var(--r-card);
+    color:var(--text-2); background:var(--surface); line-height:1.4;
+  }
+  .lab-row-links {
+    display:flex; flex-wrap:wrap; gap:var(--sp-4) var(--sp-5);
+    padding:0 var(--sp-2) var(--sp-5); margin-top:calc(-1 * var(--sp-2));
+  }
+  .lab-ext { font-family:var(--font-mono); font-size:.72rem; letter-spacing:.02em; }
+</style>
 </head>
 <body>
 <a class="skip" href="#main" data-i18n="ui.skip">본문 바로가기</a>
@@ -39,6 +56,7 @@ document.documentElement.classList.add('js');})();
               <a href="about.html">학과장 인사말 · 비전</a>
               <a href="history.html">연혁 — Since 1962</a>
               <a href="contact.html">오시는 길 · 연락처</a>
+              <a href="staff.html">교직원 · 행정팀</a>
             </div>
             <div class="mega-aside">
               <p class="mega-desc">기독교 정신을 바탕으로 창의적 설계 역량과 글로벌 리더십을 갖춘 공학 인재를 양성합니다.</p>
@@ -53,6 +71,8 @@ document.documentElement.classList.add('js');})();
               <a href="academics.html">교육과정 · 이수체계</a>
               <a href="academics.html#courses">전공필수 교과목</a>
               <a href="academics.html#abeek">ABEEK 공학교육인증</a>
+              <a href="graduate.html">대학원 교과 · 졸업요건</a>
+              <a href="scholarships.html">장학 안내</a>
             </div>
             <div class="mega-aside">
               <p class="mega-desc">고체·열·유체·동역학 4대 역학에서 창의제품설계·학사논문까지, 종합 설계 능력을 완성합니다.</p>
@@ -67,7 +87,6 @@ document.documentElement.classList.add('js');})();
               <a href="research.html">연구실 33 — Lab Explorer</a>
               <a href="research.html#clusters">6개 연구 클러스터</a>
               <a href="lab.html">대표 연구실 소개</a>
-              <a href="engineering.html">공학 사양서 /engineering</a>
             </div>
             <div class="mega-aside">
               <p class="mega-desc">고체에서 유체, 나노에서 로보틱스까지 — 33개 연구실이 6개 분야로 맞물려 작동합니다.</p>
@@ -95,6 +114,7 @@ document.documentElement.classList.add('js');})();
               <a href="news.html">공지사항</a>
               <a href="news.html#news">뉴스 · 연구성과</a>
               <a href="news.html#seminar">세미나</a>
+              <a href="careers.html">취업 정보</a>
             </div>
             <div class="mega-aside">
               <p class="mega-desc">학부·대학원 공지, 연구 뉴스, BK 세미나를 한 허브에서 확인하세요.</p>
@@ -272,7 +292,6 @@ document.documentElement.classList.add('js');})();
           <li><a href="about.html">학과장 인사말</a></li>
           <li><a href="history.html">연혁</a></li>
           <li><a href="contact.html">오시는 길</a></li>
-          <li><a href="engineering.html">공학 사양서</a></li>
         </ul>
       </nav>
       <nav class="footer-col" aria-label="정책·안내">
@@ -293,8 +312,8 @@ document.documentElement.classList.add('js');})();
 
 <p id="langNote" hidden class="visually-hidden" aria-live="polite">English navigation applied. Full English content is in preparation.</p>
 
-<script src="assets/js/data.js?v=d9" defer></script>
-<script src="assets/js/main.js?v=d9" defer></script>
+<script src="assets/js/data.js?v=d10" defer></script>
+<script src="assets/js/main.js?v=d10" defer></script>
 <script defer>
 /* ═══ research 전용 — 클러스터 특집 + 랩 익스플로러 (data.js 단일 소스) ═══ */
 window.addEventListener('DOMContentLoaded', function () {
@@ -303,6 +322,27 @@ window.addEventListener('DOMContentLoaded', function () {
   if (!D || !UI) return;
   var esc = UI.escapeHtml, reduce = UI.reduce;
   function cvar(id) { return 'var(--c-' + id + ')'; }
+  /* 값이 있는 문자열만 통과 (플레이스홀더 "O명"·"0명"·"-"·빈값은 스킵) */
+  function realVal(v) {
+    if (v == null) return '';
+    var s = String(v).trim();
+    if (!s) return '';
+    if (/^[Oo0О]\s*명$/.test(s)) return '';
+    if (/^[-—–]+$/.test(s)) return '';
+    return s;
+  }
+  /* areaDetail(줄바꿈 텍스트) → 키워드 배열 (최대 4개) */
+  function areaKeywords(v) {
+    var s = realVal(v);
+    if (!s) return [];
+    return s.split(/\r?\n/).map(function (k) { return k.trim(); })
+      .filter(Boolean).slice(0, 4);
+  }
+  /* 외부링크 (새 창) — noopener */
+  function extLink(url, label) {
+    return '<a class="arrow-link lab-ext" href="' + encodeURI(url) + '" target="_blank" rel="noopener">' +
+      esc(label) + ' <span aria-hidden="true">↗</span><span class="visually-hidden"> (새 창)</span></a>';
+  }
 
   var byCluster = {};
   D.clusters.forEach(function (c) { byCluster[c.id] = D.labs.filter(function (l) { return l.cluster === c.id; }); });
@@ -350,15 +390,34 @@ window.addEventListener('DOMContentLoaded', function () {
   }
   function labRow(l) {
     var c = UI.clusterOf(l.cluster) || {};
-    return '<a class="lab-row" id="' + l.id + '" href="lab.html?id=' + l.id + '" data-cluster="' + l.cluster + '" style="--cluster-c:' + cvar(l.cluster) + '">' +
-      '<span class="lab-dot" aria-hidden="true"></span>' +
-      '<span class="lab-row-main">' +
-        '<span class="lab-row-name">' + esc(l.ko) + '</span>' +
-        '<span class="lab-row-sub">' + esc(l.en) + ' · PI ' + esc(l.pi) + ' · ' + esc(l.loc) + '</span>' +
-      '</span>' +
-      '<span class="lab-row-tag tag tag--' + l.cluster + '"><span class="dot" aria-hidden="true"></span>' + esc(c.ko || '') + '</span>' +
-      '<span class="lab-row-arr" aria-hidden="true">→</span>' +
-    '</a>';
+    /* 세부 연구주제 키워드 (있을 때만) — 행 내부 텍스트 (중첩 앵커 금지) */
+    var kws = areaKeywords(l.areaDetail);
+    var kwHtml = kws.length
+      ? '<span class="lab-row-kws" aria-label="세부 연구주제">' +
+          kws.map(function (k) { return '<span class="chip chip--sm">' + esc(k) + '</span>'; }).join('') +
+        '</span>'
+      : '';
+    /* 외부링크 (site/video) — 행 앵커 밖 형제 요소 (중첩 앵커 방지) */
+    var site = realVal(l.site), video = realVal(l.video);
+    var extHtml = (site || video)
+      ? '<div class="lab-row-links">' +
+          (site ? extLink(site, '연구실 홈페이지') : '') +
+          (video ? extLink(video, '소개 영상') : '') +
+        '</div>'
+      : '';
+    return '<div class="lab-item">' +
+      '<a class="lab-row" id="' + l.id + '" href="lab.html?id=' + l.id + '" data-cluster="' + l.cluster + '" style="--cluster-c:' + cvar(l.cluster) + '">' +
+        '<span class="lab-dot" aria-hidden="true"></span>' +
+        '<span class="lab-row-main">' +
+          '<span class="lab-row-name">' + esc(l.ko) + '</span>' +
+          '<span class="lab-row-sub">' + esc(l.en) + ' · PI ' + esc(l.pi) + ' · ' + esc(l.loc) + '</span>' +
+          kwHtml +
+        '</span>' +
+        '<span class="lab-row-tag tag tag--' + l.cluster + '"><span class="dot" aria-hidden="true"></span>' + esc(c.ko || '') + '</span>' +
+        '<span class="lab-row-arr" aria-hidden="true">→</span>' +
+      '</a>' +
+      extHtml +
+    '</div>';
   }
   function renderList() {
     var q = state.q.trim().toLowerCase();

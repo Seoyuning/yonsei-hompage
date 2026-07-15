@@ -3,11 +3,12 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>이용약관 — 연세대학교 기계공학부</title>
-<meta name="description" content="연세대학교 기계공학부 웹사이트 이용약관 — 서비스 범위, 저작권과 콘텐츠 이용 조건, 이용자의 의무, 정보의 정확성과 면책, 준거법." />
-<meta property="og:title" content="연세대학교 기계공학부" />
+<title>장학 안내 — 연세대학교 기계공학부</title>
+<meta name="description" content="연세대학교 기계공학부 장학 안내 — 교내 장학금 12종과 교외·기금 장학금 19종의 추천기준·선발인원·장학금액·선발시기를 한 곳에서. 세부 신청 절차는 학생지원팀·해당 재단 공지가 기준입니다." />
+<meta property="og:title" content="장학 안내 — 연세대학교 기계공학부" />
 <meta property="og:type" content="website" />
 <meta name="theme-color" content="#001a38" />
+<!-- FOUC 방지: CSS보다 먼저 저장된 테마 적용 (전 페이지 공통 규약 — TEMPLATE.md §0) -->
 <script>
 (function(){try{var f=localStorage.getItem('ysme-fs');if(f)document.documentElement.style.fontSize=f;}catch(e){}
 document.documentElement.classList.add('js');})();
@@ -21,7 +22,7 @@ document.documentElement.classList.add('js');})();
 <body>
 <a class="skip" href="#main" data-i18n="ui.skip">본문 바로가기</a>
 
-<!-- ═══ 헤더 (canonical) ═══ -->
+<!-- ═══ 헤더 (canonical — 전 페이지 동일, TEMPLATE.md §1) ═══ -->
 <header class="site-header">
   <div class="container header-inner">
     <a class="brand" href="index.html" aria-label="연세대학교 기계공학부 홈">
@@ -47,7 +48,7 @@ document.documentElement.classList.add('js');})();
           </div>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="academics.html" data-i18n="nav.academics">교육</a>
+          <a class="nav-link" href="academics.html" data-i18n="nav.academics" aria-current="page">교육</a>
           <div class="mega">
             <div class="mega-links">
               <a href="academics.html">교육과정 · 이수체계</a>
@@ -182,146 +183,77 @@ document.documentElement.classList.add('js');})();
 
 <main id="main">
 
-<!-- ═══ 페이지 히어로 (낮은 버전) ═══ -->
-<section class="page-hero page-hero--low" aria-labelledby="tm-title">
+<!-- ═══ 페이지 히어로 ═══ -->
+<section class="page-hero" aria-labelledby="ph-title">
   <div class="container grid12">
     <div class="col-8">
       <nav class="breadcrumb reveal" aria-label="브레드크럼">
         <a href="index.html">홈</a><span class="sep" aria-hidden="true">/</span>
-        <span aria-current="page">이용약관</span>
+        <span aria-current="page">장학 안내</span>
       </nav>
-      <h1 id="tm-title" class="reveal">이용약관</h1>
-      <p class="page-hero-lede reveal">연세대학교 기계공학부 웹사이트의 이용 조건과 콘텐츠 이용 범위, 이용자와 학부의 권리·의무를 규정합니다.</p>
+      <span class="eyebrow reveal">SCHOLARSHIPS</span>
+      <h1 id="ph-title" class="reveal">장학 안내</h1>
+      <p class="page-hero-lede reveal">교내 장학금과 교외·기금 장학금을 한 곳에 모았습니다. 추천기준·선발인원·장학금액·선발시기 등 안내는 참고용이며, 신청 절차와 최신 기준은 학생지원팀 장학파트 및 해당 재단 공지가 기준입니다.</p>
+      <nav class="chip-row reveal" aria-label="페이지 내 이동" style="margin-top:var(--sp-5)">
+        <a class="chip" href="#internal">교내 장학금</a>
+        <a class="chip" href="#external">교외 · 기금 장학금</a>
+      </nav>
     </div>
   </div>
 </section>
 
-<section class="section section--tight">
-  <div class="container policy-layout">
-
-    <!-- 목차 (데스크톱 sticky · 스크롤 스파이) -->
-    <nav class="policy-toc" aria-label="문서 목차">
-      <p class="overline mb-4">목차</p>
-      <ol id="ptocList">
-        <li><a href="#t1">제1조 목적</a></li>
-        <li><a href="#t2">제2조 정의</a></li>
-        <li><a href="#t3">제3조 약관의 효력·변경</a></li>
-        <li><a href="#t4">제4조 제공 서비스</a></li>
-        <li><a href="#t5">제5조 저작권·콘텐츠 이용</a></li>
-        <li><a href="#t6">제6조 이용자의 의무</a></li>
-        <li><a href="#t7">제7조 정보의 정확성·면책</a></li>
-        <li><a href="#t8">제8조 링크 사이트</a></li>
-        <li><a href="#t9">제9조 서비스의 변경·중단</a></li>
-        <li><a href="#t10">제10조 준거법·관할</a></li>
-        <li><a href="#t11">부칙</a></li>
-      </ol>
-    </nav>
-
-    <article class="policy">
-      <div class="note-box note-box--info reveal" role="note" style="margin-bottom:var(--sp-8)">
-        <b>프로토타입 고지</b> — 본 사이트는 「홈페이지 구축 경진대회」 출품 프로토타입입니다. 본 약관은 정식 운영 전환 시 적용을 전제로 한 기준 문서이며, 현 단계에서는 어떠한 법적 계약도 성립시키지 않습니다.
+<!-- ═══ §01 교내 장학금 ═══ -->
+<section class="section" id="internal" aria-labelledby="int-h">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="sec-num">교내 장학금</span>
+      <div class="sec-body">
+        <h2 id="int-h" class="sec-title">교내 장학금</h2>
+        <p class="sec-sub">학교가 직접 운영·지급하는 장학금입니다. 대상·성적 기준·신청시기는 매 학기 공지에 따라 달라질 수 있습니다.</p>
       </div>
-
-      <section id="t1" class="reveal">
-        <h2><span class="art-no">제1조</span>목적</h2>
-        <p>본 약관은 연세대학교 기계공학부(이하 “학부”)가 운영하는 웹사이트(이하 “사이트”)가 제공하는 정보 서비스의 이용 조건 및 절차, 이용자와 학부의 권리·의무·책임 사항을 규정함을 목적으로 합니다.</p>
-      </section>
-
-      <section id="t2" class="reveal">
-        <h2><span class="art-no">제2조</span>정의</h2>
-        <ul>
-          <li><b>“사이트”</b> — 학부가 학과 소개·교육·연구·소식 등의 정보를 제공하기 위해 운영하는 웹 서비스 일체</li>
-          <li><b>“이용자”</b> — 본 약관에 따라 사이트에 접속하여 사이트가 제공하는 서비스를 이용하는 모든 사람</li>
-          <li><b>“콘텐츠”</b> — 사이트에 게시된 텍스트, 이미지, 도면·그래픽(SVG), 데이터셋, 소스코드 등 일체의 정보</li>
-        </ul>
-      </section>
-
-      <section id="t3" class="reveal">
-        <h2><span class="art-no">제3조</span>약관의 효력 및 변경</h2>
-        <p>① 본 약관은 사이트에 게시함으로써 효력이 발생합니다. 사이트를 이용하는 경우 본 약관에 동의한 것으로 봅니다.</p>
-        <p>② 학부는 관계 법령을 위반하지 않는 범위에서 본 약관을 변경할 수 있으며, 변경 시 시행일과 변경 사유를 명시하여 시행일 7일 전부터 사이트에 공지합니다.</p>
-      </section>
-
-      <section id="t4" class="reveal">
-        <h2><span class="art-no">제4조</span>제공 서비스</h2>
-        <p>사이트는 회원가입 없이 누구나 이용할 수 있는 다음 서비스를 제공합니다.</p>
-        <ul>
-          <li>학부 소개 — 비전·연혁·조직·오시는 길</li>
-          <li>교육 정보 — 교육과정·전공필수 교과목·공학교육인증(ABEEK)</li>
-          <li>연구 정보 — 연구실 디렉터리·연구 클러스터·교수진 정보</li>
-          <li>소식 — 공지사항·뉴스·세미나 안내</li>
-          <li>입학·진로 안내 및 통합 검색·접근성 기능</li>
-        </ul>
-      </section>
-
-      <section id="t5" class="reveal">
-        <h2><span class="art-no">제5조</span>저작권 및 콘텐츠 이용</h2>
-        <p>① 사이트에 게시된 콘텐츠의 저작권은 별도 표시가 없는 한 학부(연세대학교)에 귀속됩니다.</p>
-        <p>② 이용자는 학술·교육 등 비영리 목적으로 출처(연세대학교 기계공학부)를 명시하고 콘텐츠를 인용할 수 있습니다. 영리 목적의 복제·배포·전송·2차적 저작물 작성은 학부의 사전 서면 동의를 받아야 합니다.</p>
-        <p>③ 사이트에 사용된 외부 자산은 다음 오픈 라이선스를 따릅니다.</p>
-        <div class="table-scroll">
-          <table class="spec-table spec-table--dense">
-            <caption class="visually-hidden">외부 자산 라이선스 목록</caption>
-            <thead><tr><th scope="col">자산</th><th scope="col">라이선스</th><th scope="col">저작자</th></tr></thead>
-            <tbody>
-              <tr><td>Pretendard (본문 서체)</td><td class="mono">SIL OFL 1.1</td><td>orioncactus (길형진)</td></tr>
-              <tr><td>IBM Plex Mono (모노 서체)</td><td class="mono">SIL OFL 1.1</td><td>IBM</td></tr>
-              <tr><td>Noto Serif KR (세리프 서체)</td><td class="mono">SIL OFL 1.1</td><td>Google</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <p>④ 연세대학교의 교표·엠블럼 등 UI/BI 자산의 사용은 본교 UI 규정을 따르며, 무단 사용을 금합니다.</p>
-      </section>
-
-      <section id="t6" class="reveal">
-        <h2><span class="art-no">제6조</span>이용자의 의무</h2>
-        <p>이용자는 다음 행위를 하여서는 안 됩니다.</p>
-        <ul>
-          <li>사이트의 정상적인 운영을 방해하는 행위 (과도한 자동화 요청, 취약점 악용 등)</li>
-          <li>게시된 교수진·구성원의 정보를 수집 목적 외로 무단 크롤링·가공·배포하는 행위</li>
-          <li>콘텐츠를 무단으로 영리에 이용하거나 출처를 삭제·왜곡하여 게시하는 행위</li>
-          <li>기타 관계 법령 및 공서양속에 반하는 행위</li>
-        </ul>
-      </section>
-
-      <section id="t7" class="reveal">
-        <h2><span class="art-no">제7조</span>정보의 정확성과 면책</h2>
-        <p>① 학부는 게시 정보의 정확성을 위해 노력하며, 사실 수치에는 출처와 확인일을 함께 표기하는 것을 원칙으로 합니다. 확인되지 않은 수치는 게시하지 않습니다.</p>
-        <p>② 다만 학사·입학 등 중요 사항의 최종 확인은 반드시 공식 문서(요람·모집요강) 및 담당 부서(<span class="mono">02-2123-4426</span>)를 통해 하시기 바랍니다. 게시 정보와 공식 문서가 다를 경우 공식 문서가 우선합니다.</p>
-        <p>③ 학부는 천재지변, 시스템 장애 등 불가항력으로 인한 서비스 중단 및 이용자의 귀책사유로 발생한 손해에 대하여 관계 법령이 허용하는 범위에서 책임을 지지 않습니다.</p>
-      </section>
-
-      <section id="t8" class="reveal">
-        <h2><span class="art-no">제8조</span>링크 사이트</h2>
-        <p>사이트에 포함된 외부 링크(연구실 홈페이지 등)는 이용자의 편의를 위한 것으로, 새 창으로 열림을 고지하며 링크된 사이트의 콘텐츠에 대해서는 해당 운영 주체가 책임을 집니다. 외부 링크는 운영 주체가 확인된 곳만 게시합니다.</p>
-      </section>
-
-      <section id="t9" class="reveal">
-        <h2><span class="art-no">제9조</span>서비스의 변경·중단</h2>
-        <p>학부는 시스템 점검·개선, 학사 일정 등 운영상 필요에 따라 서비스의 전부 또는 일부를 변경·중단할 수 있으며, 계획된 중단은 사전에 공지합니다.</p>
-      </section>
-
-      <section id="t10" class="reveal">
-        <h2><span class="art-no">제10조</span>준거법 및 관할</h2>
-        <p>본 약관은 대한민국 법령에 따라 해석되며, 사이트 이용과 관련하여 분쟁이 발생하는 경우 민사소송법에 따른 관할 법원에 제소합니다.</p>
-      </section>
-
-      <section id="t11" class="reveal">
-        <h2><span class="art-no">부칙</span></h2>
-        <p>① 본 약관은 <b>2026년 7월 3일</b>부터 시행합니다.</p>
-        <p>② 개인정보의 처리에 관한 사항은 <a href="privacy.html">개인정보처리방침</a>을, 웹 접근성에 관한 사항은 <a href="accessibility.html">접근성 선언</a>을 따릅니다.</p>
-      </section>
-
-      <div class="doc-actions reveal">
-        <a class="btn btn--ghost" href="privacy.html">개인정보처리방침 <span class="arr" aria-hidden="true">→</span></a>
-        <a class="btn btn--ghost" href="accessibility.html">접근성 선언 <span class="arr" aria-hidden="true">→</span></a>
-      </div>
-    </article>
+    </div>
+    <div class="def-list-grid reveal" id="scholarInternal" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:var(--sp-4)">
+      <noscript><p class="muted">교내 장학금 세부 안내는 연세대학교 학생지원팀 장학 안내 및 학부 행정팀 <span class="mono">02-2123-4426</span>으로 문의해 주세요.</p></noscript>
+    </div>
   </div>
 </section>
+
+<!-- ═══ §02 교외 · 기금 장학금 ═══ -->
+<section class="section section--alt" id="external" aria-labelledby="ext-h">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="sec-num">교외 · 기금</span>
+      <div class="sec-body">
+        <h2 id="ext-h" class="sec-title">교외 · 기금 장학금</h2>
+        <p class="sec-sub">외부 재단·동문 기금 등이 후원하는 장학금입니다. 추천기준·선발인원·장학금액·선발시기는 각 재단 공지가 기준입니다.</p>
+      </div>
+    </div>
+    <div class="def-list-grid reveal" id="scholarExternal" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,380px),1fr));gap:var(--sp-4)">
+      <noscript><p class="muted">교외·기금 장학금 세부 안내는 각 재단 공지 및 학부 행정팀 <span class="mono">02-2123-4426</span>으로 문의해 주세요.</p></noscript>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ §03 문의 CTA 밴드 — 네이비 + 골드 ═══ -->
+<section class="section section--tight" aria-labelledby="cta-h">
+  <div class="container">
+    <div class="cta-band reveal">
+      <div class="cta-inner">
+        <p class="eyebrow" style="color:var(--accent-gold)">문의 안내</p>
+        <h2 id="cta-h">장학금 관련 문의는<br>학부 행정팀으로.</h2>
+        <p>신청 절차·자격 요건 등 세부 사항은 학생지원팀 장학파트와 해당 재단 공지가 기준입니다. 학과 단위 문의는 학부 행정팀 <span class="mono">02-2123-4426</span>으로 연락해 주세요.</p>
+        <div class="cta-actions">
+          <a class="btn btn--gold" href="contact.html">문의 · 오시는 길 <span class="arr" aria-hidden="true">→</span></a>
+          <a class="btn btn--on-navy" href="academics.html">교육과정 보기</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 </main>
 
-<!-- ═══ 푸터 (canonical) ═══ -->
+<!-- ═══ 푸터 (canonical — 4컬럼, 네이비 #001a38) ═══ -->
 <footer class="site-footer">
   <div class="container">
     <div class="footer-grid">
@@ -359,7 +291,7 @@ document.documentElement.classList.add('js');})();
         <h2 data-i18n="ftr.policy">정책·안내</h2>
         <ul>
           <li><a href="privacy.html">개인정보처리방침</a></li>
-          <li><a href="terms.html" aria-current="page">이용약관</a></li>
+          <li><a href="terms.html">이용약관</a></li>
           <li><a href="accessibility.html">접근성 선언</a></li>
         </ul>
       </nav>
@@ -376,23 +308,51 @@ document.documentElement.classList.add('js');})();
 <script src="assets/js/data.js?v=d10" defer></script>
 <script src="assets/js/main.js?v=d10" defer></script>
 <script defer>
-/* ═══ 정책 문서 공용 — 목차 스크롤 스파이 ═══ */
+/* ═══ scholarships 전용 — 교내/교외 장학금 렌더 (data.js 단일 소스) ═══ */
 window.addEventListener('DOMContentLoaded', function () {
   'use strict';
-  var links = document.querySelectorAll('#ptocList a');
-  if (!links.length || !('IntersectionObserver' in window)) return;
-  var map = {};
-  links.forEach(function (a) { map[a.getAttribute('href').slice(1)] = a; });
-  var current = null;
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (en) {
-      if (!en.isIntersecting) return;
-      if (current) current.removeAttribute('aria-current');
-      current = map[en.target.id];
-      if (current) current.setAttribute('aria-current', 'true');
-    });
-  }, { rootMargin: '-20% 0px -70% 0px' });
-  document.querySelectorAll('.policy section[id]').forEach(function (s) { io.observe(s); });
+  var D = window.YSME, UI = window.YSMEUI;
+  if (!D || !UI) return;
+  var esc = UI.escapeHtml;
+
+  /* ── §01 교내 장학금 — name + '·'/'/'로 구분된 detail 문장 ── */
+  var intBox = document.getElementById('scholarInternal');
+  if (intBox) {
+    var internal = D.scholarshipsInternal || [];
+    if (internal.length) {
+      intBox.innerHTML = internal.map(function (s) {
+        var lines = String(s.detail || '')
+          .split('/')
+          .map(function (t) { return t.replace(/^[\s·]+/, '').trim(); })
+          .filter(function (t) { return t.length; });
+        var body = lines.length
+          ? '<ul class="muted" style="margin:var(--sp-3) 0 0;padding-left:1.1em;display:flex;flex-direction:column;gap:.35rem">' +
+              lines.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>'
+          : '';
+        return '<article class="panel">' +
+          '<h3 style="margin:0">' + esc(s.name) + '</h3>' + body + '</article>';
+      }).join('');
+    }
+  }
+
+  /* ── §02 교외 · 기금 장학금 — name + fields 객체를 def-list로 ── */
+  var extBox = document.getElementById('scholarExternal');
+  if (extBox) {
+    var external = D.scholarshipsExternal || [];
+    if (external.length) {
+      extBox.innerHTML = external.map(function (s) {
+        var fields = s.fields || {};
+        var rows = Object.keys(fields).map(function (k) {
+          return '<div class="def-row"><dt class="k">' + esc(k) + '</dt>' +
+            '<dd class="v">' + esc(fields[k]) + '</dd></div>';
+        }).join('');
+        return '<article class="panel">' +
+          '<span class="overline">교외 · 기금</span>' +
+          '<h3 style="margin:.35rem 0 var(--sp-3)">' + esc(s.name) + '</h3>' +
+          '<dl class="def-list">' + rows + '</dl></article>';
+      }).join('');
+    }
+  }
 });
 </script>
 </body>

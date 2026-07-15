@@ -339,59 +339,21 @@ a{color:inherit;text-decoration:none}
   </footer>
 </main>
 
+<!-- 공유 단일 데이터 소스 (window.YSME) -->
+<script src="../prototype-v3/assets/js/data.js?v=d10"></script>
 <script>
 (function(){
   'use strict';
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ── 데이터 (data.js에서 인라인 하드코딩) ── */
-  var clusters = [
-    { id:'solid',   ko:'고체·구조·재료역학',   en:'Solid Mechanics & Design',            count:7, desc:'재료가 힘을 받아 변형되고 파괴에 이르는 전 과정 — 견디는 것의 과학.' },
-    { id:'thermal', ko:'열·유체·에너지',       en:'Thermal / Fluids / Energy',           count:7, desc:'열이 전달되고 유체가 흐르는 모든 경로 — 엔진에서 연료전지까지.' },
-    { id:'manuf',   ko:'생산·정밀제조',        en:'Manufacturing & Tribology',           count:4, desc:'마찰·가공·공정 시스템 — 도면을 실물로 만드는 기술.' },
-    { id:'nanobio', ko:'마이크로·나노·바이오', en:'Micro / Nano / Bio',                  count:6, desc:'나노 공정에서 바이오칩까지 — 보이지 않는 스케일의 기계.' },
-    { id:'optics',  ko:'광학·이미징·계측',     en:'Optics / Imaging / Sensing',          count:4, desc:'빛으로 재고 보이지 않는 것을 본다 — 이미징·정밀 계측.' },
-    { id:'dyn',     ko:'동역학·제어·로보·AI',  en:'Dynamics / Control / Robotics / AI',  count:5, desc:'움직임을 예측하고 제어한다 — 로보틱스·지능 시스템.' }
-  ];
-  var CVAR = { solid:'--c-solid', thermal:'--c-thermal', manuf:'--c-manuf',
-               nanobio:'--c-nanobio', optics:'--c-optics', dyn:'--c-dyn' };
-
-  /* 연구실 33개 — data.js labs (ko/en/pi/cluster/loc), url은 검증된 2곳만 */
-  var labs = [
-    { id:'cmm',       ko:'전산재료역학',            en:'Computational Mechanics of Materials', pi:'강건욱', cluster:'solid',   loc:'공학관 N204' },
-    { id:'nanofab',   ko:'마이크로 나노 응용',      en:'Nano Fabrication / Micro Optics',      pi:'강신일', cluster:'nanobio', loc:'공학관 C330' },
-    { id:'optiq',     ko:'광학 양자',               en:'Optics Quantum',                       pi:'김경식', cluster:'optics',  loc:'공학관 A534' },
-    { id:'tribo',     ko:'트라이볼로지',            en:'Tribology Research',                   pi:'김대은', cluster:'manuf',   loc:'공학관 A491' },
-    { id:'max',       ko:'멀티스케일구조설계·극한제조', en:'MAX — Multiscale Architecture & eXtreme Manufacturing', pi:'김석', cluster:'solid', loc:'공학관 C314' },
-    { id:'noel',      ko:'나노광전자시스템',        en:'Nano-Optoelectronics System',          pi:'김영주', cluster:'optics',  loc:'공학원 D332' },
-    { id:'mems',      ko:'마이크로시스템',          en:'MEMS',                                 pi:'김용준', cluster:'nanobio', loc:'공학관 A583' },
-    { id:'atel',      ko:'어드밴스드 열공학',       en:'Advanced ThermoEngineering',           pi:'김우철', cluster:'thermal', loc:'공학관 A310', role:'학과장' },
-    { id:'ssfl',      ko:'미소유체',                en:'Small-Scale Fluids',                   pi:'김원정', cluster:'thermal', loc:'공학관 A386', role:'학부지도교수' },
-    { id:'nanotrans', ko:'나노기전시스템',          en:'Nano Transducers',                     pi:'김종백', cluster:'nanobio', loc:'산학협동관 520' },
-    { id:'idml',      ko:'지능소자공정',            en:'Intelligent Device & Manufacturing',   pi:'김해진', cluster:'manuf',   loc:'공학관 N206' },
-    { id:'bes',       ko:'바이오메디컬·에너지 시스템', en:'Biomedical and Energy System',       pi:'류원형', cluster:'nanobio', loc:'공학관 N105' },
-    { id:'csai',      ko:'계산과학–인공지능',       en:'Computational Science–AI',             pi:'민경민', cluster:'dyn',     loc:'공학관 N201', role:'대회 담당' },
-    { id:'mfgmech',   ko:'생산·메카트로닉스',       en:'Manufacturing & Mechatronics',         pi:'민병권', cluster:'manuf',   loc:'산학협동관 308' },
-    { id:'optomecha', ko:'진동·광메카트로닉스',     en:'Vibration and Opto-Mechatronics',      pi:'박노철', cluster:'dyn',     loc:'공학원 332D', url:'http://optomecha.yonsei.ac.kr' },
-    { id:'ice',       ko:'내연기관·청정에너지',     en:'ICE & Clean Energy',                   pi:'송순호', cluster:'thermal', loc:'공학관 A180', url:'http://cleanenergy.yonsei.ac.kr' },
-    { id:'hcair',     ko:'인간중심AI로보틱스',      en:'Human-Centered AI Robotics',           pi:'신동준', cluster:'dyn',     loc:'공학관 C426' },
-    { id:'mss',       ko:'정밀제어시스템',          en:'Micro Servo System',                   pi:'양현석', cluster:'dyn',     loc:'공학관 A283' },
-    { id:'ssd',       ko:'전산구조설계',            en:'Systematic Structure Design',          pi:'유정훈', cluster:'solid',   loc:'공학관 C334' },
-    { id:'mfgmecha',  ko:'정밀 생산 메카트로닉스',  en:'Manufacturing Mechatronics',           pi:'윤준영', cluster:'manuf',   loc:'공학관 A190' },
-    { id:'httd',      ko:'열전달·열설계',           en:'Heat Transfer & Thermal Design',       pi:'이남규', cluster:'thermal', loc:'공학관 N207' },
-    { id:'mpdo',      ko:'멀티피직스 최적설계·PHM', en:'Multi-Physics Design Optimization & PHM', pi:'이종수', cluster:'solid', loc:'공학관 A286/C323' },
-    { id:'msfd',      ko:'멀티스케일 유체역학',     en:'Multi-scale Fluid Dynamics',           pi:'이준상', cluster:'thermal', loc:'공학관 A277/N204' },
-    { id:'turb',      ko:'난류',                    en:'Turbulence',                           pi:'이창훈', cluster:'thermal', loc:'공학관 A178' },
-    { id:'biomech',   ko:'생체역학·연성재료',       en:'Biomechanics & Soft Materials',        pi:'이형석', cluster:'solid',   loc:'공학관 A581/N104' },
-    { id:'micromech', ko:'마이크로역학',            en:'Micro Mechanics',                      pi:'장용훈', cluster:'solid',   loc:'공학관 A110' },
-    { id:'nemd',      ko:'나노 융합 소자',          en:'NEMD',                                 pi:'전성찬', cluster:'nanobio', loc:'공학관 N204' },
-    { id:'isid',      ko:'지능형 구조·통합설계',    en:'Intelligent Structures & Integrated Design', pi:'전흥재', cluster:'solid', loc:'공학관 C332' },
-    { id:'biochip',   ko:'바이오칩',                en:'Biochip Technology',                   pi:'정효일', cluster:'nanobio', loc:'공학관 A108' },
-    { id:'cii',       ko:'산술 광학 영상',          en:'Computational Imaging & Instrumentation', pi:'주철민', cluster:'optics', loc:'공학관 N104' },
-    { id:'mlcs',      ko:'기계학습·제어 시스템',    en:'Machine Learning and Control Systems', pi:'최종은', cluster:'dyn',     loc:'공학관 N206' },
-    { id:'hais',      ko:'정밀 측정·지능형 센싱',   en:'High-Dim. Accurate Measurement & Intelligent Sensing', pi:'현재상', cluster:'optics', loc:'공학관 C315' },
-    { id:'sep',       ko:'지속가능 에너지 플랫폼',  en:'Multiphysics Energy System',           pi:'홍종섭', cluster:'thermal', loc:'공학관 A288' }
-  ];
+  /* ── 데이터 (공유 단일 소스 window.YSME · data.js) ── */
+  var D = window.YSME;
+  var clusters = D.clusters;
+  var labs = D.labs;
+  var professors = D.professors;
+  /* 새 6분야 id → 콘솔 팔레트 CSS 토큰 매핑 (기존 토큰 유지) */
+  var CVAR = { solid:'--c-solid', thermal:'--c-thermal', manufacturing:'--c-manuf',
+               micro:'--c-nanobio', optics:'--c-optics', dynamics:'--c-dyn' };
 
   var TOTAL = labs.length; // 33
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){
@@ -402,7 +364,8 @@ a{color:inherit;text-decoration:none}
   var byCluster = {};
   clusters.forEach(function(c){ byCluster[c.id] = []; });
   labs.forEach(function(l){ if(byCluster[l.cluster]) byCluster[l.cluster].push(l); });
-  clusters.forEach(function(c,i){ c.code = 'C-' + String(i+1).padStart(2,'0'); });
+  /* 표시용 count는 실제 lab.cluster 집계로 재산정(데이터 정합 보장) */
+  clusters.forEach(function(c,i){ c.count = byCluster[c.id].length; c.code = 'C-' + String(i+1).padStart(2,'0'); });
   var maxCount = Math.max.apply(null, clusters.map(function(c){ return c.count; }));
 
   /* ── 요약 브레이크다운 데이터바 ── */
@@ -458,21 +421,32 @@ a{color:inherit;text-decoration:none}
   /* ── 클러스터 블록 × 6 ── */
   function pin(){ return '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-5.686 7-11a7 7 0 1 0-14 0c0 5.314 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>'; }
 
+  /* labId → professor (role·보직 라벨 조회용) */
+  var profByLab = {};
+  (professors || []).forEach(function(p){ if(p.labId) profByLab[p.labId] = p; });
+
   function labRow(l, c){
-    var labLink = l.url
-      ? '<a class="lk ext" href="'+esc(l.url)+'" target="_blank" rel="noopener">'+esc(l.ko)+' <span aria-hidden="true">↗</span><span class="visually-hidden"> (새 창)</span></a>'
+    var prof = profByLab[l.id];
+    var role = prof && prof.role ? prof.role : '';
+    var nameKo = l.site
+      ? '<a class="ext" style="color:var(--txt-hi)" href="'+esc(l.site)+'" target="_blank" rel="noopener">'+esc(l.ko)+'</a>'
       : esc(l.ko);
-    var nameKo = l.url
-      ? '<a class="ext" style="color:var(--txt-hi)" href="'+esc(l.url)+'" target="_blank" rel="noopener">'+esc(l.ko)+'</a>'
-      : esc(l.ko);
-    var act = (l.url
-      ? '<a class="ext" href="'+esc(l.url)+'" target="_blank" rel="noopener">사이트 ↗</a>'
-      : '<a href="#'+esc(l.id)+'">상세</a>');
+    /* 세부 주제 키워드 (areaDetail 줄바꿈 → 콤마) */
+    var kw = '';
+    if(l.areaDetail){
+      var items = l.areaDetail.split('\n').map(function(s){ return s.trim(); }).filter(Boolean);
+      if(items.length) kw = '<div class="en" title="'+esc(items.join(' · '))+'">'+esc(items.join(' · '))+'</div>';
+    }
+    /* 링크 열: 연구실 홈페이지 / 소개 영상 (값 있을 때만) */
+    var links = [];
+    if(l.site)  links.push('<a class="ext" href="'+esc(l.site)+'" target="_blank" rel="noopener">연구실 홈페이지 ↗<span class="visually-hidden"> (새 창)</span></a>');
+    if(l.video) links.push('<a class="ext" href="'+esc(l.video)+'" target="_blank" rel="noopener">소개 영상 ↗<span class="visually-hidden"> (새 창)</span></a>');
+    var act = links.length ? links.join('<br>') : '<a href="#'+esc(l.id)+'">상세</a>';
     return '<div class="lab-row" id="'+esc(l.id)+'" role="group" aria-label="'+esc(l.ko+' · '+l.pi)+'">'
       + '<div class="l-idx tnum">'+esc(l.idx)+'</div>'
-      + '<div class="l-name"><div class="ko">'+nameKo+'</div></div>'
+      + '<div class="l-name"><div class="ko">'+nameKo+'</div>'+kw+'</div>'
       + '<div class="l-pi"><span class="pi"><span class="cdot" aria-hidden="true"></span>'+esc(l.pi)+' 교수</span>'
-        + (l.role ? '<div class="role">'+esc(l.role)+'</div>' : '') + '</div>'
+        + (role ? '<div class="role">'+esc(role)+'</div>' : '') + '</div>'
       + '<div class="l-loc">'+pin()+esc(l.loc)+'</div>'
       + '<div class="l-act">'+act+'</div>'
       + '</div>';

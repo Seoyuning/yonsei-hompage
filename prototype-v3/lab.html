@@ -17,7 +17,28 @@ document.documentElement.classList.add('js');})();
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Serif+KR:wght@400;500;600&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/main.css?v=d9" />
+<link rel="stylesheet" href="assets/css/main.css?v=d10" />
+<style>
+  /* 연구실 상세 확장 필드 (lab 전용) */
+  .lab-kws { display:flex; flex-wrap:wrap; gap:.35rem; }
+  .chip--sm {
+    display:inline-flex; align-items:center;
+    font-family:var(--font-mono); font-size:.66rem; letter-spacing:.02em;
+    padding:.15rem .5rem; border:1px solid var(--line); border-radius:var(--r-card);
+    color:var(--text-2); background:var(--surface); line-height:1.4;
+  }
+  .intern-list { display:flex; flex-direction:column; gap:var(--sp-5); }
+  .intern-item { display:grid; grid-template-columns:8rem minmax(0,1fr); gap:var(--sp-4); align-items:start; }
+  .intern-item dt {
+    font-family:var(--font-mono); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--text-2); padding-top:.15rem;
+  }
+  .intern-item dd { margin:0; color:var(--text); line-height:1.7; }
+  .intern-area { margin:0; padding-left:1.1rem; display:flex; flex-direction:column; gap:.3rem; }
+  @media (max-width:40rem){
+    .intern-item { grid-template-columns:1fr; gap:.35rem; }
+  }
+</style>
 </head>
 <body>
 <a class="skip" href="#main" data-i18n="ui.skip">본문 바로가기</a>
@@ -39,6 +60,7 @@ document.documentElement.classList.add('js');})();
               <a href="about.html">학과장 인사말 · 비전</a>
               <a href="history.html">연혁 — Since 1962</a>
               <a href="contact.html">오시는 길 · 연락처</a>
+              <a href="staff.html">교직원 · 행정팀</a>
             </div>
             <div class="mega-aside">
               <p class="mega-desc">기독교 정신을 바탕으로 창의적 설계 역량과 글로벌 리더십을 갖춘 공학 인재를 양성합니다.</p>
@@ -53,6 +75,8 @@ document.documentElement.classList.add('js');})();
               <a href="academics.html">교육과정 · 이수체계</a>
               <a href="academics.html#courses">전공필수 교과목</a>
               <a href="academics.html#abeek">ABEEK 공학교육인증</a>
+              <a href="graduate.html">대학원 교과 · 졸업요건</a>
+              <a href="scholarships.html">장학 안내</a>
             </div>
             <div class="mega-aside">
               <p class="mega-desc">고체·열·유체·동역학 4대 역학에서 창의제품설계·학사논문까지, 종합 설계 능력을 완성합니다.</p>
@@ -67,7 +91,6 @@ document.documentElement.classList.add('js');})();
               <a href="research.html">연구실 33 — Lab Explorer</a>
               <a href="research.html#clusters">6개 연구 클러스터</a>
               <a href="lab.html">대표 연구실 소개</a>
-              <a href="engineering.html">공학 사양서 /engineering</a>
             </div>
             <div class="mega-aside">
               <p class="mega-desc">고체에서 유체, 나노에서 로보틱스까지 — 33개 연구실이 6개 분야로 맞물려 작동합니다.</p>
@@ -95,6 +118,7 @@ document.documentElement.classList.add('js');})();
               <a href="news.html">공지사항</a>
               <a href="news.html#news">뉴스 · 연구성과</a>
               <a href="news.html#seminar">세미나</a>
+              <a href="careers.html">취업 정보</a>
             </div>
             <div class="mega-aside">
               <p class="mega-desc">학부·대학원 공지, 연구 뉴스, BK 세미나를 한 허브에서 확인하세요.</p>
@@ -225,6 +249,23 @@ document.documentElement.classList.add('js');})();
   </div>
 </section>
 
+<!-- ═══ §1.5 학부 인턴 모집 (실제 값이 있을 때만 표시) ═══ -->
+<section class="section" id="internSection" hidden aria-labelledby="intern-h">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="sec-num">학부 인턴</span>
+      <div class="sec-body">
+        <h2 id="intern-h" class="sec-title">학부 인턴 모집</h2>
+        <p class="sec-sub">이 연구실의 학부 연구 인턴 안내입니다.</p>
+      </div>
+      <a class="sec-more arrow-link" href="research.html">다른 연구실 보기 <span class="arr" aria-hidden="true">→</span></a>
+    </div>
+    <div class="panel panel--edge reveal">
+      <dl class="intern-list" id="internList"></dl>
+    </div>
+  </div>
+</section>
+
 <!-- ═══ §02 같은 클러스터의 연구실 — 하단 리스트 행 ═══ -->
 <section class="section section--alt" aria-labelledby="sib-h">
   <div class="container">
@@ -296,7 +337,6 @@ document.documentElement.classList.add('js');})();
           <li><a href="about.html">학과장 인사말</a></li>
           <li><a href="history.html">연혁</a></li>
           <li><a href="contact.html">오시는 길</a></li>
-          <li><a href="engineering.html">공학 사양서</a></li>
         </ul>
       </nav>
       <nav class="footer-col" aria-label="정책·안내">
@@ -317,8 +357,8 @@ document.documentElement.classList.add('js');})();
 
 <p id="langNote" hidden class="visually-hidden" aria-live="polite">English navigation applied. Full English content is in preparation.</p>
 
-<script src="assets/js/data.js?v=d9" defer></script>
-<script src="assets/js/main.js?v=d9" defer></script>
+<script src="assets/js/data.js?v=d10" defer></script>
+<script src="assets/js/main.js?v=d10" defer></script>
 <script defer>
 /* ═══ lab 상세 전용 — ?id= 쿼리 기반 렌더 (data.js 단일 소스, fetch 금지) ═══ */
 window.addEventListener('DOMContentLoaded', function () {
@@ -328,6 +368,21 @@ window.addEventListener('DOMContentLoaded', function () {
   var esc = UI.escapeHtml;
   function cvar(id) { return 'var(--c-' + id + ')'; }
   var artKinds = { solid: 'grid', thermal: 'wave', manuf: 'gear', nanobio: 'turbine', optics: 'wave', dyn: 'arm' };
+  /* 값이 있는 문자열만 통과 (플레이스홀더 "O명"·"0명"·"-"·빈값은 스킵) */
+  function realVal(v) {
+    if (v == null) return '';
+    var s = String(v).trim();
+    if (!s) return '';
+    if (/^[Oo0О]\s*명$/.test(s)) return '';
+    if (/^[-—–]+$/.test(s)) return '';
+    return s;
+  }
+  /* 줄바꿈 텍스트 → 항목 배열 */
+  function lines(v) {
+    var s = realVal(v);
+    if (!s) return [];
+    return s.split(/\r?\n/).map(function (k) { return k.trim(); }).filter(Boolean);
+  }
 
   var profByLab = {};
   D.professors.forEach(function (p) { profByLab[p.labId] = p; });
@@ -372,6 +427,14 @@ window.addEventListener('DOMContentLoaded', function () {
   var prof = profByLab[lab.id] || {};
   var cl = UI.clusterOf(lab.cluster) || {};
   var cc = cvar(lab.cluster);
+  /* 확장 필드 (값이 있을 때만) — site가 우선, 없으면 legacy url */
+  var siteUrl = realVal(lab.site) || realVal(lab.url);
+  var videoUrl = realVal(lab.video);
+  var areaKws = lines(lab.areaDetail).slice(0, 8);
+  function extLink(url, label) {
+    return '<a class="link-sweep" href="' + encodeURI(url) + '" target="_blank" rel="noopener">' +
+      esc(label) + ' ↗<span class="visually-hidden"> (새 창)</span></a>';
+  }
 
   /* ── 히어로 ── */
   document.title = lab.ko + ' 연구실 — 연세대학교 기계공학부';
@@ -383,7 +446,8 @@ window.addEventListener('DOMContentLoaded', function () {
     '<div class="labx-meta-item"><dt>PI</dt><dd><a class="link-sweep" href="people.html#' + (prof.id || '') + '">' + esc(lab.pi) + ' ' + esc(prof.rank || '') + '</a></dd></div>' +
     '<div class="labx-meta-item"><dt>위치</dt><dd>' + esc(lab.loc) + '</dd></div>' +
     '<div class="labx-meta-item"><dt>클러스터</dt><dd><a class="link-sweep" href="research.html#' + lab.cluster + '">' + esc(cl.ko || '') + '</a></dd></div>' +
-    (lab.url ? '<div class="labx-meta-item"><dt>홈페이지</dt><dd><a class="link-sweep" href="' + lab.url + '" target="_blank" rel="noopener">WEB ↗<span class="visually-hidden"> (새 창)</span></a></dd></div>' : '');
+    (siteUrl ? '<div class="labx-meta-item"><dt>홈페이지</dt><dd>' + extLink(siteUrl, 'WEB') + '</dd></div>' : '') +
+    (videoUrl ? '<div class="labx-meta-item"><dt>소개영상</dt><dd>' + extLink(videoUrl, 'VIDEO') + '</dd></div>' : '');
 
   /* ── 와이드 플레이스홀더 (듀오톤 16/9 + 라인아트) ── */
   var ph = document.getElementById('labPh');
@@ -401,8 +465,11 @@ window.addEventListener('DOMContentLoaded', function () {
     ['CLUSTER', '<a class="link-sweep" href="research.html#' + lab.cluster + '">' + esc(cl.ko || '') + '</a> <span class="text-mono" style="font-size:var(--step--1);color:var(--text-2)">' + esc(cl.en || '') + '</span>'],
     ['LOCATION', '<span class="text-mono">' + esc(lab.loc) + '</span>']
   ];
-  if (lab.url) rows.push(['WEB', '<a class="link-sweep" href="' + lab.url + '" target="_blank" rel="noopener">' +
-    esc(lab.url.replace(/^https?:\/\//, '')) + ' ↗<span class="visually-hidden"> (새 창)</span></a>']);
+  if (siteUrl) rows.push(['WEB', '<a class="link-sweep" href="' + encodeURI(siteUrl) + '" target="_blank" rel="noopener">' +
+    esc(siteUrl.replace(/^https?:\/\//, '')) + ' ↗<span class="visually-hidden"> (새 창)</span></a>']);
+  if (videoUrl) rows.push(['VIDEO', extLink(videoUrl, '소개 영상')]);
+  if (areaKws.length) rows.push(['AREA', '<span class="lab-kws">' +
+    areaKws.map(function (k) { return '<span class="chip chip--sm">' + esc(k) + '</span>'; }).join('') + '</span>']);
   document.getElementById('sheetBody').innerHTML = rows.map(function (r) {
     return '<tr><th scope="row">' + r[0] + '</th><td>' + r[1] + '</td></tr>';
   }).join('');
@@ -420,9 +487,26 @@ window.addEventListener('DOMContentLoaded', function () {
       '<div class="pi-links">' +
         '<a class="arrow-link" href="people.html#' + (prof.id || '') + '">디렉터리 프로필 <span class="arr" aria-hidden="true">→</span></a>' +
         (prof.storyPage ? '<a class="arrow-link" href="' + prof.storyPage + '">교수 스토리 <span class="arr" aria-hidden="true">→</span></a>' : '') +
-        (lab.url ? '<a class="arrow-link" href="' + lab.url + '" target="_blank" rel="noopener">홈페이지 ↗<span class="visually-hidden"> (새 창)</span></a>' : '') +
+        (siteUrl ? '<a class="arrow-link" href="' + encodeURI(siteUrl) + '" target="_blank" rel="noopener">홈페이지 ↗<span class="visually-hidden"> (새 창)</span></a>' : '') +
+        (videoUrl ? '<a class="arrow-link" href="' + encodeURI(videoUrl) + '" target="_blank" rel="noopener">소개 영상 ↗<span class="visually-hidden"> (새 창)</span></a>' : '') +
       '</div>' +
     '</div>';
+
+  /* ── §1.5 학부 인턴 모집 (실제 값이 있을 때만) ── */
+  var internTarget = realVal(lab.internTarget);
+  var internBenefit = realVal(lab.internBenefit);
+  var internArea = lines(lab.internArea);
+  if (internTarget || internBenefit || internArea.length) {
+    var iRows = [];
+    if (internTarget) iRows.push(['모집대상', esc(internTarget)]);
+    if (internBenefit) iRows.push(['혜택', esc(internBenefit)]);
+    if (internArea.length) iRows.push(['연구분야', '<ul class="intern-area">' +
+      internArea.map(function (a) { return '<li>' + esc(a) + '</li>'; }).join('') + '</ul>']);
+    document.getElementById('internList').innerHTML = iRows.map(function (r) {
+      return '<div class="intern-item"><dt>' + r[0] + '</dt><dd>' + r[1] + '</dd></div>';
+    }).join('');
+    document.getElementById('internSection').hidden = false;
+  }
 
   /* ── §02 같은 클러스터 연구실 ── */
   var sibs = D.labs.filter(function (l) { return l.cluster === lab.cluster && l.id !== lab.id; });

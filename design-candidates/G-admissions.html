@@ -261,6 +261,62 @@ a{color:inherit;text-decoration:none}
 .cta h2{font-family:var(--kr);font-weight:800;font-size:clamp(1.4rem,1rem + 2vw,2rem);color:#fff;line-height:1.15;margin-bottom:.9rem}
 .cta p{font-family:var(--kr);font-size:.9rem;color:var(--txt);max-width:40rem;line-height:1.7;margin-bottom:1.2rem}
 
+/* ── 장학 안내 (교내/교외 패널·리스트) ── */
+.subtabs{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.4rem}
+.subtabs .st-lab{display:inline-flex;align-items:center;gap:.5rem;
+  border:1px solid var(--line);color:var(--dim);
+  font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;
+  padding:.4rem .7rem}
+.subtabs .st-lab .cnt{color:var(--coral);font-variant-numeric:tabular-nums}
+.sch-block{margin-top:1.6rem}
+.sch-block:first-child{margin-top:0}
+.sch-block > .overline{font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);display:block;margin-bottom:.9rem}
+.sch-block > .overline .cnt{color:var(--coral);font-variant-numeric:tabular-nums;margin-left:.4rem}
+/* 교내: details 리스트 */
+.sch-list{border-top:1px solid var(--line)}
+.sch-list details{border-bottom:1px solid var(--line-soft)}
+.sch-list summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:auto 1fr auto;gap:.9rem;align-items:baseline;
+  padding:.85rem .2rem;transition:color .12s}
+.sch-list summary::-webkit-details-marker{display:none}
+.sch-list summary:hover{color:var(--txt-hi)}
+.sch-list summary .idx{font-family:var(--mono);font-size:.6rem;letter-spacing:.06em;color:var(--coral);
+  border:1px solid var(--line);padding:.12rem .4rem;line-height:1.3;align-self:start;margin-top:.1rem;font-variant-numeric:tabular-nums}
+.sch-list summary .nm{font-family:var(--kr);font-size:.9rem;color:var(--txt-hi);line-height:1.4}
+.sch-list summary .mk{position:relative;width:12px;height:12px;flex:none;align-self:start;margin-top:.3rem}
+.sch-list summary .mk::before,.sch-list summary .mk::after{content:"";position:absolute;background:var(--coral);transition:transform .2s}
+.sch-list summary .mk::before{top:5px;left:0;width:12px;height:1px}
+.sch-list summary .mk::after{top:0;left:5px;width:1px;height:12px}
+.sch-list details[open] summary .mk::after{transform:scaleY(0)}
+.sch-list .sbody{padding:0 .2rem 1rem 2.4rem;font-family:var(--kr);font-size:.82rem;color:var(--txt);line-height:1.7;max-width:54rem}
+/* 교외: 카드 그리드 (정의 행) */
+.sch-cards{display:grid;gap:1.1rem;grid-template-columns:repeat(auto-fit,minmax(19rem,1fr))}
+.sch-card{position:relative;border:1px solid var(--line);background:var(--panel);padding:1.2rem 1.2rem 1.3rem}
+.sch-card::before{content:"";position:absolute;top:-1px;left:-1px;width:9px;height:9px;
+  border-top:1px solid var(--coral);border-left:1px solid var(--coral)}
+.sch-card h4{font-family:var(--kr);font-weight:700;font-size:.95rem;color:var(--txt-hi);line-height:1.35;margin-bottom:.8rem;
+  display:flex;gap:.55rem;align-items:baseline}
+.sch-card h4 .idx{font-family:var(--mono);font-size:.58rem;letter-spacing:.06em;color:var(--coral);
+  border:1px solid var(--line);padding:.1rem .38rem;line-height:1.3;flex:none;font-variant-numeric:tabular-nums;align-self:start;margin-top:.05rem}
+.sch-card .def{border-top:1px solid var(--line-soft)}
+.sch-card .def .drow{grid-template-columns:5.2rem 1fr}
+.sch-card .def .drow .k{font-family:var(--mono);font-size:.56rem;letter-spacing:.08em;text-transform:uppercase;color:var(--coral)}
+.sch-card .def .drow .v{font-family:var(--kr);font-size:.78rem;color:var(--txt);text-align:left;letter-spacing:0;line-height:1.55;font-variant-numeric:normal;white-space:normal}
+@media (max-width:520px){.sch-card .def .drow{grid-template-columns:1fr}.sch-card .def .drow .v{margin-top:.15rem}}
+
+/* ── 취업 정보 (게시판 리스트) ── */
+.job-head{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:.9rem}
+.job-head .overline{font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+.job-head .cnt{font-family:var(--mono);font-size:.62rem;color:var(--coral);font-variant-numeric:tabular-nums}
+.job-list{border-top:1px solid var(--line)}
+.job-row{display:grid;grid-template-columns:3.6rem 1fr auto;gap:1rem;align-items:baseline;
+  padding:.72rem .2rem;border-bottom:1px solid var(--line-soft);transition:background .12s}
+.job-row:hover{background:rgba(255,255,255,.025)}
+.job-row:hover .job-title{color:var(--coral)}
+.job-no{font-family:var(--mono);font-size:.64rem;color:var(--dimmer);font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.job-title{font-family:var(--kr);font-size:.86rem;color:var(--txt-hi);line-height:1.45;min-width:0;transition:color .12s}
+.job-title .ext{font-family:var(--mono);color:var(--coral);margin-left:.35rem;font-size:.8em}
+.job-date{font-family:var(--mono);font-size:.66rem;color:var(--dim);font-variant-numeric:tabular-nums;white-space:nowrap;letter-spacing:.02em}
+
 /* ── 하단 HUD (카운터 텔레메트리) ── */
 .hud-bottom{border-top:1px solid var(--line);margin-top:2.6rem;
   background:linear-gradient(rgba(8,9,12,.4),var(--bg))}
@@ -285,6 +341,10 @@ a{color:inherit;text-decoration:none}
   .post-cat{grid-row:1;grid-column:1}
   .post-date{grid-row:1;grid-column:2;justify-self:end}
   .post-title{grid-row:2;grid-column:1 / -1}
+  .job-row{grid-template-columns:auto 1fr;gap:.4rem 1rem}
+  .job-no{grid-row:1;grid-column:1;align-self:center}
+  .job-date{grid-row:1;grid-column:2;justify-self:end}
+  .job-title{grid-row:2;grid-column:1 / -1}
   .hud-bottom-inner{flex-direction:column;align-items:flex-start}
   .foot-tl{text-align:left}
 }
@@ -322,6 +382,8 @@ a{color:inherit;text-decoration:none}
     <nav class="anchor-row" aria-label="페이지 내 이동">
       <a href="#undergraduate">학부 입학</a>
       <a href="#graduate">대학원 진학</a>
+      <a href="#scholarships">장학 안내</a>
+      <a href="#jobs">취업 정보</a>
       <a href="#careers">진로 경로</a>
       <a href="#alumni">동문 · 대외협력</a>
       <a href="#faq">FAQ</a>
@@ -444,10 +506,57 @@ a{color:inherit;text-decoration:none}
     </div>
   </section>
 
-  <!-- ═══ §03 진로 경로 (페르소나/트랙) ═══ -->
-  <section class="wrap section" id="careers" aria-labelledby="car-h">
+  <!-- ═══ §03 장학 안내 ═══ -->
+  <section class="wrap section" id="scholarships" aria-labelledby="sch-h">
     <div class="sec-head">
       <span class="sec-num">SEC 03</span>
+      <div class="sec-body">
+        <h2 id="sch-h" class="sec-title kr">장학 안내<span class="en">Scholarships</span></h2>
+        <p class="sec-sub kr">교내 장학과 교외 · 기금 장학을 함께 안내합니다. 세부 기준 · 금액 · 선발 시기는 학사 공지 · 각 재단 안내가 최종 기준입니다.</p>
+      </div>
+      <a class="sec-more" href="G-about.html">문의 · 학부 행정 <span class="arr" aria-hidden="true">→</span></a>
+    </div>
+
+    <div class="subtabs" aria-hidden="true">
+      <span class="st-lab">교내 장학 <span class="cnt" id="sch-in-cnt">0</span></span>
+      <span class="st-lab">교외 · 기금 장학 <span class="cnt" id="sch-ex-cnt">0</span></span>
+    </div>
+
+    <div class="sch-block">
+      <span class="overline">교내 장학<span class="cnt" id="sch-in-cnt2">0</span></span>
+      <div class="sch-list" id="schInternal" aria-label="교내 장학 목록"></div>
+    </div>
+
+    <div class="sch-block">
+      <span class="overline">교외 · 기금 장학<span class="cnt" id="sch-ex-cnt2">0</span></span>
+      <div class="sch-cards" id="schExternal" aria-label="교외 · 기금 장학 목록"></div>
+    </div>
+
+    <p class="note kr">본 목록은 학부 데이터 기준이며, 신청 방법 · 마감은 매 학기 학사 공지와 각 장학재단 안내를 확인하세요.</p>
+  </section>
+
+  <!-- ═══ §04 취업 정보 ═══ -->
+  <section class="wrap section" id="jobs" aria-labelledby="job-h">
+    <div class="sec-head">
+      <span class="sec-num">SEC 04</span>
+      <div class="sec-body">
+        <h2 id="job-h" class="sec-title kr">취업 정보<span class="en">Jobs &amp; Recruiting</span></h2>
+        <p class="sec-sub kr">기업 채용 · 인턴 · 연구인력 모집 등 학부에 접수된 취업 공고입니다. 최신순으로 정렬되며, 제목을 누르면 원문 공고로 이동합니다.</p>
+      </div>
+      <a class="sec-more" href="https://me.yonsei.ac.kr/me/community/job.do" target="_blank" rel="noopener">전체 공고 <span class="arr" aria-hidden="true">↗</span></a>
+    </div>
+    <div class="job-head">
+      <span class="overline">채용 · 모집 공고</span>
+      <span class="cnt"><span id="job-cnt">0</span> 건</span>
+    </div>
+    <div class="job-list" id="jobList" aria-label="취업 공고 목록"></div>
+    <p class="note kr">공고는 학부 취업 게시판을 단일 소스로 정렬합니다. 접수 · 마감 등 세부 사항은 각 공고 원문을 확인하세요.</p>
+  </section>
+
+  <!-- ═══ §05 진로 경로 (페르소나/트랙) ═══ -->
+  <section class="wrap section" id="careers" aria-labelledby="car-h">
+    <div class="sec-head">
+      <span class="sec-num">SEC 05</span>
       <div class="sec-body">
         <h2 id="car-h" class="sec-title kr">진로 경로</h2>
         <p class="sec-sub kr">같은 4대 역학에서 출발해도 나아가는 길은 다양합니다. 대표적인 진로 · 취업 트랙 네 가지를 페르소나별로 정렬했습니다.</p>
@@ -502,10 +611,10 @@ a{color:inherit;text-decoration:none}
     <p class="note kr">취업률 · 진출 기업 등 통계는 검증된 공개 데이터를 확보한 뒤 게시할 예정입니다.</p>
   </section>
 
-  <!-- ═══ §04 동문 · 대외협력 ═══ -->
+  <!-- ═══ §06 동문 · 대외협력 ═══ -->
   <section class="wrap section" id="alumni" aria-labelledby="alu-h">
     <div class="sec-head">
-      <span class="sec-num">SEC 04</span>
+      <span class="sec-num">SEC 06</span>
       <div class="sec-body">
         <h2 id="alu-h" class="sec-title kr">동문 · 대외협력</h2>
         <p class="sec-sub kr">1964년 첫 졸업생부터 — 60년을 이어 온 연세 기계인의 네트워크.</p>
@@ -549,10 +658,10 @@ a{color:inherit;text-decoration:none}
     </div>
   </section>
 
-  <!-- ═══ §05 FAQ ═══ -->
+  <!-- ═══ §07 FAQ ═══ -->
   <section class="wrap section" id="faq" aria-labelledby="faq-h">
     <div class="sec-head">
-      <span class="sec-num">SEC 05</span>
+      <span class="sec-num">SEC 07</span>
       <div class="sec-body">
         <h2 id="faq-h" class="sec-title kr">자주 묻는 질문</h2>
         <p class="sec-sub kr">입학 · 진학 · 진로에서 가장 많이 받는 질문 여섯 가지.</p>
@@ -586,7 +695,7 @@ a{color:inherit;text-decoration:none}
     </div>
   </section>
 
-  <!-- ═══ §06 문의 CTA 밴드 ═══ -->
+  <!-- ═══ §08 문의 CTA 밴드 ═══ -->
   <section class="wrap section" aria-labelledby="cta-h">
     <div class="cta">
       <p class="eyebrow">문의 안내</p>
@@ -624,10 +733,76 @@ a{color:inherit;text-decoration:none}
   </footer>
 </main>
 
+<script src="../prototype-v3/assets/js/data.js?v=d10"></script>
 <script>
 (function(){
   'use strict';
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ── 실데이터 렌더 (window.YSME) ── */
+  var D = window.YSME || {};
+  function esc(s){
+    return String(s == null ? '' : s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+  function pad2(n){ return n < 10 ? '0' + n : '' + n; }
+
+  /* 교내 장학 — details 리스트 */
+  var schIn = D.scholarshipsInternal || [];
+  var elIn = document.getElementById('schInternal');
+  if(elIn){
+    elIn.innerHTML = schIn.map(function(s, i){
+      return '<details>' +
+        '<summary><span class="idx">' + pad2(i+1) + '</span>' +
+        '<span class="nm kr">' + esc(s.name) + '</span>' +
+        '<span class="mk" aria-hidden="true"></span></summary>' +
+        '<div class="sbody kr">' + esc(s.detail) + '</div>' +
+        '</details>';
+    }).join('');
+  }
+
+  /* 교외·기금 장학 — 카드(정의 행) */
+  var schEx = D.scholarshipsExternal || [];
+  var elEx = document.getElementById('schExternal');
+  if(elEx){
+    elEx.innerHTML = schEx.map(function(s, i){
+      var f = s.fields || {};
+      var rows = Object.keys(f).map(function(k){
+        return '<div class="drow"><span class="k">' + esc(k) + '</span>' +
+               '<span class="v kr">' + esc(f[k]) + '</span></div>';
+      }).join('');
+      return '<article class="sch-card">' +
+        '<h4 class="kr"><span class="idx">' + pad2(i+1) + '</span>' + esc(s.name) + '</h4>' +
+        '<div class="def">' + rows + '</div>' +
+        '</article>';
+    }).join('');
+  }
+
+  /* 장학 카운터 */
+  ['sch-in-cnt','sch-in-cnt2'].forEach(function(id){ var e=document.getElementById(id); if(e) e.textContent = schIn.length; });
+  ['sch-ex-cnt','sch-ex-cnt2'].forEach(function(id){ var e=document.getElementById(id); if(e) e.textContent = schEx.length; });
+
+  /* 취업 공고 — 게시판 리스트 (최신순) */
+  var jobs = (D.jobs || []).slice().sort(function(a, b){
+    var da = String(a.date || '').replace(/\./g,''), db = String(b.date || '').replace(/\./g,'');
+    if(da !== db) return db.localeCompare(da);
+    return String(b.no||'').localeCompare(String(a.no||''), undefined, {numeric:true});
+  });
+  var elJob = document.getElementById('jobList');
+  if(elJob){
+    elJob.innerHTML = jobs.map(function(j){
+      var url = String(j.url || '');
+      var safeHref = /^https?:\/\//i.test(url) ? esc(url) : '#';
+      return '<a class="job-row" href="' + safeHref + '" target="_blank" rel="noopener">' +
+        '<span class="job-no">' + esc(j.no) + '</span>' +
+        '<span class="job-title kr">' + esc(j.title) +
+        '<span class="ext" aria-hidden="true">↗</span></span>' +
+        '<time class="job-date" datetime="' + esc(String(j.date||'').replace(/\./g,'-')) + '">' + esc(j.date) + '</time>' +
+        '</a>';
+    }).join('');
+  }
+  var jc = document.getElementById('job-cnt'); if(jc) jc.textContent = jobs.length;
 
   /* ── FAQ: 하나만 펼침 (네이티브 details 배타 오픈) ── */
   var faq = document.getElementById('faqList');

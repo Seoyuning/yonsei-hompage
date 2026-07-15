@@ -40,12 +40,12 @@ window.YSME = {
   ],
 
   clusters: [
-    { id: 'solid',   ko: '고체·구조·재료역학',   en: 'Solid Mechanics & Design',   count: 7 },
-    { id: 'thermal', ko: '열·유체·에너지',       en: 'Thermal / Fluids / Energy',  count: 7 },
-    { id: 'manuf',   ko: '생산·정밀제조',        en: 'Manufacturing & Tribology',  count: 4 },
-    { id: 'nanobio', ko: '마이크로·나노·바이오', en: 'Micro / Nano / Bio',         count: 6 },
-    { id: 'optics',  ko: '광학·이미징·계측',     en: 'Optics / Imaging / Sensing', count: 4 },
-    { id: 'dyn',     ko: '동역학·제어·로보·AI',  en: 'Dynamics / Control / Robotics / AI', count: 5 }
+    { id: 'solid',   ko: '고체·구조·재료역학',   en: 'Solid Mechanics & Design',   count: 7, desc: '재료가 힘을 받아 변형되고 파괴에 이르는 전 과정 — 견디는 것의 과학.' },
+    { id: 'thermal', ko: '열·유체·에너지',       en: 'Thermal / Fluids / Energy',  count: 7, desc: '열이 전달되고 유체가 흐르는 모든 경로 — 엔진에서 연료전지까지.' },
+    { id: 'manuf',   ko: '생산·정밀제조',        en: 'Manufacturing & Tribology',  count: 4, desc: '마찰·가공·공정 시스템 — 도면을 실물로 만드는 기술.' },
+    { id: 'nanobio', ko: '마이크로·나노·바이오', en: 'Micro / Nano / Bio',         count: 6, desc: '나노 공정에서 바이오칩까지 — 보이지 않는 스케일의 기계.' },
+    { id: 'optics',  ko: '광학·이미징·계측',     en: 'Optics / Imaging / Sensing', count: 4, desc: '빛으로 재고 보이지 않는 것을 본다 — 이미징·정밀 계측.' },
+    { id: 'dyn',     ko: '동역학·제어·로보·AI',  en: 'Dynamics / Control / Robotics / AI', count: 5, desc: '움직임을 예측하고 제어한다 — 로보틱스·지능 시스템.' }
   ],
 
   /* 교수 33명 — 출처: faculty_list.do · 최종확인 2026-06-30
@@ -126,16 +126,18 @@ window.YSME = {
   ],
   labsSource: { source: 'lab2.do', verifiedAt: '2026-06-30' },
 
-  /* 전공필수 교과목 8과목 — 출처: 부록B 리서치 §졸업요건 (교과목 체계 실측, 각 3학점=24) */
+  /* 전공필수 교과목 8과목 — 출처: 부록B 리서치 §졸업요건 (교과목 체계 실측, 각 3학점=24)
+     year: 권장 이수 학년 · credits: 학점 · prereq: 선수과목 코드 배열 · desc: 교과 개요
+     (선수관계·설명은 표준 교과 내용 수준의 담백한 사실. 세부는 학사요람 기준) */
   courses: [
-    { code: 'MEU2600', ko: '고체역학',      type: '전공필수' },
-    { code: 'MEU2610', ko: '열역학',        type: '전공필수' },
-    { code: 'MEU2640', ko: '유체역학',      type: '전공필수' },
-    { code: 'MEU2650', ko: '동역학',        type: '전공필수' },
-    { code: 'MEU2104', ko: '기계공학실험1', type: '전공필수' },
-    { code: 'MEU3005', ko: '기계공학실험2', type: '전공필수' },
-    { code: 'MEU4300', ko: '창의제품설계',  type: '전공필수' },
-    { code: 'MEU4400', ko: '학사논문',      type: '전공필수' }
+    { code: 'MEU2600', ko: '고체역학',      type: '전공필수', year: 2, credits: 3, prereq: [], desc: '재료가 하중을 받을 때의 응력·변형률과 파괴를 다룬다. 구조 해석과 기계 설계의 출발점.' },
+    { code: 'MEU2610', ko: '열역학',        type: '전공필수', year: 2, credits: 3, prereq: [], desc: '에너지와 열·일의 변환 법칙을 배운다. 열기관·냉동·발전 등 에너지 시스템의 기반.' },
+    { code: 'MEU2640', ko: '유체역학',      type: '전공필수', year: 2, credits: 3, prereq: [], desc: '유체의 흐름과 압력·유동을 해석한다. 유체기계·유동 설계의 토대.' },
+    { code: 'MEU2650', ko: '동역학',        type: '전공필수', year: 2, credits: 3, prereq: [], desc: '물체의 운동과 힘의 관계를 다룬다. 진동·제어·로보틱스로 이어지는 역학.' },
+    { code: 'MEU2104', ko: '기계공학실험1', type: '전공필수', year: 2, credits: 2, prereq: [], desc: '4대 역학의 원리를 실험으로 확인하고 계측·데이터 분석을 익힌다.' },
+    { code: 'MEU3005', ko: '기계공학실험2', type: '전공필수', year: 3, credits: 2, prereq: ['MEU2104'], desc: '심화 실험. 설계-제작-계측을 종합적으로 수행한다.' },
+    { code: 'MEU4300', ko: '창의제품설계',  type: '전공필수', year: 4, credits: 3, prereq: ['MEU2600', 'MEU2610', 'MEU2640', 'MEU2650'], desc: '팀 단위로 실제 제품을 기획·설계·제작하는 종합 설계 과목.' },
+    { code: 'MEU4400', ko: '학사논문',      type: '전공필수', year: 4, credits: 3, prereq: ['MEU4300'], desc: '지도교수와 함께 연구 주제를 탐구해 논문으로 완성한다.' }
   ],
   coursesSource: { source: 'me.yonsei.ac.kr 교과과정', verifiedAt: '2026-06-30' },
 

@@ -10,14 +10,14 @@
 <meta name="theme-color" content="#001a38" />
 <!-- FOUC 방지: CSS보다 먼저 저장된 테마 적용 (전 페이지 공통 규약 — TEMPLATE.md §0) -->
 <script>
-(function(){try{var t=localStorage.getItem('ysme-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}
+(function(){try{var f=localStorage.getItem('ysme-fs');if(f)document.documentElement.style.fontSize=f;}catch(e){}
 document.documentElement.classList.add('js');})();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Serif+KR:wght@400;500;600&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/main.css" />
+<link rel="stylesheet" href="assets/css/main.css?v=d9" />
 </head>
 <body>
 <a class="skip" href="#main" data-i18n="ui.skip">본문 바로가기</a>
@@ -128,9 +128,10 @@ document.documentElement.classList.add('js');})();
       <div class="lang-toggle" role="group" aria-label="언어 선택">
         <button data-lang="ko" aria-pressed="true">KO</button><button data-lang="en" aria-pressed="false">EN</button>
       </div>
-      <button class="icon-btn" id="themeBtn" aria-label="다크 모드 전환" aria-pressed="false">
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9c-4.97 0-9-4.03-9-9Z"/></svg>
-      </button>
+      <div class="fs-toggle" role="group" aria-label="글자 크기 조절">
+        <button class="fs-btn" data-fs="down" aria-label="글자 작게" title="글자 작게">A<sup>−</sup></button>
+        <button class="fs-btn" data-fs="up" aria-label="글자 크게" title="글자 크게">A<sup>+</sup></button>
+      </div>
       <button class="icon-btn nav-toggle" id="navToggle" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mobileMenu">
         <span class="burger-box" aria-hidden="true"><span></span><span></span><span></span></span>
       </button>
@@ -188,13 +189,11 @@ document.documentElement.classList.add('js');})();
         <a href="about.html">소개</a><span class="sep" aria-hidden="true">/</span>
         <span aria-current="page">연혁</span>
       </nav>
-      <p class="page-hero-eyebrow eyebrow reveal">§ History</p>
       <h1 id="page-h" class="reveal">건설공학과에서<br>기계공학부까지.</h1>
       <p class="page-hero-lede reveal">1958년 건설공학과 신설에서 오늘의 기계공학부까지 — 14개 마일스톤으로 읽는 학부의 궤적.</p>
     </div>
     <div class="col-4 col-start-9 reveal">
       <p class="hist-since" aria-label="Since 1962">Since<br><em>1962</em></p>
-      <p class="page-hero-meta" style="margin-top:var(--sp-4)">1962.12 기계공학과 분리<br>SOURCE faculty/history.do<br>VERIFIED 2026-07-02</p>
     </div>
   </div>
 </section>
@@ -203,10 +202,10 @@ document.documentElement.classList.add('js');})();
 <section class="section" id="timeline" aria-labelledby="tl-h">
   <div class="container">
     <div class="sec-head reveal">
-      <span class="sec-num">§01 / 연혁</span>
+      <span class="sec-num">연혁</span>
       <div class="sec-body">
         <h2 id="tl-h" class="sec-title">1958 → 현재</h2>
-        <p class="sec-sub">스크롤을 내리면 마일스톤이 순서대로 드러납니다. 금색 노드는 학부의 변곡점.</p>
+        <p class="sec-sub">건설공학과 신설부터 오늘까지, 학부의 주요 마일스톤.</p>
       </div>
       <a class="sec-more arrow-link" href="about.html">학부 소개 <span class="arr" aria-hidden="true">→</span></a>
     </div>
@@ -235,7 +234,7 @@ document.documentElement.classList.add('js');})();
         <blockquote class="pull reveal" style="margin-top:var(--sp-10)">
           멈추지 않는 50년,<br>100년을 향한 도전.
         </blockquote>
-        <p class="motto-note reveal" style="margin-top:var(--sp-4)">— 연세대학교 기계공학부 연구 모토 · 출처: faculty/history.do · research.do · 최종확인 2026-07-02. ※ 주요 마일스톤 기준이며, 세부 연혁은 학부 확인 후 보강합니다.</p>
+        <p class="motto-note reveal" style="margin-top:var(--sp-4)">— 연세대학교 기계공학부 연구 모토</p>
       </div>
     </div>
   </div>
@@ -313,8 +312,8 @@ document.documentElement.classList.add('js');})();
 
 <p id="langNote" hidden class="visually-hidden" aria-live="polite">English navigation applied. Full English content is in preparation.</p>
 
-<script src="assets/js/data.js" defer></script>
-<script src="assets/js/main.js" defer></script>
+<script src="assets/js/data.js?v=d9" defer></script>
+<script src="assets/js/main.js?v=d9" defer></script>
 <script defer>
 /* ═══ history 전용 — YSME.history 렌더 + 스크롤 리빌(stagger) 타임라인 ═══
    · data.js 단일 소스: 마일스톤 14 + 시대 라벨 + 「현재」 종단 노드

@@ -10,14 +10,14 @@
 <meta name="theme-color" content="#001a38" />
 <!-- FOUC 방지: CSS보다 먼저 저장된 테마 적용 (전 페이지 공통 규약 — TEMPLATE.md §0) -->
 <script>
-(function(){try{var t=localStorage.getItem('ysme-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}
+(function(){try{var f=localStorage.getItem('ysme-fs');if(f)document.documentElement.style.fontSize=f;}catch(e){}
 document.documentElement.classList.add('js');})();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Serif+KR:wght@400;500;600&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/main.css" />
+<link rel="stylesheet" href="assets/css/main.css?v=d9" />
 </head>
 <body>
 <a class="skip" href="#main" data-i18n="ui.skip">본문 바로가기</a>
@@ -128,9 +128,10 @@ document.documentElement.classList.add('js');})();
       <div class="lang-toggle" role="group" aria-label="언어 선택">
         <button data-lang="ko" aria-pressed="true">KO</button><button data-lang="en" aria-pressed="false">EN</button>
       </div>
-      <button class="icon-btn" id="themeBtn" aria-label="다크 모드 전환" aria-pressed="false">
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9c-4.97 0-9-4.03-9-9Z"/></svg>
-      </button>
+      <div class="fs-toggle" role="group" aria-label="글자 크기 조절">
+        <button class="fs-btn" data-fs="down" aria-label="글자 작게" title="글자 작게">A<sup>−</sup></button>
+        <button class="fs-btn" data-fs="up" aria-label="글자 크게" title="글자 크게">A<sup>+</sup></button>
+      </div>
       <button class="icon-btn nav-toggle" id="navToggle" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mobileMenu">
         <span class="burger-box" aria-hidden="true"><span></span><span></span><span></span></span>
       </button>
@@ -187,12 +188,8 @@ document.documentElement.classList.add('js');})();
         <a href="index.html">홈</a><span class="sep" aria-hidden="true">/</span>
         <span aria-current="page">학부 소개</span>
       </nav>
-      <p class="page-hero-eyebrow eyebrow reveal">§ About the School</p>
-      <h1 id="page-h" class="reveal">정밀과 신뢰의 가치 위에서,<br>멈추지 않는 도전.</h1>
+      <h1 id="page-h" class="reveal">연세대학교 기계공학부</h1>
       <p class="page-hero-lede reveal">1962년 기계공학과 독립 이래 반세기가 넘는 시간 동안, 연세대학교 기계공학부는 교육과 연구의 중심에서 정밀과 신뢰의 가치를 지켜 왔습니다.</p>
-    </div>
-    <div class="col-4 col-start-9 reveal">
-      <p class="page-hero-meta">UPDATED 2026-07<br>SOURCE me.yonsei.ac.kr<br>SINCE 1962</p>
     </div>
   </div>
 </section>
@@ -201,10 +198,10 @@ document.documentElement.classList.add('js');})();
 <section class="section" id="greeting" aria-labelledby="greeting-h">
   <div class="container">
     <div class="sec-head reveal">
-      <span class="sec-num">§01 / 인사말</span>
+      <span class="sec-num">인사말</span>
       <div class="sec-body">
         <h2 id="greeting-h" class="sec-title">학과장 인사말</h2>
-        <p class="sec-sub">기계공학부의 오늘과 내일을 이끄는 학과장의 말.</p>
+        <p class="sec-sub">기계공학부의 오늘과 내일을 이끄는 학과장의 인사말입니다.</p>
       </div>
       <a class="sec-more arrow-link" href="people.html#kim-woochul">학과장 프로필 <span class="arr" aria-hidden="true">→</span></a>
     </div>
@@ -231,7 +228,6 @@ document.documentElement.classList.add('js');})();
           <b>김우철</b><span class="sign-en">Woochul Kim</span>
           <a class="arrow-link" href="people.html#kim-woochul">프로필 <span class="arr" aria-hidden="true">→</span></a>
         </div>
-        <p class="motto-note" style="margin-top:var(--sp-4)">※ 인사말 문안은 시안이며, 최종본은 학과장 감수 후 게시합니다.</p>
       </div>
     </div>
   </div>
@@ -241,7 +237,7 @@ document.documentElement.classList.add('js');})();
 <section class="section section--alt" id="vision" aria-labelledby="vision-h">
   <div class="container">
     <div class="sec-head reveal">
-      <span class="sec-num">§02 / 비전</span>
+      <span class="sec-num">비전</span>
       <div class="sec-body">
         <h2 id="vision-h" class="sec-title">비전 · 교육철학</h2>
         <p class="sec-sub">기독교 정신을 바탕으로 창의적 설계 역량과 글로벌 리더십을 갖춘 공학 인재를 양성합니다.</p>
@@ -265,7 +261,7 @@ document.documentElement.classList.add('js');})();
         <div class="goal-row" role="listitem"><span class="goal-n">GOAL 04</span><span class="goal-t">융합·협업</span><span class="goal-d">분야를 넘나드는 협업과 시스템적 사고.</span></div>
         <div class="goal-row" role="listitem"><span class="goal-n">GOAL 05</span><span class="goal-t">글로벌 소통</span><span class="goal-d">국제 무대에서 소통하는 공학자의 언어와 윤리.</span></div>
       </div>
-      <p class="motto-note" style="margin-top:var(--sp-4)">※ 5대 교육목표는 예시 구성이며, 학부 공식 교육목표 확인 후 반영합니다. 교육과정 상세는 <a class="link-sweep" href="academics.html">교육 페이지</a>를 참조하세요.</p>
+      <p class="motto-note" style="margin-top:var(--sp-4)">교육과정 상세는 <a class="link-sweep" href="academics.html">교육 페이지</a>를 참조하세요.</p>
     </div>
   </div>
 </section>
@@ -274,7 +270,7 @@ document.documentElement.classList.add('js');})();
 <section class="section" id="organization" aria-labelledby="org-h">
   <div class="container">
     <div class="sec-head reveal">
-      <span class="sec-num">§03 / 조직</span>
+      <span class="sec-num">조직</span>
       <div class="sec-body">
         <h2 id="org-h" class="sec-title">조직 · 행정</h2>
         <p class="sec-sub">학과장과 학부지도교수, 그리고 행정 연락처.</p>
@@ -302,7 +298,6 @@ document.documentElement.classList.add('js');})();
             </tbody>
           </table>
         </div>
-        <p class="motto-note" style="margin-top:var(--sp-4)">출처: me.yonsei.ac.kr index.do · 최종확인 2026-06-30</p>
       </div>
     </div>
   </div>
@@ -312,7 +307,7 @@ document.documentElement.classList.add('js');})();
 <section class="section section--navy" id="bk21" aria-labelledby="bk-h">
   <div class="container">
     <div class="sec-head reveal" style="border-bottom-color:rgba(255,255,255,.16)">
-      <span class="sec-num">§04 / BK21</span>
+      <span class="sec-num">BK21</span>
       <div class="sec-body">
         <h2 id="bk-h" class="sec-title" style="color:#fff">BK21 FOUR</h2>
         <p class="sec-sub" style="color:var(--yonsei-100)">대학원 연구·인력 양성의 국가 거점 — 4단계 두뇌한국21.</p>
@@ -331,7 +326,6 @@ document.documentElement.classList.add('js');})();
           <li><span class="d">2020.08</span><span class="t">4단계 BK21 사업 선정 (FOUR)</span></li>
           <li><span class="d">현재</span><span class="t">BK 세미나 시리즈 운영</span></li>
         </ul>
-        <p class="mono" style="color:var(--yonsei-400);margin-top:var(--sp-4);font-size:.68rem;letter-spacing:.05em">출처: faculty/history.do · 2026-07-02</p>
       </div>
     </div>
   </div>
@@ -341,7 +335,7 @@ document.documentElement.classList.add('js');})();
 <section class="section section--alt" id="alumni" aria-labelledby="alumni-h">
   <div class="container">
     <div class="sec-head reveal">
-      <span class="sec-num">§05 / 네트워크</span>
+      <span class="sec-num">네트워크</span>
       <div class="sec-body">
         <h2 id="alumni-h" class="sec-title">동문 · 대외협력</h2>
         <p class="sec-sub">1964년 첫 졸업생 배출 이래 이어져 온 사람의 네트워크, 그리고 세계와의 교류.</p>
@@ -363,7 +357,7 @@ document.documentElement.classList.add('js');})();
         <div class="post-list" id="intlList">
           <noscript><p class="muted">국제 교류·대외협력 소식은 <a class="link-sweep" href="news.html">소식 페이지</a>에서 확인하세요.</p></noscript>
         </div>
-        <p class="motto-note" style="margin-top:var(--sp-4)">※ 현행 사이트 공지·뉴스에서 수집한 대외협력 소식(2026-07-02 확인) — 전체는 <a class="link-sweep" href="news.html">소식</a>.</p>
+        <p class="motto-note" style="margin-top:var(--sp-4)">대외협력 소식 전체는 <a class="link-sweep" href="news.html">소식</a>에서 확인하세요.</p>
       </div>
     </div>
   </div>
@@ -441,8 +435,8 @@ document.documentElement.classList.add('js');})();
 
 <p id="langNote" hidden class="visually-hidden" aria-live="polite">English navigation applied. Full English content is in preparation.</p>
 
-<script src="assets/js/data.js" defer></script>
-<script src="assets/js/main.js" defer></script>
+<script src="assets/js/data.js?v=d9" defer></script>
+<script src="assets/js/main.js?v=d9" defer></script>
 <script defer>
 /* ═══ about 전용 — 조직(보직 교수) + 대외협력 소식 data.js 렌더 ═══ */
 window.addEventListener('DOMContentLoaded', function () {

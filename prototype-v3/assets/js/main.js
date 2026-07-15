@@ -27,20 +27,21 @@
     else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
   }
 
-  /* ── ① 테마 토글 (초기 적용 = <head> 인라인 스크립트, FOUC 방지) ── */
-  var themeBtn = document.getElementById('themeBtn');
-  if (themeBtn) {
-    var syncTheme = function () {
-      themeBtn.setAttribute('aria-pressed', String(root.dataset.theme === 'dark'));
-    };
-    themeBtn.addEventListener('click', function () {
-      var next = root.dataset.theme === 'dark' ? 'light' : 'dark';
-      root.dataset.theme = next;
-      syncTheme();
-      try { localStorage.setItem('ysme-theme', next); } catch (e) {}
-    });
-    syncTheme();
+  /* ── ① 글자 크기 조절 (방문자 접근성, 초기 적용 = <head> 인라인 스크립트) ── */
+  var FS_STEPS = ['87.5%', '100%', '112.5%', '125%'];
+  function currentFsIndex() {
+    var cur = root.style.fontSize || '100%';
+    var i = FS_STEPS.indexOf(cur);
+    return i < 0 ? 1 : i;
   }
+  document.querySelectorAll('[data-fs]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var i = currentFsIndex();
+      i = btn.getAttribute('data-fs') === 'up' ? Math.min(i + 1, FS_STEPS.length - 1) : Math.max(i - 1, 0);
+      root.style.fontSize = FS_STEPS[i];
+      try { localStorage.setItem('ysme-fs', FS_STEPS[i]); } catch (e) {}
+    });
+  });
 
   /* ── ② 헤더 축소 (스크롤 시 .is-scrolled) ── */
   var header = document.querySelector('.site-header');

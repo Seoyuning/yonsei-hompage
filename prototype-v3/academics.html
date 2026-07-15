@@ -10,14 +10,14 @@
 <meta name="theme-color" content="#001a38" />
 <!-- FOUC 방지: CSS보다 먼저 저장된 테마 적용 (전 페이지 공통 규약 — TEMPLATE.md §0) -->
 <script>
-(function(){try{var t=localStorage.getItem('ysme-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}
+(function(){try{var f=localStorage.getItem('ysme-fs');if(f)document.documentElement.style.fontSize=f;}catch(e){}
 document.documentElement.classList.add('js');})();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Serif+KR:wght@400;500;600&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/main.css" />
+<link rel="stylesheet" href="assets/css/main.css?v=d9" />
 </head>
 <body>
 <a class="skip" href="#main" data-i18n="ui.skip">본문 바로가기</a>
@@ -128,9 +128,10 @@ document.documentElement.classList.add('js');})();
       <div class="lang-toggle" role="group" aria-label="언어 선택">
         <button data-lang="ko" aria-pressed="true">KO</button><button data-lang="en" aria-pressed="false">EN</button>
       </div>
-      <button class="icon-btn" id="themeBtn" aria-label="다크 모드 전환" aria-pressed="false">
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9c-4.97 0-9-4.03-9-9Z"/></svg>
-      </button>
+      <div class="fs-toggle" role="group" aria-label="글자 크기 조절">
+        <button class="fs-btn" data-fs="down" aria-label="글자 작게" title="글자 작게">A<sup>−</sup></button>
+        <button class="fs-btn" data-fs="up" aria-label="글자 크게" title="글자 크게">A<sup>+</sup></button>
+      </div>
       <button class="icon-btn nav-toggle" id="navToggle" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mobileMenu">
         <span class="burger-box" aria-hidden="true"><span></span><span></span><span></span></span>
       </button>
@@ -187,20 +188,17 @@ document.documentElement.classList.add('js');})();
         <a href="index.html">홈</a><span class="sep" aria-hidden="true">/</span>
         <span aria-current="page">교육과정 · 학사 안내</span>
       </nav>
-      <p class="page-hero-eyebrow eyebrow reveal">§ Academics</p>
       <h1 id="ph-title" class="reveal">고체·열·유체·동역학,<br>네 개의 기둥</h1>
       <p class="page-hero-lede reveal">네 개의 역학이 <span class="text-brand">창의제품설계</span>로 맞물리고 학사논문으로 완성됩니다. 졸업 130학점의 이수 체계와 학사 안내를 하나의 도면처럼 정리했습니다.</p>
       <nav class="chip-row reveal" aria-label="페이지 내 이동" style="margin-top:var(--sp-5)">
         <a class="chip" href="#curriculum">교육과정 개관</a>
+        <a class="chip" href="#roadmap">이수체계도</a>
         <a class="chip" href="#mechanics">4대 역학</a>
         <a class="chip" href="#courses">전공필수 교과목</a>
         <a class="chip" href="#tracks">학부·대학원 트랙</a>
         <a class="chip" href="#affairs">학사 안내</a>
         <a class="chip" href="#abeek">ABEEK</a>
       </nav>
-    </div>
-    <div class="col-4 col-start-9 reveal">
-      <p class="page-hero-meta">UPDATED 2026-07<br>SOURCE me.yonsei.ac.kr<br>ABEEK 가입 2003</p>
     </div>
   </div>
 </section>
@@ -209,10 +207,10 @@ document.documentElement.classList.add('js');})();
 <section class="section" id="curriculum" aria-labelledby="cur-h">
   <div class="container">
     <div class="sec-head reveal">
-      <span class="sec-num">§01 / 교육과정</span>
+      <span class="sec-num">교육과정</span>
       <div class="sec-body">
         <h2 id="cur-h" class="sec-title">교육과정 개관</h2>
-        <p class="sec-sub">기초 과학·공학 소양에서 4대 역학, 종합설계, 학사논문까지 — 4년이 하나의 기구(機構)처럼 맞물립니다.</p>
+        <p class="sec-sub">기초 과학·공학 소양에서 4대 역학, 종합설계, 학사논문까지 4년의 이수 흐름입니다.</p>
       </div>
     </div>
     <div class="grid12" style="row-gap:var(--sp-8)">
@@ -228,19 +226,37 @@ document.documentElement.classList.add('js');})();
           <div class="def-row"><dt class="k">전공필수 학점</dt><dd class="v">24</dd></div>
           <div class="def-row"><dt class="k">ABEEK 가입</dt><dd class="v v--gold">2003</dd></div>
         </dl>
-        <p class="panel-mono" style="margin-top:var(--sp-3)">SOURCE graduation.do · 교과과정<br>VERIFIED 2026-06-30</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ═══ §02 4대 역학 — 에디토리얼 대형 타이포 특집 (data.js 렌더) ═══ -->
+<!-- ═══ §02 이수체계도 — 전공필수 선수관계도 (data.js 렌더) ═══ -->
+<section class="section section--alt" id="roadmap" aria-labelledby="rm-h">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="sec-num">이수체계도</span>
+      <div class="sec-body">
+        <h2 id="rm-h" class="sec-title">교과목 이수체계도</h2>
+        <p class="sec-sub">전공필수 8과목을 권장 학년별로 배치하고 선수관계를 화살표로 이었습니다. 과목을 클릭하면 개요·학점·선수과목을 확인할 수 있습니다.</p>
+      </div>
+    </div>
+    <div class="cmap reveal">
+      <div class="cmap-board" id="courseMap" role="group" aria-label="전공필수 교과목 이수체계도">
+        <noscript><p class="muted">과목별 상세는 아래 <a class="link-sweep" href="#courses">전공필수 교과목 표</a>에서 확인하세요.</p></noscript>
+      </div>
+      <p class="cmap-hint muted">과목 노드를 클릭하거나 키보드로 선택(Enter)하면 상세가 열립니다. 화살표는 선수과목 → 후수과목의 흐름입니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ §03 4대 역학 — 에디토리얼 대형 타이포 특집 (data.js 렌더) ═══ -->
 <section class="section section--alt" id="mechanics" aria-labelledby="mech-h">
   <div class="container">
     <div class="sec-head reveal">
-      <span class="sec-num">§02 / 4대 역학</span>
+      <span class="sec-num">4대 역학</span>
       <div class="sec-body">
-        <h2 id="mech-h" class="sec-title">네 개의 기둥 — Four Mechanics</h2>
+        <h2 id="mech-h" class="sec-title">네 개의 기둥</h2>
         <p class="sec-sub">2학년에 세우는 네 역학은 각기 다른 세계를 다루지만, 4학년의 종합설계에서 하나로 맞물립니다.</p>
       </div>
     </div>
@@ -250,11 +266,11 @@ document.documentElement.classList.add('js');})();
   </div>
 </section>
 
-<!-- ═══ §03 전공필수 교과목 표 (data.js 렌더) ═══ -->
+<!-- ═══ §04 전공필수 교과목 표 (data.js 렌더) ═══ -->
 <section class="section" id="courses" aria-labelledby="crs-h">
   <div class="container">
     <div class="sec-head reveal">
-      <span class="sec-num">§03 / 교과목</span>
+      <span class="sec-num">교과목</span>
       <div class="sec-body">
         <h2 id="crs-h" class="sec-title">전공필수 교과목</h2>
         <p class="sec-sub">전공필수 8과목 — 코드·과목명·구분·권장 학년·연계 분야. 연계 분야는 연구실 명칭 기반 자체 분류(6 클러스터)입니다.</p>
@@ -270,23 +286,23 @@ document.documentElement.classList.add('js');})();
         </tbody>
       </table>
     </div>
-    <p class="muted reveal" style="margin-top:var(--sp-4);font-size:var(--step--1)">※ 전체 개설 교과목·수강신청 규정·선수과목 세부 기준은 연세포털 학사요람이 기준입니다. 본 페이지는 검증된 전공필수 8과목만 게시합니다.</p>
+    <p class="muted reveal" style="margin-top:var(--sp-4);font-size:var(--step--1)">전체 개설 교과목과 세부 기준은 연세포털 학사요람을 따릅니다.</p>
   </div>
 </section>
 
-<!-- ═══ §04 학부 · 대학원 트랙 — 비대칭 대비 ═══ -->
+<!-- ═══ §05 학부 · 대학원 트랙 — 비대칭 대비 ═══ -->
 <section class="section section--alt" id="tracks" aria-labelledby="trk-h">
   <div class="container">
     <div class="sec-head reveal">
-      <span class="sec-num">§04 / 트랙</span>
+      <span class="sec-num">이수 경로</span>
       <div class="sec-body">
         <h2 id="trk-h" class="sec-title">학부 · 대학원 트랙</h2>
-        <p class="sec-sub">학부 4년의 권장 경로와 대학원 진학 경로 — 두 트랙이 하나의 기어 열처럼 이어집니다.</p>
+        <p class="sec-sub">학부 4년의 권장 경로와 대학원 진학 경로를 정리했습니다.</p>
       </div>
     </div>
     <div class="duo-grid reveal">
       <article class="panel panel--edge">
-        <span class="overline">Track A — Undergraduate</span>
+        <span class="overline">학부 과정</span>
         <h3>학부 트랙</h3>
         <ol class="num-list">
           <li><span class="n">01</span><span>기초 과학·공학 소양 — 수학·물리 기반 다지기</span><span class="meta">1–2학년</span></li>
@@ -298,7 +314,7 @@ document.documentElement.classList.add('js');})();
         <div><a class="btn btn--ghost btn--sm" href="#mechanics">4대 역학 특집 ↑</a></div>
       </article>
       <article class="panel panel--gold-edge">
-        <span class="overline">Track B — Graduate</span>
+        <span class="overline">대학원 과정</span>
         <h3>대학원 트랙</h3>
         <ol class="num-list">
           <li><span class="n">01</span><span>연구 분야 탐색 — 33개 연구실 · 6 클러스터</span><span class="meta"><a class="arrow-link" href="research.html">labs</a></span></li>
@@ -313,11 +329,11 @@ document.documentElement.classList.add('js');})();
   </div>
 </section>
 
-<!-- ═══ §05 학사 안내 — 수강 · 졸업요건 ═══ -->
+<!-- ═══ §06 학사 안내 — 수강 · 졸업요건 ═══ -->
 <section class="section" id="affairs" aria-labelledby="aff-h">
   <div class="container">
     <div class="sec-head reveal">
-      <span class="sec-num">§05 / 학사 안내</span>
+      <span class="sec-num">학사 안내</span>
       <div class="sec-body">
         <h2 id="aff-h" class="sec-title">학사 안내</h2>
         <p class="sec-sub">수강신청·졸업요건·재수강 등 학사 운영은 연세포털 학사요람과 학부 행정팀 안내가 기준입니다.</p>
@@ -335,7 +351,7 @@ document.documentElement.classList.add('js');})();
       </div>
       <aside class="col-4 col-start-9 reveal">
         <div class="panel">
-          <span class="overline">Academic Desk</span>
+          <span class="overline">학사 문의</span>
           <p class="muted">학사·수강·졸업 관련 문의는 학부 행정팀으로 연락해 주세요. 최신 학사 공지는 소식 허브에서 갱신됩니다.</p>
           <dl class="def-list">
             <div class="def-row"><dt class="k">학부 행정</dt><dd class="v" style="font-size:var(--step-0)">02-2123-4426</dd></div>
@@ -351,11 +367,11 @@ document.documentElement.classList.add('js');})();
   </div>
 </section>
 
-<!-- ═══ §06 ABEEK 공학교육인증 ═══ -->
+<!-- ═══ §07 ABEEK 공학교육인증 ═══ -->
 <section class="section section--alt" id="abeek" aria-labelledby="abk-h">
   <div class="container">
     <div class="sec-head reveal">
-      <span class="sec-num">§06 / 인증</span>
+      <span class="sec-num">공학교육인증</span>
       <div class="sec-body">
         <h2 id="abk-h" class="sec-title">ABEEK 공학교육인증</h2>
         <p class="sec-sub">한국공학교육인증원(ABEEK) 인증 프로그램 — 설계 교육과 학습 성과를 국제 기준으로 관리합니다.</p>
@@ -365,7 +381,7 @@ document.documentElement.classList.add('js');})();
       <div class="col-7 reveal">
         <div class="panel panel--edge">
           <p>본 학부는 <b>2003년 3월 ABEEK 공학교육인증 프로그램에 가입</b>했습니다. 공학교육인증은 기초에서 종합설계까지의 이수 체계와 학습 성과 평가를 국제적 기준으로 운영하는 제도로, 4대 역학 → 창의제품설계 → 학사논문으로 이어지는 본 학부 교육과정의 설계 교육을 뒷받침합니다.</p>
-          <p class="muted" style="font-size:var(--step--1)">※ 인증 트랙의 세부 이수 요건·신청 절차는 학사요람 및 학부 행정팀 안내가 기준입니다 — 문의 <span class="mono">02-2123-4426</span>.</p>
+          <p class="muted" style="font-size:var(--step--1)">인증 트랙의 세부 이수 요건은 학사요람과 학부 행정팀 안내를 따릅니다 — 문의 <span class="mono">02-2123-4426</span>.</p>
           <div style="display:flex;gap:.6rem;flex-wrap:wrap">
             <a class="btn btn--primary btn--sm" href="admissions.html">입학·진로 안내 <span class="arr" aria-hidden="true">→</span></a>
             <a class="btn btn--ghost btn--sm" href="contact.html">행정팀 문의</a>
@@ -378,7 +394,6 @@ document.documentElement.classList.add('js');})();
           <div class="def-row"><dt class="k">인증 기관</dt><dd class="v" style="font-size:var(--step-0)">ABEEK</dd></div>
           <div class="def-row"><dt class="k">졸업 요건</dt><dd class="v">130</dd></div>
         </dl>
-        <p class="panel-mono" style="margin-top:var(--sp-3)">SOURCE history.do — 2003.03<br>VERIFIED 2026-07-02</p>
       </div>
     </div>
   </div>
@@ -439,10 +454,10 @@ document.documentElement.classList.add('js');})();
 
 <p id="langNote" hidden class="visually-hidden" aria-live="polite">English navigation applied. Full English content is in preparation.</p>
 
-<script src="assets/js/data.js" defer></script>
-<script src="assets/js/main.js" defer></script>
+<script src="assets/js/data.js?v=d9" defer></script>
+<script src="assets/js/main.js?v=d9" defer></script>
 <script defer>
-/* ═══ academics 전용 — data.js 단일 소스 렌더 (4대 역학 특집 + 전공필수 표) ═══ */
+/* ═══ academics 전용 — data.js 단일 소스 렌더 (이수체계도 + 4대 역학 특집 + 전공필수 표) ═══ */
 window.addEventListener('DOMContentLoaded', function () {
   'use strict';
   var D = window.YSME, UI = window.YSMEUI;
@@ -464,7 +479,7 @@ window.addEventListener('DOMContentLoaded', function () {
     MEU4400: { year: '4학년', badge: '종합 · 졸업연구' }
   };
 
-  /* ── §02 4대 역학 특집 — 대형 에디토리얼 렌더 ── */
+  /* ── §03 4대 역학 특집 — 대형 에디토리얼 렌더 ── */
   var mechEl = document.getElementById('mechList');
   if (mechEl) {
     var pillars = ['MEU2600', 'MEU2610', 'MEU2640', 'MEU2650'];
@@ -486,7 +501,139 @@ window.addEventListener('DOMContentLoaded', function () {
     }).join('');
   }
 
-  /* ── §03 전공필수 교과목 표 — data.js 렌더 ── */
+  /* ── §02 이수체계도 — 학년 열 배치 + 선수관계 커넥터 + 클릭 상세 ── */
+  var mapEl = document.getElementById('courseMap');
+  if (mapEl) {
+    var courses = (D.courses || []).slice();
+    /* 권장 학년(2/3/4)으로 열 구성 */
+    var YEARS = [2, 3, 4];
+    var colsHtml = YEARS.map(function (y) {
+      var items = courses.filter(function (c) { return c.year === y; });
+      var nodes = items.map(function (c) {
+        var credits = (c.credits != null) ? c.credits + '학점' : '';
+        return '<button type="button" class="cmap-node" id="node-' + c.code + '" data-code="' + c.code + '"' +
+            ' aria-haspopup="dialog" aria-expanded="false">' +
+            '<span class="cmap-node-code mono">' + UI.escapeHtml(c.code) + '</span>' +
+            '<span class="cmap-node-name">' + UI.escapeHtml(c.ko) + '</span>' +
+            '<span class="cmap-node-cr mono">' + UI.escapeHtml(credits) + '</span>' +
+          '</button>';
+      }).join('');
+      return '<div class="cmap-col" data-year="' + y + '">' +
+          '<div class="cmap-col-head"><span class="cmap-col-label mono">' + y + '학년</span></div>' +
+          '<div class="cmap-col-body">' + nodes + '</div>' +
+        '</div>';
+    }).join('');
+
+    mapEl.innerHTML =
+      '<svg class="cmap-links" aria-hidden="true" focusable="false" preserveAspectRatio="none"></svg>' +
+      '<div class="cmap-grid">' + colsHtml + '</div>' +
+      '<div class="cmap-detail" id="cmapDetail" role="dialog" aria-modal="false" aria-labelledby="cmapDetailName" hidden>' +
+        '<button type="button" class="cmap-detail-close" aria-label="상세 닫기">×</button>' +
+        '<div class="cmap-detail-body"></div>' +
+      '</div>';
+
+    var byCode2 = {};
+    courses.forEach(function (c) { byCode2[c.code] = c; });
+    var svg = mapEl.querySelector('.cmap-links');
+    var detail = mapEl.querySelector('#cmapDetail');
+    var detailBody = detail.querySelector('.cmap-detail-body');
+    var nodeEls = Array.prototype.slice.call(mapEl.querySelectorAll('.cmap-node'));
+    var openCode = null;
+
+    /* 선수관계 커넥터 — 노드 중심을 잇는 헤어라인 + 화살촉(SVG) */
+    function drawLinks() {
+      var box = mapEl.getBoundingClientRect();
+      if (!box.width) return;
+      svg.setAttribute('viewBox', '0 0 ' + box.width + ' ' + box.height);
+      svg.setAttribute('width', box.width);
+      svg.setAttribute('height', box.height);
+      var NS = 'http://www.w3.org/2000/svg';
+      /* 화살촉 마커 정의(1회) */
+      var parts = ['<defs><marker id="cmapArrow" viewBox="0 0 10 10" refX="9" refY="5" ' +
+        'markerWidth="7" markerHeight="7" orient="auto-start-reverse">' +
+        '<path d="M0 0 L10 5 L0 10 z" fill="currentColor"/></marker></defs>'];
+      courses.forEach(function (c) {
+        (c.prereq || []).forEach(function (pc) {
+          var a = mapEl.querySelector('#node-' + pc);
+          var b = mapEl.querySelector('#node-' + c.code);
+          if (!a || !b) return;
+          var ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
+          var x1 = ra.right - box.left, y1 = ra.top + ra.height / 2 - box.top;
+          var x2 = rb.left - box.left, y2 = rb.top + rb.height / 2 - box.top;
+          /* 열 사이를 관통하는 도면식 커넥터: 중간에서 꺾는 직교 경로 */
+          var mx = x1 + (x2 - x1) / 2;
+          var d = 'M' + x1 + ' ' + y1 + ' H' + mx + ' V' + y2 + ' H' + x2;
+          var hot = (openCode && (openCode === c.code || openCode === pc)) ? ' is-hot' : '';
+          parts.push('<path class="cmap-link' + hot + '" d="' + d + '" ' +
+            'marker-end="url(#cmapArrow)" data-from="' + pc + '" data-to="' + c.code + '"/>');
+        });
+      });
+      svg.innerHTML = parts.join('');
+    }
+
+    function prereqNames(c) {
+      return (c.prereq || []).map(function (pc) {
+        var p = byCode2[pc];
+        return p ? p.ko + ' (' + pc + ')' : pc;
+      });
+    }
+
+    function openDetail(code) {
+      var c = byCode2[code];
+      if (!c) return;
+      var pre = prereqNames(c);
+      var preHtml = pre.length
+        ? pre.map(function (n) { return '<span class="cmap-pre">' + UI.escapeHtml(n) + '</span>'; }).join('')
+        : '<span class="cmap-pre cmap-pre--none">없음</span>';
+      detailBody.innerHTML =
+        '<p class="cmap-detail-code mono">' + UI.escapeHtml(c.code) + '</p>' +
+        '<h3 class="cmap-detail-name" id="cmapDetailName">' + UI.escapeHtml(c.ko) + '</h3>' +
+        '<dl class="cmap-detail-meta">' +
+          '<div><dt class="mono">구분</dt><dd>' + UI.escapeHtml(c.type || '전공필수') + '</dd></div>' +
+          '<div><dt class="mono">학년</dt><dd>' + UI.escapeHtml((c.year || '') + '학년') + '</dd></div>' +
+          '<div><dt class="mono">학점</dt><dd>' + UI.escapeHtml((c.credits != null ? c.credits : '') + '학점') + '</dd></div>' +
+        '</dl>' +
+        '<p class="cmap-detail-desc">' + UI.escapeHtml(c.desc || '') + '</p>' +
+        '<div class="cmap-detail-pre"><span class="cmap-pre-k mono">선수과목</span>' + preHtml + '</div>';
+      detail.hidden = false;
+      nodeEls.forEach(function (n) {
+        var on = n.dataset.code === code;
+        n.classList.toggle('is-active', on);
+        n.setAttribute('aria-expanded', on ? 'true' : 'false');
+      });
+      openCode = code;
+      mapEl.classList.add('is-open');
+      drawLinks();
+    }
+
+    function closeDetail() {
+      if (!openCode) return;
+      detail.hidden = true;
+      nodeEls.forEach(function (n) { n.classList.remove('is-active'); n.setAttribute('aria-expanded', 'false'); });
+      openCode = null;
+      mapEl.classList.remove('is-open');
+      drawLinks();
+    }
+
+    nodeEls.forEach(function (n) {
+      n.addEventListener('click', function () {
+        var code = n.dataset.code;
+        if (openCode === code) { closeDetail(); } else { openDetail(code); }
+      });
+    });
+    detail.querySelector('.cmap-detail-close').addEventListener('click', closeDetail);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && openCode) { closeDetail(); }
+    });
+
+    /* 레이아웃 후 커넥터 그리기 + 리사이즈 대응 */
+    var rafDraw = function () { requestAnimationFrame(drawLinks); };
+    rafDraw();
+    window.addEventListener('resize', rafDraw);
+    window.addEventListener('load', rafDraw);
+  }
+
+  /* ── §04 전공필수 교과목 표 — data.js 렌더 ── */
   var tbody = document.getElementById('courseRows');
   if (tbody) {
     tbody.innerHTML = (D.courses || []).map(function (c) {

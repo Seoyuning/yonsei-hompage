@@ -16,13 +16,14 @@ function supported() {
   return typeof window.showDirectoryPicker === 'function';
 }
 
-/* 경로 'a/b/c.ext' → 파일 핸들. create 옵션은 마지막 파일에만 적용 */
-async function getFileHandle(path, create) {
+/* 경로 'a/b/c.ext' → 파일 핸들. create 옵션은 마지막 파일에만 적용.
+   createDirs=true 면 중간 디렉터리도 없을 때 생성 (기존 호출부 동작 불변) */
+async function getFileHandle(path, create, createDirs) {
   if (!dirHandle) throw new Error('사이트 폴더가 연결되지 않았습니다.');
   var parts = String(path).split('/').filter(Boolean);
   var dir = dirHandle;
   for (var i = 0; i < parts.length - 1; i++) {
-    dir = await dir.getDirectoryHandle(parts[i], { create: false });
+    dir = await dir.getDirectoryHandle(parts[i], { create: !!createDirs });
   }
   return dir.getFileHandle(parts[parts.length - 1], { create: !!create });
 }
@@ -146,6 +147,25 @@ Admin.fs = {
     var w = await fh.createWritable();
     try {
       await w.write(content);
+    } finally {
+      await w.close();
+    }
+  },
+
+  /* 파일 존재 여부 (업로드 파일명 충돌 검사용) */
+  exists: async function (path) {
+    try {
+      await getFileHandle(path, false);
+      return true;
+    } catch (e) { return false; }
+  },
+
+  /* 바이너리(Blob/File) 저장. 중간 디렉터리(예: assets/img)가 없으면 생성 */
+  writeBinary: async function (path, blob) {
+    var fh = await getFileHandle(path, true, true);
+    var w = await fh.createWritable();
+    try {
+      await w.write(blob);
     } finally {
       await w.close();
     }

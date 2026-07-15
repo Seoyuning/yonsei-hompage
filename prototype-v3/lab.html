@@ -10,14 +10,14 @@
 <meta name="theme-color" content="#001a38" />
 <!-- FOUC 방지: CSS보다 먼저 저장된 테마 적용 (전 페이지 공통 규약 — TEMPLATE.md §0) -->
 <script>
-(function(){try{var t=localStorage.getItem('ysme-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}
+(function(){try{var f=localStorage.getItem('ysme-fs');if(f)document.documentElement.style.fontSize=f;}catch(e){}
 document.documentElement.classList.add('js');})();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Serif+KR:wght@400;500;600&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/main.css" />
+<link rel="stylesheet" href="assets/css/main.css?v=d9" />
 </head>
 <body>
 <a class="skip" href="#main" data-i18n="ui.skip">본문 바로가기</a>
@@ -128,9 +128,10 @@ document.documentElement.classList.add('js');})();
       <div class="lang-toggle" role="group" aria-label="언어 선택">
         <button data-lang="ko" aria-pressed="true">KO</button><button data-lang="en" aria-pressed="false">EN</button>
       </div>
-      <button class="icon-btn" id="themeBtn" aria-label="다크 모드 전환" aria-pressed="false">
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9c-4.97 0-9-4.03-9-9Z"/></svg>
-      </button>
+      <div class="fs-toggle" role="group" aria-label="글자 크기 조절">
+        <button class="fs-btn" data-fs="down" aria-label="글자 작게" title="글자 작게">A<sup>−</sup></button>
+        <button class="fs-btn" data-fs="up" aria-label="글자 크게" title="글자 크게">A<sup>+</sup></button>
+      </div>
       <button class="icon-btn nav-toggle" id="navToggle" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mobileMenu">
         <span class="burger-box" aria-hidden="true"><span></span><span></span><span></span></span>
       </button>
@@ -179,7 +180,7 @@ document.documentElement.classList.add('js');})();
 
 <main id="main">
 
-<!-- ═══ 페이지 히어로 변형 — 랩명 대형 + mono 메타 (상단 4px = 클러스터 색) ═══ -->
+<!-- ═══ 페이지 히어로 변형 — 랩명 대형 (상단 4px = 클러스터 색) ═══ -->
 <section class="page-hero lab-hero" id="labHero" aria-labelledby="labName">
   <div class="container grid12">
     <div class="col-8">
@@ -188,13 +189,9 @@ document.documentElement.classList.add('js');})();
         <a href="research.html">연구</a><span class="sep" aria-hidden="true">/</span>
         <span aria-current="page" id="crumbLab">연구실 상세</span>
       </nav>
-      <p class="page-hero-eyebrow eyebrow reveal">§ Research · Lab</p>
       <h1 class="reveal" id="labName">연구실 상세</h1>
       <p class="page-hero-lede reveal text-mono" id="labEn" style="font-size:var(--step-0)"></p>
       <dl class="labx-meta reveal" id="labMeta"></dl>
-    </div>
-    <div class="col-4 col-start-9 reveal">
-      <p class="page-hero-meta" id="labHeroMeta">SOURCE lab2.do · faculty_list.do<br>VERIFIED 2026-06-30</p>
     </div>
   </div>
 </section>
@@ -212,8 +209,8 @@ document.documentElement.classList.add('js');})();
         <figcaption class="mono" style="letter-spacing:.05em" id="labFigCap"></figcaption>
       </figure>
       <div class="sec-head">
-        <span class="sec-num">§01 / 데이터 시트</span>
-        <div class="sec-body"><h2 id="sheet-h" class="sec-title">Lab Data Sheet</h2></div>
+        <span class="sec-num">데이터 시트</span>
+        <div class="sec-body"><h2 id="sheet-h" class="sec-title">연구실 정보</h2></div>
       </div>
       <table class="lab-sheet">
         <caption class="visually-hidden">연구실 상세 정보 — 명칭, PI, 클러스터, 위치</caption>
@@ -232,10 +229,10 @@ document.documentElement.classList.add('js');})();
 <section class="section section--alt" aria-labelledby="sib-h">
   <div class="container">
     <div class="sec-head reveal">
-      <span class="sec-num">§02 / 클러스터</span>
+      <span class="sec-num">같은 분야</span>
       <div class="sec-body">
         <h2 id="sib-h" class="sec-title">같은 클러스터의 연구실</h2>
-        <p class="sec-sub"><span id="sibName">—</span> 클러스터에서 함께 맞물려 도는 <b id="sibCount">0</b>개 연구실.</p>
+        <p class="sec-sub"><span id="sibName">—</span> 분야에 속한 <b id="sibCount">0</b>개 연구실.</p>
       </div>
       <a class="sec-more arrow-link" id="clusterLink" href="research.html">클러스터 필터로 보기 <span class="arr" aria-hidden="true">→</span></a>
     </div>
@@ -248,7 +245,7 @@ document.documentElement.classList.add('js');})();
 <section class="section" id="labFallback" hidden aria-labelledby="fb-h">
   <div class="container">
     <div class="sec-head">
-      <span class="sec-num">§ 안내</span>
+      <span class="sec-num">안내</span>
       <div class="sec-body">
         <h2 id="fb-h" class="sec-title">연구실을 선택하세요</h2>
         <p class="sec-sub" id="fbMsg">연구실 ID가 지정되지 않았습니다. 아래 33개 연구실에서 선택하세요.</p>
@@ -320,8 +317,8 @@ document.documentElement.classList.add('js');})();
 
 <p id="langNote" hidden class="visually-hidden" aria-live="polite">English navigation applied. Full English content is in preparation.</p>
 
-<script src="assets/js/data.js" defer></script>
-<script src="assets/js/main.js" defer></script>
+<script src="assets/js/data.js?v=d9" defer></script>
+<script src="assets/js/main.js?v=d9" defer></script>
 <script defer>
 /* ═══ lab 상세 전용 — ?id= 쿼리 기반 렌더 (data.js 단일 소스, fetch 금지) ═══ */
 window.addEventListener('DOMContentLoaded', function () {

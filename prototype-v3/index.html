@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#001a38">
 <!-- FOUC 방지: CSS보다 먼저 저장된 테마 적용 (전 페이지 공통 규약 — TEMPLATE.md §0) -->
 <script>
-(function(){try{var t=localStorage.getItem('ysme-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}
+(function(){try{var f=localStorage.getItem('ysme-fs');if(f)document.documentElement.style.fontSize=f;}catch(e){}
 document.documentElement.classList.add('js');})();
 </script>
 <!-- 폰트: 프로토타입은 CDN. 운영본은 self-host subset (라이선스 OFL/Apache) -->
@@ -18,7 +18,7 @@ document.documentElement.classList.add('js');})();
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=Noto+Serif+KR:wght@400;500;600&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/main.css">
+<link rel="stylesheet" href="assets/css/main.css?v=d9">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"CollegeOrUniversity",
  "name":"연세대학교 기계공학부",
@@ -29,6 +29,77 @@ document.documentElement.classList.add('js');})();
 </head>
 <body>
 <a class="skip" href="#main" data-i18n="ui.skip">본문 바로가기</a>
+
+<!-- 기구 라인아트 심볼 (6 클러스터 — 홈 §02 기구 배치도용, D 시안 원본) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <g id="m-solid" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M60 14 v16 M53 24 l7 8 7-8" />
+      <line x1="12" y1="46" x2="108" y2="46"/>
+      <line x1="12" y1="82" x2="108" y2="82"/>
+      <path d="M12 82 L28 46 L44 82 L60 46 L76 82 L92 46 L108 82"/>
+      <circle cx="12" cy="82" r="3.4" fill="currentColor" stroke="none"/>
+      <circle cx="108" cy="82" r="3.4" fill="currentColor" stroke="none"/>
+      <path d="M4 96 h20 M96 96 h20" stroke-width="2"/>
+    </g>
+    <g id="m-thermal" fill="none" stroke="currentColor" stroke-width="2.4">
+      <circle cx="60" cy="60" r="44" stroke-dasharray="3 7" stroke-width="1.6"/>
+      <g class="rot">
+        <circle cx="60" cy="60" r="32"/>
+        <path d="M60 28 Q74 46 60 60"/><path d="M92 60 Q74 74 60 60"/>
+        <path d="M60 92 Q46 74 60 60"/><path d="M28 60 Q46 46 60 60"/>
+        <path d="M82 38 Q80 58 60 60"/><path d="M82 82 Q62 80 60 60"/>
+        <path d="M38 82 Q40 62 60 60"/><path d="M38 38 Q58 40 60 60"/>
+      </g>
+      <circle cx="60" cy="60" r="6.5" fill="currentColor" stroke="none"/>
+    </g>
+    <g id="m-manuf" fill="none" stroke="currentColor">
+      <g class="rot">
+        <circle cx="47" cy="52" r="30" stroke-width="9" stroke-dasharray="7.85 7.85"/>
+        <circle cx="47" cy="52" r="19" stroke-width="2.4"/>
+        <line x1="47" y1="37" x2="47" y2="67" stroke-width="2"/>
+        <line x1="32" y1="52" x2="62" y2="52" stroke-width="2"/>
+      </g>
+      <circle cx="47" cy="52" r="5" fill="currentColor" stroke="none"/>
+      <g class="rot rev">
+        <circle cx="88" cy="86" r="17" stroke-width="7" stroke-dasharray="5.34 5.34"/>
+        <circle cx="88" cy="86" r="9" stroke-width="2.2"/>
+      </g>
+      <circle cx="88" cy="86" r="3.4" fill="currentColor" stroke="none"/>
+    </g>
+    <g id="m-nanobio" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round">
+      <polygon points="60,26 88,42 88,74 60,90 32,74 32,42"/>
+      <line x1="60" y1="26" x2="60" y2="58"/>
+      <line x1="88" y1="74" x2="60" y2="58"/>
+      <line x1="32" y1="74" x2="60" y2="58"/>
+      <circle cx="60" cy="58" r="6" fill="currentColor" stroke="none"/>
+      <circle cx="60" cy="26" r="4" fill="currentColor" stroke="none"/>
+      <circle cx="88" cy="42" r="4" fill="currentColor" stroke="none"/>
+      <circle cx="88" cy="74" r="4" fill="currentColor" stroke="none"/>
+      <circle cx="60" cy="90" r="4" fill="currentColor" stroke="none"/>
+      <circle cx="32" cy="74" r="4" fill="currentColor" stroke="none"/>
+      <circle cx="32" cy="42" r="4" fill="currentColor" stroke="none"/>
+    </g>
+    <g id="m-optics" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+      <path d="M56 24 C72 40 72 80 56 96 C40 80 40 40 56 24 Z"/>
+      <path d="M8 40 H44 L100 60" stroke-width="1.8"/>
+      <path d="M8 60 H42 L100 60" stroke-width="1.8"/>
+      <path d="M8 80 H44 L100 60" stroke-width="1.8"/>
+      <circle cx="100" cy="60" r="4" fill="currentColor" stroke="none"/>
+      <path d="M100 44 v-8 M100 84 v8" stroke-width="1.6"/>
+    </g>
+    <g id="m-dyn" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M28 98 h48"/>
+      <path d="M38 98 L52 82 L66 98"/>
+      <line x1="52" y1="80" x2="76" y2="46"/>
+      <line x1="76" y1="46" x2="102" y2="62"/>
+      <circle cx="52" cy="80" r="6"/>
+      <circle cx="76" cy="46" r="5"/>
+      <path d="M102 62 l6 -8 M102 62 l8 4" stroke-width="2.2"/>
+      <path d="M40 40 A38 38 0 0 1 78 24" stroke-dasharray="3 6" stroke-width="1.6"/>
+    </g>
+  </defs>
+</svg>
 
 <!-- ═══ 헤더 (canonical — 전 페이지 동일, TEMPLATE.md §1) ═══ -->
 <header class="site-header">
@@ -136,9 +207,10 @@ document.documentElement.classList.add('js');})();
       <div class="lang-toggle" role="group" aria-label="언어 선택">
         <button data-lang="ko" aria-pressed="true">KO</button><button data-lang="en" aria-pressed="false">EN</button>
       </div>
-      <button class="icon-btn" id="themeBtn" aria-label="다크 모드 전환" aria-pressed="false">
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9c-4.97 0-9-4.03-9-9Z"></path></svg>
-      </button>
+      <div class="fs-toggle" role="group" aria-label="글자 크기 조절">
+        <button class="fs-btn" data-fs="down" aria-label="글자 작게" title="글자 작게">A<sup>−</sup></button>
+        <button class="fs-btn" data-fs="up" aria-label="글자 크게" title="글자 크게">A<sup>+</sup></button>
+      </div>
       <button class="icon-btn nav-toggle" id="navToggle" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mobileMenu">
         <span class="burger-box" aria-hidden="true"><span></span><span></span><span></span></span>
       </button>
@@ -194,7 +266,7 @@ document.documentElement.classList.add('js');})();
       <div class="col-7">
         <p class="eyebrow reveal" style="margin-bottom:var(--sp-5)">Since 1962 · Mechanical Engineering</p>
         <h1 id="hero-title" class="display" style="margin-bottom:var(--sp-5)">
-          <span class="line-mask" style="--i:0"><span>2030년부터,</span></span>
+          <span class="line-mask" style="--i:0"><span>1962년부터,</span></span>
           <span class="line-mask" style="--i:1"><span>기계는 세상을</span></span>
           <span class="line-mask" style="--i:2"><span>움직여 왔습니다<span class="text-accent">.</span></span></span>
         </h1>
@@ -209,9 +281,52 @@ document.documentElement.classList.add('js');})();
       </div>
       <div class="col-5 reveal">
         <figure class="media">
-          <div class="ph ph--3x4">
-            <span class="ph-tag">FIG. 01</span>
-            <span class="ph-cap">PHOTO — 공학관 정밀가공 실험실, 2026</span>
+          <!-- 히어로 도면 시트 — 맞물리는 사다리꼴 스퍼기어(치형 계산: mech/gen-A.mjs). 색은 토큰(다크 대응) -->
+          <div class="sheet">
+            <span class="fig-tag mono">FIG.01</span>
+            <svg class="sheet-mech" viewBox="0 0 444 400" aria-hidden="true" focusable="false">
+              <line class="center" x1="40" y1="200" x2="404" y2="200" />
+              <line class="center" x1="150" y1="70" x2="150" y2="330" />
+              <line class="center" x1="294" y1="96" x2="294" y2="304" />
+              <circle class="ref" cx="150" cy="200" r="96" />
+              <circle class="ref" cx="294" cy="200" r="48" />
+              <circle cx="246" cy="200" r="2.4" fill="var(--text)" />
+              <!-- 큰 기어 G1 (N=24) — CW -->
+              <g class="gear g1">
+                <g transform="translate(150 200)">
+                  <path class="tooth" d="M 85.558 -8.71 L 103.944 -3.403 L 103.944 3.403 L 85.558 8.71 L 84.897 13.731 L 84.897 13.731 L 101.283 23.616 L 99.522 30.19 L 80.388 30.557 L 78.45 35.236 L 78.45 35.236 L 91.72 49.025 L 88.317 54.919 L 69.741 50.322 L 66.657 54.34 L 66.657 54.34 L 75.906 71.094 L 71.094 75.906 L 54.34 66.657 L 50.322 69.741 L 50.322 69.741 L 54.919 88.317 L 49.025 91.72 L 35.236 78.45 L 30.557 80.388 L 30.557 80.388 L 30.19 99.522 L 23.616 101.283 L 13.731 84.897 L 8.71 85.558 L 8.71 85.558 L 3.403 103.944 L -3.403 103.944 L -8.71 85.558 L -13.731 84.897 L -13.731 84.897 L -23.616 101.283 L -30.19 99.522 L -30.557 80.388 L -35.236 78.45 L -35.236 78.45 L -49.025 91.72 L -54.919 88.317 L -50.322 69.741 L -54.34 66.657 L -54.34 66.657 L -71.094 75.906 L -75.906 71.094 L -66.657 54.34 L -69.741 50.322 L -69.741 50.322 L -88.317 54.919 L -91.72 49.025 L -78.45 35.236 L -80.388 30.557 L -80.388 30.557 L -99.522 30.19 L -101.283 23.616 L -84.897 13.731 L -85.558 8.71 L -85.558 8.71 L -103.944 3.403 L -103.944 -3.403 L -85.558 -8.71 L -84.897 -13.731 L -84.897 -13.731 L -101.283 -23.616 L -99.522 -30.19 L -80.388 -30.557 L -78.45 -35.236 L -78.45 -35.236 L -91.72 -49.025 L -88.317 -54.919 L -69.741 -50.322 L -66.657 -54.34 L -66.657 -54.34 L -75.906 -71.094 L -71.094 -75.906 L -54.34 -66.657 L -50.322 -69.741 L -50.322 -69.741 L -54.919 -88.317 L -49.025 -91.72 L -35.236 -78.45 L -30.557 -80.388 L -30.557 -80.388 L -30.19 -99.522 L -23.616 -101.283 L -13.731 -84.897 L -8.71 -85.558 L -8.71 -85.558 L -3.403 -103.944 L 3.403 -103.944 L 8.71 -85.558 L 13.731 -84.897 L 13.731 -84.897 L 23.616 -101.283 L 30.19 -99.522 L 30.557 -80.388 L 35.236 -78.45 L 35.236 -78.45 L 49.025 -91.72 L 54.919 -88.317 L 50.322 -69.741 L 54.34 -66.657 L 54.34 -66.657 L 71.094 -75.906 L 75.906 -71.094 L 66.657 -54.34 L 69.741 -50.322 L 69.741 -50.322 L 88.317 -54.919 L 91.72 -49.025 L 78.45 -35.236 L 80.388 -30.557 L 80.388 -30.557 L 99.522 -30.19 L 101.283 -23.616 L 84.897 -13.731 L 85.558 -8.71 Z" />
+                  <circle class="ln" r="78" stroke-width="1.2" />
+                  <line class="spoke" x1="0" y1="-76" x2="0" y2="76" />
+                  <line class="spoke" x1="-76" y1="0" x2="76" y2="0" />
+                  <line class="spoke" x1="-53.732" y1="-53.732" x2="53.732" y2="53.732" />
+                  <line class="spoke" x1="53.732" y1="-53.732" x2="-53.732" y2="53.732" />
+                  <circle class="hub" r="16" />
+                  <circle class="hubdot" r="5" />
+                </g>
+              </g>
+              <!-- 작은 기어 G2 (N=12) — CCW -->
+              <g class="gear g2">
+                <g transform="translate(294 200)">
+                  <path class="tooth" d="M -33.97 17.03 L -53.028 18.001 L -54.924 10.925 L -37.934 2.237 L -37.934 -2.237 L -37.934 -2.237 L -54.924 -10.925 L -53.028 -18.001 L -33.97 -17.03 L -31.733 -20.904 L -31.733 -20.904 L -42.103 -36.923 L -36.923 -42.103 L -20.904 -31.733 L -17.03 -33.97 L -17.03 -33.97 L -18.001 -53.028 L -10.925 -54.924 L -2.237 -37.934 L 2.237 -37.934 L 2.237 -37.934 L 10.925 -54.924 L 18.001 -53.028 L 17.03 -33.97 L 20.904 -31.733 L 20.904 -31.733 L 36.923 -42.103 L 42.103 -36.923 L 31.733 -20.904 L 33.97 -17.03 L 33.97 -17.03 L 53.028 -18.001 L 54.924 -10.925 L 37.934 -2.237 L 37.934 2.237 L 37.934 2.237 L 54.924 10.925 L 53.028 18.001 L 33.97 17.03 L 31.733 20.904 L 31.733 20.904 L 42.103 36.923 L 36.923 42.103 L 20.904 31.733 L 17.03 33.97 L 17.03 33.97 L 18.001 53.028 L 10.925 54.924 L 2.237 37.934 L -2.237 37.934 L -2.237 37.934 L -10.925 54.924 L -18.001 53.028 L -17.03 33.97 L -20.904 31.733 L -20.904 31.733 L -36.923 42.103 L -42.103 36.923 L -31.733 20.904 L -33.97 17.03 Z" />
+                  <circle class="ln" r="32" stroke-width="1.2" />
+                  <line class="spoke" x1="0" y1="-31" x2="0" y2="31" />
+                  <line class="spoke" x1="-31" y1="0" x2="31" y2="0" />
+                  <circle class="hub" r="11" />
+                  <circle class="hubdot" r="4" />
+                </g>
+              </g>
+              <!-- 치수: 중심거리 C = R1 + R2 -->
+              <g>
+                <line class="dim" x1="150" y1="342" x2="294" y2="342" />
+                <line class="dim" x1="150" y1="336" x2="150" y2="348" />
+                <line class="dim" x1="294" y1="336" x2="294" y2="348" />
+                <text class="dimtxt" x="222" y="357" text-anchor="middle">C = R1 + R2 = 144</text>
+              </g>
+            </svg>
+            <div class="fig-cap mono">
+              <span>MECHANISM — <b>맞물려 작동하는 기구</b></span>
+              <span>SPUR 24T·12T</span>
+            </div>
           </div>
           <figcaption class="mono" style="letter-spacing:.05em">공학관 · 연세로 50, 서울</figcaption>
         </figure>
@@ -224,7 +339,7 @@ document.documentElement.classList.add('js');})();
 <section class="section section--tight" aria-labelledby="about-h">
   <div class="container grid12">
     <div class="col-7">
-      <p class="eyebrow reveal">§01 · About the School</p>
+      <p class="eyebrow reveal">학부 소개</p>
       <p id="about-h" class="lede reveal" style="margin-top:var(--sp-5)">
         기계공학은 세상의 거의 모든 움직임을 다룹니다. 우리는
         <span class="text-brand">에너지·재료·설계·제어</span>의 언어로 그 움직임을
@@ -241,15 +356,15 @@ document.documentElement.classList.add('js');})();
       <dl class="stack" style="border-top:2px solid var(--brand);padding-top:var(--sp-4)">
         <div style="display:flex;justify-content:space-between;align-items:baseline;padding-block:.6rem;border-bottom:1px solid var(--line-soft)">
           <dt class="mono muted" style="font-size:.75rem;letter-spacing:.06em">전임 교수</dt>
-          <dd class="mono" style="font-size:var(--step-2);font-weight:600;color:var(--brand)">33</dd>
+          <dd class="mono" style="font-size:var(--step-2);font-weight:600;color:var(--brand)" data-count="33" aria-label="전임 교수 33명">0</dd>
         </div>
         <div style="display:flex;justify-content:space-between;align-items:baseline;padding-block:.6rem;border-bottom:1px solid var(--line-soft);margin-top:0">
           <dt class="mono muted" style="font-size:.75rem;letter-spacing:.06em">연구실</dt>
-          <dd class="mono" style="font-size:var(--step-2);font-weight:600;color:var(--brand)">33</dd>
+          <dd class="mono" style="font-size:var(--step-2);font-weight:600;color:var(--brand)" data-count="33" aria-label="연구실 33개">0</dd>
         </div>
         <div style="display:flex;justify-content:space-between;align-items:baseline;padding-block:.6rem;border-bottom:1px solid var(--line-soft);margin-top:0">
           <dt class="mono muted" style="font-size:.75rem;letter-spacing:.06em">졸업 학점</dt>
-          <dd class="mono" style="font-size:var(--step-2);font-weight:600;color:var(--brand)">130</dd>
+          <dd class="mono" style="font-size:var(--step-2);font-weight:600;color:var(--brand)" data-count="130" aria-label="졸업 학점 130학점">0</dd>
         </div>
         <div style="display:flex;justify-content:space-between;align-items:baseline;padding-block:.6rem;margin-top:0">
           <dt class="mono muted" style="font-size:.75rem;letter-spacing:.06em">Since</dt>
@@ -260,20 +375,29 @@ document.documentElement.classList.add('js');})();
   </div>
 </section>
 
-<!-- ═══ §02 연구 클러스터 6 — 에디토리얼 리스트 (data.js 렌더) ═══ -->
-<section class="section section--alt" id="research" aria-labelledby="research-h">
+<!-- ═══ §02 기구 배치도 6 — 스테이션 + PLATE 도판 팝업 (data.js 렌더) ═══ -->
+<section class="section section--alt section--stations" id="research" aria-labelledby="research-h">
   <div class="container">
     <div class="sec-head reveal">
-      <span class="sec-num">§02 / 연구</span>
+      <span class="sec-num">연구 분야</span>
       <div class="sec-body">
-        <h2 id="research-h" class="sec-title">여섯 갈래로 맞물린 연구</h2>
-        <p class="sec-sub">고체에서 유체, 나노에서 로보틱스까지 — 33개 연구실이 6개 클러스터로 작동합니다.</p>
+        <h2 id="research-h" class="sec-title">여섯 개 연구 분야</h2>
+        <p class="sec-sub">고체·열·유체·나노·계측·동역학 — 여섯 개 분야로 나뉜 연구.</p>
       </div>
       <a class="sec-more arrow-link" href="research.html">연구실 전체 <span class="arr" aria-hidden="true">→</span></a>
     </div>
-    <div class="cluster-list reveal" id="clusterList">
-      <noscript><p class="muted">연구 클러스터 전체는 <a class="link-sweep" href="research.html">연구 페이지</a>에서 확인하세요.</p></noscript>
+
+    <div class="stations-wrap reveal">
+      <div class="stations" id="stationGrid">
+        <noscript><p class="muted" style="padding:var(--sp-5)">여섯 개 연구 분야 전체는 <a class="link-sweep" href="research.html">연구 페이지</a>에서 확인하세요.</p></noscript>
+      </div>
     </div>
+    <div class="stations-foot">
+      <span class="stations-hint">기구에 커서를 올리면 담당 분야가 열리고, 누르면 상세 설명으로 이동합니다.</span>
+    </div>
+
+    <!-- 분야 설명 — 각 스테이션 팝업의 "분야 설명 보기 →" 링크 대상 -->
+    <div class="cluster-details" id="clusterDetails"></div>
   </div>
 </section>
 
@@ -281,10 +405,9 @@ document.documentElement.classList.add('js');})();
 <section class="section" aria-labelledby="stats-h">
   <div class="container">
     <div class="sec-head reveal">
-      <span class="sec-num">§03 / 계측</span>
+      <span class="sec-num">학부 현황</span>
       <div class="sec-body">
-        <h2 id="stats-h" class="sec-title">By the Numbers</h2>
-        <p class="sec-sub">숫자로 보는 연세 기계공학. 모든 수치는 공식 페이지 실측(2026-06-30).</p>
+        <h2 id="stats-h" class="sec-title">숫자로 보는 학부</h2>
       </div>
       <a class="sec-more arrow-link" href="history.html">연혁 보기 <span class="arr" aria-hidden="true">→</span></a>
     </div>
@@ -295,23 +418,22 @@ document.documentElement.classList.add('js');})();
           <span class="stat-num" data-count="33" aria-hidden="true">0</span>
           <p class="stat-label">전임 교수 — 33개 연구실을 이끄는 한 사람 한 사람.</p>
         </div>
-        <p class="stat-src">출처: faculty_list.do · 2026-06-30</p>
       </div>
       <div class="bento-cell">
         <span class="stat-num" data-count="33" aria-hidden="true">0</span>
-        <div><p class="stat-label">연구실</p><p class="stat-src">lab2.do</p></div>
+        <div><p class="stat-label">연구실</p></div>
       </div>
       <div class="bento-cell">
         <span class="stat-num" data-count="6" aria-hidden="true">0</span>
-        <div><p class="stat-label">연구 클러스터</p><p class="stat-src">8→6 병합 분류</p></div>
+        <div><p class="stat-label">연구 클러스터</p></div>
       </div>
       <div class="bento-cell">
         <span class="stat-num" data-count="130" aria-hidden="true">0</span>
-        <div><p class="stat-label">졸업 학점</p><p class="stat-src">graduation.do</p></div>
+        <div><p class="stat-label">졸업 학점</p></div>
       </div>
       <div class="bento-cell">
         <span class="stat-num mono">1962</span>
-        <div><p class="stat-label">Since — 기계공학과 분리</p><p class="stat-src">history.do</p></div>
+        <div><p class="stat-label">Since — 기계공학과 분리</p></div>
       </div>
     </div>
     <p class="visually-hidden">전임 교수 33명, 연구실 33개, 연구 클러스터 6개, 졸업 학점 130학점, 1962년 설립.</p>
@@ -322,7 +444,7 @@ document.documentElement.classList.add('js');})();
 <section class="section section--alt cq" id="people" aria-labelledby="people-h">
   <div class="container">
     <div class="sec-head reveal">
-      <span class="sec-num">§04 / 구성원</span>
+      <span class="sec-num">구성원</span>
       <div class="sec-body">
         <h2 id="people-h" class="sec-title">학부를 움직이는 사람들</h2>
         <p class="sec-sub">한 사람 한 사람이 학부의 동력입니다. 이름·연구실·클러스터로 검색하세요.</p>
@@ -339,7 +461,7 @@ document.documentElement.classList.add('js');})();
 <section class="section" id="news" aria-labelledby="news-h">
   <div class="container">
     <div class="sec-head reveal">
-      <span class="sec-num">§05 / 소식</span>
+      <span class="sec-num">소식</span>
       <div class="sec-body">
         <h2 id="news-h" class="sec-title">공지 · 뉴스 · 세미나</h2>
         <p class="sec-sub">학부·대학원 공지, 연구 뉴스, BK 세미나를 한 허브에서.</p>
@@ -435,8 +557,8 @@ document.documentElement.classList.add('js');})();
 
 <p id="langNote" hidden="" class="visually-hidden" aria-live="polite">English navigation applied. Full English content is in preparation.</p>
 
-<script src="assets/js/data.js" defer=""></script>
-<script src="assets/js/main.js" defer=""></script>
+<script src="assets/js/data.js?v=d9" defer=""></script>
+<script src="assets/js/main.js?v=d9" defer=""></script>
 <script defer="">
 /* ═══ index 전용 — data.js 단일 소스 렌더 ═══ */
 window.addEventListener('DOMContentLoaded', function () {
@@ -445,23 +567,80 @@ window.addEventListener('DOMContentLoaded', function () {
   if (!D || !UI) return;
   var artKinds = { solid:'grid', thermal:'wave', manuf:'gear', nanobio:'turbine', optics:'wave', dyn:'arm' };
 
-  /* §02 연구 클러스터 리스트 */
-  var cl = document.getElementById('clusterList');
-  if (cl) {
-    var maxCount = Math.max.apply(null, D.clusters.map(function (c) { return c.count; }));
-    cl.innerHTML = D.clusters.map(function (c, i) {
-      var pct = Math.round(c.count / maxCount * 100);
-      return '<a class="cluster-row" href="research.html#' + c.id + '" style="--cluster-c:var(--c-' + c.id + ')">' +
-        '<span class="cluster-idx">' + String(i + 1).padStart(2, '0') + '</span>' +
-        '<span class="cluster-main">' +
-          '<span class="cluster-name">' + UI.escapeHtml(c.ko) + '</span>' +
-          '<span class="cluster-en">' + UI.escapeHtml(c.en) + '</span>' +
+  /* §02 기구 배치도 — 스테이션(도판 팝업) + 분야 설명, 둘 다 data.js 렌더 */
+  function tallyMarks(n) {                      /* 탤리 마크 n개 (5획째는 CSS가 가로지름) */
+    return new Array(n).fill('<i></i>').join('');
+  }
+  var pad2 = function (i) { return String(i + 1).padStart(2, '0'); };
+
+  var sg = document.getElementById('stationGrid');
+  if (sg) {
+    var total = D.clusters.length;
+    sg.innerHTML = D.clusters.map(function (c, i) {
+      var no = pad2(i);
+      /* 03번(생산·제조)에만 검수 도장 — D 원본과 동일 위치 */
+      var qc = c.id === 'manuf' ? '<span class="qc" aria-hidden="true">檢</span>' : '';
+      return '<a class="station" href="#c-' + c.id + '">' +
+        qc +
+        '<svg class="mech" viewBox="0 0 120 120" aria-hidden="true"><use href="#m-' + c.id + '"/></svg>' +
+        '<span class="tag"><i>' + no + '</i>' + UI.escapeHtml(c.ko.split('·').slice(0, 2).join('·')) + '</span>' +
+        '<span class="pop" role="tooltip">' +
+          '<i class="lead" aria-hidden="true"></i>' +
+          '<span class="plate-head"><b>PLATE NO. ' + no + ' / ' + String(total).padStart(2, '0') + '</b><span>ZONE A' + (i + 1) + '</span></span>' +
+          '<span class="plate-fig" aria-hidden="true"><svg viewBox="0 0 120 120"><use href="#m-' + c.id + '"/></svg><span class="wm">' + no + '</span></span>' +
+          '<h3>' + UI.escapeHtml(c.ko) + '</h3>' +
+          '<p class="en">' + UI.escapeHtml(c.en) + '</p>' +
+          '<p class="desc">' + UI.escapeHtml(c.desc || '') + '</p>' +
+          '<span class="tally" role="img" aria-label="연구실 ' + c.count + '개"><em>LABS</em>' + tallyMarks(c.count) + '<b>' + c.count + '</b></span>' +
+          '<span class="go">분야 설명 보기 →</span>' +
         '</span>' +
-        '<span class="cluster-count"><b>' + c.count + '</b> labs</span>' +
-        '<span class="cluster-bar" style="--w:' + pct + '%"></span>' +
       '</a>';
     }).join('');
   }
+
+  /* §02 분야 설명 — 스테이션 팝업의 "분야 설명 보기 →" 대상. 교수 칩은 data.js에서 */
+  var cd = document.getElementById('clusterDetails');
+  if (cd) {
+    cd.innerHTML = D.clusters.map(function (c, i) {
+      var members = D.professors.filter(function (p) { return p.cluster === c.id; });
+      var chips = members.map(function (p) { return '<li>' + UI.escapeHtml(p.ko) + '</li>'; }).join('');
+      return '<article class="cluster-detail" id="c-' + c.id + '">' +
+        '<svg class="mini" viewBox="0 0 120 120" aria-hidden="true"><use href="#m-' + c.id + '"/></svg>' +
+        '<div>' +
+          '<span class="no">CLUSTER ' + pad2(i) + ' — ' + UI.escapeHtml(c.en) + '</span>' +
+          '<h3>' + UI.escapeHtml(c.ko) + '</h3>' +
+          '<p class="en">' + UI.escapeHtml(c.en) + '</p>' +
+          '<p class="desc">' + UI.escapeHtml(c.desc || '') + '</p>' +
+          '<a class="backtop" href="#research">↑ 기구 배치도로</a>' +
+        '</div>' +
+        '<div class="labs">' +
+          '<p class="k">FACULTY<b>' + c.count + '</b></p>' +
+          '<ul>' + chips + '</ul>' +
+        '</div>' +
+      '</article>';
+    }).join('');
+  }
+
+  /* 기구 도판 배치 — 위쪽 공간이 팝업 높이보다 좁으면 아래로 펼친다(.pop-down).
+     기본값은 위(웅장하게 상승). hover/focus 진입 시점에 한 번 계산. JS 꺼져도 위로 정상.
+     reduced-motion은 CSS가 트랜지션만 끄고 배치 로직은 그대로(위치는 계산 필요). */
+  (function () {
+    var stations = document.querySelectorAll('#stationGrid .station');
+    function place(st) {
+      var pop = st.querySelector('.pop');
+      if (!pop) return;
+      var need = pop.offsetHeight + 40;                 /* 팝업 높이 + 리더선/여유 */
+      var rect = st.getBoundingClientRect();
+      var above = rect.top;                             /* 스테이션 위 가용 공간 */
+      var below = window.innerHeight - rect.bottom;     /* 아래 가용 공간 */
+      /* 위가 부족하고, 아래가 위보다 넓을 때만 아래로 펼침(더 나은 쪽 선택) */
+      st.classList.toggle('pop-down', above < need && below > above);
+    }
+    Array.prototype.forEach.call(stations, function (st) {
+      st.addEventListener('mouseenter', function () { place(st); });
+      st.addEventListener('focusin', function () { place(st); });
+    });
+  })();
 
   /* §04 교수진 프리뷰 — featured 6인 */
   var fp = document.getElementById('facultyPreview');

@@ -16,7 +16,10 @@
     'ai-apply': 'AI 적용',
     'export': '내보내기',
     'site-open': '사이트 열기',
-    'publish': '게시'
+    'publish': '게시',
+    'asset:upload': '자산 업로드',
+    'replace': '찾기/바꾸기',
+    'qa': '품질 검사'
   };
 
   function actionLabel(action) {

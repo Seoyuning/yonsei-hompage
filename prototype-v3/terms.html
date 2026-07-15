@@ -9,14 +9,14 @@
 <meta property="og:type" content="website" />
 <meta name="theme-color" content="#001a38" />
 <script>
-(function(){try{var t=localStorage.getItem('ysme-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}
+(function(){try{var f=localStorage.getItem('ysme-fs');if(f)document.documentElement.style.fontSize=f;}catch(e){}
 document.documentElement.classList.add('js');})();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Serif+KR:wght@400;500;600&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/main.css" />
+<link rel="stylesheet" href="assets/css/main.css?v=d9" />
 </head>
 <body>
 <a class="skip" href="#main" data-i18n="ui.skip">본문 바로가기</a>
@@ -127,9 +127,10 @@ document.documentElement.classList.add('js');})();
       <div class="lang-toggle" role="group" aria-label="언어 선택">
         <button data-lang="ko" aria-pressed="true">KO</button><button data-lang="en" aria-pressed="false">EN</button>
       </div>
-      <button class="icon-btn" id="themeBtn" aria-label="다크 모드 전환" aria-pressed="false">
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9c-4.97 0-9-4.03-9-9Z"/></svg>
-      </button>
+      <div class="fs-toggle" role="group" aria-label="글자 크기 조절">
+        <button class="fs-btn" data-fs="down" aria-label="글자 작게" title="글자 작게">A<sup>−</sup></button>
+        <button class="fs-btn" data-fs="up" aria-label="글자 크게" title="글자 크게">A<sup>+</sup></button>
+      </div>
       <button class="icon-btn nav-toggle" id="navToggle" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mobileMenu">
         <span class="burger-box" aria-hidden="true"><span></span><span></span><span></span></span>
       </button>
@@ -186,12 +187,8 @@ document.documentElement.classList.add('js');})();
         <a href="index.html">홈</a><span class="sep" aria-hidden="true">/</span>
         <span aria-current="page">이용약관</span>
       </nav>
-      <p class="page-hero-eyebrow eyebrow reveal">§ Terms</p>
       <h1 id="tm-title" class="reveal">이용약관</h1>
       <p class="page-hero-lede reveal">연세대학교 기계공학부 웹사이트의 이용 조건과 콘텐츠 이용 범위, 이용자와 학부의 권리·의무를 규정합니다.</p>
-    </div>
-    <div class="col-4 col-start-9 reveal">
-      <p class="page-hero-meta">시행일 2026-07-03<br>문서 버전 v2.0<br>SOURCE me.yonsei.ac.kr</p>
     </div>
   </div>
 </section>
@@ -201,7 +198,7 @@ document.documentElement.classList.add('js');})();
 
     <!-- 목차 (데스크톱 sticky · 스크롤 스파이) -->
     <nav class="policy-toc" aria-label="문서 목차">
-      <p class="overline mb-4">목차 · Contents</p>
+      <p class="overline mb-4">목차</p>
       <ol id="ptocList">
         <li><a href="#t1">제1조 목적</a></li>
         <li><a href="#t2">제2조 정의</a></li>
@@ -223,12 +220,12 @@ document.documentElement.classList.add('js');})();
       </div>
 
       <section id="t1" class="reveal">
-        <h2><span class="art-no">ARTICLE 01</span>목적</h2>
+        <h2><span class="art-no">제1조</span>목적</h2>
         <p>본 약관은 연세대학교 기계공학부(이하 “학부”)가 운영하는 웹사이트(이하 “사이트”)가 제공하는 정보 서비스의 이용 조건 및 절차, 이용자와 학부의 권리·의무·책임 사항을 규정함을 목적으로 합니다.</p>
       </section>
 
       <section id="t2" class="reveal">
-        <h2><span class="art-no">ARTICLE 02</span>정의</h2>
+        <h2><span class="art-no">제2조</span>정의</h2>
         <ul>
           <li><b>“사이트”</b> — 학부가 학과 소개·교육·연구·소식 등의 정보를 제공하기 위해 운영하는 웹 서비스 일체</li>
           <li><b>“이용자”</b> — 본 약관에 따라 사이트에 접속하여 사이트가 제공하는 서비스를 이용하는 모든 사람</li>
@@ -237,13 +234,13 @@ document.documentElement.classList.add('js');})();
       </section>
 
       <section id="t3" class="reveal">
-        <h2><span class="art-no">ARTICLE 03</span>약관의 효력 및 변경</h2>
+        <h2><span class="art-no">제3조</span>약관의 효력 및 변경</h2>
         <p>① 본 약관은 사이트에 게시함으로써 효력이 발생합니다. 사이트를 이용하는 경우 본 약관에 동의한 것으로 봅니다.</p>
         <p>② 학부는 관계 법령을 위반하지 않는 범위에서 본 약관을 변경할 수 있으며, 변경 시 시행일과 변경 사유를 명시하여 시행일 7일 전부터 사이트에 공지합니다.</p>
       </section>
 
       <section id="t4" class="reveal">
-        <h2><span class="art-no">ARTICLE 04</span>제공 서비스</h2>
+        <h2><span class="art-no">제4조</span>제공 서비스</h2>
         <p>사이트는 회원가입 없이 누구나 이용할 수 있는 다음 서비스를 제공합니다.</p>
         <ul>
           <li>학부 소개 — 비전·연혁·조직·오시는 길</li>
@@ -255,10 +252,10 @@ document.documentElement.classList.add('js');})();
       </section>
 
       <section id="t5" class="reveal">
-        <h2><span class="art-no">ARTICLE 05</span>저작권 및 콘텐츠 이용</h2>
+        <h2><span class="art-no">제5조</span>저작권 및 콘텐츠 이용</h2>
         <p>① 사이트에 게시된 콘텐츠의 저작권은 별도 표시가 없는 한 학부(연세대학교)에 귀속됩니다.</p>
         <p>② 이용자는 학술·교육 등 비영리 목적으로 출처(연세대학교 기계공학부)를 명시하고 콘텐츠를 인용할 수 있습니다. 영리 목적의 복제·배포·전송·2차적 저작물 작성은 학부의 사전 서면 동의를 받아야 합니다.</p>
-        <p>③ 사이트에 사용된 외부 자산은 다음 오픈 라이선스를 따릅니다. 전체 자재 명세는 <a href="engineering.html#bom">공학 사양서 §04 BOM</a>에 공개되어 있습니다.</p>
+        <p>③ 사이트에 사용된 외부 자산은 다음 오픈 라이선스를 따릅니다. 전체 자재 명세는 <a href="engineering.html#bom">공학 사양서 자재 명세</a>에 공개되어 있습니다.</p>
         <div class="table-scroll">
           <table class="spec-table spec-table--dense">
             <caption class="visually-hidden">외부 자산 라이선스 목록</caption>
@@ -274,7 +271,7 @@ document.documentElement.classList.add('js');})();
       </section>
 
       <section id="t6" class="reveal">
-        <h2><span class="art-no">ARTICLE 06</span>이용자의 의무</h2>
+        <h2><span class="art-no">제6조</span>이용자의 의무</h2>
         <p>이용자는 다음 행위를 하여서는 안 됩니다.</p>
         <ul>
           <li>사이트의 정상적인 운영을 방해하는 행위 (과도한 자동화 요청, 취약점 악용 등)</li>
@@ -285,29 +282,29 @@ document.documentElement.classList.add('js');})();
       </section>
 
       <section id="t7" class="reveal">
-        <h2><span class="art-no">ARTICLE 07</span>정보의 정확성과 면책</h2>
-        <p>① 학부는 게시 정보의 정확성을 위해 노력하며, 사실 수치에는 출처와 확인일을 함께 표기하는 것을 원칙으로 합니다(출처 스탬프 제도). 확인되지 않은 수치는 게시하지 않습니다.</p>
+        <h2><span class="art-no">제7조</span>정보의 정확성과 면책</h2>
+        <p>① 학부는 게시 정보의 정확성을 위해 노력하며, 사실 수치에는 출처와 확인일을 함께 표기하는 것을 원칙으로 합니다. 확인되지 않은 수치는 게시하지 않습니다.</p>
         <p>② 다만 학사·입학 등 중요 사항의 최종 확인은 반드시 공식 문서(요람·모집요강) 및 담당 부서(<span class="mono">02-2123-4426</span>)를 통해 하시기 바랍니다. 게시 정보와 공식 문서가 다를 경우 공식 문서가 우선합니다.</p>
         <p>③ 학부는 천재지변, 시스템 장애 등 불가항력으로 인한 서비스 중단 및 이용자의 귀책사유로 발생한 손해에 대하여 관계 법령이 허용하는 범위에서 책임을 지지 않습니다.</p>
       </section>
 
       <section id="t8" class="reveal">
-        <h2><span class="art-no">ARTICLE 08</span>링크 사이트</h2>
+        <h2><span class="art-no">제8조</span>링크 사이트</h2>
         <p>사이트에 포함된 외부 링크(연구실 홈페이지 등)는 이용자의 편의를 위한 것으로, 새 창으로 열림을 고지하며 링크된 사이트의 콘텐츠에 대해서는 해당 운영 주체가 책임을 집니다. 외부 링크는 운영 주체가 확인된 곳만 게시합니다.</p>
       </section>
 
       <section id="t9" class="reveal">
-        <h2><span class="art-no">ARTICLE 09</span>서비스의 변경·중단</h2>
+        <h2><span class="art-no">제9조</span>서비스의 변경·중단</h2>
         <p>학부는 시스템 점검·개선, 학사 일정 등 운영상 필요에 따라 서비스의 전부 또는 일부를 변경·중단할 수 있으며, 계획된 중단은 사전에 공지합니다.</p>
       </section>
 
       <section id="t10" class="reveal">
-        <h2><span class="art-no">ARTICLE 10</span>준거법 및 관할</h2>
+        <h2><span class="art-no">제10조</span>준거법 및 관할</h2>
         <p>본 약관은 대한민국 법령에 따라 해석되며, 사이트 이용과 관련하여 분쟁이 발생하는 경우 민사소송법에 따른 관할 법원에 제소합니다.</p>
       </section>
 
       <section id="t11" class="reveal">
-        <h2><span class="art-no">ADDENDUM</span>부칙</h2>
+        <h2><span class="art-no">부칙</span></h2>
         <p>① 본 약관은 <b>2026년 7월 3일</b>부터 시행합니다.</p>
         <p>② 개인정보의 처리에 관한 사항은 <a href="privacy.html">개인정보처리방침</a>을, 웹 접근성에 관한 사항은 <a href="accessibility.html">접근성 선언</a>을 따릅니다.</p>
       </section>
@@ -374,8 +371,8 @@ document.documentElement.classList.add('js');})();
 
 <p id="langNote" hidden class="visually-hidden" aria-live="polite">English navigation applied. Full English content is in preparation.</p>
 
-<script src="assets/js/data.js" defer></script>
-<script src="assets/js/main.js" defer></script>
+<script src="assets/js/data.js?v=d9" defer></script>
+<script src="assets/js/main.js?v=d9" defer></script>
 <script defer>
 /* ═══ 정책 문서 공용 — 목차 스크롤 스파이 ═══ */
 window.addEventListener('DOMContentLoaded', function () {

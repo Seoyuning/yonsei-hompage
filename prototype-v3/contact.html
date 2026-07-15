@@ -10,14 +10,14 @@
 <meta name="theme-color" content="#001a38" />
 <!-- FOUC 방지: CSS보다 먼저 저장된 테마 적용 (전 페이지 공통 규약 — TEMPLATE.md §0) -->
 <script>
-(function(){try{var t=localStorage.getItem('ysme-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}
+(function(){try{var f=localStorage.getItem('ysme-fs');if(f)document.documentElement.style.fontSize=f;}catch(e){}
 document.documentElement.classList.add('js');})();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Serif+KR:wght@400;500;600&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/main.css" />
+<link rel="stylesheet" href="assets/css/main.css?v=d9" />
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"CollegeOrUniversity",
  "name":"연세대학교 기계공학부",
@@ -135,9 +135,10 @@ document.documentElement.classList.add('js');})();
       <div class="lang-toggle" role="group" aria-label="언어 선택">
         <button data-lang="ko" aria-pressed="true">KO</button><button data-lang="en" aria-pressed="false">EN</button>
       </div>
-      <button class="icon-btn" id="themeBtn" aria-label="다크 모드 전환" aria-pressed="false">
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9c-4.97 0-9-4.03-9-9Z"/></svg>
-      </button>
+      <div class="fs-toggle" role="group" aria-label="글자 크기 조절">
+        <button class="fs-btn" data-fs="down" aria-label="글자 작게" title="글자 작게">A<sup>−</sup></button>
+        <button class="fs-btn" data-fs="up" aria-label="글자 크게" title="글자 크게">A<sup>+</sup></button>
+      </div>
       <button class="icon-btn nav-toggle" id="navToggle" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mobileMenu">
         <span class="burger-box" aria-hidden="true"><span></span><span></span><span></span></span>
       </button>
@@ -195,12 +196,8 @@ document.documentElement.classList.add('js');})();
         <a href="about.html">소개</a><span class="sep" aria-hidden="true">/</span>
         <span aria-current="page">연락처 · 오시는 길</span>
       </nav>
-      <p class="page-hero-eyebrow eyebrow reveal">§ Contact</p>
-      <h1 id="contact-title" class="reveal">연락처와<br>오시는 길.</h1>
-      <p class="page-hero-lede reveal">방문 목적에 맞는 직통 번호를 먼저 확인하세요. 캠퍼스 동선 약도와 교통편, 문의 양식을 한 페이지에 정리했습니다.</p>
-    </div>
-    <div class="col-4 col-start-9 reveal">
-      <p class="page-hero-meta">UPDATED 2026-07<br>SOURCE me.yonsei.ac.kr<br>POSTAL 03722</p>
+      <h1 id="contact-title" class="reveal">연락처와 오시는 길</h1>
+      <p class="page-hero-lede reveal">방문 목적에 맞는 직통 번호를 먼저 확인하세요. 캠퍼스 약도와 교통편, 문의 양식을 한 페이지에 정리했습니다.</p>
     </div>
   </div>
 </section>
@@ -209,7 +206,7 @@ document.documentElement.classList.add('js');})();
 <section class="section section--tight" id="contact" aria-labelledby="tel-h">
   <div class="container">
     <div class="sec-head reveal">
-      <span class="sec-num">§01 / 연락처</span>
+      <span class="sec-num">연락처</span>
       <div class="sec-body">
         <h2 id="tel-h" class="sec-title">직통 연락처</h2>
         <p class="sec-sub">업무별 직통 번호입니다. 번호를 누르면 바로 연결됩니다.</p>
@@ -219,12 +216,12 @@ document.documentElement.classList.add('js');})();
       <div class="col-7 reveal">
         <dl class="contact-lines">
           <div class="contact-line">
-            <dt class="cl-role">Undergraduate · 학부 행정</dt>
+            <dt class="cl-role">학부 행정</dt>
             <dd><a class="cl-num" href="tel:+82-2-2123-4426">02-2123-4426</a></dd>
             <p class="cl-desc">학사 · 수강 · 졸업요건 문의</p>
           </div>
           <div class="contact-line">
-            <dt class="cl-role">Graduate · 대학원 행정</dt>
+            <dt class="cl-role">대학원 행정</dt>
             <dd><a class="cl-num" href="tel:+82-2-2123-2810">02-2123-2810</a></dd>
             <p class="cl-desc">입학 · 학위과정 · 논문 문의</p>
           </div>
@@ -238,7 +235,7 @@ document.documentElement.classList.add('js');})();
       <div class="col-4 col-start-9 reveal" style="--reveal-delay:.15s">
         <dl class="info-panel">
           <div class="info-block">
-            <dt>Address · 주소</dt>
+            <dt>주소</dt>
             <dd id="addrText">(03722) 서울특별시 서대문구 연세로 50<br>연세대학교 공과대학 기계공학부</dd>
             <p style="margin-top:var(--sp-3)">
               <button class="btn btn--ghost btn--sm" id="copyAddr" type="button">주소 복사</button>
@@ -246,7 +243,7 @@ document.documentElement.classList.add('js');})();
             </p>
           </div>
           <div class="info-block">
-            <dt>Email · 이메일</dt>
+            <dt>이메일</dt>
             <dd>온라인 문의는 아래 <a class="link-sweep" href="#inquiry">문의 양식</a>을 이용해 주세요. 별도 대표 이메일은 운영본에서 검증 후 게시합니다.</dd>
           </div>
         </dl>
@@ -259,7 +256,7 @@ document.documentElement.classList.add('js');})();
 <section class="section section--alt" id="directions" aria-labelledby="map-h">
   <div class="container">
     <div class="sec-head reveal">
-      <span class="sec-num">§02 / 오시는 길</span>
+      <span class="sec-num">오시는 길</span>
       <div class="sec-body">
         <h2 id="map-h" class="sec-title">캠퍼스 약도</h2>
         <p class="sec-sub">정문(연세로 50)에서 백양로를 따라 공과대학 권역까지. 건물을 선택하면 약도에서 위치가 점등됩니다.</p>
@@ -329,12 +326,12 @@ document.documentElement.classList.add('js');})();
         </div>
         <dl class="info-panel" style="margin-top:var(--sp-6)">
           <div class="info-block">
-            <dt>길안내 · Directions</dt>
+            <dt>길안내</dt>
             <dd>2호선 신촌역 하차 → 연세로를 따라 정문 진입 → 백양로를 따라 도보 이동 → 공과대학 권역(공학관 A·C·N동)에 도착합니다.</dd>
           </div>
         </dl>
         <noscript><p class="muted" style="margin-top:var(--sp-4)">연구실별 정확한 호실은 <a class="link-sweep" href="research.html">연구실 디렉터리</a>에서 확인하세요.</p></noscript>
-        <p class="spec-note" style="margin-top:var(--sp-4)">※ 집계는 연구실 33곳의 공개 위치 필드 기준. 호실 단위 상세는 <a class="link-sweep" href="research.html">Lab Explorer</a> 참조.</p>
+        <p class="spec-note" style="margin-top:var(--sp-4)">호실 단위 상세는 <a class="link-sweep" href="research.html">연구실 디렉터리</a>에서 확인하세요.</p>
       </div>
     </div>
   </div>
@@ -344,36 +341,36 @@ document.documentElement.classList.add('js');})();
 <section class="section" id="transit" aria-labelledby="transit-h">
   <div class="container">
     <div class="sec-head reveal">
-      <span class="sec-num">§03 / 교통편</span>
+      <span class="sec-num">교통편</span>
       <div class="sec-body">
         <h2 id="transit-h" class="sec-title">교통편 안내</h2>
-        <p class="sec-sub">정문(연세로 50) 기준 — 소요 시간·노선 실측값은 운영본에서 검증 후 게시합니다.</p>
+        <p class="sec-sub">정문(연세로 50) 기준 주요 교통편입니다.</p>
       </div>
     </div>
     <dl class="transit-list reveal">
       <div class="transit-item">
-        <dt class="transit-k">Subway · 지하철</dt>
+        <dt class="transit-k">지하철</dt>
         <dd>
           <p class="transit-b">2호선 신촌역</p>
           <p>신촌역 하차 후 연세로를 따라 정문 방면으로 이동합니다. 경의중앙선 신촌역에서도 정문 방면 접근이 가능합니다.</p>
         </dd>
       </div>
       <div class="transit-item">
-        <dt class="transit-k">Bus · 버스</dt>
+        <dt class="transit-k">버스</dt>
         <dd>
           <p class="transit-b">연세로 경유 시내버스</p>
           <p>연세로를 경유하는 시내버스 이용 후 연세대 방면 정류장에서 하차합니다. 구체 노선은 출발지 기준으로 서울시 대중교통 안내에서 확인을 권장합니다.</p>
         </dd>
       </div>
       <div class="transit-item">
-        <dt class="transit-k">Car · 자가용</dt>
+        <dt class="transit-k">자가용</dt>
         <dd>
           <p class="transit-b">정문 진입 · 교내 주차</p>
           <p>내비게이션에 “서울 서대문구 연세로 50”을 입력해 정문으로 진입합니다. 교내 주차 요금·규정은 운영본에서 검증 후 게시 예정입니다.</p>
         </dd>
       </div>
     </dl>
-    <p class="spec-note" style="margin-top:var(--sp-4)">※ 정직 표기 — 도보 소요 시간·버스 노선번호 등 미검증 수치는 게시하지 않습니다.</p>
+    <p class="spec-note" style="margin-top:var(--sp-4)">정확한 노선·소요 시간은 서울시 대중교통 안내에서 확인하세요.</p>
   </div>
 </section>
 
@@ -381,7 +378,7 @@ document.documentElement.classList.add('js');})();
 <section class="section section--alt" id="inquiry" aria-labelledby="ask-h">
   <div class="container">
     <div class="sec-head reveal">
-      <span class="sec-num">§04 / 문의</span>
+      <span class="sec-num">문의</span>
       <div class="sec-body">
         <h2 id="ask-h" class="sec-title">문의하기</h2>
         <p class="sec-sub">양식 검증까지 동작하는 정적 프로토타입입니다 — 접수 시 메일 앱으로 연결하거나 안내 메시지를 표시합니다.</p>
@@ -499,8 +496,8 @@ document.documentElement.classList.add('js');})();
 
 <p id="langNote" hidden class="visually-hidden" aria-live="polite">English navigation applied. Full English content is in preparation.</p>
 
-<script src="assets/js/data.js" defer></script>
-<script src="assets/js/main.js" defer></script>
+<script src="assets/js/data.js?v=d9" defer></script>
+<script src="assets/js/main.js?v=d9" defer></script>
 <script defer>
 /* ═══ contact 전용 — 주소 복사 · 약도 하이라이트 · 동선 리드로우 · 폼 검증 ═══ */
 window.addEventListener('DOMContentLoaded', function () {

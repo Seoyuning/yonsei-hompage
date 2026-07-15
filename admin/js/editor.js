@@ -523,6 +523,46 @@ var BG_TOKENS = [
   ['var(--brand)', '브랜드 네이비'],
   ['transparent', '투명']
 ];
+var WEIGHT_TOKENS = [
+  ['', '기본(변경 없음)'],
+  ['400', '보통 (400)'],
+  ['500', '약간 굵게 (500)'],
+  ['600', '중간 굵게 (600)'],
+  ['700', '굵게 (700)'],
+  ['800', '아주 굵게 (800)']
+];
+
+/* ═══════════ 블록 삽입 팔레트 ═══════════
+   선택 요소 '바로 뒤'에 삽입할 템플릿. 클래스는 사이트 마크업(post-row·
+   article-card 등)에 맞춘다. 삽입 후 새 eid 부여·pushHistory·자동 선택은
+   doAction('dup') 흐름을 그대로 따른다. */
+var BLOCK_TEMPLATES = [
+  { id: 'notice', label: '공지 행',
+    html: '<a class="post-row" href="news.html">' +
+      '<span class="post-cat">학부</span>' +
+      '<span class="post-title">새 공지 제목을 입력하세요</span>' +
+      '<time class="post-date" datetime="2026-01-01">2026.01.01</time></a>' },
+  { id: 'article', label: '기사 카드',
+    html: '<a class="article-card" href="news.html">' +
+      '<div class="ph ph--4x3"><span class="ph-tag">뉴스</span></div>' +
+      '<div class="article-body">' +
+      '<span class="article-cat">Research News</span>' +
+      '<h3 class="article-title">새 기사 제목을 입력하세요</h3>' +
+      '<time class="article-date" datetime="2026-01-01">2026.01.01</time>' +
+      '</div></a>' },
+  { id: 'section', label: '제목+단락 섹션',
+    html: '<section>' +
+      '<h2>새 섹션 제목</h2>' +
+      '<p>여기에 단락 내용을 입력하세요.</p>' +
+      '</section>' },
+  { id: 'hr', label: '구분 헤어라인',
+    html: '<hr />' },
+  { id: 'buttons', label: '버튼 2개 행',
+    html: '<div class="btn-row">' +
+      '<a class="btn" href="#">첫 번째 버튼</a>' +
+      '<a class="btn" href="#">두 번째 버튼</a>' +
+      '</div>' }
+];
 
 function renderInspector(el, editable) {
   var empty = document.getElementById('inspEmpty');
@@ -567,6 +607,13 @@ function renderInspector(el, editable) {
       '<input class="insp-input" data-attr="' + a[0] + '" value="' +
       U.escapeHtml(el.getAttribute(a[0]) || '') + '" /></div>';
   });
+  if (tag === 'img') {
+    h += '<div class="insp-field">' +
+      '<button type="button" class="insp-btn" id="inspImgReplace">이미지 교체…</button>' +
+      '<input type="file" id="inspImgFile" accept="image/*" hidden />' +
+      '<p class="insp-note">선택한 파일은 사이트의 assets/img/ 폴더에 저장됩니다.</p>' +
+      '</div>';
+  }
   h += '</div>';
 
   /* 스타일 (토큰 한정) */
@@ -581,15 +628,27 @@ function renderInspector(el, editable) {
   var fsMatch = /^([\d.]+)px$/.exec(st.fontSize || '');
   var fsVal = fsMatch ? Math.round(parseFloat(fsMatch[1])) : '';
   var fsPh = '';
+  /* 행간: 인라인이 단위 없는 배수면 그 값, placeholder 는 계산값을 배수로 환산 */
+  var lhMatch = /^([\d.]+)$/.exec(st.lineHeight || '');
+  var lhVal = lhMatch ? parseFloat(lhMatch[1]).toFixed(2) : '';
+  var lhPh = '';
   try {
     var elWin = el.ownerDocument.defaultView;
-    fsPh = Math.round(parseFloat(elWin.getComputedStyle(el).fontSize)) || '';
+    var cs = elWin.getComputedStyle(el);
+    fsPh = Math.round(parseFloat(cs.fontSize)) || '';
+    if (cs.lineHeight === 'normal') lhPh = '1.40';
+    else {
+      var lhPx = parseFloat(cs.lineHeight), fsPx = parseFloat(cs.fontSize);
+      if (lhPx && fsPx) lhPh = (lhPx / fsPx).toFixed(2);
+    }
   } catch (e) {}
   h += '<div class="insp-sec"><p class="insp-sec-title">스타일 (디자인 토큰)</p>' +
     '<div class="insp-field"><label>글자 색</label><select class="insp-select" data-style="color">' +
     optHtml(COLOR_TOKENS, st.color || '') + '</select></div>' +
     '<div class="insp-field"><label>배경 색</label><select class="insp-select" data-style="backgroundColor">' +
     optHtml(BG_TOKENS, st.backgroundColor || '') + '</select></div>' +
+    '<div class="insp-field"><label>굵기</label><select class="insp-select" data-style="fontWeight">' +
+    optHtml(WEIGHT_TOKENS, st.fontWeight || '') + '</select></div>' +
     '<div class="insp-field"><label>글자 크기 (px)</label>' +
     '<div class="insp-fs-row">' +
     '<button type="button" class="insp-btn" data-fs="-1" aria-label="글자 크기 1px 줄이기">−</button>' +
@@ -598,6 +657,14 @@ function renderInspector(el, editable) {
     '<button type="button" class="insp-btn" data-fs="reset">기본</button>' +
     '</div>' +
     '<p class="insp-note">비우거나 「기본」을 누르면 원래 크기' + (fsPh ? '(현재 ' + fsPh + 'px)' : '') + '를 따릅니다.</p></div>' +
+    '<div class="insp-field"><label>행간 (배수)</label>' +
+    '<div class="insp-fs-row">' +
+    '<button type="button" class="insp-btn" data-lh="-1" aria-label="행간 0.05 줄이기">−</button>' +
+    '<input class="insp-input" id="inspLineHeight" type="number" min="0.9" max="3" step="0.05" value="' + lhVal + '" placeholder="' + lhPh + '" aria-label="행간(배수)" />' +
+    '<button type="button" class="insp-btn" data-lh="1" aria-label="행간 0.05 키우기">＋</button>' +
+    '<button type="button" class="insp-btn" data-lh="reset">기본</button>' +
+    '</div>' +
+    '<p class="insp-note">글자 크기의 배수(0.9~3.0)입니다. 비우거나 「기본」을 누르면 원래 행간' + (lhPh ? '(현재 ' + lhPh + ')' : '') + '을 따릅니다.</p></div>' +
     '<div class="insp-field"><label>정렬</label><select class="insp-select" data-style="textAlign">' +
     '<option value=""' + (!st.textAlign ? ' selected' : '') + '>기본(좌측)</option>' +
     '<option value="center"' + (st.textAlign === 'center' ? ' selected' : '') + '>중앙</option>' +
@@ -614,6 +681,17 @@ function renderInspector(el, editable) {
     '<button type="button" class="insp-btn" data-act="dup">복제</button>' +
     '<button type="button" class="insp-btn insp-btn--danger" data-act="del">삭제</button>' +
     '</div>' +
+    '<div class="insp-field insp-block-insert">' +
+    '<label for="inspBlockInsert">블록 삽입 (선택 요소 뒤에)</label>' +
+    '<div class="insp-row">' +
+    '<select class="insp-select" id="inspBlockInsert" aria-label="삽입할 블록 선택">' +
+    '<option value="">블록 선택…</option>' +
+    BLOCK_TEMPLATES.map(function (t) {
+      return '<option value="' + U.escapeHtml(t.id) + '">' + U.escapeHtml(t.label) + '</option>';
+    }).join('') +
+    '</select>' +
+    '<button type="button" class="insp-btn" id="inspBlockInsertBtn">삽입</button>' +
+    '</div></div>' +
     '<div class="insp-row">' +
     '<button type="button" class="insp-btn insp-btn--ai" data-act="ai">AI로 이 요소 수정</button>' +
     '</div></div>';
@@ -697,6 +775,52 @@ function wireInspector(eid, editable) {
     });
   }
 
+  /* 행간: 입력·스테퍼·기본 복원 → 인라인 line-height(단위 없는 배수) */
+  var lhInput = body.querySelector('#inspLineHeight');
+  function applyLineHeight(v) {
+    var live = liveEl(eid), pris = pristineEl(eid);
+    if (!live || !pris) return;
+    if (v === '' || v == null || isNaN(v)) {
+      live.style.lineHeight = '';
+      pris.style.lineHeight = '';
+    } else {
+      v = Math.min(3, Math.max(0.9, v)).toFixed(2);
+      if (lhInput) lhInput.value = v;
+      live.style.lineHeight = v;
+      pris.style.lineHeight = v;
+    }
+    syncStyleAttr(live, pris);
+    pushHistoryDebounced();
+    var f = getFrame();
+    if (selBox && f) positionBox(selBox, live, f.contentWindow);
+  }
+  if (lhInput) {
+    lhInput.addEventListener('input', U.debounce(function () {
+      applyLineHeight(lhInput.value === '' ? '' : parseFloat(lhInput.value));
+    }, 250));
+    body.querySelectorAll('[data-lh]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var d = btn.getAttribute('data-lh');
+        if (d === 'reset') { lhInput.value = ''; applyLineHeight(''); return; }
+        var cur = parseFloat(lhInput.value);
+        if (isNaN(cur)) cur = parseFloat(lhInput.placeholder) || 1.4;
+        applyLineHeight(cur + parseInt(d, 10) * 0.05);
+      });
+    });
+  }
+
+  /* 이미지 교체: 파일 선택 → assets/img/ 저장 → src 갱신 */
+  var imgBtn = body.querySelector('#inspImgReplace');
+  var imgFile = body.querySelector('#inspImgFile');
+  if (imgBtn && imgFile) {
+    imgBtn.addEventListener('click', function () { imgFile.click(); });
+    imgFile.addEventListener('change', function () {
+      var file = imgFile.files && imgFile.files[0];
+      imgFile.value = '';
+      if (file) replaceImage(eid, file);
+    });
+  }
+
   var hide = body.querySelector('#inspHide');
   if (hide) {
     hide.addEventListener('change', function () {
@@ -714,12 +838,113 @@ function wireInspector(eid, editable) {
   body.querySelectorAll('[data-act]').forEach(function (btn) {
     btn.addEventListener('click', function () { doAction(eid, btn.getAttribute('data-act')); });
   });
+
+  /* 블록 삽입: 선택 요소 바로 뒤에 템플릿 삽입 */
+  var blockSel = body.querySelector('#inspBlockInsert');
+  var blockBtn = body.querySelector('#inspBlockInsertBtn');
+  if (blockSel && blockBtn) {
+    blockBtn.addEventListener('click', function () {
+      insertBlock(eid, blockSel.value);
+    });
+  }
 }
 
 /* style="" 빈 껍데기 제거 */
 function syncStyleAttr(live, pris) {
   [live, pris].forEach(function (el) {
     if (el.getAttribute('style') === '') el.removeAttribute('style');
+  });
+}
+
+/* ═══════════ 이미지 교체 업로드 ═══════════ */
+
+/* 파일명 정리: 소문자화, 공백·한글 등 비안전문자 → '-', 확장자 유지 */
+function sanitizeFileName(name) {
+  var dot = String(name).lastIndexOf('.');
+  var base = dot > 0 ? name.slice(0, dot) : String(name);
+  var ext = dot > 0 ? name.slice(dot + 1) : '';
+  base = base.toLowerCase().replace(/[^a-z0-9_-]+/g, '-')
+    .replace(/-{2,}/g, '-').replace(/^-+|-+$/g, '');
+  if (!base) base = 'image';
+  ext = ext.toLowerCase().replace(/[^a-z0-9]/g, '');
+  return ext ? base + '.' + ext : base;
+}
+
+/* assets/img/ 안에서 충돌 없는 경로 확보 (동일 이름 존재 시 -2, -3 …) */
+async function uniqueImagePath(fileName) {
+  var dot = fileName.lastIndexOf('.');
+  var base = dot > 0 ? fileName.slice(0, dot) : fileName;
+  var ext = dot > 0 ? fileName.slice(dot) : '';
+  var cand = fileName;
+  var n = 2;
+  while (await Admin.fs.exists('assets/img/' + cand)) {
+    cand = base + '-' + n + ext;
+    n += 1;
+  }
+  return 'assets/img/' + cand;
+}
+
+async function replaceImage(eid, file) {
+  var live = liveEl(eid), pris = pristineEl(eid);
+  if (!live || !pris) return;
+  if (!Admin.fs.isReady()) { Admin.toast('먼저 사이트 폴더를 여세요.', 'err'); return; }
+  if (!/^image\//i.test(file.type || '')) { Admin.toast('이미지 파일만 업로드할 수 있습니다.', 'err'); return; }
+  var rel;
+  try {
+    rel = await uniqueImagePath(sanitizeFileName(file.name));
+    await Admin.fs.writeBinary(rel, file);
+  } catch (e) {
+    Admin.toast('이미지 저장 실패: ' + (e && e.message ? e.message : e), 'err');
+    return;
+  }
+  // 자산 캐시에 등록 → 재렌더 시 pristine 의 상대경로가 같은 blob URL 로 해석된다.
+  // (sandbox 미리보기의 data: 캐시는 저장된 실제 파일에서 그때 생성)
+  var burl = URL.createObjectURL(file);
+  assetCache.set(rel, burl);
+  live.setAttribute('src', burl);
+  pris.setAttribute('src', rel);
+  var srcInput = document.querySelector('#inspBody [data-attr="src"]');
+  if (srcInput) srcInput.value = rel;
+  pushHistory();
+  Admin.audit.log('asset:upload', rel, '원본 파일: ' + file.name);
+  Admin.toast('이미지는 assets/img/에 즉시 저장됩니다 — 페이지 반영은 저장(Ctrl+S) 시 적용됩니다.', 'info');
+  if (!(pris.getAttribute('alt') || '').trim()) {
+    Admin.toast('대체 텍스트(alt)가 비어 있습니다. 접근성을 위해 입력을 권장합니다.', 'info');
+  }
+  var f = getFrame();
+  if (selBox && f) positionBox(selBox, live, f.contentWindow);
+}
+
+/* 블록 삽입: 선택 요소 '바로 뒤'에 템플릿 삽입.
+   doAction('dup') 의 pristine 미러링·eid 부여·pushHistory·자동 선택을 그대로 따른다. */
+function insertBlock(eid, templateId) {
+  if (!templateId) { Admin.toast('삽입할 블록을 선택하세요.', 'info'); return; }
+  var pris = pristineEl(eid);
+  if (!pris) { Admin.toast('먼저 캔버스에서 요소를 선택하세요.', 'info'); return; }
+  var tpl = null;
+  for (var i = 0; i < BLOCK_TEMPLATES.length; i++) {
+    if (BLOCK_TEMPLATES[i].id === templateId) { tpl = BLOCK_TEMPLATES[i]; break; }
+  }
+  if (!tpl) return;
+
+  // 템플릿 HTML → 요소 노드(현재 pristineDoc 소유). 첫 요소만 삽입 대상으로 사용.
+  var holder = pristineDoc.createElement('div');
+  holder.innerHTML = tpl.html;
+  var node = holder.firstElementChild;
+  if (!node) return;
+
+  // 삽입 서브트리에 새 eid 부여(복제와 동일 규약)
+  var nodes = [node].concat(Array.prototype.slice.call(node.querySelectorAll('*')));
+  nodes.forEach(function (n) {
+    eidSeq += 1;
+    n.setAttribute('data-eid', 'e' + eidSeq);
+  });
+
+  pris.after(node);
+  var newEid = node.getAttribute('data-eid');
+  pushHistory();
+  renderCanvas({ keepScroll: true }).then(function () {
+    select(newEid);   // 삽입 요소 자동 선택
   });
 }
 

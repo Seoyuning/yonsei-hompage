@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Nanum+Pen+Script&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    제도 시트 D  —  REV D.2
@@ -22,11 +22,10 @@
   --hairline:#e2e2dc;
   --blue:#1b57b5;
   --blue-soft:rgba(27,87,181,.05);
-  --pencil:#83878f;
+  --mark:#83878f;
   --stamp:#c34f3d;
   --font-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
   --font-sans:"Pretendard Variable",system-ui,sans-serif;
-  --font-pen:"Nanum Pen Script",cursive;
   --sec-y:clamp(6rem,4rem + 9vw,12rem);
   --ease-grand:cubic-bezier(.2,1.2,.3,1);
 }
@@ -42,9 +41,6 @@ a{color:inherit;text-decoration:none}
 body::before,body::after{content:"";position:fixed;top:0;bottom:0;width:1px;background:var(--hairline);z-index:1;pointer-events:none}
 body::before{left:clamp(.8rem,3vw,2.4rem)}
 body::after{right:clamp(.8rem,3vw,2.4rem)}
-
-/* 연필 메모 — 사람 손 */
-.pencil{font-family:var(--font-pen);color:var(--pencil);font-size:1.15rem;line-height:1.3;rotate:-2deg;display:inline-block;letter-spacing:0}
 
 /* ── 헤더 ── */
 header{position:sticky;top:0;z-index:40;background:rgba(252,252,250,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline)}
@@ -66,8 +62,7 @@ nav.main a:hover::after{right:0}
 h1.title{font-size:clamp(2.4rem,1.1rem + 4.2vw,4.6rem);line-height:1.08;letter-spacing:-.035em;font-weight:800;position:relative}
 h1.title .dot{color:var(--blue)}
 /* 기준면 기호 △ — 도면의 datum mark */
-h1.title::after{content:"▽";position:absolute;left:.1em;bottom:-1.1em;font-size:.85rem;color:var(--pencil)}
-.title-note{position:absolute;right:-.5rem;top:-2.2rem}
+h1.title::after{content:"▽";position:absolute;left:.1em;bottom:-1.1em;font-size:.85rem;color:var(--mark)}
 .lede{max-width:46ch;margin-top:3.2rem;color:#494e58;font-size:clamp(1rem,.95rem + .35vw,1.16rem)}
 .lede b{font-weight:600;color:var(--ink)}
 .hero-actions{display:flex;gap:1.6rem;flex-wrap:wrap;margin-top:3rem;align-items:center}
@@ -84,8 +79,7 @@ h1.title::after{content:"▽";position:absolute;left:.1em;bottom:-1.1em;font-siz
 .titleblock dt{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.1em;color:var(--ink-2);padding:.65rem .9rem;border-top:1px solid var(--hairline);align-self:center}
 .titleblock dd{padding:.65rem .9rem .65rem 0;border-top:1px solid var(--hairline);font-weight:500}
 .titleblock dd small{font-family:var(--font-mono);font-size:.66rem;color:var(--ink-2);margin-left:.5rem}
-.titleblock .empty{color:var(--ink-2);font-weight:400;position:relative}
-.titleblock .empty .pencil{position:absolute;right:.8rem;top:.15rem;font-size:1.05rem}
+.titleblock .empty{color:var(--ink-2);font-weight:400}
 
 /* ── 섹션 공통 ── */
 .section{padding-block:var(--sec-y);border-top:1px solid var(--hairline)}
@@ -112,45 +106,100 @@ h1.title::after{content:"▽";position:absolute;left:.1em;bottom:-1.1em;font-siz
 .rot.rev{animation-name:rotr;animation-duration:34s}
 @keyframes rot{to{transform:rotate(360deg)}}
 @keyframes rotr{to{transform:rotate(-360deg)}}
-@media (prefers-reduced-motion:reduce){.rot,.rot.rev{animation:none}.station .mech{transition:none}}
+@media (prefers-reduced-motion:reduce){.rot,.rot.rev{animation:none}.station .mech{transition:none}.pop,.pop .lead,.pop>*{transition:none!important}}
 /* 03번 기어 검수 도장 */
 .station .qc{position:absolute;top:.7rem;right:.8rem;width:30px;height:30px;border:1.5px solid var(--stamp);border-radius:50%;display:grid;place-items:center;color:var(--stamp);font-size:.72rem;font-weight:700;rotate:8deg;opacity:.55}
 
-/* ── 제도 콜아웃 팝업 ── */
+/* ── 제도 콜아웃 — 도판(PLATE) ── */
+/* 호버 유지 원리: 팝업은 .station <a>의 자식이라 팝업 위 커서 = 스테이션 hover 유지.
+   ::after가 28px 갭을 메우는 투명 브릿지, .lead가 실제 리더선(스테이션 쪽에서 위로 그려짐). */
 .pop{
-  position:absolute;bottom:calc(100% + 20px);left:50%;translate:-50% 0;
-  width:min(330px,84vw);background:#fff;border:1px solid var(--ink);
-  box-shadow:12px 12px 0 -2px rgba(23,24,28,.07),0 30px 60px -18px rgba(23,24,28,.3);
-  padding:1.7rem 1.6rem 1.5rem;text-align:left;z-index:6;
+  position:absolute;bottom:calc(100% + 28px);left:50%;translate:-50% 0;
+  width:min(400px,88vw);padding:1.35rem 1.4rem 1.5rem;text-align:left;z-index:6;
+  background:linear-gradient(rgba(27,87,181,.04) 1px,transparent 1px) 0 0/26px 26px,linear-gradient(90deg,rgba(27,87,181,.04) 1px,transparent 1px) 0 0/26px 26px,#fff;
+  border:1px solid var(--ink);
+  box-shadow:0 1px 0 rgba(23,24,28,.05),0 10px 22px -14px rgba(23,24,28,.2),0 34px 70px -26px rgba(23,24,28,.3),16px 16px 0 -1px rgba(27,87,181,.05);
   opacity:0;visibility:hidden;pointer-events:none;
-  transform:translateY(16px) scale(.9);transform-origin:bottom center;filter:blur(5px);
-  transition:opacity .35s var(--ease-grand),transform .35s var(--ease-grand),filter .35s var(--ease-grand),visibility 0s .35s;
+  transform:translateY(24px) rotate(-1.2deg);transform-origin:50% 100%;filter:blur(6px);
+  transition:opacity .3s var(--ease-grand) .15s,transform .3s var(--ease-grand) .15s,filter .3s var(--ease-grand) .15s,visibility 0s .45s;
 }
+.pop::before{content:"";position:absolute;inset:5px;border:1px solid var(--hairline);pointer-events:none}/* 이중 괘선 — 안쪽 오프셋 헤어라인 */
+.pop::after{content:"";position:absolute;top:100%;left:-1px;right:-1px;height:30px}/* 투명 브릿지 — 갭을 지나도 hover 안 끊김 */
 .station:hover .pop,.station:focus-visible .pop{
-  opacity:1;visibility:visible;transform:translateY(0) scale(1);filter:blur(0);
-  transition:opacity .35s var(--ease-grand),transform .35s var(--ease-grand),filter .35s var(--ease-grand),visibility 0s 0s;
+  opacity:1;visibility:visible;pointer-events:auto;
+  transform:translateY(0) rotate(0deg);filter:blur(0);
+  transition:opacity .4s var(--ease-grand) .05s,transform .5s var(--ease-grand) .05s,filter .4s var(--ease-grand) .05s,visibility 0s 0s;
 }
-.pop::after{content:"";position:absolute;top:100%;left:50%;width:1px;height:20px;background:var(--ink)}
-.pop::before{content:"";position:absolute;top:100%;left:calc(50% - 3px);margin-top:18px;width:7px;height:7px;border-radius:50%;border:1px solid var(--ink);background:#fff}
-.station:nth-child(1) .pop{left:0;translate:0 0;transform-origin:bottom left}
-.station:nth-child(2) .pop{left:-40%;translate:0 0}
-.station:nth-child(5) .pop{left:auto;right:-40%;translate:0 0}
-.station:nth-child(6) .pop{left:auto;right:0;translate:0 0;transform-origin:bottom right}
-.station:nth-child(1) .pop::after,.station:nth-child(1) .pop::before{left:calc(50% + 60px)}
-.station:nth-child(6) .pop::after,.station:nth-child(6) .pop::before{left:calc(50% - 60px)}
-.pop .wm{position:absolute;top:.4rem;right:.9rem;font-family:var(--font-mono);font-size:3.4rem;font-weight:600;color:var(--hairline);line-height:1;letter-spacing:-.05em}
-.pop .ey{font-family:var(--font-mono);font-size:.64rem;letter-spacing:.14em;color:var(--blue);text-transform:uppercase}
-.pop h3{font-size:1.3rem;font-weight:800;letter-spacing:-.02em;margin-top:.7rem;position:relative}
+/* 리더선 — 아래(스테이션)에서 위로 그려짐 */
+.pop .lead{position:absolute;top:100%;left:50%;width:1px;height:28px;background:var(--ink);transform:scaleY(0);transform-origin:bottom;transition:transform .2s ease .15s}
+.pop .lead::after{content:"";position:absolute;bottom:-3px;left:-3px;width:7px;height:7px;border:1px solid var(--ink);border-radius:50%;background:#fff}
+.station:hover .pop .lead,.station:focus-visible .pop .lead{transform:scaleY(1);transition:transform .22s var(--ease-grand)}
+/* 카드 내부 요소 stagger */
+.pop>*:not(.lead){opacity:0;translate:0 8px;transition:opacity .3s var(--ease-grand) .15s,translate .3s var(--ease-grand) .15s}
+.station:hover .pop>*,.station:focus-visible .pop>*{opacity:1;translate:0 0}
+.station:hover .pop>*:nth-child(2){transition-delay:.08s}
+.station:hover .pop>*:nth-child(3){transition-delay:.13s}
+.station:hover .pop>*:nth-child(4){transition-delay:.18s}
+.station:hover .pop>*:nth-child(5){transition-delay:.22s}
+.station:hover .pop>*:nth-child(6){transition-delay:.26s}
+.station:hover .pop>*:nth-child(7){transition-delay:.3s}
+.station:hover .pop>*:nth-child(8){transition-delay:.34s}
+/* 도판 구성 */
+.plate-head{display:flex;justify-content:space-between;gap:1rem;font-family:var(--font-mono);font-size:.6rem;letter-spacing:.12em;color:var(--ink-2);padding-bottom:.7rem;border-bottom:1px solid var(--ink)}
+.plate-head b{font-weight:600;color:var(--ink)}
+.plate-fig{position:relative;display:grid;place-items:center;height:150px;border-bottom:1px solid var(--hairline);color:var(--blue)}
+.plate-fig::before{content:"";position:absolute;left:50%;top:8px;bottom:8px;border-left:1px dashed var(--hairline)}
+.plate-fig::after{content:"";position:absolute;top:50%;left:8px;right:8px;border-top:1px dashed var(--hairline)}
+.plate-fig svg{width:128px}
+.plate-fig .wm{position:absolute;top:.5rem;right:.2rem;font-family:var(--font-mono);font-size:2.4rem;font-weight:600;color:var(--hairline);line-height:1;letter-spacing:-.05em}
+.pop h3{font-size:1.35rem;font-weight:800;letter-spacing:-.02em;margin-top:1.2rem}
 .pop .en{font-family:var(--font-mono);font-size:.64rem;color:var(--ink-2);letter-spacing:.08em;margin-top:.3rem;text-transform:uppercase}
-.pop .desc{font-size:.88rem;color:#494e58;margin-top:1rem;line-height:1.65}
+.pop .desc{font-size:.88rem;color:#494e58;margin-top:.9rem;line-height:1.65}
+/* 연구실 수 — 탤리 마크(5획째는 가로지르는 획) + 숫자 병기 */
+.pop .tally{display:flex;align-items:center;margin-top:1.2rem}
+.pop .tally em{font-style:normal;font-family:var(--font-mono);font-size:.6rem;letter-spacing:.14em;color:var(--ink-2);margin-right:.9rem}
+.pop .tally i{width:2px;height:13px;background:var(--ink);margin-right:5px}
+.pop .tally i:nth-of-type(5n){width:25px;height:2px;rotate:-24deg;margin-left:-29px;margin-right:9px}
+.pop .tally b{font-family:var(--font-mono);font-size:.66rem;color:var(--blue);margin-left:.7rem;letter-spacing:.08em}
 .pop .go{display:inline-flex;align-items:center;gap:.5rem;font-size:.84rem;font-weight:600;color:var(--blue);margin-top:1.2rem;border-bottom:1px solid var(--blue);padding-bottom:.15rem}
-@media (hover:none){.pop{display:none}}
+/* 가장자리 스테이션 정렬 보정 — 리더선은 항상 스테이션 중심을 가리킴 */
+.station:nth-child(1) .pop{translate:calc(-50% + 7.5rem) 0;transform-origin:calc(50% - 7.5rem) 100%}
+.station:nth-child(2) .pop{translate:calc(-50% + 3.75rem) 0;transform-origin:calc(50% - 3.75rem) 100%}
+.station:nth-child(5) .pop{translate:calc(-50% - 3.75rem) 0;transform-origin:calc(50% + 3.75rem) 100%}
+.station:nth-child(6) .pop{translate:calc(-50% - 7.5rem) 0;transform-origin:calc(50% + 7.5rem) 100%}
+.station:nth-child(1) .pop .lead{left:calc(50% - 7.5rem)}
+.station:nth-child(2) .pop .lead{left:calc(50% - 3.75rem)}
+.station:nth-child(5) .pop .lead{left:calc(50% + 3.75rem)}
+.station:nth-child(6) .pop .lead{left:calc(50% + 7.5rem)}
+/* 낮은 뷰포트 — 도판을 컴팩트하게 접어 상단 잘림 방지 */
+@media (max-height:860px){
+  .pop{width:min(360px,88vw);padding:1.1rem 1.25rem 1.3rem}
+  .plate-fig{height:102px}
+  .plate-fig svg{width:86px}
+  .plate-fig .wm{font-size:1.9rem}
+  .pop h3{font-size:1.2rem;margin-top:1rem}
+  .pop .desc{margin-top:.7rem}
+  .pop .tally,.pop .go{margin-top:.9rem}
+}
+@media (hover:none){.pop{display:none}}/* 터치 — 탭은 곧장 분야 설명으로 */
 #research{position:relative}
 #research:has(.station:hover),#research:has(.station:focus-visible){z-index:45}
 
+/* 위 공간 부족 시 아래로 펼침(.pop-down) — 기본은 위. JS가 스테이션에 클래스 부여.
+   리더선·브릿지·transform-origin 모두 상하 반전해 스테이션 중심을 계속 가리킴. */
+.station.pop-down .pop{bottom:auto;top:calc(100% + 28px);
+  transform:translateY(-24px) rotate(1.2deg);transform-origin:50% 0}
+.station.pop-down:hover .pop,.station.pop-down:focus-visible .pop{transform:translateY(0) rotate(0deg)}
+.station.pop-down .pop::after{top:auto;bottom:100%}/* 브릿지 위쪽으로 */
+.station.pop-down .pop .lead{top:auto;bottom:100%;transform-origin:top}
+.station.pop-down .pop .lead::after{bottom:auto;top:-3px}
+.station:nth-child(1).pop-down .pop{transform-origin:calc(50% - 7.5rem) 0}
+.station:nth-child(2).pop-down .pop{transform-origin:calc(50% - 3.75rem) 0}
+.station:nth-child(5).pop-down .pop{transform-origin:calc(50% + 3.75rem) 0}
+.station:nth-child(6).pop-down .pop{transform-origin:calc(50% + 7.5rem) 0}
+
 .stations-foot{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;margin-top:1.3rem;flex-wrap:wrap}
-.stations-hint{font-family:var(--font-mono);font-size:.7rem;color:var(--ink-2);letter-spacing:.06em}
-.stations-note{margin-right:1rem}
+.stations-hint{font-size:.84rem;color:var(--ink-2)}
 
 /* ═══ 분야 설명 ═══ */
 .cluster-detail{scroll-margin-top:6.5rem;display:grid;grid-template-columns:9rem 1.35fr 1fr;gap:clamp(2rem,1.5rem + 2.5vw,4rem);align-items:start;padding-block:clamp(3.2rem,2.5rem + 3vw,5rem);border-top:1px solid var(--hairline)}
@@ -175,7 +224,6 @@ h1.title::after{content:"▽";position:absolute;left:.1em;bottom:-1.1em;font-siz
 .fig .l{font-size:.9rem;color:var(--ink-2);margin-top:1rem}
 .fig .s{font-family:var(--font-mono);font-size:.62rem;color:#a5a8af;margin-top:.4rem;letter-spacing:.04em}
 .fig-note{grid-column:1 / -1;font-size:.84rem;color:var(--ink-2);margin-top:1.2rem;max-width:52ch}
-.fig-note .pencil{margin-left:.8rem;font-size:1.2rem}
 
 /* ── 승인란 (CTA) ── */
 .approve{display:grid;grid-template-columns:1.3fr 1fr;gap:clamp(3rem,2rem + 4vw,6rem);align-items:center}
@@ -187,7 +235,6 @@ h1.title::after{content:"▽";position:absolute;left:.1em;bottom:-1.1em;font-siz
 .signbox .sb-cap{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.16em;background:var(--ink);color:var(--paper);padding:.5rem .9rem;display:flex;justify-content:space-between}
 .signbox .sb-body{padding:2.2rem 1.6rem 1.6rem;min-height:9rem;display:flex;flex-direction:column;justify-content:flex-end;gap:.6rem}
 .signbox .line{border-bottom:1px solid var(--ink-2);height:2.6rem;position:relative}
-.signbox .line .pencil{position:absolute;right:.4rem;bottom:.3rem;font-size:1.3rem;rotate:-3deg}
 .signbox .who{font-family:var(--font-mono);font-size:.64rem;color:var(--ink-2);letter-spacing:.1em;display:flex;justify-content:space-between}
 
 /* ── 푸터 — 리비전 테이블 ── */
@@ -205,6 +252,13 @@ footer{border-top:1.5px solid var(--ink);padding-block:3.5rem 4rem}
   .stations{grid-template-columns:repeat(3,1fr)}
   .station:nth-child(3){border-right:0}
   .station:nth-child(-n+3){border-bottom:1px solid var(--hairline)}
+  /* 3열 배치에서 가장자리가 바뀜 — 2·5는 중앙, 3은 우측, 4는 좌측 끝 */
+  .station:nth-child(2) .pop,.station:nth-child(5) .pop{translate:-50% 0;transform-origin:50% 100%}
+  .station:nth-child(2) .pop .lead,.station:nth-child(5) .pop .lead{left:50%}
+  .station:nth-child(3) .pop{translate:calc(-50% - 7.5rem) 0;transform-origin:calc(50% + 7.5rem) 100%}
+  .station:nth-child(3) .pop .lead{left:calc(50% + 7.5rem)}
+  .station:nth-child(4) .pop{translate:calc(-50% + 7.5rem) 0;transform-origin:calc(50% - 7.5rem) 100%}
+  .station:nth-child(4) .pop .lead{left:calc(50% - 7.5rem)}
   .cluster-detail{grid-template-columns:7rem 1fr}
   .cluster-detail .labs{grid-column:2}
   .figures{grid-template-columns:1fr 1fr}
@@ -220,10 +274,14 @@ footer{border-top:1.5px solid var(--ink);padding-block:3.5rem 4rem}
   .station:nth-child(3){border-right:1px solid var(--hairline)}
   .station:nth-child(even){border-right:0}
   .station:nth-child(-n+4){border-bottom:1px solid var(--hairline)}
+  /* 2열 배치 — 홀수는 좌측, 짝수는 우측 열 */
+  .station:nth-child(odd) .pop{translate:calc(-50% + 5rem) 0;transform-origin:calc(50% - 5rem) 100%}
+  .station:nth-child(even) .pop{translate:calc(-50% - 5rem) 0;transform-origin:calc(50% + 5rem) 100%}
+  .station:nth-child(odd) .pop .lead{left:calc(50% - 5rem)}
+  .station:nth-child(even) .pop .lead{left:calc(50% + 5rem)}
   .cluster-detail{grid-template-columns:1fr}
   .cluster-detail .mini{max-width:6.5rem}
   .cluster-detail .labs{grid-column:1}
-  .title-note{display:none}
 }
 </style>
 </head>
@@ -312,10 +370,9 @@ footer{border-top:1.5px solid var(--ink);padding-block:3.5rem 4rem}
 
 <section class="hero"><div class="wrap hero-grid">
   <div>
-    <p class="sheetno">SHEET 01 · 도면번호 YSME—D—2026 · 3차 검토본</p>
+    <p class="sheetno">SHEET 01 · 도면번호 YSME—D—2026 · 공개본</p>
     <h1 class="title">
       1962년부터,<br>기계는 세상을<br>움직여 왔습니다<span class="dot">.</span>
-      <span class="title-note pencil">자간 −3.5%, 이대로 확정 ✓</span>
     </h1>
     <p class="lede">고체, 열, 유체, 동역학. 네 개의 역학을 도면 위로 옮기는 60년의 작업입니다.
       전임 교수 <b>33명</b>이 <b>33개 연구실</b>을 이끌고, 연구실은 여섯 갈래로 맞물려 돌아갑니다.
@@ -330,9 +387,9 @@ footer{border-top:1.5px solid var(--ink);padding-block:3.5rem 4rem}
     <dl>
       <dt>도면명</dt><dd>기계공학부 — 홈</dd>
       <dt>축척</dt><dd>1 : 1<small>단위 없음 · WEB</small></dd>
-      <dt>작성</dt><dd>팀 DATUM<small>26.07.11</small></dd>
-      <dt>검토</dt><dd>권창한<small>26.07.12</small></dd>
-      <dt>승인</dt><dd class="empty">(비어 있음)<span class="pencil">아직!</span></dd>
+      <dt>관리</dt><dd>기계공학부 행정팀<small>02-2123-4426</small></dd>
+      <dt>감수</dt><dd>학부장실<small>26.07</small></dd>
+      <dt>승인</dt><dd class="empty">(비어 있음)</dd>
     </dl>
   </aside>
 </div></section>
@@ -354,11 +411,13 @@ footer{border-top:1.5px solid var(--ink);padding-block:3.5rem 4rem}
       <svg class="mech" viewBox="0 0 120 120" aria-hidden="true"><use href="#m-solid"/></svg>
       <span class="tag"><i>01</i>고체·구조</span>
       <span class="pop" role="tooltip">
-        <span class="wm">01</span>
-        <span class="ey">Cluster 01 · 7 Labs</span>
+        <i class="lead" aria-hidden="true"></i>
+        <span class="plate-head"><b>PLATE NO. 01 / 06</b><span>SHEET 03 · ZONE A1</span></span>
+        <span class="plate-fig" aria-hidden="true"><svg viewBox="0 0 120 120"><use href="#m-solid"/></svg><span class="wm">01</span></span>
         <h3>고체·구조·재료역학</h3>
         <p class="en">Solid Mechanics & Design</p>
         <p class="desc">재료가 힘을 받아 변형되고 파괴에 이르는 전 과정. 견디는 것의 과학입니다.</p>
+        <span class="tally" role="img" aria-label="연구실 7개"><em>LABS</em><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b>7</b></span>
         <span class="go">분야 설명 보기 →</span>
       </span>
     </a>
@@ -366,11 +425,13 @@ footer{border-top:1.5px solid var(--ink);padding-block:3.5rem 4rem}
       <svg class="mech" viewBox="0 0 120 120" aria-hidden="true"><use href="#m-thermal"/></svg>
       <span class="tag"><i>02</i>열·유체</span>
       <span class="pop" role="tooltip">
-        <span class="wm">02</span>
-        <span class="ey">Cluster 02 · 7 Labs</span>
+        <i class="lead" aria-hidden="true"></i>
+        <span class="plate-head"><b>PLATE NO. 02 / 06</b><span>SHEET 03 · ZONE A2</span></span>
+        <span class="plate-fig" aria-hidden="true"><svg viewBox="0 0 120 120"><use href="#m-thermal"/></svg><span class="wm">02</span></span>
         <h3>열·유체·에너지</h3>
         <p class="en">Thermal / Fluids / Energy</p>
         <p class="desc">열이 전달되고 유체가 흐르는 모든 경로. 엔진에서 연료전지까지 다룹니다.</p>
+        <span class="tally" role="img" aria-label="연구실 7개"><em>LABS</em><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b>7</b></span>
         <span class="go">분야 설명 보기 →</span>
       </span>
     </a>
@@ -379,11 +440,13 @@ footer{border-top:1.5px solid var(--ink);padding-block:3.5rem 4rem}
       <svg class="mech" viewBox="0 0 120 120" aria-hidden="true"><use href="#m-manuf"/></svg>
       <span class="tag"><i>03</i>생산·제조</span>
       <span class="pop" role="tooltip">
-        <span class="wm">03</span>
-        <span class="ey">Cluster 03 · 4 Labs</span>
+        <i class="lead" aria-hidden="true"></i>
+        <span class="plate-head"><b>PLATE NO. 03 / 06</b><span>SHEET 03 · ZONE A3</span></span>
+        <span class="plate-fig" aria-hidden="true"><svg viewBox="0 0 120 120"><use href="#m-manuf"/></svg><span class="wm">03</span></span>
         <h3>생산·정밀제조</h3>
         <p class="en">Manufacturing & Tribology</p>
         <p class="desc">마찰, 가공, 공정 시스템. 도면을 실물로 만드는 기술입니다.</p>
+        <span class="tally" role="img" aria-label="연구실 4개"><em>LABS</em><i></i><i></i><i></i><i></i><b>4</b></span>
         <span class="go">분야 설명 보기 →</span>
       </span>
     </a>
@@ -391,11 +454,13 @@ footer{border-top:1.5px solid var(--ink);padding-block:3.5rem 4rem}
       <svg class="mech" viewBox="0 0 120 120" aria-hidden="true"><use href="#m-nanobio"/></svg>
       <span class="tag"><i>04</i>나노·바이오</span>
       <span class="pop" role="tooltip">
-        <span class="wm">04</span>
-        <span class="ey">Cluster 04 · 6 Labs</span>
+        <i class="lead" aria-hidden="true"></i>
+        <span class="plate-head"><b>PLATE NO. 04 / 06</b><span>SHEET 03 · ZONE A4</span></span>
+        <span class="plate-fig" aria-hidden="true"><svg viewBox="0 0 120 120"><use href="#m-nanobio"/></svg><span class="wm">04</span></span>
         <h3>마이크로·나노·바이오</h3>
         <p class="en">Micro / Nano / Bio</p>
         <p class="desc">나노 공정에서 바이오칩까지. 보이지 않는 스케일의 기계를 만듭니다.</p>
+        <span class="tally" role="img" aria-label="연구실 6개"><em>LABS</em><i></i><i></i><i></i><i></i><i></i><i></i><b>6</b></span>
         <span class="go">분야 설명 보기 →</span>
       </span>
     </a>
@@ -403,11 +468,13 @@ footer{border-top:1.5px solid var(--ink);padding-block:3.5rem 4rem}
       <svg class="mech" viewBox="0 0 120 120" aria-hidden="true"><use href="#m-optics"/></svg>
       <span class="tag"><i>05</i>광학·계측</span>
       <span class="pop" role="tooltip">
-        <span class="wm">05</span>
-        <span class="ey">Cluster 05 · 4 Labs</span>
+        <i class="lead" aria-hidden="true"></i>
+        <span class="plate-head"><b>PLATE NO. 05 / 06</b><span>SHEET 03 · ZONE A5</span></span>
+        <span class="plate-fig" aria-hidden="true"><svg viewBox="0 0 120 120"><use href="#m-optics"/></svg><span class="wm">05</span></span>
         <h3>광학·이미징·계측</h3>
         <p class="en">Optics / Imaging / Sensing</p>
         <p class="desc">빛으로 재고, 보이지 않는 것을 봅니다. 이미징과 정밀 계측의 최전선.</p>
+        <span class="tally" role="img" aria-label="연구실 4개"><em>LABS</em><i></i><i></i><i></i><i></i><b>4</b></span>
         <span class="go">분야 설명 보기 →</span>
       </span>
     </a>
@@ -415,19 +482,20 @@ footer{border-top:1.5px solid var(--ink);padding-block:3.5rem 4rem}
       <svg class="mech" viewBox="0 0 120 120" aria-hidden="true"><use href="#m-dyn"/></svg>
       <span class="tag"><i>06</i>동역학·로보</span>
       <span class="pop" role="tooltip">
-        <span class="wm">06</span>
-        <span class="ey">Cluster 06 · 5 Labs</span>
+        <i class="lead" aria-hidden="true"></i>
+        <span class="plate-head"><b>PLATE NO. 06 / 06</b><span>SHEET 03 · ZONE A6</span></span>
+        <span class="plate-fig" aria-hidden="true"><svg viewBox="0 0 120 120"><use href="#m-dyn"/></svg><span class="wm">06</span></span>
         <h3>동역학·제어·로보·AI</h3>
         <p class="en">Dynamics / Control / Robotics / AI</p>
         <p class="desc">움직임을 예측하고 제어하고 학습시킵니다. 로보틱스와 지능 시스템.</p>
+        <span class="tally" role="img" aria-label="연구실 5개"><em>LABS</em><i></i><i></i><i></i><i></i><i></i><b>5</b></span>
         <span class="go">분야 설명 보기 →</span>
       </span>
     </a>
   </div>
   </div>
   <div class="stations-foot">
-    <span class="stations-hint">HOVER — 기구 콜아웃 · CLICK — 분야 설명</span>
-    <span class="pencil stations-note">터빈은 한 바퀴에 26초. 03번 기어 검수 끝 ✓</span>
+    <span class="stations-hint">기구에 커서를 올리면 담당 분야가 열리고, 누르면 상세 설명으로 이동합니다.</span>
   </div>
 </div></section>
 
@@ -549,8 +617,7 @@ footer{border-top:1.5px solid var(--ink);padding-block:3.5rem 4rem}
     <div class="fig"><div class="n">33</div><div class="l">전임 교수</div><div class="s">faculty_list.do</div></div>
     <div class="fig"><div class="n">33</div><div class="l">연구실</div><div class="s">lab2.do</div></div>
     <div class="fig"><div class="n">130</div><div class="l">졸업 학점</div><div class="s">graduation.do</div></div>
-    <p class="fig-note">* 2026년 6월 30일에 학부 공식 페이지를 열어 놓고 하나씩 세었습니다.
-      다음 확인은 9월 개강 전으로 잡아 두었습니다.<span class="pencil">직접 셌음</span></p>
+    <p class="fig-note">* 2026년 6월 30일 학부 공식 페이지 기준으로 확인했습니다. 다음 확인: 2026년 9월.</p>
   </div>
 </div></section>
 
@@ -568,7 +635,7 @@ footer{border-top:1.5px solid var(--ink);padding-block:3.5rem 4rem}
   <div class="signbox" aria-hidden="true">
     <div class="sb-cap"><span>승인 · APPROVAL</span><span>REV E — ?</span></div>
     <div class="sb-body">
-      <div class="line"><span class="pencil">여기에 서명</span></div>
+      <div class="line"></div>
       <div class="who"><span>서명 / SIGNATURE</span><span>일자 / DATE</span></div>
     </div>
   </div>
@@ -576,13 +643,12 @@ footer{border-top:1.5px solid var(--ink);padding-block:3.5rem 4rem}
 
 <footer><div class="wrap">
   <table class="rev-table">
-    <caption>Revision History · 개정 이력</caption>
-    <thead><tr><th style="width:5rem">REV</th><th style="width:7rem">일자</th><th>내용</th><th style="width:6rem">작성</th></tr></thead>
+    <caption>Revision History · 사이트 개정 이력</caption>
+    <thead><tr><th style="width:7rem">일자</th><th>내용</th><th style="width:6rem">작성</th></tr></thead>
     <tbody>
-      <tr><td>A.0</td><td>26.07.11</td><td>최초 발행 — 도면 방향 확정</td><td>DATUM</td></tr>
-      <tr><td>D.1</td><td>26.07.12</td><td>기구 스테이션 6기 설치, 분야 설명 연결</td><td>권</td></tr>
-      <tr><td>D.2</td><td>26.07.12</td><td>여백 재측정, 표제란·승인란 추가</td><td>권</td></tr>
-      <tr><td>D.3</td><td>26.07.13</td><td>관리 콘솔(Admin Studio) 연결 — 조교도 코드 없이 이 시트를 고칠 수 있음</td><td>권</td></tr>
+      <tr><td>2026.03</td><td>1학기 교과과정·시간표 갱신</td><td>행정팀</td></tr>
+      <tr><td>2026.06</td><td>교수진·연구실 명단 재확인(33·33)</td><td>행정팀</td></tr>
+      <tr><td>2026.07</td><td>사이트 개편 — 기구 배치도·분야 설명 신설, 관리 콘솔 연결</td><td>DATUM</td></tr>
     </tbody>
   </table>
   <div class="foot-meta">
@@ -592,5 +658,27 @@ footer{border-top:1.5px solid var(--ink);padding-block:3.5rem 4rem}
   </div>
 </div></footer>
 
+<script>
+/* 기구 도판 배치 — 위쪽 공간이 팝업 높이보다 좁으면 아래로 펼친다(.pop-down).
+   기본값은 위(웅장하게 상승). hover/focus 진입 시점에 한 번 계산. JS 꺼져도 위로 정상 동작. */
+(function () {
+  'use strict';
+  var stations = document.querySelectorAll('.station');
+  function place(st) {
+    var pop = st.querySelector('.pop');
+    if (!pop) return;
+    var need = pop.offsetHeight + 40;                 // 팝업 높이 + 리더선/여유
+    var rect = st.getBoundingClientRect();
+    var above = rect.top;                             // 스테이션 위 가용 공간
+    var below = window.innerHeight - rect.bottom;     // 아래 가용 공간
+    // 위가 부족하고, 아래가 위보다 넓을 때만 아래로 펼침(더 나은 쪽 선택)
+    st.classList.toggle('pop-down', above < need && below > above);
+  }
+  Array.prototype.forEach.call(stations, function (st) {
+    st.addEventListener('mouseenter', function () { place(st); });
+    st.addEventListener('focusin', function () { place(st); });
+  });
+})();
+</script>
 </body>
 </html>

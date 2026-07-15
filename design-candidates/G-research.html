@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>[시안 G · 관제] 연구 — 연세대학교 기계공학부</title>
+<meta name="description" content="Design candidate G — Console / 관제 스타일을 연구 페이지(6 클러스터 · 33 연구실)에 적용한 비교 시안. 다크 관제 HUD · 모노 텔레메트리 · 코랄 액센트 · 궤도 데이터비주얼." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+/* ═══════════════════════════════════════════════════════════
+   시안 G · 관제 — 연구 (Research Console)
+   G-console.html / G-people.html 토큰·톤 계승:
+   검정 배경 · 모노 텔레메트리 · 코랄 액센트 · 헤어라인 ·
+   HUD 코너 마커 · 코랄 데이터바 · 궤도/회전 기구 모티프.
+   콘텐츠: 6 클러스터 요약(궤도 데이터비주얼) + 33 연구실 데이터 행.
+   ═══════════════════════════════════════════════════════════ */
+:root{
+  --bg:#08090c;
+  --panel:#0c0e12;
+  --panel-2:#0a0c10;
+  --line:rgba(255,255,255,.14);
+  --line-soft:rgba(255,255,255,.07);
+  --txt:#cbced4;
+  --txt-hi:#eef0f4;      /* 최상위 가독 텍스트(이름·연구실명) */
+  --dim:#8b9099;         /* 33행 라벨 가독 확보 (console 대비 상향) */
+  --dimmer:#565c65;
+  --coral:#e2593c;
+  --coral-soft:rgba(226,89,60,.16);
+  --glow:#2b4a74;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --kr:"Pretendard Variable","Pretendard",system-ui,sans-serif;
+  /* 6 클러스터 토큰 (관제 팔레트: 코랄이 주액센트, 나머지는 절제된 채도) */
+  --c-solid:#e2593c;
+  --c-thermal:#e8944e;
+  --c-manuf:#c8b06b;
+  --c-nanobio:#5aa9a0;
+  --c-optics:#6d9bd1;
+  --c-dyn:#a483c9;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{
+  font-family:var(--mono);
+  background:var(--bg); color:var(--txt);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden; word-break:keep-all;
+  line-height:1.5;
+  padding-top:6.4rem;    /* fixed HUD 여백 */
+}
+:lang(ko),.kr{font-family:var(--kr)}
+a{color:inherit;text-decoration:none}
+.mono{font-family:var(--mono)}
+.dim{color:var(--dim)}
+.tnum{font-variant-numeric:tabular-nums}
+.visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
+.skip{position:absolute;left:.6rem;top:-3rem;z-index:60;background:var(--coral);color:#0b0b0b;
+  padding:.5rem .9rem;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;transition:top .15s}
+.skip:focus{top:.6rem}
+
+/* ── 상단 텔레메트리 HUD 바 ── */
+.hud-top{position:fixed;top:0;left:0;right:0;z-index:30;
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:start;
+  padding:1.15rem clamp(1.2rem,.6rem + 2vw,2.6rem) 1rem;
+  background:linear-gradient(var(--bg) 55%,rgba(8,9,12,.86));
+  backdrop-filter:blur(6px);
+  border-bottom:1px solid var(--line-soft)}
+.tl{font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;line-height:1.9;color:var(--dim)}
+.tl b{color:var(--txt-hi);font-weight:500}
+.tl .row{display:flex;gap:1.4rem;flex-wrap:wrap}
+.tl .row .u{color:var(--coral)}
+.crest{justify-self:center;text-align:center;padding-top:.1rem}
+.crest .mk{font-family:var(--kr);font-weight:800;letter-spacing:.12em;font-size:.95rem;color:#fff}
+.crest .sub{font-size:.56rem;letter-spacing:.3em;color:var(--dim);margin-top:.25rem}
+.hud-nav{justify-self:end;text-align:right;font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;padding-top:.15rem}
+.hud-nav a{color:var(--dim);margin-left:1.05rem;transition:color .15s}
+.hud-nav a:hover{color:var(--txt-hi)}
+.hud-nav a[aria-current]{color:var(--coral)}
+.hud-nav .join{color:var(--coral)}
+
+/* ── 페이지 헤더 / 브레드크럼 ── */
+.pagehead{padding:2.4rem clamp(1.2rem,.6rem + 2vw,2.6rem) 1.4rem;
+  max-width:1320px;margin:0 auto;position:relative}
+.crumb{font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:1.1rem}
+.crumb a{color:var(--dim)}.crumb a:hover{color:var(--txt-hi)}
+.crumb .sep{color:var(--dimmer);margin:0 .5rem}
+.crumb b{color:var(--coral);font-weight:400}
+.pagehead h1{font-family:var(--kr);font-weight:800;letter-spacing:-.01em;
+  font-size:clamp(2rem,1.2rem + 3vw,3rem);color:#fff;line-height:1.04;margin-bottom:.7rem}
+.pagehead h1 .en{display:block;font-family:var(--mono);font-weight:300;
+  font-size:.32em;letter-spacing:.32em;color:var(--dim);margin-top:.6rem;text-transform:uppercase}
+.pagehead .lede{max-width:47rem;font-family:var(--kr);font-size:.94rem;color:var(--txt);line-height:1.7}
+.pagehead .lede b{color:var(--txt-hi);font-weight:600}
+/* HUD 코너 마커 (관제 프레임) */
+.pagehead::before,.pagehead::after{content:"";position:absolute;width:14px;height:14px;pointer-events:none}
+.pagehead::before{top:1.4rem;right:clamp(1.2rem,.6rem + 2vw,2.6rem);border-top:1px solid var(--coral);border-right:1px solid var(--coral);opacity:.7}
+.pagehead::after{bottom:.2rem;right:clamp(1.2rem,.6rem + 2vw,2.6rem);border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+
+/* ── 요약: 궤도 데이터비주얼 + 브레이크다운 ── */
+.summary{max-width:1320px;margin:0 auto;
+  padding:.6rem clamp(1.2rem,.6rem + 2vw,2.6rem) 1.4rem;
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:2rem 2.6rem;align-items:center}
+.sum-head{font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-bottom:1rem}
+.sum-head .u{color:var(--coral)}
+
+/* 궤도 다이어그램: 코어(총계) + 6 궤도 노드(클러스터) */
+.orbit-wrap{position:relative;width:100%;max-width:30rem;aspect-ratio:1;margin:0 auto;justify-self:center}
+.orbit-wrap svg{width:100%;height:100%;overflow:visible;display:block}
+.orbit-ring{fill:none;stroke:var(--line-soft);stroke-width:1}
+.orbit-ring.tick{stroke:var(--line-soft);stroke-dasharray:1 9;opacity:.7}
+.orbit-spin{transform-origin:center;transform-box:view-box;animation:orbspin 90s linear infinite}
+.orbit-spin.r{animation-name:orbspinr;animation-duration:120s}
+@keyframes orbspin{to{transform:rotate(360deg)}}
+@keyframes orbspinr{to{transform:rotate(-360deg)}}
+@media (prefers-reduced-motion:reduce){.orbit-spin{animation:none}}
+.o-hub{fill:var(--coral)}
+.o-hub-ring{fill:none;stroke:var(--coral);stroke-width:1;opacity:.5}
+.o-spoke{stroke:var(--line-soft);stroke-width:1}
+.o-node{cursor:pointer}
+.o-node .halo{fill:none;stroke-width:1;opacity:.35;transition:opacity .15s}
+.o-node .core{transition:r .15s}
+.o-node:hover .halo,.o-node.on .halo{opacity:.9}
+.o-node:focus-visible{outline:none}
+.o-node:focus-visible .halo{opacity:.9}
+.orbit-center{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;text-align:center}
+.orbit-center .n{font-family:var(--mono);font-weight:300;font-size:clamp(2.2rem,1rem + 5vw,3.4rem);
+  line-height:.9;color:var(--txt-hi);font-variant-numeric:tabular-nums}
+.orbit-center .n .u{color:var(--coral);font-size:.38em;margin-left:.1em;letter-spacing:.1em}
+.orbit-center .l{font-size:.56rem;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-top:.5rem}
+
+/* 브레이크다운 데이터바 (요약 우측) */
+.bd-grid{display:flex;flex-direction:column;gap:.85rem}
+.bd-row{font-size:.64rem;letter-spacing:.04em;color:var(--dim);cursor:pointer;
+  border:1px solid transparent;padding:.4rem .5rem;margin:-.4rem -.5rem;transition:border-color .15s,background .15s}
+.bd-row:hover,.bd-row.on{border-color:var(--line);background:rgba(255,255,255,.02)}
+.bd-row .top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;margin-bottom:.4rem}
+.bd-row .lab{display:flex;align-items:center;gap:.5rem;color:var(--txt-hi);text-transform:none;letter-spacing:.01em;min-width:0}
+.bd-row .lab .idx{color:var(--dimmer);font-family:var(--mono);font-size:.82em;letter-spacing:.06em;flex:none}
+.bd-row .lab .cdot{width:7px;height:7px;border-radius:50%;background:var(--bd-c,var(--coral));flex:none}
+.bd-row .lab .ko{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bd-row .val{color:var(--txt);font-variant-numeric:tabular-nums;white-space:nowrap;flex:none}
+.bd-row .val b{color:var(--txt-hi);font-weight:500}
+.bd-row .bar{height:3px;background:var(--line-soft);position:relative}
+.bd-row .bar span{position:absolute;inset:0 auto 0 0;background:var(--bd-c,var(--coral));opacity:.85}
+
+/* ── 클러스터 섹션 (관제 카드/블록) ── */
+.clusters{max-width:1320px;margin:0 auto;padding:.4rem clamp(1.2rem,.6rem + 2vw,2.6rem) 1rem}
+.cluster{border:1px solid var(--line-soft);border-left:2px solid var(--cl-c,var(--coral));
+  background:linear-gradient(180deg,var(--panel),var(--panel-2));
+  margin-bottom:1.4rem;position:relative;scroll-margin-top:6.6rem}
+/* HUD 코너 마커 */
+.cluster::before,.cluster::after{content:"";position:absolute;width:11px;height:11px;pointer-events:none;opacity:.8}
+.cluster::before{top:-1px;right:-1px;border-top:1px solid var(--cl-c,var(--coral));border-right:1px solid var(--cl-c,var(--coral))}
+.cluster::after{bottom:-1px;right:-1px;border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+
+.cl-head{display:grid;grid-template-columns:auto 1fr auto;gap:1rem 1.2rem;align-items:start;
+  padding:1.15rem clamp(1rem,.6rem + 1.4vw,1.6rem) 1rem;border-bottom:1px solid var(--line-soft)}
+.cl-code{font-size:.64rem;letter-spacing:.14em;color:var(--cl-c,var(--coral));font-variant-numeric:tabular-nums;
+  padding-top:.3rem;display:flex;align-items:center;gap:.5rem}
+.cl-code .cdot{width:8px;height:8px;border-radius:50%;background:var(--cl-c,var(--coral));flex:none;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--cl-c,var(--coral)) 22%,transparent)}
+.cl-titles{min-width:0}
+.cl-titles .ko{font-family:var(--kr);font-weight:700;font-size:clamp(1.15rem,.9rem + 1vw,1.5rem);
+  color:var(--txt-hi);line-height:1.2;letter-spacing:-.01em}
+.cl-titles .en{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-top:.35rem}
+.cl-titles .desc{font-family:var(--kr);font-size:.86rem;color:var(--txt);line-height:1.6;margin-top:.7rem;max-width:44rem}
+.cl-metric{text-align:right;white-space:nowrap;padding-top:.15rem}
+.cl-metric .num{font-family:var(--mono);font-weight:300;font-size:clamp(1.8rem,1.2rem + 2vw,2.6rem);
+  line-height:.9;color:var(--txt-hi);font-variant-numeric:tabular-nums}
+.cl-metric .num .u{color:var(--cl-c,var(--coral));font-size:.4em;margin-left:.1em;letter-spacing:.06em}
+.cl-metric .share{font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-top:.5rem}
+/* 코랄(클러스터색) 데이터바: 33개 중 비율 */
+.cl-metric .bar{width:min(9rem,26vw);height:3px;background:var(--line-soft);position:relative;margin:.6rem 0 0 auto}
+.cl-metric .bar span{position:absolute;inset:0 auto 0 0;background:var(--cl-c,var(--coral));opacity:.85}
+
+/* 연구실 데이터 행 목록 */
+.lab-legend{display:grid;
+  grid-template-columns:3rem minmax(9rem,1.05fr) minmax(9rem,1.35fr) minmax(6.5rem,.7fr) 4rem;
+  gap:1rem;align-items:center;
+  padding:.5rem clamp(1rem,.6rem + 1.4vw,1.6rem);border-bottom:1px solid var(--line-soft);
+  font-size:.55rem;letter-spacing:.16em;text-transform:uppercase;color:var(--dimmer)}
+.lab-legend .rt{text-align:right}
+.lab-row{display:grid;
+  grid-template-columns:3rem minmax(9rem,1.05fr) minmax(9rem,1.35fr) minmax(6.5rem,.7fr) 4rem;
+  gap:1rem;align-items:center;
+  padding:.8rem clamp(1rem,.6rem + 1.4vw,1.6rem);border-bottom:1px solid var(--line-soft);
+  position:relative;transition:background .12s}
+.lab-row:last-child{border-bottom:0}
+.lab-row:hover{background:rgba(255,255,255,.025)}
+.lab-row:hover .l-idx{color:var(--cl-c,var(--coral))}
+.l-idx{font-size:.64rem;letter-spacing:.05em;color:var(--dim);font-variant-numeric:tabular-nums;transition:color .12s}
+.l-name{min-width:0}
+.l-name .ko{font-family:var(--kr);font-weight:600;font-size:.95rem;color:var(--txt-hi);line-height:1.25}
+.l-name .en{font-size:.6rem;letter-spacing:.07em;color:var(--dim);text-transform:uppercase;margin-top:.18rem;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.l-pi{min-width:0;font-size:.8rem;color:var(--txt)}
+.l-pi .pi{font-family:var(--kr);color:var(--txt-hi);display:inline-flex;align-items:center;gap:.45rem}
+.l-pi .pi .cdot{width:6px;height:6px;border-radius:50%;background:var(--cl-c,var(--coral));flex:none}
+.l-pi .role{font-size:.56rem;letter-spacing:.06em;color:var(--dim);margin-top:.2rem}
+.l-loc{min-width:0;font-size:.7rem;letter-spacing:.02em;color:var(--txt);
+  display:inline-flex;align-items:center;gap:.4rem}
+.l-loc svg{flex:none;color:var(--dim)}
+.l-act{text-align:right;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+.l-act a{color:var(--dim);transition:color .15s}
+.l-act a:hover{color:var(--cl-c,var(--coral))}
+.l-act a.ext{color:var(--coral)}
+
+/* ── 하단 HUD (카운터 텔레메트리) ── */
+.hud-bottom{border-top:1px solid var(--line);margin-top:1.2rem;
+  background:linear-gradient(rgba(8,9,12,.4),var(--bg))}
+.hud-bottom-inner{max-width:1320px;margin:0 auto;
+  padding:1.6rem clamp(1.2rem,.6rem + 2vw,2.6rem) 2.4rem;
+  display:flex;justify-content:space-between;align-items:flex-end;gap:2rem;flex-wrap:wrap}
+.counters{display:flex;gap:clamp(1.5rem,1rem + 3vw,3.6rem)}
+.ct .lab{font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:.4rem}
+.ct .num{font-family:var(--mono);font-weight:300;font-size:clamp(1.8rem,1rem + 3vw,2.8rem);
+  line-height:.9;letter-spacing:.02em;color:var(--txt-hi);font-variant-numeric:tabular-nums}
+.ct .num .u{color:var(--coral);font-size:.42em;margin-left:.15em;letter-spacing:.1em}
+.foot-tl{font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);text-align:right;line-height:2}
+.foot-tl b{color:var(--txt);font-weight:500}
+
+/* ── 반응형 ── */
+@media (max-width:960px){
+  .summary{grid-template-columns:1fr;gap:1.8rem}
+  .orbit-wrap{max-width:24rem}
+}
+@media (max-width:860px){
+  .hud-top{grid-template-columns:1fr auto}
+  .hud-nav{display:none}
+  .lab-legend{display:none}
+  .cl-head{grid-template-columns:auto 1fr;gap:.7rem 1rem}
+  .cl-metric{grid-column:1 / -1;text-align:left;display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap;padding-top:.2rem}
+  .cl-metric .share{margin-top:0}
+  .cl-metric .bar{margin:0;width:min(12rem,50vw)}
+  .lab-row{grid-template-columns:2.6rem 1fr;gap:.5rem 1rem;padding:.95rem clamp(.8rem,.5rem + 1vw,1.2rem);align-items:start}
+  .l-idx{grid-column:1;grid-row:1;align-self:center}
+  .l-name{grid-column:2;grid-row:1}
+  .l-name .en{white-space:normal}
+  .l-pi{grid-column:2;grid-row:2;margin-top:.4rem}
+  .l-loc{grid-column:2;grid-row:3;margin-top:.35rem}
+  .l-act{grid-column:2;grid-row:4;text-align:left;margin-top:.5rem}
+  .hud-bottom-inner{flex-direction:column;align-items:flex-start}
+  .foot-tl{text-align:left}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#clusters">본문(연구 클러스터) 바로가기</a>
+
+<!-- 상단 텔레메트리 HUD -->
+<header class="hud-top">
+  <div class="tl">
+    <div class="row"><span><b>연세대학교 기계공학부</b></span><span>연구</span></div>
+    <div class="row"><span>클러스터 <b class="tnum">6</b></span><span class="dim">·</span><span>연구실 <b class="tnum">33</b></span></div>
+  </div>
+  <div class="crest">
+    <div class="mk"><a href="G-console.html" style="color:inherit;text-decoration:none">YONSEI · ME</a></div>
+    <div class="sub">SCHOOL OF MECHANICAL ENGINEERING</div>
+  </div>
+  <nav class="hud-nav" aria-label="주메뉴">
+    <a href="G-about.html">소개</a><a href="G-academics.html">교육</a><a href="G-research.html" aria-current="page" style="color:#e2593c">연구</a><a href="G-people.html">구성원</a><a href="G-news.html">소식</a><a href="G-admissions.html">입학</a><a class="join" href="G-admissions.html">입학 안내 ↗</a>
+  </nav>
+</header>
+
+<main>
+  <!-- 페이지 헤더 -->
+  <section class="pagehead" aria-labelledby="ptitle">
+    <nav class="crumb" aria-label="브레드크럼">
+      <a href="#">홈</a><span class="sep">/</span><b>연구</b>
+    </nav>
+    <h1 id="ptitle" class="kr">연구 클러스터</h1>
+    <p class="lede kr">기계공학부의 연구는 <b>6개 클러스터</b>로 편성되고, 그 아래 <b>33개 연구실</b>이 <b>1 : 1</b>로 교수를 두고 운영됩니다. 아래 궤도 요약에서 클러스터별 비중을 한눈에 보고, 각 블록에서 소속 연구실·PI·위치를 조회하세요.</p>
+  </section>
+
+  <!-- 요약: 궤도 데이터비주얼 + 클러스터 브레이크다운 -->
+  <section class="summary" aria-label="연구 클러스터 요약">
+    <div>
+      <div class="sum-head">클러스터 궤도 · <span class="u">코어 33개 연구실</span></div>
+      <div class="orbit-wrap">
+        <svg viewBox="0 0 400 400" aria-hidden="true">
+          <!-- 눈금 링 -->
+          <circle class="orbit-ring tick orbit-spin r" cx="200" cy="200" r="192"/>
+          <circle class="orbit-ring" cx="200" cy="200" r="150"/>
+          <circle class="orbit-ring" cx="200" cy="200" r="150" style="stroke-dasharray:2 6;opacity:.4"/>
+          <!-- 스포크 + 궤도 노드: JS가 채움 -->
+          <g id="spokes"></g>
+          <g id="nodes"></g>
+          <!-- 코어 허브 -->
+          <circle class="o-hub-ring" cx="200" cy="200" r="30"/>
+          <circle class="o-hub" cx="200" cy="200" r="8"/>
+          <path d="M200 8 v14 M200 378 v14 M8 200 h14 M378 200 h14" stroke="var(--coral)" stroke-width="1.4"/>
+        </svg>
+        <div class="orbit-center" aria-hidden="true">
+          <div>
+            <div class="n"><span data-count="33">0</span><span class="u">개</span></div>
+            <div class="l">연구실 총계</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="sum-head">구성 분포 · <span class="u">33개 연구실 / 6개 클러스터</span></div>
+      <div class="bd-grid" id="bd"></div>
+    </div>
+  </section>
+
+  <!-- 클러스터 섹션 (관제 블록 × 6) -->
+  <section class="clusters" id="clusters" aria-label="연구 클러스터별 연구실">
+    <div id="clusterBlocks"></div>
+  </section>
+
+  <!-- 하단 HUD 텔레메트리 -->
+  <footer class="hud-bottom">
+    <div class="hud-bottom-inner">
+      <div class="counters">
+        <div class="ct">
+          <div class="lab">연구 클러스터</div>
+          <div class="num"><span data-count="6">0</span></div>
+        </div>
+        <div class="ct">
+          <div class="lab">연구실 · 전임 교수</div>
+          <div class="num"><span data-count="33">0</span> · <span data-count="33">0</span></div>
+        </div>
+        <div class="ct">
+          <div class="lab">SINCE</div>
+          <div class="num">1962</div>
+        </div>
+      </div>
+      <div class="foot-tl">
+        <div>클러스터는 연구실 명칭 기반 자체 분류입니다</div>
+        <div>연세대학교 기계공학부 · 機制</div>
+      </div>
+    </div>
+  </footer>
+</main>
+
+<script>
+(function(){
+  'use strict';
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ── 데이터 (data.js에서 인라인 하드코딩) ── */
+  var clusters = [
+    { id:'solid',   ko:'고체·구조·재료역학',   en:'Solid Mechanics & Design',            count:7, desc:'재료가 힘을 받아 변형되고 파괴에 이르는 전 과정 — 견디는 것의 과학.' },
+    { id:'thermal', ko:'열·유체·에너지',       en:'Thermal / Fluids / Energy',           count:7, desc:'열이 전달되고 유체가 흐르는 모든 경로 — 엔진에서 연료전지까지.' },
+    { id:'manuf',   ko:'생산·정밀제조',        en:'Manufacturing & Tribology',           count:4, desc:'마찰·가공·공정 시스템 — 도면을 실물로 만드는 기술.' },
+    { id:'nanobio', ko:'마이크로·나노·바이오', en:'Micro / Nano / Bio',                  count:6, desc:'나노 공정에서 바이오칩까지 — 보이지 않는 스케일의 기계.' },
+    { id:'optics',  ko:'광학·이미징·계측',     en:'Optics / Imaging / Sensing',          count:4, desc:'빛으로 재고 보이지 않는 것을 본다 — 이미징·정밀 계측.' },
+    { id:'dyn',     ko:'동역학·제어·로보·AI',  en:'Dynamics / Control / Robotics / AI',  count:5, desc:'움직임을 예측하고 제어한다 — 로보틱스·지능 시스템.' }
+  ];
+  var CVAR = { solid:'--c-solid', thermal:'--c-thermal', manuf:'--c-manuf',
+               nanobio:'--c-nanobio', optics:'--c-optics', dyn:'--c-dyn' };
+
+  /* 연구실 33개 — data.js labs (ko/en/pi/cluster/loc), url은 검증된 2곳만 */
+  var labs = [
+    { id:'cmm',       ko:'전산재료역학',            en:'Computational Mechanics of Materials', pi:'강건욱', cluster:'solid',   loc:'공학관 N204' },
+    { id:'nanofab',   ko:'마이크로 나노 응용',      en:'Nano Fabrication / Micro Optics',      pi:'강신일', cluster:'nanobio', loc:'공학관 C330' },
+    { id:'optiq',     ko:'광학 양자',               en:'Optics Quantum',                       pi:'김경식', cluster:'optics',  loc:'공학관 A534' },
+    { id:'tribo',     ko:'트라이볼로지',            en:'Tribology Research',                   pi:'김대은', cluster:'manuf',   loc:'공학관 A491' },
+    { id:'max',       ko:'멀티스케일구조설계·극한제조', en:'MAX — Multiscale Architecture & eXtreme Manufacturing', pi:'김석', cluster:'solid', loc:'공학관 C314' },
+    { id:'noel',      ko:'나노광전자시스템',        en:'Nano-Optoelectronics System',          pi:'김영주', cluster:'optics',  loc:'공학원 D332' },
+    { id:'mems',      ko:'마이크로시스템',          en:'MEMS',                                 pi:'김용준', cluster:'nanobio', loc:'공학관 A583' },
+    { id:'atel',      ko:'어드밴스드 열공학',       en:'Advanced ThermoEngineering',           pi:'김우철', cluster:'thermal', loc:'공학관 A310', role:'학과장' },
+    { id:'ssfl',      ko:'미소유체',                en:'Small-Scale Fluids',                   pi:'김원정', cluster:'thermal', loc:'공학관 A386', role:'학부지도교수' },
+    { id:'nanotrans', ko:'나노기전시스템',          en:'Nano Transducers',                     pi:'김종백', cluster:'nanobio', loc:'산학협동관 520' },
+    { id:'idml',      ko:'지능소자공정',            en:'Intelligent Device & Manufacturing',   pi:'김해진', cluster:'manuf',   loc:'공학관 N206' },
+    { id:'bes',       ko:'바이오메디컬·에너지 시스템', en:'Biomedical and Energy System',       pi:'류원형', cluster:'nanobio', loc:'공학관 N105' },
+    { id:'csai',      ko:'계산과학–인공지능',       en:'Computational Science–AI',             pi:'민경민', cluster:'dyn',     loc:'공학관 N201', role:'대회 담당' },
+    { id:'mfgmech',   ko:'생산·메카트로닉스',       en:'Manufacturing & Mechatronics',         pi:'민병권', cluster:'manuf',   loc:'산학협동관 308' },
+    { id:'optomecha', ko:'진동·광메카트로닉스',     en:'Vibration and Opto-Mechatronics',      pi:'박노철', cluster:'dyn',     loc:'공학원 332D', url:'http://optomecha.yonsei.ac.kr' },
+    { id:'ice',       ko:'내연기관·청정에너지',     en:'ICE & Clean Energy',                   pi:'송순호', cluster:'thermal', loc:'공학관 A180', url:'http://cleanenergy.yonsei.ac.kr' },
+    { id:'hcair',     ko:'인간중심AI로보틱스',      en:'Human-Centered AI Robotics',           pi:'신동준', cluster:'dyn',     loc:'공학관 C426' },
+    { id:'mss',       ko:'정밀제어시스템',          en:'Micro Servo System',                   pi:'양현석', cluster:'dyn',     loc:'공학관 A283' },
+    { id:'ssd',       ko:'전산구조설계',            en:'Systematic Structure Design',          pi:'유정훈', cluster:'solid',   loc:'공학관 C334' },
+    { id:'mfgmecha',  ko:'정밀 생산 메카트로닉스',  en:'Manufacturing Mechatronics',           pi:'윤준영', cluster:'manuf',   loc:'공학관 A190' },
+    { id:'httd',      ko:'열전달·열설계',           en:'Heat Transfer & Thermal Design',       pi:'이남규', cluster:'thermal', loc:'공학관 N207' },
+    { id:'mpdo',      ko:'멀티피직스 최적설계·PHM', en:'Multi-Physics Design Optimization & PHM', pi:'이종수', cluster:'solid', loc:'공학관 A286/C323' },
+    { id:'msfd',      ko:'멀티스케일 유체역학',     en:'Multi-scale Fluid Dynamics',           pi:'이준상', cluster:'thermal', loc:'공학관 A277/N204' },
+    { id:'turb',      ko:'난류',                    en:'Turbulence',                           pi:'이창훈', cluster:'thermal', loc:'공학관 A178' },
+    { id:'biomech',   ko:'생체역학·연성재료',       en:'Biomechanics & Soft Materials',        pi:'이형석', cluster:'solid',   loc:'공학관 A581/N104' },
+    { id:'micromech', ko:'마이크로역학',            en:'Micro Mechanics',                      pi:'장용훈', cluster:'solid',   loc:'공학관 A110' },
+    { id:'nemd',      ko:'나노 융합 소자',          en:'NEMD',                                 pi:'전성찬', cluster:'nanobio', loc:'공학관 N204' },
+    { id:'isid',      ko:'지능형 구조·통합설계',    en:'Intelligent Structures & Integrated Design', pi:'전흥재', cluster:'solid', loc:'공학관 C332' },
+    { id:'biochip',   ko:'바이오칩',                en:'Biochip Technology',                   pi:'정효일', cluster:'nanobio', loc:'공학관 A108' },
+    { id:'cii',       ko:'산술 광학 영상',          en:'Computational Imaging & Instrumentation', pi:'주철민', cluster:'optics', loc:'공학관 N104' },
+    { id:'mlcs',      ko:'기계학습·제어 시스템',    en:'Machine Learning and Control Systems', pi:'최종은', cluster:'dyn',     loc:'공학관 N206' },
+    { id:'hais',      ko:'정밀 측정·지능형 센싱',   en:'High-Dim. Accurate Measurement & Intelligent Sensing', pi:'현재상', cluster:'optics', loc:'공학관 C315' },
+    { id:'sep',       ko:'지속가능 에너지 플랫폼',  en:'Multiphysics Energy System',           pi:'홍종섭', cluster:'thermal', loc:'공학관 A288' }
+  ];
+
+  var TOTAL = labs.length; // 33
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+  /* 클러스터별 연구실 그룹 + 순번 부여 (원본 순서 = 01..33) */
+  labs.forEach(function(l,i){ l.idx = String(i+1).padStart(2,'0'); });
+  var byCluster = {};
+  clusters.forEach(function(c){ byCluster[c.id] = []; });
+  labs.forEach(function(l){ if(byCluster[l.cluster]) byCluster[l.cluster].push(l); });
+  clusters.forEach(function(c,i){ c.code = 'C-' + String(i+1).padStart(2,'0'); });
+  var maxCount = Math.max.apply(null, clusters.map(function(c){ return c.count; }));
+
+  /* ── 요약 브레이크다운 데이터바 ── */
+  var bd = document.getElementById('bd');
+  bd.innerHTML = clusters.map(function(c){
+    var pct = Math.round(c.count/TOTAL*100);
+    return '<a class="bd-row" href="#'+esc(c.id)+'" data-cluster="'+esc(c.id)+'" style="--bd-c:var('+CVAR[c.id]+')">'
+      + '<div class="top">'
+        + '<span class="lab"><span class="cdot" aria-hidden="true"></span><span class="ko">'+esc(c.ko)+'</span></span>'
+        + '<span class="val"><b>'+c.count+'</b>개 <span class="dim">· '+pct+'%</span></span>'
+      + '</div>'
+      + '<div class="bar"><span style="width:'+(c.count/maxCount*100).toFixed(1)+'%"></span></div>'
+      + '</a>';
+  }).join('');
+
+  /* ── 궤도 노드 + 스포크 (6 클러스터를 원주 위에) ── */
+  var spokes = document.getElementById('spokes'), nodes = document.getElementById('nodes');
+  var CX=200, CY=200, R=150, MINR=8, MAXR=20;
+  var sp='', nd='';
+  clusters.forEach(function(c,i){
+    var ang = (i/clusters.length)*Math.PI*2 - Math.PI/2; // 12시 시작
+    var x = CX + Math.cos(ang)*R, y = CY + Math.sin(ang)*R;
+    var rr = MINR + (c.count/maxCount)*(MAXR-MINR); // 비중 → 노드 크기
+    sp += '<line class="o-spoke" x1="'+CX+'" y1="'+CY+'" x2="'+x.toFixed(1)+'" y2="'+y.toFixed(1)+'"/>';
+    nd += '<a class="o-node" id="node-'+esc(c.id)+'" href="#'+esc(c.id)+'" role="link" '
+        + 'aria-label="'+esc(c.ko+' 클러스터 · '+c.count+'개 연구실')+'" '
+        + 'style="color:var('+CVAR[c.id]+')" tabindex="0">'
+        + '<circle class="halo" cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+(rr+7).toFixed(1)+'" stroke="currentColor"/>'
+        + '<circle class="core" cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+rr.toFixed(1)+'" fill="currentColor"/>'
+        + '<text x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" text-anchor="middle" dominant-baseline="central" '
+          + 'font-family="var(--mono)" font-size="9" font-weight="500" fill="#08090c">'+c.count+'</text>'
+        + '</a>';
+  });
+  spokes.innerHTML = sp;
+  nodes.innerHTML = nd;
+
+  /* 궤도 노드 ↔ 브레이크다운 행 하이라이트 연동 */
+  function setActive(id, on){
+    var node = document.getElementById('node-'+id);
+    var row = bd.querySelector('[data-cluster="'+id+'"]');
+    if(node) node.classList.toggle('on', on);
+    if(row) row.classList.toggle('on', on);
+  }
+  ['mouseenter','focus'].forEach(function(ev){
+    nodes.addEventListener(ev, function(e){ var a=e.target.closest('.o-node'); if(a) setActive(a.id.replace('node-',''),true); }, true);
+    bd.addEventListener(ev, function(e){ var a=e.target.closest('.bd-row'); if(a) setActive(a.dataset.cluster,true); }, true);
+  });
+  ['mouseleave','blur'].forEach(function(ev){
+    nodes.addEventListener(ev, function(e){ var a=e.target.closest('.o-node'); if(a) setActive(a.id.replace('node-',''),false); }, true);
+    bd.addEventListener(ev, function(e){ var a=e.target.closest('.bd-row'); if(a) setActive(a.dataset.cluster,false); }, true);
+  });
+
+  /* ── 클러스터 블록 × 6 ── */
+  function pin(){ return '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-5.686 7-11a7 7 0 1 0-14 0c0 5.314 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>'; }
+
+  function labRow(l, c){
+    var labLink = l.url
+      ? '<a class="lk ext" href="'+esc(l.url)+'" target="_blank" rel="noopener">'+esc(l.ko)+' <span aria-hidden="true">↗</span><span class="visually-hidden"> (새 창)</span></a>'
+      : esc(l.ko);
+    var nameKo = l.url
+      ? '<a class="ext" style="color:var(--txt-hi)" href="'+esc(l.url)+'" target="_blank" rel="noopener">'+esc(l.ko)+'</a>'
+      : esc(l.ko);
+    var act = (l.url
+      ? '<a class="ext" href="'+esc(l.url)+'" target="_blank" rel="noopener">사이트 ↗</a>'
+      : '<a href="#'+esc(l.id)+'">상세</a>');
+    return '<div class="lab-row" id="'+esc(l.id)+'" role="group" aria-label="'+esc(l.ko+' · '+l.pi)+'">'
+      + '<div class="l-idx tnum">'+esc(l.idx)+'</div>'
+      + '<div class="l-name"><div class="ko">'+nameKo+'</div></div>'
+      + '<div class="l-pi"><span class="pi"><span class="cdot" aria-hidden="true"></span>'+esc(l.pi)+' 교수</span>'
+        + (l.role ? '<div class="role">'+esc(l.role)+'</div>' : '') + '</div>'
+      + '<div class="l-loc">'+pin()+esc(l.loc)+'</div>'
+      + '<div class="l-act">'+act+'</div>'
+      + '</div>';
+  }
+
+  var blocks = document.getElementById('clusterBlocks');
+  blocks.innerHTML = clusters.map(function(c){
+    var pct = Math.round(c.count/TOTAL*100);
+    var rows = byCluster[c.id].map(function(l){ return labRow(l,c); }).join('');
+    return '<section class="cluster" id="'+esc(c.id)+'" style="--cl-c:var('+CVAR[c.id]+')" aria-labelledby="h-'+esc(c.id)+'">'
+      + '<div class="cl-head">'
+        + '<div class="cl-code"><span class="cdot" aria-hidden="true"></span></div>'
+        + '<div class="cl-titles">'
+          + '<div class="ko" id="h-'+esc(c.id)+'">'+esc(c.ko)+'</div>'
+          + '<p class="desc">'+esc(c.desc)+'</p>'
+        + '</div>'
+        + '<div class="cl-metric">'
+          + '<div class="num tnum">'+String(c.count).padStart(2,'0')+'<span class="u">개</span></div>'
+          + '<div class="share">전체의 '+pct+'%</div>'
+          + '<div class="bar"><span style="width:'+(c.count/maxCount*100).toFixed(1)+'%"></span></div>'
+        + '</div>'
+      + '</div>'
+      + '<div class="lab-legend" aria-hidden="true">'
+        + '<span>번호</span><span>연구실</span><span>담당 교수</span><span>위치</span><span class="rt">링크</span>'
+      + '</div>'
+      + '<div class="lab-list">'+rows+'</div>'
+      + '</section>';
+  }).join('');
+
+  /* ── 카운트업 (reduced-motion 존중) ── */
+  document.querySelectorAll('[data-count]').forEach(function(el){
+    var target = parseInt(el.dataset.count,10);
+    if(reduce){ el.textContent = target; return; }
+    var t0=null, dur=1200;
+    function step(t){
+      if(!t0) t0=t;
+      var pp = Math.min((t-t0)/dur,1), e = 1-Math.pow(1-pp,3);
+      el.textContent = Math.round(target*e);
+      if(pp<1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  });
+})();
+</script>
+</body>
+</html>

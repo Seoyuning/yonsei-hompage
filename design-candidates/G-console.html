@@ -46,7 +46,7 @@ a{color:inherit;text-decoration:none}
 .hud-top{position:fixed;top:0;left:0;right:0;z-index:20;
   display:grid;grid-template-columns:1fr auto 1fr;align-items:start;
   padding:1.5rem clamp(1.2rem,.6rem + 2vw,2.6rem);
-  background:linear-gradient(var(--bg),transparent);pointer-events:none}
+  background:rgba(8,9,12,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line-soft);pointer-events:none}
 .hud-top a,.hud-top button{pointer-events:auto}
 .tl{font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;line-height:1.9;color:var(--dim)}
 .tl b{color:var(--txt);font-weight:500}
@@ -74,6 +74,8 @@ a{color:inherit;text-decoration:none}
   background:radial-gradient(circle at 50% 45%,color-mix(in srgb,var(--glow) 60%,transparent),transparent 62%);
   filter:blur(6px)}
 .core svg{width:100%;height:100%;overflow:visible}
+.core canvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1}
+.gl-on .core-fallback{display:none}
 .spin{transform-origin:center;transform-box:view-box;animation:spin 60s linear infinite}
 .spin.f{animation-duration:34s}
 .spin.r{animation-name:spinr;animation-duration:80s}
@@ -119,8 +121,8 @@ a{color:inherit;text-decoration:none}
 .inset .tag{position:absolute;left:.5rem;bottom:.4rem;font-size:.58rem;letter-spacing:.14em;color:var(--coral)}
 .inset .cross{position:absolute;top:.4rem;right:.5rem;font-size:.58rem;color:var(--dim)}
 
-/* ── 하단 텔레메트리 ── */
-.hud-bottom{position:fixed;bottom:0;left:0;right:0;z-index:20;
+/* ── 하단 텔레메트리 (히어로 스테이지에 귀속 — absolute) ── */
+.hud-bottom{position:absolute;bottom:0;left:0;right:0;z-index:20;
   display:grid;grid-template-columns:1fr auto;align-items:end;gap:2rem;
   padding:1.4rem clamp(1.2rem,.6rem + 2vw,2.6rem);
   background:linear-gradient(transparent,var(--bg) 60%)}
@@ -143,6 +145,111 @@ a{color:inherit;text-decoration:none}
   font-size:.64rem;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);text-align:center;white-space:nowrap}
 .tagline b{color:var(--txt);font-weight:500}
 
+/* ═══ 스크롤 콘텐츠 (히어로 아래) ══════════════════════════════
+   관제 다크 톤 유지 + 다크 위 가독성(밝은 텍스트·행간 여유). */
+.doc{position:relative;z-index:1;background:var(--bg);
+  border-top:1px solid var(--line)}
+.sec{max-width:1120px;margin:0 auto;
+  padding:clamp(3.4rem,2rem + 5vw,6rem) clamp(1.2rem,.6rem + 2vw,2.6rem);
+  border-bottom:1px solid var(--line-soft)}
+/* 섹션 헤더 — 모노 라벨 절제 + 국문 제목 */
+.sec-head{display:flex;justify-content:space-between;align-items:baseline;
+  gap:1.5rem;flex-wrap:wrap;margin-bottom:clamp(1.8rem,1rem + 2vw,2.8rem)}
+.sec-kick{font-family:var(--mono);font-size:.66rem;letter-spacing:.24em;
+  text-transform:uppercase;color:var(--coral)}
+.sec-title{font-family:var(--kr);font-weight:700;color:#f2f4f7;
+  font-size:clamp(1.5rem,1rem + 2.4vw,2.4rem);line-height:1.24;letter-spacing:-.01em;
+  margin-top:.5rem}
+.sec-more{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;
+  color:var(--dim);transition:color .15s;white-space:nowrap}
+.sec-more:hover{color:var(--coral)}
+.sec-more .arr{color:var(--coral)}
+
+/* 학부 소개 — 리드 + 지표 */
+.intro{display:grid;grid-template-columns:1.5fr 1fr;gap:clamp(2rem,1rem + 4vw,4.5rem);
+  align-items:start}
+.intro .lead{font-family:var(--kr);color:#dfe2e7;
+  font-size:clamp(1.1rem,.9rem + .9vw,1.45rem);line-height:1.7;letter-spacing:-.005em}
+.intro .lead b{color:#fff;font-weight:600}
+.intro .lead .cor{color:var(--coral);font-weight:600}
+.intro .body{font-family:var(--kr);color:var(--txt);line-height:1.8;
+  margin-top:1.4rem;font-size:.98rem}
+.metrics{border-top:1px solid var(--coral);padding-top:1rem}
+.metric{display:flex;justify-content:space-between;align-items:baseline;
+  padding:.85rem 0;border-bottom:1px solid var(--line-soft)}
+.metric .m-lab{font-family:var(--kr);font-size:.9rem;color:var(--dim)}
+.metric .m-val{font-family:var(--mono);font-weight:300;color:#eef0f4;
+  font-size:1.9rem;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.metric .m-val.acc{color:var(--coral)}
+
+/* 연구 분야 — 데이터행 + 데이터바 */
+.clist{display:grid;gap:0}
+.crow{display:grid;grid-template-columns:auto 1fr auto;gap:1.2rem;align-items:baseline;
+  padding:1.3rem 0;border-top:1px solid var(--line-soft);transition:border-color .15s}
+.clist a.crow:hover{border-top-color:var(--coral)}
+.crow .cno{font-family:var(--mono);font-size:.72rem;color:var(--dimmer);
+  letter-spacing:.1em;padding-top:.35rem}
+.crow .cmain{min-width:0}
+.crow .cko{font-family:var(--kr);font-weight:600;color:#eef0f4;
+  font-size:clamp(1.05rem,.9rem + .6vw,1.3rem);line-height:1.3}
+.crow .cdesc{font-family:var(--kr);color:var(--dim);font-size:.9rem;
+  line-height:1.6;margin-top:.35rem;max-width:52ch}
+.crow .cbar{grid-column:2 / 3;height:2px;background:var(--line-soft);
+  position:relative;margin-top:.9rem}
+.crow .cbar span{position:absolute;inset:0 auto 0 0;background:var(--coral);opacity:.85}
+.crow .clabs{text-align:right;font-family:var(--mono);color:var(--dim);
+  font-size:.72rem;letter-spacing:.08em;white-space:nowrap;padding-top:.35rem}
+.crow .clabs b{display:block;color:#eef0f4;font-weight:400;font-size:1.5rem;
+  line-height:1;margin-bottom:.2rem}
+
+/* 구성원 — 프리뷰 행 */
+.people{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+  background:var(--line-soft);border:1px solid var(--line-soft)}
+.pcard{background:var(--panel);padding:1.5rem 1.4rem;display:flex;flex-direction:column;
+  gap:.5rem;transition:background .15s}
+a.pcard:hover{background:#10131a}
+.pcard .pinit{width:2.4rem;height:2.4rem;border:1px solid var(--coral);
+  color:var(--coral);font-family:var(--kr);font-weight:700;font-size:1.1rem;
+  display:grid;place-items:center;margin-bottom:.4rem}
+.pcard .pko{font-family:var(--kr);font-weight:600;color:#eef0f4;font-size:1.15rem}
+.pcard .prole{font-family:var(--kr);font-size:.82rem;color:var(--coral)}
+.pcard .pclu{font-family:var(--kr);font-size:.85rem;color:var(--dim);
+  margin-top:.15rem;line-height:1.5}
+
+/* 소식 — 로그행 */
+.logs{display:grid;gap:0}
+.log{display:grid;grid-template-columns:auto 1fr auto;gap:1.2rem;align-items:baseline;
+  padding:1rem 0;border-top:1px solid var(--line-soft);transition:background .12s}
+a.log:hover{background:#10131a}
+.log .lcat{font-family:var(--mono);font-size:.64rem;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--coral);border:1px solid var(--line);
+  padding:.2rem .5rem;white-space:nowrap}
+.log .ltitle{font-family:var(--kr);color:#dfe2e7;font-size:.98rem;line-height:1.5;min-width:0}
+.log .ldate{font-family:var(--mono);font-size:.74rem;color:var(--dim);
+  letter-spacing:.04em;white-space:nowrap;font-variant-numeric:tabular-nums}
+
+/* 입학 CTA — 코랄 강조 밴드 */
+.cta{background:var(--coral);color:#140a06;
+  padding:clamp(2.6rem,1.6rem + 3.5vw,4.2rem) clamp(1.4rem,.6rem + 2vw,3rem);
+  display:flex;justify-content:space-between;align-items:center;gap:2rem;flex-wrap:wrap;
+  max-width:1120px;margin:clamp(3rem,2rem + 3vw,4.5rem) auto;
+  margin-inline:clamp(1.2rem,.6rem + 2vw,2.6rem)}
+@media(min-width:1180px){.cta{margin-inline:auto}}
+.cta .cta-txt{max-width:34rem}
+.cta h2{font-family:var(--kr);font-weight:700;color:#140a06;
+  font-size:clamp(1.4rem,1rem + 2vw,2.1rem);line-height:1.25;letter-spacing:-.01em}
+.cta p{font-family:var(--kr);color:#3a1c10;margin-top:.8rem;line-height:1.6;font-size:.98rem}
+.cta .cta-btn{font-family:var(--kr);font-weight:600;font-size:1rem;
+  background:#140a06;color:#fff;padding:.9rem 1.6rem;white-space:nowrap;
+  border:1px solid #140a06;transition:background .15s,color .15s}
+.cta .cta-btn:hover{background:transparent;color:#140a06}
+.cta .cta-btn .arr{color:var(--coral)}
+
+@media (max-width:900px){
+  .intro{grid-template-columns:1fr}
+  .people{grid-template-columns:1fr}
+}
+
 @media (max-width:820px){
   .hud-left,.hud-right,.inset,.tagline{display:none}
   .core{width:64vw}
@@ -150,6 +257,12 @@ a{color:inherit;text-decoration:none}
   .hud-nav{display:none}
   .hud-bottom{grid-template-columns:1fr}
   .wave{display:none}
+  .crow{grid-template-columns:auto 1fr;gap:.9rem}
+  .crow .cbar{grid-column:1 / -1}
+  .crow .clabs{grid-column:2;text-align:left;padding-top:.4rem}
+  .log{grid-template-columns:1fr auto;row-gap:.4rem}
+  .log .lcat{grid-column:1;justify-self:start}
+  .log .ltitle{grid-column:1 / -1;order:3}
 }
 </style>
 </head>
@@ -158,16 +271,16 @@ a{color:inherit;text-decoration:none}
 <!-- 상단 HUD -->
 <header class="hud-top">
   <div class="tl">
-    <div class="row"><span><b>연세대학교 기계공학부</b></span><span>ME · X</span></div>
-    <div class="row"><span>CYCLE · <b>2026</b></span><span>OPERATION · <b>60+ YR</b></span></div>
+    <div class="row"><span><b>연세대학교 기계공학부</b></span></div>
+    <div class="row"><span>Since <b>1962</b></span></div>
   </div>
   <div class="crest">
-    <div class="mk">YONSEI · ME</div>
+    <div class="mk"><a href="G-console.html" style="color:inherit;text-decoration:none">YONSEI · ME</a></div>
     <div class="sub">SCHOOL OF MECHANICAL ENGINEERING</div>
   </div>
   <nav class="hud-nav">
-    <a href="#">소개</a><a href="#">연구</a><a href="#">구성원</a><a href="#">입학</a><a class="join" href="#">JOIN-US ↗</a>
-  </nav>
+        <a href="G-about.html">소개</a><a href="G-academics.html">교육</a><a href="G-research.html">연구</a><a href="G-people.html">구성원</a><a href="G-news.html">소식</a><a class="join" href="G-admissions.html">입학</a>
+      </nav>
 </header>
 
 <main class="stage">
@@ -184,9 +297,10 @@ a{color:inherit;text-decoration:none}
     </g>
   </svg>
 
-  <!-- 중앙 기계 코어 (회전 터빈/기어 어셈블리) -->
+  <!-- 중앙 기계 코어 (실제 3D 유성기어 — WebGL / 미지원 시 하단 SVG 폴백) -->
   <div class="core" aria-hidden="true">
-    <svg viewBox="0 0 400 400" fill="none" stroke="currentColor">
+    <canvas id="gear3d"></canvas>
+    <svg class="core-fallback" viewBox="0 0 400 400" fill="none" stroke="currentColor">
       <!-- 외곽 눈금 링 -->
       <circle class="spin r" cx="200" cy="200" r="188" stroke-width="1" stroke-dasharray="1 13" opacity=".5"/>
       <circle cx="200" cy="200" r="170" stroke-width="1" opacity=".25"/>
@@ -214,7 +328,7 @@ a{color:inherit;text-decoration:none}
 
   <!-- 좌: 주요 연혁 -->
   <aside class="hud-left">
-    <div class="k-head">주요 연혁 · KEY EVENTS</div>
+    <div class="k-head">주요 연혁</div>
     <div class="k-sub">1962</div>
     <div class="k-line"></div>
     <p class="k-note"><b>기계공학과로 분리.</b> 고체·열·유체·동역학, 네 개의 역학에서 출발했습니다.</p>
@@ -223,7 +337,7 @@ a{color:inherit;text-decoration:none}
 
   <!-- 우: 연구 구성 -->
   <aside class="hud-right">
-    <div class="r-head">연구 구성 · RESEARCH BREAKDOWN</div>
+    <div class="r-head">연구 구성</div>
     <div class="r-row"><span class="lab">고체 · 구조 · 재료</span><span class="val">21%</span><span class="bar"><span style="width:21%"></span></span></div>
     <div class="r-row"><span class="lab">열 · 유체 · 에너지</span><span class="val">21%</span><span class="bar"><span style="width:21%"></span></span></div>
     <div class="r-row"><span class="lab">마이크로 · 나노 · 바이오</span><span class="val">18%</span><span class="bar"><span style="width:18%"></span></span></div>
@@ -243,39 +357,238 @@ a{color:inherit;text-decoration:none}
       </g>
       <circle cx="100" cy="62" r="4" fill="#8ea0c8" stroke="none"/>
     </svg>
-    <span class="cross">⌖ 4.0×</span>
-    <span class="tag">MEU-01 · 기구 단면</span>
+    <span class="tag">기구 단면</span>
   </figure>
 
-  <p class="tagline">기계는 세상을 <b>움직여</b> 왔습니다 · SINCE 1962</p>
+  <p class="tagline">기계는 세상을 <b>움직여</b> 왔습니다</p>
+
+  <!-- 하단 HUD (히어로 스테이지에 귀속 — 스크롤 콘텐츠와 겹치지 않음) -->
+  <div class="hud-bottom">
+    <div class="counters">
+      <div class="ct">
+        <div class="lab">전임 교수 · 연구실</div>
+        <div class="num"><span data-count="33">0</span> · <span data-count="33">0</span></div>
+      </div>
+      <div class="ct">
+        <div class="lab">연구 클러스터</div>
+        <div class="num"><span data-count="6">0</span></div>
+      </div>
+      <div class="ct">
+        <div class="lab">설립</div>
+        <div class="num">1962</div>
+      </div>
+    </div>
+    <div class="wave">
+      <div class="lab">아래로 내려 살펴보기</div>
+      <div class="box">
+        <svg viewBox="0 0 480 54" preserveAspectRatio="none">
+          <path id="waveline" d=""/>
+          <circle id="wavemk" class="mk" r="2.6" cx="0" cy="27"/>
+        </svg>
+      </div>
+    </div>
+  </div>
 </main>
 
-<!-- 하단 HUD -->
-<footer class="hud-bottom">
-  <div class="counters">
-    <div class="ct">
-      <div class="lab">전임 교수 · 연구실</div>
-      <div class="num"><span data-count="33">0</span> · <span data-count="33">0</span></div>
+<!-- ═══ 스크롤 콘텐츠 (히어로 아래) ═══ -->
+<div class="doc">
+
+  <!-- 학부 소개 -->
+  <section class="sec" aria-labelledby="s-intro">
+    <div class="sec-head">
+      <div>
+        <p class="sec-kick">학부 소개</p>
+        <h2 class="sec-title" id="s-intro">맞물려 작동하는 하나의 기구</h2>
+      </div>
+      <a class="sec-more" href="G-about.html">학부 소개 <span class="arr">→</span></a>
     </div>
-    <div class="ct">
-      <div class="lab">연구 클러스터</div>
-      <div class="num"><span data-count="6">0</span></div>
+    <div class="intro">
+      <div>
+        <p class="lead">
+          기계공학은 <b>고체·열·유체·동역학</b>, 네 개의 역학에서 출발합니다.
+          연세대학교 기계공학부는 이 원리를 설계로 옮기며,
+          <span class="cor">에너지·재료·설계·제어</span>의 언어로 세상의 움직임을 해석해 왔습니다.
+        </p>
+        <p class="body">
+          1962년 기계공학과로 분리된 이래, 학문의 깊이와 산업의 요청 사이에서
+          균형을 지켜 왔습니다. 오늘날 33개 연구실은 6개 분야로 나뉘어,
+          하나의 기구(機構)처럼 맞물려 작동합니다.
+        </p>
+      </div>
+      <div class="metrics">
+        <div class="metric"><span class="m-lab">전임 교수</span><span class="m-val">33</span></div>
+        <div class="metric"><span class="m-lab">연구실</span><span class="m-val">33</span></div>
+        <div class="metric"><span class="m-lab">연구 분야</span><span class="m-val">6</span></div>
+        <div class="metric"><span class="m-lab">설립</span><span class="m-val acc">1962</span></div>
+      </div>
     </div>
-    <div class="ct">
-      <div class="lab">SINCE</div>
-      <div class="num">1962</div>
+  </section>
+
+  <!-- 연구 분야 -->
+  <section class="sec" aria-labelledby="s-research">
+    <div class="sec-head">
+      <div>
+        <p class="sec-kick">연구 분야</p>
+        <h2 class="sec-title" id="s-research">여섯 개 분야, 서른세 개 연구실</h2>
+      </div>
+      <a class="sec-more" href="G-research.html">연구실 전체 <span class="arr">→</span></a>
     </div>
+    <div class="clist">
+      <a class="crow" href="G-research.html">
+        <span class="cno">01</span>
+        <span class="cmain">
+          <span class="cko">고체·구조·재료역학</span>
+          <span class="cdesc">재료가 힘을 받아 변형되고 파괴에 이르는 전 과정 — 견디는 것의 과학.</span>
+          <span class="cbar"><span style="width:100%"></span></span>
+        </span>
+        <span class="clabs"><b>7</b>연구실</span>
+      </a>
+      <a class="crow" href="G-research.html">
+        <span class="cno">02</span>
+        <span class="cmain">
+          <span class="cko">열·유체·에너지</span>
+          <span class="cdesc">열이 전달되고 유체가 흐르는 모든 경로 — 엔진에서 연료전지까지.</span>
+          <span class="cbar"><span style="width:100%"></span></span>
+        </span>
+        <span class="clabs"><b>7</b>연구실</span>
+      </a>
+      <a class="crow" href="G-research.html">
+        <span class="cno">03</span>
+        <span class="cmain">
+          <span class="cko">마이크로·나노·바이오</span>
+          <span class="cdesc">나노 공정에서 바이오칩까지 — 보이지 않는 스케일의 기계.</span>
+          <span class="cbar"><span style="width:86%"></span></span>
+        </span>
+        <span class="clabs"><b>6</b>연구실</span>
+      </a>
+      <a class="crow" href="G-research.html">
+        <span class="cno">04</span>
+        <span class="cmain">
+          <span class="cko">동역학·제어·로보·AI</span>
+          <span class="cdesc">움직임을 예측하고 제어한다 — 로보틱스·지능 시스템.</span>
+          <span class="cbar"><span style="width:71%"></span></span>
+        </span>
+        <span class="clabs"><b>5</b>연구실</span>
+      </a>
+      <a class="crow" href="G-research.html">
+        <span class="cno">05</span>
+        <span class="cmain">
+          <span class="cko">생산·정밀제조</span>
+          <span class="cdesc">마찰·가공·공정 시스템 — 도면을 실물로 만드는 기술.</span>
+          <span class="cbar"><span style="width:57%"></span></span>
+        </span>
+        <span class="clabs"><b>4</b>연구실</span>
+      </a>
+      <a class="crow" href="G-research.html">
+        <span class="cno">06</span>
+        <span class="cmain">
+          <span class="cko">광학·이미징·계측</span>
+          <span class="cdesc">빛으로 재고 보이지 않는 것을 본다 — 이미징·정밀 계측.</span>
+          <span class="cbar"><span style="width:57%"></span></span>
+        </span>
+        <span class="clabs"><b>4</b>연구실</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- 구성원 -->
+  <section class="sec" aria-labelledby="s-people">
+    <div class="sec-head">
+      <div>
+        <p class="sec-kick">구성원</p>
+        <h2 class="sec-title" id="s-people">학부를 움직이는 사람들</h2>
+      </div>
+      <a class="sec-more" href="G-people.html">교수진 전체 <span class="arr">→</span></a>
+    </div>
+    <div class="people">
+      <a class="pcard" href="G-people.html">
+        <span class="pinit">김</span>
+        <span class="pko">김우철</span>
+        <span class="prole">교수 · 학과장</span>
+        <span class="pclu">열·유체·에너지</span>
+      </a>
+      <a class="pcard" href="G-people.html">
+        <span class="pinit">박</span>
+        <span class="pko">박노철</span>
+        <span class="prole">교수</span>
+        <span class="pclu">동역학·제어·로보·AI</span>
+      </a>
+      <a class="pcard" href="G-people.html">
+        <span class="pinit">강</span>
+        <span class="pko">강신일</span>
+        <span class="prole">교수</span>
+        <span class="pclu">마이크로·나노·바이오</span>
+      </a>
+      <a class="pcard" href="G-people.html">
+        <span class="pinit">전</span>
+        <span class="pko">전흥재</span>
+        <span class="prole">교수</span>
+        <span class="pclu">고체·구조·재료역학</span>
+      </a>
+      <a class="pcard" href="G-people.html">
+        <span class="pinit">주</span>
+        <span class="pko">주철민</span>
+        <span class="prole">교수</span>
+        <span class="pclu">광학·이미징·계측</span>
+      </a>
+      <a class="pcard" href="G-people.html">
+        <span class="pinit">김</span>
+        <span class="pko">김대은</span>
+        <span class="prole">교수</span>
+        <span class="pclu">생산·정밀제조</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- 소식 -->
+  <section class="sec" aria-labelledby="s-news">
+    <div class="sec-head">
+      <div>
+        <p class="sec-kick">소식</p>
+        <h2 class="sec-title" id="s-news">공지 · 뉴스 · 세미나</h2>
+      </div>
+      <a class="sec-more" href="G-news.html">소식 전체 <span class="arr">→</span></a>
+    </div>
+    <div class="logs">
+      <a class="log" href="G-news.html">
+        <span class="lcat">학부</span>
+        <span class="ltitle">기계공학부「홈페이지 구축 경진대회」안내</span>
+        <time class="ldate">2026.06.23</time>
+      </a>
+      <a class="log" href="G-news.html">
+        <span class="lcat">대학원</span>
+        <span class="ltitle">2026학년도 2학기 대학원 휴학·복학 신청 안내</span>
+        <time class="ldate">2026.07.02</time>
+      </a>
+      <a class="log" href="G-news.html">
+        <span class="lcat">뉴스</span>
+        <span class="ltitle">비압전성 폴리머 필름을 이용한 유연한 음향파 발생장치 개발과 생체조직 분야로의 응용</span>
+        <time class="ldate">2026.05.18</time>
+      </a>
+      <a class="log" href="G-news.html">
+        <span class="lcat">뉴스</span>
+        <span class="ltitle">전흥재 교수 한국복합재료학회 KAL-KSCM상 수상</span>
+        <time class="ldate">2026.03.11</time>
+      </a>
+      <a class="log" href="G-news.html">
+        <span class="lcat">세미나</span>
+        <span class="ltitle">Prof. Dvir Yelin (Technion) — Imaging tympanic membrane vibration</span>
+        <time class="ldate">2026.06.04</time>
+      </a>
+    </div>
+  </section>
+
+</div>
+
+<!-- 입학 CTA — 코랄 강조 밴드 -->
+<section class="cta" aria-labelledby="s-cta">
+  <div class="cta-txt">
+    <p class="sec-kick" style="color:#3a1c10">입학 안내</p>
+    <h2 id="s-cta">다음 세대의 기계를<br>당신이 설계할 차례입니다.</h2>
+    <p>예비신입생부터 대학원 지원자까지 — 연세 기계공학의 문은 각자의 경로에서 열려 있습니다.</p>
   </div>
-  <div class="wave">
-    <div class="lab">연구 성과 추이 · OUTPUT</div>
-    <div class="box">
-      <svg viewBox="0 0 480 54" preserveAspectRatio="none">
-        <path id="waveline" d=""/>
-        <circle id="wavemk" class="mk" r="2.6" cx="0" cy="27"/>
-      </svg>
-    </div>
-  </div>
-</footer>
+  <a class="cta-btn" href="G-admissions.html">입학·진로 안내 <span class="arr">→</span></a>
+</section>
 
 <script>
 (function(){
@@ -340,5 +653,6 @@ a{color:inherit;text-decoration:none}
   });
 })();
 </script>
+<script type="module" src="assets/gear3d.js?v=2"></script>
 </body>
 </html>

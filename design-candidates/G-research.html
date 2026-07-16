@@ -160,11 +160,13 @@ a{color:inherit;text-decoration:none}
 .l-idx{font-family:var(--mono);font-size:.66rem;color:var(--label);font-variant-numeric:tabular-nums;transition:color .12s}
 .l-name{min-width:0}
 .l-name .ko{font-family:var(--kr);font-weight:600;font-size:.96rem;color:var(--ink);line-height:1.3}
-.l-name .en{font-family:var(--kr);font-size:.74rem;color:var(--muted);margin-top:.22rem;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.l-name .en{font-family:var(--kr);font-size:.74rem;color:var(--muted);margin-top:.22rem;line-height:1.5;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
 .l-pi{min-width:0;font-size:.82rem;color:var(--body)}
 .l-pi .pi{font-family:var(--kr);color:#2a3a56;display:inline-flex;align-items:center;gap:.45rem}
 .l-pi .pi .cdot{width:6px;height:6px;border-radius:50%;background:var(--cl-c,var(--coral));flex:none}
+.l-pi a.pi{transition:color .15s}
+.l-pi a.pi:hover{color:var(--coral);text-decoration:underline;text-underline-offset:3px}
 .l-pi .role{font-family:var(--kr);font-size:.72rem;color:var(--label);margin-top:.2rem}
 .l-loc{min-width:0;font-family:var(--kr);font-size:.78rem;color:var(--sub);
   display:inline-flex;align-items:center;gap:.4rem}
@@ -174,6 +176,36 @@ a{color:inherit;text-decoration:none}
 .l-act a:hover{color:var(--cl-c,var(--coral))}
 .l-act a.ext{color:var(--coral)}
 .lab-note{font-family:var(--kr);font-size:.8rem;color:var(--muted);margin-top:.4rem;line-height:1.6}
+
+/* ── 학부연구생(인턴) 모집 — 코랄 배지 + 접이식 상세 ── */
+.intern-sum{font-family:var(--kr);font-size:.88rem;color:var(--sub);margin-top:.85rem;line-height:1.65}
+.intern-sum b{color:var(--coral);font-weight:700}
+.i-badge{display:inline-block;font-family:var(--kr);font-size:.64rem;font-weight:600;letter-spacing:.02em;
+  color:var(--coral);border:1px solid var(--coral);padding:.14rem .45rem;margin-left:.55rem;
+  vertical-align:2px;white-space:nowrap}
+summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
+.lab-item[open] summary .i-badge::after{content:"▴"}
+.lab-item{border-bottom:1px solid var(--line-soft)}
+.lab-list>:last-child{border-bottom:0}
+.lab-item>summary.lab-row{border-bottom:0;cursor:pointer;list-style:none}
+.lab-item>summary.lab-row::-webkit-details-marker{display:none}
+.lab-item>summary.lab-row::marker{content:""}
+.lab-item[open]>summary.lab-row{background:var(--card-hover)}
+.lab-row,.lab-item{scroll-margin-top:6.6rem}
+.intern-panel{border-top:1px dashed var(--line);background:rgba(226,89,60,.04);
+  padding:1.05rem clamp(1rem,.6rem + 1.4vw,1.6rem) 1.25rem}
+.intern-panel .ip-head{font-family:var(--kr);font-size:.7rem;font-weight:700;letter-spacing:.08em;
+  color:var(--coral);margin-bottom:.65rem}
+.ip-grid{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.5rem 1.2rem;
+  font-family:var(--kr);font-size:.85rem;color:var(--body);line-height:1.7}
+.ip-grid dt{font-size:.74rem;font-weight:600;color:var(--label);white-space:nowrap;padding-top:.15rem}
+.ip-grid dd{min-width:0}
+.ip-grid ul{margin:0;padding-left:1.1rem}
+.ip-grid li{margin:.18rem 0}
+@media (max-width:860px){
+  .ip-grid{grid-template-columns:1fr;gap:.2rem}
+  .ip-grid dd{margin-bottom:.55rem}
+}
 
 /* ── 대학원 진학 CTA — 네이비 밴드 (메인 계승) ── */
 .cta{background:var(--navy);color:#fff;
@@ -207,7 +239,6 @@ a{color:inherit;text-decoration:none}
   .lab-row{grid-template-columns:2.6rem 1fr;gap:.5rem 1rem;padding:.95rem clamp(.8rem,.5rem + 1vw,1.2rem);align-items:start}
   .l-idx{grid-column:1;grid-row:1;align-self:center}
   .l-name{grid-column:2;grid-row:1}
-  .l-name .en{white-space:normal}
   .l-pi{grid-column:2;grid-row:2;margin-top:.4rem}
   .l-loc{grid-column:2;grid-row:3;margin-top:.35rem}
   .l-act{grid-column:2;grid-row:4;text-align:left;margin-top:.5rem}
@@ -262,6 +293,7 @@ a{color:inherit;text-decoration:none}
       <p class="sec-kick">연구 분야</p>
       <h2 class="sec-title">분야별 연구실</h2>
       <p class="sec-sub">여섯 분야 아래 33개 연구실입니다. 연구실명을 누르면 홈페이지로 이동합니다.</p>
+      <p class="intern-sum" id="internSum" hidden></p>
     </div>
     <div id="clusterBlocks"></div>
     <p class="lab-note">분야 구분은 연구실 명칭을 기반으로 한 자체 분류입니다.</p>
@@ -279,7 +311,7 @@ a{color:inherit;text-decoration:none}
 </section>
 
 <!-- 공유 단일 데이터 소스 (window.YSME) -->
-<script src="assets/js/data.js?v=d10"></script>
+<script src="assets/js/data.js?v=d11"></script>
 <script>
 (function(){
   'use strict';
@@ -360,35 +392,71 @@ a{color:inherit;text-decoration:none}
   /* ── 분야 블록 × 6 ── */
   function pin(){ return '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-5.686 7-11a7 7 0 1 0-14 0c0 5.314 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>'; }
 
-  /* labId → professor (role·보직 라벨 조회용) */
+  /* labId → professor (role·보직 라벨 + 교수진 딥링크 조회용) */
   var profByLab = {};
   (professors || []).forEach(function(p){ if(p.labId) profByLab[p.labId] = p; });
+
+  /* 인턴 필드 실값 판정 — placeholder "O명"/빈값 제외 */
+  function realVal(v){
+    v = String(v==null?'':v).trim();
+    return (!v || /^[Oo0]\s*명$/.test(v)) ? '' : v;
+  }
+  function internInfo(l){
+    var t = realVal(l.internTarget), b = realVal(l.internBenefit), a = realVal(l.internArea);
+    return (t || b || a) ? { target:t, benefit:b, area:a } : null;
+  }
 
   function labRow(l, c){
     var prof = profByLab[l.id];
     var role = prof && prof.role ? prof.role : '';
+    var info = internInfo(l);
     var nameKo = l.site
       ? '<a class="ext" style="color:inherit" href="'+esc(l.site)+'" target="_blank" rel="noopener">'+esc(l.ko)+'</a>'
       : esc(l.ko);
-    /* 세부 주제 키워드 (areaDetail 줄바꿈 → 콤마) */
+    var badge = info ? '<span class="i-badge">학부연구생 모집</span>' : '';
+    /* 세부 주제 키워드 (areaDetail 줄바꿈 → 콤마 · 2줄 클램프)
+       area/areaDetail이 없는 연구실은 지어내지 않고 영문명만 표시 */
     var kw = '';
     if(l.areaDetail){
       var items = l.areaDetail.split('\n').map(function(s){ return s.trim(); }).filter(Boolean);
       if(items.length) kw = '<div class="en" title="'+esc(items.join(' · '))+'">'+esc(items.join(' · '))+'</div>';
     }
-    /* 링크 열: 연구실 홈페이지 / 소개 영상 (값 있을 때만) */
+    if(!kw && l.en) kw = '<div class="en">'+esc(l.en)+'</div>';
+    /* 담당 교수 → 교수진 디렉토리(G-people) 행 딥링크 */
+    var piInner = '<span class="cdot" aria-hidden="true"></span>'+esc(l.pi)+' 교수';
+    var piCell = prof
+      ? '<a class="pi" href="G-people.html#'+esc(prof.id)+'">'+piInner+'<span class="visually-hidden"> 프로필 보기</span></a>'
+      : '<span class="pi">'+piInner+'</span>';
+    /* 링크 열: 연구실 홈페이지 / 소개 영상 (값 있을 때만 — 없으면 교수명 링크가 상세 역할) */
     var links = [];
     if(l.site)  links.push('<a class="ext" href="'+esc(l.site)+'" target="_blank" rel="noopener">연구실 홈페이지 ↗<span class="visually-hidden"> (새 창)</span></a>');
     if(l.video) links.push('<a class="ext" href="'+esc(l.video)+'" target="_blank" rel="noopener">소개 영상 ↗<span class="visually-hidden"> (새 창)</span></a>');
-    var act = links.length ? links.join('<br>') : '<a href="#'+esc(l.id)+'">상세</a>';
-    return '<div class="lab-row" id="'+esc(l.id)+'" role="group" aria-label="'+esc(l.ko+' · '+l.pi)+'">'
-      + '<div class="l-idx tnum">'+esc(l.idx)+'</div>'
-      + '<div class="l-name"><div class="ko">'+nameKo+'</div>'+kw+'</div>'
-      + '<div class="l-pi"><span class="pi"><span class="cdot" aria-hidden="true"></span>'+esc(l.pi)+' 교수</span>'
+    var act = links.length ? links.join('<br>') : '<span class="dim" aria-hidden="true">—</span>';
+    var cells = '<div class="l-idx tnum">'+esc(l.idx)+'</div>'
+      + '<div class="l-name"><div class="ko">'+nameKo+badge+'</div>'+kw+'</div>'
+      + '<div class="l-pi">'+piCell
         + (role ? '<div class="role">'+esc(role)+'</div>' : '') + '</div>'
       + '<div class="l-loc">'+pin()+esc(l.loc)+'</div>'
-      + '<div class="l-act">'+act+'</div>'
-      + '</div>';
+      + '<div class="l-act">'+act+'</div>';
+    if(!info){
+      return '<div class="lab-row" id="'+esc(l.id)+'" role="group" aria-label="'+esc(l.ko+' · '+l.pi)+'">'+cells+'</div>';
+    }
+    /* 학부연구생 모집 상세 — <details> 접이식 (행/배지 클릭으로 토글) */
+    var dl = '';
+    if(info.target)  dl += '<dt>모집 대상</dt><dd>'+esc(info.target)+'</dd>';
+    if(info.benefit) dl += '<dt>혜택</dt><dd>'+esc(info.benefit)+'</dd>';
+    if(info.area){
+      var topics = info.area.split('\n').map(function(s){ return s.trim(); }).filter(Boolean);
+      dl += '<dt>연구 주제</dt><dd><ul>'+topics.map(function(s){ return '<li>'+esc(s)+'</li>'; }).join('')+'</ul></dd>';
+    }
+    var cnt = realVal(l.intern); /* "3명" 같은 실값만 노출, placeholder "O명" 제외 */
+    return '<details class="lab-item" id="'+esc(l.id)+'">'
+      + '<summary class="lab-row" aria-label="'+esc(l.ko+' · '+l.pi+' · 학부연구생 모집 상세 열기')+'">'+cells+'</summary>'
+      + '<div class="intern-panel">'
+        + '<div class="ip-head">학부연구생 · 인턴 모집'+(cnt ? ' — '+esc(cnt) : '')+'</div>'
+        + '<dl class="ip-grid">'+dl+'</dl>'
+      + '</div>'
+      + '</details>';
   }
 
   var blocks = document.getElementById('clusterBlocks');
@@ -415,6 +483,14 @@ a{color:inherit;text-decoration:none}
       + '</section>';
   }).join('');
 
+  /* ── 학부연구생 모집 요약 1줄 (실값 있는 연구실만 집계) ── */
+  var internCount = labs.filter(function(l){ return !!internInfo(l); }).length;
+  var internSum = document.getElementById('internSum');
+  if(internSum && internCount){
+    internSum.hidden = false;
+    internSum.innerHTML = '현재 <b>학부연구생 모집 연구실 '+internCount+'곳</b> — 코랄 배지가 붙은 행을 누르면 모집 대상·혜택·연구 주제가 열립니다.';
+  }
+
   /* ── 카운트업 (reduced-motion 존중) ── */
   document.querySelectorAll('[data-count]').forEach(function(el){
     var target = parseInt(el.dataset.count,10);
@@ -430,7 +506,7 @@ a{color:inherit;text-decoration:none}
   });
 })();
 </script>
-<script src="assets/nav.js?v=15"></script>
+<script src="assets/nav.js?v=16"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:#7b8595">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

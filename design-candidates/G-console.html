@@ -358,7 +358,7 @@ body>footer{background:#fff}
 <header class="hud-top">
   <nav class="hud-nav" aria-label="주메뉴">
     <div class="ni"><a class="nt" href="G-about.html">소개</a>
-      <div class="nd"><a href="G-about.html">학과장 인사말 · 비전</a><a href="G-about.html">주요 연혁</a><a href="G-about.html">오시는 길</a></div></div>
+      <div class="nd"><a href="G-about.html">학과장 인사말 · 비전</a><a href="G-about.html">주요 연혁</a><a href="G-about.html#location">오시는 길</a></div></div>
     <div class="ni"><a class="nt" href="G-academics.html">교육</a>
       <div class="nd"><a href="G-academics.html">교육과정 · 이수체계</a><a href="G-academics.html">전공 교과</a><a href="G-academics.html">대학원 교과</a></div></div>
     <div class="ni"><a class="nt" href="G-research.html">연구</a>
@@ -441,8 +441,9 @@ body>footer{background:#fff}
     <div class="r-row"><span class="lab">바이오 · 포토닉스</span><span class="val">15%</span><span class="bar"><span style="width:15%"></span></span></div>
     <div class="r-feed">
       <div class="r-head">최근 소식</div>
-      <a class="rf" href="G-news.html"><span class="rf-t">2026-2학기 대학원 휴학·복학 신청 안내</span><span class="rf-m"><b>대학원</b> · 07.02</span></a>
-      <a class="rf" href="G-news.html"><span class="rf-t">고막 진동 이미징 — Prof. Dvir Yelin (Technion)</span><span class="rf-m"><b>세미나</b> · 06.04</span></a>
+      <div id="rfFeed">
+        <a class="rf" href="G-news.html"><span class="rf-t">공지 · 세미나 소식 보기</span><span class="rf-m"><b>소식</b> · 전체</span></a>
+      </div>
     </div>
   </aside>
 
@@ -754,11 +755,43 @@ body>footer{background:#fff}
   secs.forEach(function (s) { io.observe(s); });
 })();
 </script>
+<script src="assets/js/data.js?v=d11"></script>
+<script>
+/* 히어로 우측 '최근 소식' — window.YSME 실데이터 상위 2건 렌더 (없으면 G-news 폴백 유지) */
+(function () {
+  'use strict';
+  var box = document.getElementById('rfFeed');
+  if (!box || !window.YSME) return;
+  var D = window.YSME, items = [], seen = {};
+  function push(list, cat) {
+    (list || []).forEach(function (n) {
+      if (!n || !n.title || !n.date) return;
+      var key = n.title + '|' + n.date; /* 고정(공지) 항목이 번호 행으로 중복 수록됨 — 중복 제거 */
+      if (seen[key]) return;
+      seen[key] = true;
+      items.push({ t: n.title, d: n.date, u: n.url, c: cat });
+    });
+  }
+  push(D.noticesUG, '학부'); push(D.noticesGrad, '대학원'); push(D.seminars, '세미나');
+  if (!items.length) return;
+  /* date "YYYY.MM.DD" — 문자열 내림차순 = 최신순 */
+  items.sort(function (a, b) { return String(b.d).localeCompare(String(a.d)); });
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  box.innerHTML = items.slice(0, 2).map(function (n) {
+    var mmdd = String(n.d).slice(5);
+    var ext = n.u ? ' target="_blank" rel="noopener"' : '';
+    return '<a class="rf" href="' + (n.u ? esc(n.u) : 'G-news.html') + '"' + ext + '>' +
+      '<span class="rf-t">' + esc(n.t) + '</span>' +
+      '<span class="rf-m"><b>' + esc(n.c) + '</b> · ' + esc(mmdd) + '</span></a>';
+  }).join('');
+})();
+</script>
 <script type="module" src="assets/gear3d.js?v=7"></script>
-<script src="assets/nav.js?v=15"></script>
+<script src="assets/nav.js?v=16"></script>
 <script async src="https://www.instagram.com/embed.js"></script>
 <script>window.addEventListener("load",function(){if(window.instgrm)window.instgrm.Embeds.process();});</script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--dimmer)">
+  <div style="margin-bottom:.55rem">02-2123-4426 &nbsp;·&nbsp; <a href="mailto:mech@yonsei.ac.kr" style="color:inherit;text-decoration:none">mech@yonsei.ac.kr</a> &nbsp;·&nbsp; 서울 서대문구 연세로 50</div>
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>
 </body>

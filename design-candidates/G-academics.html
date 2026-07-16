@@ -109,6 +109,29 @@ a{color:inherit;text-decoration:none}
 .metric .m-val .u{font-family:var(--kr);font-size:.5em;color:var(--muted);margin-left:.15em}
 .metric .m-val.acc{color:var(--coral)}
 
+/* ── 졸업 요건 요약 (#requirements) ── */
+.req-grid{display:grid;grid-template-columns:minmax(13rem,1fr) 2.2fr;gap:1px;
+  background:var(--line-soft);border:1px solid var(--line-soft)}
+.req-card{background:var(--card);padding:1.5rem 1.4rem 1.6rem}
+.req-lab{font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--label)}
+.req-val{font-family:var(--mono);font-weight:300;font-size:2.2rem;line-height:1;color:var(--ink);
+  font-variant-numeric:tabular-nums;margin-top:.7rem}
+.req-val .u{font-family:var(--kr);font-size:.44em;color:var(--muted);margin-left:.15em}
+.req-desc{font-family:var(--kr);font-size:.86rem;color:var(--sub);line-height:1.7;margin-top:.75rem;max-width:38rem}
+.req-desc b{color:var(--ink);font-weight:600}
+.req-list{list-style:none;display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.95rem;padding:0}
+.req-list a{display:inline-block;font-family:var(--kr);font-size:.8rem;color:#2a3a56;
+  background:#fff;border:1px solid var(--line);padding:.34rem .65rem;transition:border-color .15s,color .15s}
+.req-list a:hover{border-color:var(--coral);color:var(--coral)}
+.req-list .code{font-family:var(--mono);font-size:.62rem;letter-spacing:.05em;color:var(--label);margin-right:.45em}
+
+/* ── 공학교육인증 (#abeek) ── */
+.abeek-card{border:1px solid var(--line-soft);background:var(--card);
+  padding:1.7rem clamp(1.2rem,.8rem + 1vw,2rem)}
+.abeek-card p{font-family:var(--kr);font-size:.94rem;color:var(--body);line-height:1.8;max-width:48rem}
+.abeek-card p b{color:var(--ink);font-weight:600}
+.abeek-card .abeek-note{font-size:.84rem;color:var(--muted);margin-top:.9rem}
+
 /* ── §02 4대 역학 ── */
 .mech-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:1px;
   background:var(--line-soft);border:1px solid var(--line-soft)}
@@ -130,7 +153,8 @@ a{color:inherit;text-decoration:none}
 .cur-badge.t-gen{background:#eef1f6;color:#67788f}
 
 /* ── §03 이수체계도 — 학년·학기 그리드 ── */
-.cur-legend{display:flex;gap:.45rem;flex-wrap:wrap;margin-bottom:1.3rem}
+.cur-legend{display:flex;gap:.55rem 1.4rem;flex-wrap:wrap;margin-bottom:1.3rem}
+.legend-item{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--kr);font-size:.78rem;color:var(--sub)}
 .cur-groups{display:grid;grid-template-columns:repeat(auto-fill,minmax(21rem,1fr));gap:1px;
   background:var(--line-soft);border:1px solid var(--line-soft)}
 .cur-group{background:var(--card)}
@@ -142,6 +166,13 @@ a{color:inherit;text-decoration:none}
 .cur-item{display:grid;grid-template-columns:1fr auto;align-items:baseline;gap:.7rem;
   padding:.62rem 1.1rem;border-bottom:1px solid var(--line-soft)}
 .cur-item:last-child{border-bottom:0}
+/* 이수체계도 셀 → §04 과목 카드 링크 */
+a.cur-item{transition:background .15s}
+a.cur-item:hover{background:var(--card-hover)}
+a.cur-item .ci-name::after{content:"↗";font-family:var(--mono);font-size:.72em;color:var(--label);margin-left:.35em;transition:color .15s}
+a.cur-item:hover .ci-name,a.cur-item:focus-visible .ci-name{color:var(--coral)}
+a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:var(--coral)}
+.cur-group-note{font-family:var(--kr);font-size:.76rem;color:var(--muted);line-height:1.6;padding:.6rem 1.1rem;border-bottom:1px solid var(--line-soft)}
 .cur-item .ci-main{min-width:0}
 .cur-item .ci-code{display:block;font-family:var(--mono);font-size:.58rem;letter-spacing:.05em;color:var(--label);font-variant-numeric:tabular-nums}
 .cur-item .ci-name{display:block;font-family:var(--kr);font-weight:600;font-size:.9rem;color:#2a3a56;margin-top:.2rem;line-height:1.35}
@@ -167,8 +198,15 @@ a{color:inherit;text-decoration:none}
 .ug-status{font-family:var(--kr);font-size:.78rem;color:var(--label);white-space:nowrap;font-variant-numeric:tabular-nums}
 .ug-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(19rem,1fr));gap:1px;
   background:var(--line-soft);border:1px solid var(--line-soft)}
-.ug-card{background:var(--card);padding:1.15rem 1.2rem 1.3rem;transition:background .15s}
+.ug-card{background:var(--card);padding:1.15rem 1.2rem 1.3rem;transition:background .15s;scroll-margin-top:5.5rem}
 .ug-card:hover{background:var(--card-hover)}
+/* 이수체계도에서 이동해 온 카드 — 코랄 테두리 1.5초 하이라이트 */
+.ug-card:target{animation:cardFlash 1.5s ease-out}
+@keyframes cardFlash{
+  0%,65%{box-shadow:inset 0 0 0 2px var(--coral)}
+  100%{box-shadow:inset 0 0 0 2px rgba(226,89,60,0)}
+}
+@media (prefers-reduced-motion:reduce){.ug-card:target{animation:none;box-shadow:inset 0 0 0 2px var(--coral)}}
 .ug-card-top{display:flex;justify-content:space-between;align-items:center;gap:.6rem}
 .ug-card-code{font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;color:var(--label);font-variant-numeric:tabular-nums}
 .ug-card-name{font-family:var(--kr);font-weight:700;font-size:1.02rem;color:var(--ink);margin-top:.6rem;line-height:1.3}
@@ -209,6 +247,7 @@ a{color:inherit;text-decoration:none}
 /* ── 반응형 ── */
 @media (max-width:900px){
   .overview{grid-template-columns:1fr;gap:1.8rem}
+  .req-grid{grid-template-columns:1fr}
 }
 @media (max-width:680px){
   .grad-card{grid-template-columns:1fr;gap:1rem}
@@ -235,6 +274,7 @@ a{color:inherit;text-decoration:none}
   <a href="#roadmap">이수체계도</a>
   <a href="#courses">학부 전공 교과</a>
   <a href="#grad">대학원 교과</a>
+  <a href="#abeek">공학인증</a>
 </nav>
 
 <main>
@@ -248,7 +288,7 @@ a{color:inherit;text-decoration:none}
     <div class="overview">
       <div>
         <p class="lede">기계공학은 세상의 거의 모든 움직임을 다룹니다. 교육과정은 그 움직임을 해석하는 <span class="cor">에너지·재료·설계·제어</span>의 언어를 단계적으로 익히도록 설계되어 있습니다.</p>
-        <p class="body">1·2학년의 기초 위에 <b>고체역학·열역학·유체역학·동역학</b>의 4대 역학을 세우고, 4학년의 창의제품설계(캡스톤)에서 이 역학들을 하나의 제품으로 종합합니다. 마지막으로 연구논문이 학부 연구를 매듭짓습니다.</p>
+        <p class="body">흐름은 단순합니다. 1·2학년에 수학·물리 등 기초 과목을 다지고, 2학년부터 <b>고체역학·열역학·유체역학·동역학</b>의 4대 역학을 세웁니다. 3·4학년에는 관심 분야의 전공 과목을 골라 쌓고, 4학년의 창의제품설계(캡스톤)에서 배운 역학을 하나의 제품으로 종합합니다. 마지막으로 연구논문이 학부 연구를 매듭짓습니다.</p>
         <a class="arrow" href="#mechanics">4대 역학 보기 <span aria-hidden="true">→</span></a>
       </div>
       <div class="metrics" aria-label="교육과정 주요 수치">
@@ -258,6 +298,30 @@ a{color:inherit;text-decoration:none}
         <div class="metric"><span class="m-lab">설립</span><span class="m-val acc tnum">1962</span></div>
       </div>
     </div>
+  </section>
+
+  <!-- 졸업 요건 요약 (#requirements) -->
+  <section class="sec" id="requirements" aria-labelledby="req-h">
+    <div class="sec-head">
+      <p class="sec-kick">졸업 요건</p>
+      <h2 id="req-h" class="sec-title">졸업 요건 요약</h2>
+      <p class="sec-sub">졸업에 필요한 큰 틀만 간추렸습니다. 교양·전공 학점 배분 등 세부 기준은 입학년도별 학사요람 기준을 따릅니다.</p>
+    </div>
+    <div class="req-grid">
+      <div class="req-card">
+        <p class="req-lab">Credits · 졸업 학점</p>
+        <p class="req-val">130<span class="u">학점</span></p>
+        <p class="req-desc">교양과 전공을 합쳐 <b>총 130학점</b>을 이수해야 졸업할 수 있습니다.</p>
+      </div>
+      <div class="req-card">
+        <p class="req-lab">Required · 전공필수</p>
+        <p class="req-val"><span id="reqCount">—</span><span class="u">과목</span></p>
+        <p class="req-desc"><b>전공필수</b>는 기계공학부 학생이 졸업하려면 반드시 이수해야 하는 과목입니다. 과목을 누르면 아래 상세 설명으로 이동합니다.</p>
+        <ul class="req-list" id="reqList"></ul>
+        <noscript><p class="req-desc">전공필수 목록은 JavaScript 활성 시 표시됩니다 — 아래 학부 전공 교과 목록의 ‘전공필수’ 구분을 참고하세요.</p></noscript>
+      </div>
+    </div>
+    <p class="table-note">위 내용은 요약이며, 세부 기준은 입학년도별 학사요람 기준을 따릅니다.</p>
   </section>
 
   <!-- §02 4대 역학 -->
@@ -275,17 +339,17 @@ a{color:inherit;text-decoration:none}
     <div class="sec-head">
       <p class="sec-kick">이수체계도</p>
       <h2 id="rm-h" class="sec-title">교과목 이수체계도</h2>
-      <p class="sec-sub">학년·학기별 이수 교과를 한눈에 배치했습니다. 각 과목의 코드·과목명·구분·학점·시수를 표기했습니다. 구분: 대교(대학교양·공통기초) · 전필(전공필수) · 전선(전공선택).</p>
+      <p class="sec-sub">학년·학기별 이수 교과를 한눈에 배치했습니다. 각 과목의 코드·과목명·구분·학점·시수를 표기했으며, 과목명을 누르면 아래 학부 전공 교과의 상세 설명으로 이동합니다.</p>
     </div>
-    <div class="cur-legend" aria-hidden="true">
-      <span class="cur-badge t-req">전필</span>
-      <span class="cur-badge t-sel">전선</span>
-      <span class="cur-badge t-gen">대교</span>
+    <div class="cur-legend">
+      <span class="legend-item"><span class="cur-badge t-req">전필</span>전공필수 — 졸업하려면 반드시 이수</span>
+      <span class="legend-item"><span class="cur-badge t-sel">전선</span>전공선택 — 관심 분야에 따라 골라 이수</span>
+      <span class="legend-item"><span class="cur-badge t-gen">대교</span>대학교양 — 1·2학년 공통 기초(수학·물리 등)</span>
     </div>
     <div id="curriculumGrid" role="group" aria-label="학년·학기별 교과목 이수체계도">
       <noscript><p class="dim kr">교과목 상세는 아래 <a href="#courses" style="color:var(--coral)">학부 전공 교과</a> 목록에서 확인하세요.</p></noscript>
     </div>
-    <p class="table-note">시수 표기는 <span style="color:#2a3a56;font-weight:600">강의(실습)</span> 형식입니다 · 전체 개설 교과목과 세부 기준은 연세포털 학사요람을 따릅니다.</p>
+    <p class="table-note">시수는 <span style="color:#2a3a56;font-weight:600">주당 수업시간(실습시간)</span>을 뜻합니다 — 예: 3(1)은 주당 강의 3시간에 실습 1시간 · 전체 개설 교과목과 세부 기준은 연세포털 학사요람을 따릅니다.</p>
   </section>
 
   <!-- §04 학부 전공 교과 (coursesUG 40) -->
@@ -326,6 +390,18 @@ a{color:inherit;text-decoration:none}
       </div>
     </div>
   </section>
+
+  <!-- 공학교육인증 (#abeek) -->
+  <section class="sec" id="abeek" aria-labelledby="abeek-h">
+    <div class="sec-head">
+      <p class="sec-kick">ABEEK</p>
+      <h2 id="abeek-h" class="sec-title">공학교육인증</h2>
+    </div>
+    <div class="abeek-card">
+      <p>본 학부는 <b>2003년 3월</b> 한국공학교육인증원(ABEEK)의 공학교육인증 프로그램에 가입했습니다. 공학교육인증은 대학의 공학 교육과정이 실무에 필요한 기초 지식과 설계 능력을 갖추도록 운영되는지 심사해 인증하는 제도입니다.</p>
+      <p class="abeek-note">인증 이수 요건과 적용 기준은 입학년도별로 다를 수 있습니다 · 학사요람과 학과 행정팀(02-2123-4426)에서 확인하세요.</p>
+    </div>
+  </section>
 </main>
 
 <!-- 입학 CTA -->
@@ -339,7 +415,7 @@ a{color:inherit;text-decoration:none}
 </section>
 
 <!-- 단일 데이터 소스 (window.YSME) -->
-<script src="assets/js/data.js?v=d10"></script>
+<script src="assets/js/data.js?v=d11"></script>
 <script>
 (function(){
   'use strict';
@@ -407,7 +483,11 @@ a{color:inherit;text-decoration:none}
         var tm = curTypeMeta(c.type);
         var cr = (c.credits!=null && c.credits!=='') ? esc(c.credits)+'학점' : '';
         var hrs = (c.hours!=null && c.hours!=='') ? esc(c.hours) : '';
-        return '<div class="cur-item">'
+        /* coursesUG에 상세 카드가 있는 과목만 §04 앵커로 연결 (대교 등은 링크 없음) */
+        var linked = !!ugByCode[c.code];
+        var tag = linked ? 'a' : 'div';
+        var attrs = linked ? ' href="#course-'+esc(c.code)+'" title="'+esc(c.ko)+' — 상세 설명으로 이동"' : '';
+        return '<'+tag+' class="cur-item"'+attrs+'>'
           + '<div class="ci-main">'
             + '<span class="ci-code mono">'+esc(c.code)+'</span>'
             + '<span class="ci-name">'+esc(c.ko)+'</span>'
@@ -416,13 +496,18 @@ a{color:inherit;text-decoration:none}
             + '<span class="cur-badge '+tm.cls+'">'+esc(tm.label)+'</span>'
             + '<span class="ci-cr">'+cr+(hrs?' · '+hrs:'')+'</span>'
           + '</div>'
-        + '</div>';
+        + '</'+tag+'>';
       }).join('');
+      /* '3 & 4학년' 묶음 — 학기 구분 없는 선택 이수 안내 1줄 */
+      var note = (y.indexOf('&') > -1)
+        ? '<p class="cur-group-note">이 과목들은 3·4학년 구분 없이, 자신의 계획에 따라 골라 이수합니다.</p>'
+        : '';
       return '<div class="cur-group">'
         + '<div class="cur-group-head">'
           + '<span class="cur-group-title"><span class="c">'+esc(y)+'</span>학년 · '+esc(s)+'학기</span>'
           + '<span class="cur-group-meta">'+items.length+'과목 · '+sum+'학점</span>'
         + '</div>'
+        + note
         + rows
       + '</div>';
     }).join('');
@@ -445,7 +530,7 @@ a{color:inherit;text-decoration:none}
       var typeCls = (c.type==='전공필수') ? 't-req' : 't-sel';
       var descHtml = c.desc ? '<p class="ug-card-desc">'+esc(c.desc)+'</p>' : '';
       var enHtml = c.en ? '<p class="ug-card-en">'+esc(c.en)+'</p>' : '';
-      return '<article class="ug-card">'
+      return '<article class="ug-card" id="course-'+esc(c.code)+'">'
         + '<div class="ug-card-top">'
           + '<span class="ug-card-code mono">'+esc(c.code)+'</span>'
           + '<span class="cur-badge '+typeCls+'">'+esc(c.type)+'</span>'
@@ -491,6 +576,44 @@ a{color:inherit;text-decoration:none}
       });
     }
     ugRender();
+
+    /* ── #course-<code> 해시 이동 — 검색·필터로 숨겨진 카드면 전체 보기로 되돌린 뒤 스크롤 ── */
+    function revealCourseHash(initial){
+      var h = location.hash || '';
+      if(h.indexOf('#course-') !== 0) return;
+      var id = h.slice(1);
+      var el = document.getElementById(id);
+      if(el){
+        /* 카드가 이미 표시 중 — 해시 변경 시엔 브라우저가 스크롤, 최초 로드만 보정 */
+        if(initial) el.scrollIntoView();
+        return;
+      }
+      if(ugSearch) ugSearch.value = '';
+      ugType = '';
+      if(ugPills){
+        Array.prototype.forEach.call(ugPills.querySelectorAll('.ug-pill'), function(b){
+          b.setAttribute('aria-pressed', (b.getAttribute('data-ug-type')||'')==='' ? 'true':'false');
+        });
+      }
+      ugRender();
+      el = document.getElementById(id);
+      if(el) el.scrollIntoView();
+    }
+    window.addEventListener('hashchange', function(){ revealCourseHash(false); });
+    revealCourseHash(true);
+  }
+
+  /* ── 졸업 요건(#requirements) — 전공필수 목록을 coursesUG 데이터로 렌더 ── */
+  var reqListEl  = document.getElementById('reqList');
+  var reqCountEl = document.getElementById('reqCount');
+  if (reqListEl && coursesUG.length) {
+    var reqCourses = coursesUG.filter(function(c){ return c.type==='전공필수'; });
+    if(reqCountEl) reqCountEl.textContent = reqCourses.length;
+    reqListEl.innerHTML = reqCourses.map(function(c){
+      return '<li><a href="#course-'+esc(c.code)+'">'
+        + '<span class="code">'+esc(c.code)+'</span>'+esc(c.ko)
+      + '</a></li>';
+    }).join('');
   }
 
   /* ── 카운트업 (reduced-motion 존중) ── */
@@ -508,7 +631,7 @@ a{color:inherit;text-decoration:none}
   });
 })();
 </script>
-<script src="assets/nav.js?v=15"></script>
+<script src="assets/nav.js?v=16"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:#7b8595">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

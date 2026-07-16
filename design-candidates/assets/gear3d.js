@@ -29,7 +29,7 @@ import * as THREE from './vendor/three.module.min.js';
   if (!webglOK()) return;
 
   /* ── 색 ── */
-  var CORAL = 0x3b82f6;
+  var CORAL = 0xe2593c;
   var GLOW = 0x2b4a74;
 
   /* ── 기어 파라미터 (동일 모듈 m, 3플래닛 등간격 조건 Ns+Nr가 3의 배수) ── */
@@ -119,7 +119,7 @@ import * as THREE from './vendor/three.module.min.js';
 
   /* ── 재질(관제 톤): 건메탈 바디 + 코랄 태양/액센트 ── */
   var matSteel = new THREE.MeshStandardMaterial({ color: 0x9aa1ad, metalness: 0.78, roughness: 0.34 });
-  var matSun = new THREE.MeshStandardMaterial({ color: 0x2e4d82, metalness: 0.6, roughness: 0.36, emissive: CORAL, emissiveIntensity: 0.7 });
+  var matSun = new THREE.MeshStandardMaterial({ color: 0x9a4a34, metalness: 0.6, roughness: 0.36, emissive: CORAL, emissiveIntensity: 0.7 });
   var matRing = new THREE.MeshStandardMaterial({ color: 0x707783, metalness: 0.72, roughness: 0.44 });
   var matHub = new THREE.MeshStandardMaterial({ color: CORAL, metalness: 0.5, roughness: 0.3, emissive: CORAL, emissiveIntensity: 0.55 });
   var matArm = new THREE.MeshStandardMaterial({ color: 0x4a5058, metalness: 0.7, roughness: 0.46 });

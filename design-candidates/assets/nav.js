@@ -31,7 +31,7 @@
     '.ynav-item{position:relative}' +
     '.ynav-top{font-family:var(--kr);font-size:1rem;font-weight:600;color:var(--txt,#cbced4);transition:color .15s;padding:.3rem 0;display:inline-block}' +
     '.ynav-item:hover .ynav-top,.ynav-top.active{color:#fff}' +
-    '.ynav-top.join{color:var(--coral,#3b82f6)}' +
+    '.ynav-top.join{color:var(--warm,#e2593c)}' +
     '.ynav-drop{position:absolute;top:calc(100% + .55rem);left:50%;transform:translateX(-50%) translateY(-6px);' +
       'min-width:12rem;background:rgba(10,12,17,.97);backdrop-filter:blur(10px);border:1px solid var(--line,rgba(255,255,255,.14));' +
       'padding:.45rem 0;opacity:0;visibility:hidden;transition:opacity .16s,transform .16s,visibility .16s;' +

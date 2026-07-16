@@ -33,7 +33,7 @@
 html{-webkit-text-size-adjust:100%}
 body{
   font-family:var(--mono);
-  background:radial-gradient(ellipse 110% 100% at 50% 40%,#1e4c8c,#112a5e 22%,#06132e 42%,#010409 64%,#000 86%) fixed; color:var(--txt);
+  background:linear-gradient(90deg,#000,#03091a 12%,#0a1a33 26%,#0a1a33 74%,#03091a 88%,#000); color:var(--txt);
   -webkit-font-smoothing:antialiased;
   overflow-x:hidden; word-break:keep-all;
 }
@@ -87,7 +87,7 @@ a{color:inherit;text-decoration:none}
 .spy-val{display:block;font-family:var(--kr);font-size:.98rem;font-weight:600;color:var(--coral);margin-top:.15rem;transition:opacity .2s}
 
 /* ── 스테이지(중앙 뷰) ── */
-.stage{position:relative;height:100vh;min-height:660px;overflow:hidden}
+.stage{position:relative;height:100vh;min-height:660px;overflow:hidden;background:radial-gradient(ellipse 100% 92% at 50% 42%,#20518f,#12295c 22%,#06132e 44%,#020712 66%,#000 88%)}
 /* 잔해/별 입자 */
 #field{position:absolute;inset:0;z-index:1}
 .dot{position:absolute;background:#fff;border-radius:50%;opacity:.5}
@@ -182,7 +182,7 @@ a{color:inherit;text-decoration:none}
 
 /* ═══ 스크롤 콘텐츠 (히어로 아래) ══════════════════════════════
    관제 다크 톤 유지 + 다크 위 가독성(밝은 텍스트·행간 여유). */
-.doc{position:relative;z-index:1;background:var(--bg);
+.doc{position:relative;z-index:1;background:transparent;
   border-top:1px solid var(--line)}
 .sec{max-width:1120px;margin:0 auto;
   padding:clamp(3.4rem,2rem + 5vw,6rem) clamp(1.2rem,.6rem + 2vw,2.6rem);

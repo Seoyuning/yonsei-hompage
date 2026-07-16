@@ -420,13 +420,7 @@ a.log:hover{background:#10131a}
       </div>
     </div>
     <div class="wave">
-      <div class="lab">아래로 내려 살펴보기</div>
-      <div class="box">
-        <svg viewBox="0 0 480 54" preserveAspectRatio="none">
-          <path id="waveline" d=""/>
-          <circle id="wavemk" class="mk" r="2.6" cx="0" cy="27"/>
-        </svg>
-      </div>
+      <div class="lab">아래로 내려 살펴보기 <span aria-hidden="true">↓</span></div>
     </div>
   </div>
 </main>
@@ -679,21 +673,6 @@ a.log:hover{background:#10131a}
       b += '<path d="M' + x1.toFixed(1) + ' ' + y1.toFixed(1) + ' Q' + (200 + Math.cos(a + 0.14) * 95).toFixed(1) + ' ' + (200 + Math.sin(a + 0.14) * 95).toFixed(1) + ' ' + x2.toFixed(1) + ' ' + y2.toFixed(1) + '" stroke-width="1.2"/>';
     }
     blades.innerHTML = b;
-  }
-
-  /* 파형 그래프 */
-  var wl = document.getElementById('waveline'), mk = document.getElementById('wavemk');
-  if (wl) {
-    var pts = [], W = 480, H = 54, seed = 7;
-    for (var j = 0; j <= 48; j++) {
-      seed = (seed * 9301 + 49297) % 233280;
-      var r = seed / 233280;
-      var yy = 27 + (r - 0.5) * 30 * (0.5 + 0.5 * Math.sin(j / 4));
-      pts.push([j / 48 * W, yy]);
-    }
-    wl.setAttribute('d', 'M' + pts.map(function (p) { return p[0].toFixed(1) + ' ' + p[1].toFixed(1); }).join(' L'));
-    var mkP = pts[30];
-    if (mk) { mk.setAttribute('cx', mkP[0].toFixed(1)); mk.setAttribute('cy', mkP[1].toFixed(1)); }
   }
 
   /* 카운트업 */

@@ -286,7 +286,6 @@ a.log:hover{background:#10131a}
 /* 인스타그램 릴스 */
 .ig-grid{overflow:hidden;position:relative}
 .ig-track{display:flex;width:max-content;animation:ig-scroll 55s linear infinite}
-.ig-track.paused{animation-play-state:paused}
 .ig-set{display:flex;gap:1rem;padding-right:1rem;align-items:flex-start}
 @keyframes ig-scroll{to{transform:translateX(-50%)}}
 @media (prefers-reduced-motion:reduce){.ig-track{animation:none}.ig-grid{overflow-x:auto}}
@@ -851,15 +850,6 @@ body>footer{background:#fff}
       '<span class="rf-t">' + esc(n.t) + '</span>' +
       '<span class="rf-m"><b>' + esc(n.c) + '</b> · ' + esc(mmdd) + '</span></a>';
   }).join('');
-})();
-</script>
-<script>
-/* 릴스 마퀴 — 커서를 잠시(0.7s) 올려두면 일시정지 */
-(function(){
-  var t=document.querySelector('.ig-track'); if(!t) return;
-  var timer=null;
-  t.addEventListener('mouseenter',function(){ timer=setTimeout(function(){t.classList.add('paused');},700); });
-  t.addEventListener('mouseleave',function(){ clearTimeout(timer); t.classList.remove('paused'); });
 })();
 </script>
 <script>

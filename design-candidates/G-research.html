@@ -4,233 +4,201 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>[시안 G · 관제] 연구 — 연세대학교 기계공학부</title>
-<meta name="description" content="Design candidate G — Console / 관제 스타일을 연구 페이지(6 클러스터 · 33 연구실)에 적용한 비교 시안. 다크 관제 HUD · 모노 텔레메트리 · 코랄 액센트 · 궤도 데이터비주얼." />
+<meta name="description" content="연세대학교 기계공학부 연구. 6개 연구 분야와 33개 연구실 — 분야별 분포와 연구실·담당 교수·위치·홈페이지 안내." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet" />
 <style>
 /* ═══════════════════════════════════════════════════════════
-   시안 G · 관제 — 연구 (Research Console)
-   G-console.html / G-people.html 토큰·톤 계승:
-   검정 배경 · 모노 텔레메트리 · 코랄 액센트 · 헤어라인 ·
-   HUD 코너 마커 · 코랄 데이터바 · 궤도/회전 기구 모티프.
-   콘텐츠: 6 클러스터 요약(궤도 데이터비주얼) + 33 연구실 데이터 행.
+   시안 G — 연구 (라이트)
+   메인(G-console.html)의 라이트 콘텐츠 언어 계승:
+   네이비 히어로 · 흰 본문 · 제목 #1a3d75 · 킥커 코랄 ·
+   카드 #f7f9fc · 헤어라인 rgba(10,26,51,.08~.14) · 포인트 코랄.
+   콘텐츠: 6개 분야 분포(휠 다이어그램 + 데이터바) +
+   33개 연구실 목록(담당 교수 · 위치 · 홈페이지/영상 링크).
+   데이터: 공유 단일 소스 window.YSME(data.js).
    ═══════════════════════════════════════════════════════════ */
 :root{
-  --bg:#1a3d75;
-  --panel:#254e8f;
-  --panel-2:#204683;
-  --line:rgba(255,255,255,.22);
-  --line-soft:rgba(255,255,255,.12);
-  --txt:#e2e6ec;
-  --txt-hi:#eef0f4;      /* 최상위 가독 텍스트(이름·연구실명) */
-  --dim:#8b9099;         /* 33행 라벨 가독 확보 (console 대비 상향) */
-  --dimmer:#565c65;
+  --navy:#1a3d75;
   --coral:#e2593c;--warm:#e2593c;
-  --coral-soft:rgba(226,89,60,.16);
-  --glow:#2b4a74;
+  --ink:#1a3d75;
+  --body:#4a5a74;
+  --sub:#5c6b85;
+  --muted:#7b8595;
+  --label:#9aa3b0;
+  --line:rgba(10,26,51,.12);
+  --line-soft:rgba(10,26,51,.08);
+  --card:#f7f9fc;
+  --card-hover:#eef3fa;
   --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
   --kr:"Pretendard Variable","Pretendard",system-ui,sans-serif;
-  /* 6 클러스터 토큰 (관제 팔레트: 코랄이 주액센트, 나머지는 절제된 채도) */
-  --c-solid:#e2593c;
-  --c-thermal:#e8944e;
-  --c-manuf:#c8b06b;
-  --c-nanobio:#5aa9a0;
-  --c-optics:#6d9bd1;
-  --c-dyn:#a483c9;
+  /* 6개 연구 분야 색 토큰 (라이트 톤) */
+  --c-solid:#d54e30;
+  --c-thermal:#c97a2c;
+  --c-manuf:#a48a3e;
+  --c-nanobio:#3e948a;
+  --c-optics:#4a7fc1;
+  --c-dyn:#8f68bd;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 body{
   font-family:var(--mono);
-  background:var(--bg); color:var(--txt);
+  background:#fff; color:var(--body);
   -webkit-font-smoothing:antialiased;
   overflow-x:hidden; word-break:keep-all;
   line-height:1.5;
-  padding-top:6.4rem;    /* fixed HUD 여백 */
 }
 :lang(ko),.kr{font-family:var(--kr)}
 a{color:inherit;text-decoration:none}
 .mono{font-family:var(--mono)}
-.dim{color:var(--dim)}
+.dim{color:var(--label)}
 .tnum{font-variant-numeric:tabular-nums}
 .visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 :focus-visible{outline:2px solid var(--coral);outline-offset:2px}
-.skip{position:absolute;left:.6rem;top:-3rem;z-index:60;background:var(--coral);color:#0b0b0b;
-  padding:.5rem .9rem;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;transition:top .15s}
+.skip{position:absolute;left:.6rem;top:-3rem;z-index:60;background:var(--coral);color:#fff;
+  font-family:var(--kr);font-size:.8rem;padding:.5rem .9rem;transition:top .15s}
 .skip:focus{top:.6rem}
 
-/* ── 상단 텔레메트리 HUD 바 ── */
-.hud-top{position:fixed;top:0;left:0;right:0;z-index:30;
-  display:grid;grid-template-columns:1fr auto 1fr;align-items:start;
-  padding:1.15rem clamp(1.2rem,.6rem + 2vw,2.6rem) 1rem;
-  background:linear-gradient(var(--bg) 55%,rgba(26,61,117,.86));
-  backdrop-filter:blur(6px);
+/* ── 페이지 히어로 (네이비) ── */
+.hero{background:var(--navy);color:#fff;
+  padding:clamp(6.6rem,5.4rem + 3vw,8rem) clamp(1.2rem,.6rem + 2vw,2.6rem) clamp(2.8rem,2rem + 2vw,3.8rem)}
+.hero-in{max-width:1120px;margin:0 auto}
+.hero-kick{font-family:var(--mono);font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:#9db4d8}
+.hero h1{font-family:var(--kr);font-weight:800;letter-spacing:-.015em;
+  font-size:clamp(2rem,1.2rem + 3vw,3rem);line-height:1.14;color:#fff;margin-top:.9rem}
+.hero-lede{max-width:44rem;font-family:var(--kr);font-size:.98rem;color:#c6d2e4;line-height:1.75;margin-top:1.2rem}
+.hero-lede b{color:#fff;font-weight:600}
+
+/* ── 섹션 헤더 공통 ── */
+.sec-head{margin-bottom:clamp(1.6rem,1rem + 2vw,2.4rem)}
+.sec-kick{font-family:var(--mono);font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--coral)}
+.sec-title{font-family:var(--kr);font-weight:700;color:var(--ink);
+  font-size:clamp(1.5rem,1rem + 2vw,2.1rem);line-height:1.24;letter-spacing:-.01em;margin-top:.5rem}
+.sec-sub{font-family:var(--kr);font-size:.92rem;color:var(--sub);margin-top:.7rem;max-width:52rem;line-height:1.7}
+
+/* ── 요약: 분포 휠 + 데이터바 ── */
+.summary{max-width:1120px;margin:0 auto;
+  padding:clamp(2.8rem,2rem + 3vw,4.2rem) clamp(1.2rem,.6rem + 2vw,2.6rem);
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:2rem 3rem;align-items:center;
   border-bottom:1px solid var(--line-soft)}
-.tl{font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;line-height:1.9;color:var(--dim)}
-.tl b{color:var(--txt-hi);font-weight:500}
-.tl .row{display:flex;gap:1.4rem;flex-wrap:wrap}
-.tl .row .u{color:var(--coral)}
-.crest{justify-self:center;text-align:center;padding-top:.1rem}
-.crest .mk{font-family:var(--kr);font-weight:800;letter-spacing:.12em;font-size:.95rem;color:#fff}
-.crest .sub{font-size:.56rem;letter-spacing:.3em;color:var(--dim);margin-top:.25rem}
-.hud-nav{justify-self:end;text-align:right;font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;padding-top:.15rem}
-.hud-nav a{color:var(--dim);margin-left:1.05rem;transition:color .15s}
-.hud-nav a:hover{color:var(--txt-hi)}
-.hud-nav a[aria-current]{color:var(--coral)}
-.hud-nav .join{color:var(--coral)}
+.sum-head{font-family:var(--kr);font-size:.82rem;color:var(--label);margin-bottom:1.1rem}
+.sum-head b{color:var(--sub);font-weight:600}
 
-/* ── 페이지 헤더 / 브레드크럼 ── */
-.pagehead{padding:2.4rem clamp(1.2rem,.6rem + 2vw,2.6rem) 1.4rem;
-  max-width:1320px;margin:0 auto;position:relative}
-.crumb{font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:1.1rem}
-.crumb a{color:var(--dim)}.crumb a:hover{color:var(--txt-hi)}
-.crumb .sep{color:var(--dimmer);margin:0 .5rem}
-.crumb b{color:var(--coral);font-weight:400}
-.pagehead h1{font-family:var(--kr);font-weight:800;letter-spacing:-.01em;
-  font-size:clamp(2rem,1.2rem + 3vw,3rem);color:#fff;line-height:1.04;margin-bottom:.7rem}
-.pagehead h1 .en{display:block;font-family:var(--mono);font-weight:300;
-  font-size:.32em;letter-spacing:.32em;color:var(--dim);margin-top:.6rem;text-transform:uppercase}
-.pagehead .lede{max-width:47rem;font-family:var(--kr);font-size:.94rem;color:var(--txt);line-height:1.7}
-.pagehead .lede b{color:var(--txt-hi);font-weight:600}
-/* HUD 코너 마커 (관제 프레임) */
-.pagehead::before,.pagehead::after{content:"";position:absolute;width:14px;height:14px;pointer-events:none}
-.pagehead::before{top:1.4rem;right:clamp(1.2rem,.6rem + 2vw,2.6rem);border-top:1px solid var(--coral);border-right:1px solid var(--coral);opacity:.7}
-.pagehead::after{bottom:.2rem;right:clamp(1.2rem,.6rem + 2vw,2.6rem);border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
-
-/* ── 요약: 궤도 데이터비주얼 + 브레이크다운 ── */
-.summary{max-width:1320px;margin:0 auto;
-  padding:.6rem clamp(1.2rem,.6rem + 2vw,2.6rem) 1.4rem;
-  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:2rem 2.6rem;align-items:center}
-.sum-head{font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-bottom:1rem}
-.sum-head .u{color:var(--coral)}
-
-/* 궤도 다이어그램: 코어(총계) + 6 궤도 노드(클러스터) */
-.orbit-wrap{position:relative;width:100%;max-width:30rem;aspect-ratio:1;margin:0 auto;justify-self:center}
+/* 분포 휠: 코어(총계) + 6개 분야 노드 */
+.orbit-wrap{position:relative;width:100%;max-width:26rem;aspect-ratio:1;margin:0 auto;justify-self:center}
 .orbit-wrap svg{width:100%;height:100%;overflow:visible;display:block}
-.orbit-ring{fill:none;stroke:var(--line-soft);stroke-width:1}
-.orbit-ring.tick{stroke:var(--line-soft);stroke-dasharray:1 9;opacity:.7}
-.orbit-spin{transform-origin:center;transform-box:view-box;animation:orbspin 90s linear infinite}
-.orbit-spin.r{animation-name:orbspinr;animation-duration:120s}
-@keyframes orbspin{to{transform:rotate(360deg)}}
-@keyframes orbspinr{to{transform:rotate(-360deg)}}
-@media (prefers-reduced-motion:reduce){.orbit-spin{animation:none}}
+.orbit-ring{fill:none;stroke:rgba(10,26,51,.14);stroke-width:1}
 .o-hub{fill:var(--coral)}
-.o-hub-ring{fill:none;stroke:var(--coral);stroke-width:1;opacity:.5}
-.o-spoke{stroke:var(--line-soft);stroke-width:1}
+.o-hub-ring{fill:none;stroke:var(--coral);stroke-width:1;opacity:.4}
+.o-spoke{stroke:rgba(10,26,51,.1);stroke-width:1}
 .o-node{cursor:pointer}
-.o-node .halo{fill:none;stroke-width:1;opacity:.35;transition:opacity .15s}
-.o-node .core{transition:r .15s}
+.o-node .halo{fill:none;stroke-width:1;opacity:.25;transition:opacity .15s}
 .o-node:hover .halo,.o-node.on .halo{opacity:.9}
 .o-node:focus-visible{outline:none}
 .o-node:focus-visible .halo{opacity:.9}
 .orbit-center{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;text-align:center}
-.orbit-center .n{font-family:var(--mono);font-weight:300;font-size:clamp(2.2rem,1rem + 5vw,3.4rem);
-  line-height:.9;color:var(--txt-hi);font-variant-numeric:tabular-nums}
-.orbit-center .n .u{color:var(--coral);font-size:.38em;margin-left:.1em;letter-spacing:.1em}
-.orbit-center .l{font-size:.56rem;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-top:.5rem}
+.orbit-center .n{font-family:var(--mono);font-weight:300;font-size:clamp(2.2rem,1rem + 5vw,3.2rem);
+  line-height:.9;color:var(--ink);font-variant-numeric:tabular-nums}
+.orbit-center .n .u{color:var(--coral);font-family:var(--kr);font-size:.34em;margin-left:.1em}
+.orbit-center .l{font-family:var(--kr);font-size:.76rem;color:var(--label);margin-top:.5rem}
 
-/* 브레이크다운 데이터바 (요약 우측) */
+/* 분포 데이터바 (요약 우측) */
 .bd-grid{display:flex;flex-direction:column;gap:.85rem}
-.bd-row{font-size:.64rem;letter-spacing:.04em;color:var(--dim);cursor:pointer;
-  border:1px solid transparent;padding:.4rem .5rem;margin:-.4rem -.5rem;transition:border-color .15s,background .15s}
-.bd-row:hover,.bd-row.on{border-color:var(--line);background:rgba(255,255,255,.02)}
-.bd-row .top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;margin-bottom:.4rem}
-.bd-row .lab{display:flex;align-items:center;gap:.5rem;color:var(--txt-hi);text-transform:none;letter-spacing:.01em;min-width:0}
-.bd-row .lab .idx{color:var(--dimmer);font-family:var(--mono);font-size:.82em;letter-spacing:.06em;flex:none}
+.bd-row{font-family:var(--kr);font-size:.84rem;color:var(--muted);cursor:pointer;
+  border:1px solid transparent;padding:.45rem .55rem;margin:-.45rem -.55rem;transition:border-color .15s,background .15s}
+.bd-row:hover,.bd-row.on{border-color:var(--line);background:var(--card)}
+.bd-row .top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;margin-bottom:.45rem}
+.bd-row .lab{display:flex;align-items:center;gap:.5rem;color:#2a3a56;font-weight:600;min-width:0}
 .bd-row .lab .cdot{width:7px;height:7px;border-radius:50%;background:var(--bd-c,var(--coral));flex:none}
 .bd-row .lab .ko{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.bd-row .val{color:var(--txt);font-variant-numeric:tabular-nums;white-space:nowrap;flex:none}
-.bd-row .val b{color:var(--txt-hi);font-weight:500}
+.bd-row .val{color:var(--sub);font-size:.8rem;font-variant-numeric:tabular-nums;white-space:nowrap;flex:none}
+.bd-row .val b{color:var(--ink);font-weight:700}
 .bd-row .bar{height:3px;background:var(--line-soft);position:relative}
-.bd-row .bar span{position:absolute;inset:0 auto 0 0;background:var(--bd-c,var(--coral));opacity:.85}
+.bd-row .bar span{position:absolute;inset:0 auto 0 0;background:var(--bd-c,var(--coral))}
 
-/* ── 클러스터 섹션 (관제 카드/블록) ── */
-.clusters{max-width:1320px;margin:0 auto;padding:.4rem clamp(1.2rem,.6rem + 2vw,2.6rem) 1rem}
-.cluster{border:1px solid var(--line-soft);border-left:2px solid var(--cl-c,var(--coral));
-  background:linear-gradient(180deg,var(--panel),var(--panel-2));
-  margin-bottom:1.4rem;position:relative;scroll-margin-top:6.6rem}
-/* HUD 코너 마커 */
-.cluster::before,.cluster::after{content:"";position:absolute;width:11px;height:11px;pointer-events:none;opacity:.8}
-.cluster::before{top:-1px;right:-1px;border-top:1px solid var(--cl-c,var(--coral));border-right:1px solid var(--cl-c,var(--coral))}
-.cluster::after{bottom:-1px;right:-1px;border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+/* ── 분야별 연구실 (카드 블록 × 6) ── */
+.clusters{max-width:1120px;margin:0 auto;
+  padding:clamp(2.8rem,2rem + 3vw,4.2rem) clamp(1.2rem,.6rem + 2vw,2.6rem) 1.6rem}
+.cluster{border:1px solid var(--line-soft);border-left:3px solid var(--cl-c,var(--coral));
+  background:var(--card);margin-bottom:1.4rem;scroll-margin-top:6.6rem}
 
 .cl-head{display:grid;grid-template-columns:auto 1fr auto;gap:1rem 1.2rem;align-items:start;
-  padding:1.15rem clamp(1rem,.6rem + 1.4vw,1.6rem) 1rem;border-bottom:1px solid var(--line-soft)}
-.cl-code{font-size:.64rem;letter-spacing:.14em;color:var(--cl-c,var(--coral));font-variant-numeric:tabular-nums;
-  padding-top:.3rem;display:flex;align-items:center;gap:.5rem}
-.cl-code .cdot{width:8px;height:8px;border-radius:50%;background:var(--cl-c,var(--coral));flex:none;
-  box-shadow:0 0 0 3px color-mix(in srgb,var(--cl-c,var(--coral)) 22%,transparent)}
+  padding:1.25rem clamp(1rem,.6rem + 1.4vw,1.6rem) 1.1rem;border-bottom:1px solid var(--line)}
+.cl-code{display:flex;align-items:center;padding-top:.4rem}
+.cl-code .cdot{width:9px;height:9px;border-radius:50%;background:var(--cl-c,var(--coral));flex:none;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--cl-c,var(--coral)) 18%,transparent)}
 .cl-titles{min-width:0}
-.cl-titles .ko{font-family:var(--kr);font-weight:700;font-size:clamp(1.15rem,.9rem + 1vw,1.5rem);
-  color:var(--txt-hi);line-height:1.2;letter-spacing:-.01em}
-.cl-titles .en{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-top:.35rem}
-.cl-titles .desc{font-family:var(--kr);font-size:.86rem;color:var(--txt);line-height:1.6;margin-top:.7rem;max-width:44rem}
+.cl-titles .ko{font-family:var(--kr);font-weight:700;font-size:clamp(1.15rem,.9rem + 1vw,1.45rem);
+  color:var(--ink);line-height:1.25;letter-spacing:-.01em}
+.cl-titles .desc{font-family:var(--kr);font-size:.88rem;color:var(--sub);line-height:1.65;margin-top:.55rem;max-width:44rem}
 .cl-metric{text-align:right;white-space:nowrap;padding-top:.15rem}
-.cl-metric .num{font-family:var(--mono);font-weight:300;font-size:clamp(1.8rem,1.2rem + 2vw,2.6rem);
-  line-height:.9;color:var(--txt-hi);font-variant-numeric:tabular-nums}
-.cl-metric .num .u{color:var(--cl-c,var(--coral));font-size:.4em;margin-left:.1em;letter-spacing:.06em}
-.cl-metric .share{font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-top:.5rem}
-/* 코랄(클러스터색) 데이터바: 33개 중 비율 */
-.cl-metric .bar{width:min(9rem,26vw);height:3px;background:var(--line-soft);position:relative;margin:.6rem 0 0 auto}
-.cl-metric .bar span{position:absolute;inset:0 auto 0 0;background:var(--cl-c,var(--coral));opacity:.85}
+.cl-metric .num{font-family:var(--mono);font-weight:300;font-size:clamp(1.8rem,1.2rem + 2vw,2.4rem);
+  line-height:.9;color:var(--ink);font-variant-numeric:tabular-nums}
+.cl-metric .num .u{color:var(--cl-c,var(--coral));font-family:var(--kr);font-size:.42em;margin-left:.1em}
+.cl-metric .share{font-family:var(--kr);font-size:.72rem;color:var(--label);margin-top:.45rem}
+.cl-metric .bar{width:min(9rem,26vw);height:3px;background:rgba(10,26,51,.1);position:relative;margin:.55rem 0 0 auto}
+.cl-metric .bar span{position:absolute;inset:0 auto 0 0;background:var(--cl-c,var(--coral))}
 
-/* 연구실 데이터 행 목록 */
+/* 연구실 행 목록 */
 .lab-legend{display:grid;
-  grid-template-columns:3rem minmax(9rem,1.05fr) minmax(9rem,1.35fr) minmax(6.5rem,.7fr) 4rem;
+  grid-template-columns:3rem minmax(9rem,1.05fr) minmax(9rem,1.35fr) minmax(6.5rem,.7fr) 7.5rem;
   gap:1rem;align-items:center;
-  padding:.5rem clamp(1rem,.6rem + 1.4vw,1.6rem);border-bottom:1px solid var(--line-soft);
-  font-size:.55rem;letter-spacing:.16em;text-transform:uppercase;color:var(--dimmer)}
+  padding:.55rem clamp(1rem,.6rem + 1.4vw,1.6rem);border-bottom:1px solid var(--line);
+  font-family:var(--kr);font-size:.7rem;color:var(--label)}
 .lab-legend .rt{text-align:right}
 .lab-row{display:grid;
-  grid-template-columns:3rem minmax(9rem,1.05fr) minmax(9rem,1.35fr) minmax(6.5rem,.7fr) 4rem;
+  grid-template-columns:3rem minmax(9rem,1.05fr) minmax(9rem,1.35fr) minmax(6.5rem,.7fr) 7.5rem;
   gap:1rem;align-items:center;
-  padding:.8rem clamp(1rem,.6rem + 1.4vw,1.6rem);border-bottom:1px solid var(--line-soft);
-  position:relative;transition:background .12s}
+  padding:.85rem clamp(1rem,.6rem + 1.4vw,1.6rem);border-bottom:1px solid var(--line-soft);
+  transition:background .12s}
 .lab-row:last-child{border-bottom:0}
-.lab-row:hover{background:rgba(255,255,255,.025)}
+.lab-row:hover{background:var(--card-hover)}
 .lab-row:hover .l-idx{color:var(--cl-c,var(--coral))}
-.l-idx{font-size:.64rem;letter-spacing:.05em;color:var(--dim);font-variant-numeric:tabular-nums;transition:color .12s}
+.l-idx{font-family:var(--mono);font-size:.66rem;color:var(--label);font-variant-numeric:tabular-nums;transition:color .12s}
 .l-name{min-width:0}
-.l-name .ko{font-family:var(--kr);font-weight:600;font-size:.95rem;color:var(--txt-hi);line-height:1.25}
-.l-name .en{font-size:.6rem;letter-spacing:.07em;color:var(--dim);text-transform:uppercase;margin-top:.18rem;
+.l-name .ko{font-family:var(--kr);font-weight:600;font-size:.96rem;color:var(--ink);line-height:1.3}
+.l-name .en{font-family:var(--kr);font-size:.74rem;color:var(--muted);margin-top:.22rem;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.l-pi{min-width:0;font-size:.8rem;color:var(--txt)}
-.l-pi .pi{font-family:var(--kr);color:var(--txt-hi);display:inline-flex;align-items:center;gap:.45rem}
+.l-pi{min-width:0;font-size:.82rem;color:var(--body)}
+.l-pi .pi{font-family:var(--kr);color:#2a3a56;display:inline-flex;align-items:center;gap:.45rem}
 .l-pi .pi .cdot{width:6px;height:6px;border-radius:50%;background:var(--cl-c,var(--coral));flex:none}
-.l-pi .role{font-size:.56rem;letter-spacing:.06em;color:var(--dim);margin-top:.2rem}
-.l-loc{min-width:0;font-size:.7rem;letter-spacing:.02em;color:var(--txt);
+.l-pi .role{font-family:var(--kr);font-size:.72rem;color:var(--label);margin-top:.2rem}
+.l-loc{min-width:0;font-family:var(--kr);font-size:.78rem;color:var(--sub);
   display:inline-flex;align-items:center;gap:.4rem}
-.l-loc svg{flex:none;color:var(--dim)}
-.l-act{text-align:right;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
-.l-act a{color:var(--dim);transition:color .15s}
+.l-loc svg{flex:none;color:var(--label)}
+.l-act{text-align:right;font-family:var(--kr);font-size:.76rem;white-space:nowrap;line-height:1.8}
+.l-act a{color:var(--muted);transition:color .15s}
 .l-act a:hover{color:var(--cl-c,var(--coral))}
 .l-act a.ext{color:var(--coral)}
+.lab-note{font-family:var(--kr);font-size:.8rem;color:var(--muted);margin-top:.4rem;line-height:1.6}
 
-/* ── 하단 HUD (카운터 텔레메트리) ── */
-.hud-bottom{border-top:1px solid var(--line);margin-top:1.2rem;
-  background:linear-gradient(rgba(26,61,117,.4),var(--bg))}
-.hud-bottom-inner{max-width:1320px;margin:0 auto;
-  padding:1.6rem clamp(1.2rem,.6rem + 2vw,2.6rem) 2.4rem;
-  display:flex;justify-content:space-between;align-items:flex-end;gap:2rem;flex-wrap:wrap}
-.counters{display:flex;gap:clamp(1.5rem,1rem + 3vw,3.6rem)}
-.ct .lab{font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:.4rem}
-.ct .num{font-family:var(--mono);font-weight:300;font-size:clamp(1.8rem,1rem + 3vw,2.8rem);
-  line-height:.9;letter-spacing:.02em;color:var(--txt-hi);font-variant-numeric:tabular-nums}
-.ct .num .u{color:var(--coral);font-size:.42em;margin-left:.15em;letter-spacing:.1em}
-.foot-tl{font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);text-align:right;line-height:2}
-.foot-tl b{color:var(--txt);font-weight:500}
+/* ── 대학원 진학 CTA — 네이비 밴드 (메인 계승) ── */
+.cta{background:var(--navy);color:#fff;
+  padding:clamp(2.6rem,1.6rem + 3.5vw,4.2rem) clamp(1.4rem,.6rem + 2vw,3rem);
+  display:flex;justify-content:space-between;align-items:center;gap:2rem;flex-wrap:wrap;
+  max-width:1120px;margin:clamp(3rem,2rem + 3vw,4.5rem) auto;
+  margin-inline:clamp(1.2rem,.6rem + 2vw,2.6rem)}
+@media(min-width:1180px){.cta{margin-inline:auto}}
+.cta .cta-txt{max-width:34rem}
+.cta .cta-kick{font-family:var(--mono);font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:#9db4d8}
+.cta h2{font-family:var(--kr);font-weight:700;color:#fff;
+  font-size:clamp(1.4rem,1rem + 2vw,2.1rem);line-height:1.25;letter-spacing:-.01em;margin-top:.6rem}
+.cta p{font-family:var(--kr);color:#c6d2e4;margin-top:.8rem;line-height:1.6;font-size:.98rem}
+.cta .cta-btn{font-family:var(--kr);font-weight:600;font-size:1rem;
+  background:#fff;color:var(--navy);padding:.9rem 1.6rem;white-space:nowrap;
+  border:1px solid #fff;transition:background .15s,color .15s}
+.cta .cta-btn:hover{background:transparent;color:#fff;border-color:#fff}
+.cta .cta-btn .arr{color:var(--coral)}
 
 /* ── 반응형 ── */
 @media (max-width:960px){
   .summary{grid-template-columns:1fr;gap:1.8rem}
-  .orbit-wrap{max-width:24rem}
+  .orbit-wrap{max-width:22rem}
 }
 @media (max-width:860px){
-  .hud-top{grid-template-columns:1fr auto}
-  .hud-nav{display:none}
   .lab-legend{display:none}
   .cl-head{grid-template-columns:auto 1fr;gap:.7rem 1rem}
   .cl-metric{grid-column:1 / -1;text-align:left;display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap;padding-top:.2rem}
@@ -243,102 +211,72 @@ a{color:inherit;text-decoration:none}
   .l-pi{grid-column:2;grid-row:2;margin-top:.4rem}
   .l-loc{grid-column:2;grid-row:3;margin-top:.35rem}
   .l-act{grid-column:2;grid-row:4;text-align:left;margin-top:.5rem}
-  .hud-bottom-inner{flex-direction:column;align-items:flex-start}
-  .foot-tl{text-align:left}
 }
 </style>
-<style>.hud-top{display:none}</style>
 </head>
 <body>
-<a class="skip" href="#clusters">본문(연구 클러스터) 바로가기</a>
+<a class="skip" href="#clusters">본문(연구 분야) 바로가기</a>
 
-<!-- 상단 텔레메트리 HUD -->
-<header class="hud-top">
-  <div class="tl">
-    <div class="row"><span><b>연세대학교 기계공학부</b></span><span>연구</span></div>
-    <div class="row"><span>클러스터 <b class="tnum">6</b></span><span class="dim">·</span><span>연구실 <b class="tnum">33</b></span></div>
+<!-- 페이지 히어로 -->
+<header class="hero">
+  <div class="hero-in">
+    <p class="hero-kick">연구 · Research</p>
+    <h1>여섯 개 분야,<br>서른세 개 연구실</h1>
+    <p class="hero-lede">기계공학부의 연구는 <b>6개 분야</b>로 나뉘고, 그 아래 <b>33개 연구실</b>이 각각 담당 교수와 함께 운영됩니다. 분야별 구성을 한눈에 보고, 각 연구실의 담당 교수·위치·홈페이지를 확인하세요.</p>
   </div>
-  <div class="crest">
-    <div class="mk"><a href="G-console.html" style="color:inherit;text-decoration:none">YONSEI · ME</a></div>
-    <div class="sub">SCHOOL OF MECHANICAL ENGINEERING</div>
-  </div>
-  <nav class="hud-nav" aria-label="주메뉴">
-    <a href="G-about.html">소개</a><a href="G-academics.html">교육</a><a href="G-research.html" aria-current="page" style="color:#e2593c">연구</a><a href="G-people.html">구성원</a><a href="G-news.html">소식</a><a href="G-admissions.html">입학</a><a class="join" href="G-admissions.html">입학 안내 ↗</a>
-  </nav>
 </header>
 
 <main>
-  <!-- 페이지 헤더 -->
-  <section class="pagehead" aria-labelledby="ptitle">
-    <nav class="crumb" aria-label="브레드크럼">
-      <a href="#">홈</a><span class="sep">/</span><b>연구</b>
-    </nav>
-    <h1 id="ptitle" class="kr">연구 클러스터</h1>
-    <p class="lede kr">기계공학부의 연구는 <b>6개 클러스터</b>로 편성되고, 그 아래 <b>33개 연구실</b>이 <b>1 : 1</b>로 교수를 두고 운영됩니다. 아래 궤도 요약에서 클러스터별 비중을 한눈에 보고, 각 블록에서 소속 연구실·PI·위치를 조회하세요.</p>
-  </section>
-
-  <!-- 요약: 궤도 데이터비주얼 + 클러스터 브레이크다운 -->
-  <section class="summary" aria-label="연구 클러스터 요약">
+  <!-- 요약: 분포 휠 + 분야별 데이터바 -->
+  <section class="summary" aria-label="연구 분야 요약">
     <div>
-      <div class="sum-head">클러스터 궤도 · <span class="u">코어 33개 연구실</span></div>
+      <div class="sum-head">분야 구성 · <b>연구실 33곳</b></div>
       <div class="orbit-wrap">
         <svg viewBox="0 0 400 400" aria-hidden="true">
-          <!-- 눈금 링 -->
-          <circle class="orbit-ring tick orbit-spin r" cx="200" cy="200" r="192"/>
           <circle class="orbit-ring" cx="200" cy="200" r="150"/>
-          <circle class="orbit-ring" cx="200" cy="200" r="150" style="stroke-dasharray:2 6;opacity:.4"/>
-          <!-- 스포크 + 궤도 노드: JS가 채움 -->
+          <!-- 스포크 + 분야 노드: JS가 채움 -->
           <g id="spokes"></g>
           <g id="nodes"></g>
           <!-- 코어 허브 -->
           <circle class="o-hub-ring" cx="200" cy="200" r="30"/>
           <circle class="o-hub" cx="200" cy="200" r="8"/>
-          <path d="M200 8 v14 M200 378 v14 M8 200 h14 M378 200 h14" stroke="var(--coral)" stroke-width="1.4"/>
         </svg>
         <div class="orbit-center" aria-hidden="true">
           <div>
             <div class="n"><span data-count="33">0</span><span class="u">개</span></div>
-            <div class="l">연구실 총계</div>
+            <div class="l">연구실 전체</div>
           </div>
         </div>
       </div>
     </div>
 
     <div>
-      <div class="sum-head">구성 분포 · <span class="u">33개 연구실 / 6개 클러스터</span></div>
+      <div class="sum-head">분야별 분포</div>
       <div class="bd-grid" id="bd"></div>
     </div>
   </section>
 
-  <!-- 클러스터 섹션 (관제 블록 × 6) -->
-  <section class="clusters" id="clusters" aria-label="연구 클러스터별 연구실">
-    <div id="clusterBlocks"></div>
-  </section>
-
-  <!-- 하단 HUD 텔레메트리 -->
-  <footer class="hud-bottom">
-    <div class="hud-bottom-inner">
-      <div class="counters">
-        <div class="ct">
-          <div class="lab">연구 클러스터</div>
-          <div class="num"><span data-count="6">0</span></div>
-        </div>
-        <div class="ct">
-          <div class="lab">연구실 · 전임 교수</div>
-          <div class="num"><span data-count="33">0</span> · <span data-count="33">0</span></div>
-        </div>
-        <div class="ct">
-          <div class="lab">SINCE</div>
-          <div class="num">1962</div>
-        </div>
-      </div>
-      <div class="foot-tl">
-        <div>클러스터는 연구실 명칭 기반 자체 분류입니다</div>
-        <div>연세대학교 기계공학부 · 機制</div>
-      </div>
+  <!-- 분야별 연구실 (블록 × 6) -->
+  <section class="clusters" id="clusters" aria-label="연구 분야별 연구실">
+    <div class="sec-head">
+      <p class="sec-kick">연구 분야</p>
+      <h2 class="sec-title">분야별 연구실</h2>
+      <p class="sec-sub">여섯 분야 아래 33개 연구실입니다. 연구실명을 누르면 홈페이지로 이동합니다.</p>
     </div>
-  </footer>
+    <div id="clusterBlocks"></div>
+    <p class="lab-note">분야 구분은 연구실 명칭을 기반으로 한 자체 분류입니다.</p>
+  </section>
 </main>
+
+<!-- 대학원 진학 CTA -->
+<section class="cta" aria-labelledby="cta-h">
+  <div class="cta-txt">
+    <p class="cta-kick">대학원 진학</p>
+    <h2 id="cta-h">관심 있는 연구실을<br>찾으셨나요?</h2>
+    <p>대학원 진학 절차와 학부생 연구 참여 방법은 입학 안내에서 확인할 수 있습니다.</p>
+  </div>
+  <a class="cta-btn" href="G-admissions.html#graduate">대학원 진학 안내 <span class="arr">→</span></a>
+</section>
 
 <!-- 공유 단일 데이터 소스 (window.YSME) -->
 <script src="assets/js/data.js?v=d10"></script>
@@ -352,7 +290,7 @@ a{color:inherit;text-decoration:none}
   var clusters = D.clusters;
   var labs = D.labs;
   var professors = D.professors;
-  /* 새 6분야 id → 콘솔 팔레트 CSS 토큰 매핑 (기존 토큰 유지) */
+  /* 6분야 id → 라이트 팔레트 CSS 토큰 매핑 */
   var CVAR = { solid:'--c-solid', thermal:'--c-thermal', manufacturing:'--c-manuf',
                micro:'--c-nanobio', optics:'--c-optics', dynamics:'--c-dyn' };
 
@@ -360,16 +298,16 @@ a{color:inherit;text-decoration:none}
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){
     return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
 
-  /* 클러스터별 연구실 그룹 + 순번 부여 (원본 순서 = 01..33) */
+  /* 분야별 연구실 그룹 + 순번 부여 (원본 순서 = 01..33) */
   labs.forEach(function(l,i){ l.idx = String(i+1).padStart(2,'0'); });
   var byCluster = {};
   clusters.forEach(function(c){ byCluster[c.id] = []; });
   labs.forEach(function(l){ if(byCluster[l.cluster]) byCluster[l.cluster].push(l); });
   /* 표시용 count는 실제 lab.cluster 집계로 재산정(데이터 정합 보장) */
-  clusters.forEach(function(c,i){ c.count = byCluster[c.id].length; c.code = 'C-' + String(i+1).padStart(2,'0'); });
+  clusters.forEach(function(c){ c.count = byCluster[c.id].length; });
   var maxCount = Math.max.apply(null, clusters.map(function(c){ return c.count; }));
 
-  /* ── 요약 브레이크다운 데이터바 ── */
+  /* ── 요약 분포 데이터바 ── */
   var bd = document.getElementById('bd');
   bd.innerHTML = clusters.map(function(c){
     var pct = Math.round(c.count/TOTAL*100);
@@ -382,7 +320,7 @@ a{color:inherit;text-decoration:none}
       + '</a>';
   }).join('');
 
-  /* ── 궤도 노드 + 스포크 (6 클러스터를 원주 위에) ── */
+  /* ── 분포 휠 노드 + 스포크 (6개 분야를 원주 위에) ── */
   var spokes = document.getElementById('spokes'), nodes = document.getElementById('nodes');
   var CX=200, CY=200, R=150, MINR=8, MAXR=20;
   var sp='', nd='';
@@ -392,18 +330,18 @@ a{color:inherit;text-decoration:none}
     var rr = MINR + (c.count/maxCount)*(MAXR-MINR); // 비중 → 노드 크기
     sp += '<line class="o-spoke" x1="'+CX+'" y1="'+CY+'" x2="'+x.toFixed(1)+'" y2="'+y.toFixed(1)+'"/>';
     nd += '<a class="o-node" id="node-'+esc(c.id)+'" href="#'+esc(c.id)+'" role="link" '
-        + 'aria-label="'+esc(c.ko+' 클러스터 · '+c.count+'개 연구실')+'" '
+        + 'aria-label="'+esc(c.ko+' 분야 · '+c.count+'개 연구실')+'" '
         + 'style="color:var('+CVAR[c.id]+')" tabindex="0">'
         + '<circle class="halo" cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+(rr+7).toFixed(1)+'" stroke="currentColor"/>'
         + '<circle class="core" cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+rr.toFixed(1)+'" fill="currentColor"/>'
         + '<text x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" text-anchor="middle" dominant-baseline="central" '
-          + 'font-family="var(--mono)" font-size="9" font-weight="500" fill="#1a3d75">'+c.count+'</text>'
+          + 'font-family="var(--mono)" font-size="9" font-weight="500" fill="#fff">'+c.count+'</text>'
         + '</a>';
   });
   spokes.innerHTML = sp;
   nodes.innerHTML = nd;
 
-  /* 궤도 노드 ↔ 브레이크다운 행 하이라이트 연동 */
+  /* 휠 노드 ↔ 분포 행 하이라이트 연동 */
   function setActive(id, on){
     var node = document.getElementById('node-'+id);
     var row = bd.querySelector('[data-cluster="'+id+'"]');
@@ -419,7 +357,7 @@ a{color:inherit;text-decoration:none}
     bd.addEventListener(ev, function(e){ var a=e.target.closest('.bd-row'); if(a) setActive(a.dataset.cluster,false); }, true);
   });
 
-  /* ── 클러스터 블록 × 6 ── */
+  /* ── 분야 블록 × 6 ── */
   function pin(){ return '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-5.686 7-11a7 7 0 1 0-14 0c0 5.314 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>'; }
 
   /* labId → professor (role·보직 라벨 조회용) */
@@ -430,7 +368,7 @@ a{color:inherit;text-decoration:none}
     var prof = profByLab[l.id];
     var role = prof && prof.role ? prof.role : '';
     var nameKo = l.site
-      ? '<a class="ext" style="color:var(--txt-hi)" href="'+esc(l.site)+'" target="_blank" rel="noopener">'+esc(l.ko)+'</a>'
+      ? '<a class="ext" style="color:inherit" href="'+esc(l.site)+'" target="_blank" rel="noopener">'+esc(l.ko)+'</a>'
       : esc(l.ko);
     /* 세부 주제 키워드 (areaDetail 줄바꿈 → 콤마) */
     var kw = '';
@@ -493,5 +431,8 @@ a{color:inherit;text-decoration:none}
 })();
 </script>
 <script src="assets/nav.js?v=15"></script>
+<footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:#7b8595">
+  © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
+</footer>
 </body>
 </html>

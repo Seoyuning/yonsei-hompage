@@ -4,557 +4,239 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>[시안 G · 관제] 소식 — 연세대학교 기계공학부</title>
-<meta name="description" content="Design candidate G — Console / 관제 스타일을 소식(공지·뉴스·세미나) 페이지에 적용한 비교 시안. 다크 관제 HUD · 로그 디스패치 피드 · 모노 텔레메트리 · 코랄 액센트." />
+<meta name="description" content="연세대학교 기계공학부 소식 — 학부·대학원 공지사항, 연구 뉴스, 세미나·행사 안내를 한곳에 모았습니다." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet" />
 <style>
 /* ═══════════════════════════════════════════════════════════
-   시안 G · 관제 — 소식 / DISPATCH (Console News Feed)
-   G-console / G-people 토큰·톤 계승:
-   검정 배경 · 모노 텔레메트리 · 코랄 액센트 · 헤어라인 ·
-   HUD 코너 · 코랄 데이터바.
-   게시판을 "관제 로그/디스패치 피드"로: 로그 인덱스 · 날짜 ·
-   카테고리 도트 태그 · 밝은 제목 · 절제된 출처. 최신순.
+   시안 G — 소식 (라이트 테마)
+   G-console 메인 하단 라이트 블록의 디자인 언어 계승:
+   흰 배경 · 네이비 제목 · 코랄 킥커 · 헤어라인 목록 · 연회색 행 호버.
+   히어로만 네이비(흰 대형 타이틀 + 연블루 킥커).
+   섹션: 공지(#feed, 학부/대학원 탭) · 뉴스(#hi) · 세미나/행사(#sched).
    ═══════════════════════════════════════════════════════════ */
 :root{
-  --bg:#1a3d75;
-  --panel:#254e8f;
-  --panel-2:#204683;
-  --line:rgba(255,255,255,.22);
-  --line-soft:rgba(255,255,255,.12);
-  --txt:#e2e6ec;
-  --txt-hi:#eef0f4;      /* 제목 등 최상위 가독 텍스트 */
-  --dim:#8b9099;         /* 라벨 가독 확보 (G-console 대비 살짝 밝힘) */
-  --dimmer:#565c65;
-  --coral:#e2593c;--warm:#e2593c;
-  --coral-soft:rgba(226,89,60,.16);
-  --glow:#2b4a74;
+  --navy:#1a3d75;
+  --coral:#e2593c;
+  --body:#4a5a74;
+  --sub:#5c6b85;
+  --muted:#7b8595;
+  --label:#9aa3b0;
+  --dimmer:#7b8595;
+  --line:rgba(10,26,51,.14);
+  --line-soft:rgba(10,26,51,.08);
+  --row:#f7f9fc;
   --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
   --kr:"Pretendard Variable","Pretendard",system-ui,sans-serif;
-  /* 카테고리 토큰 (관제 팔레트 — 코랄이 주액센트) */
-  --c-notice:#e2593c;   /* 학부 공지 */
-  --c-grad:#e8944e;     /* 대학원 공지 */
-  --c-news:#6d9bd1;     /* 뉴스 */
-  --c-seminar:#5aa9a0;  /* 세미나 */
 }
 *,*::before,*::after{box-sizing:border-box;margin:0}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 body{
-  font-family:var(--mono);
-  background:var(--bg); color:var(--txt);
+  font-family:var(--kr);
+  background:#fff; color:var(--body);
   -webkit-font-smoothing:antialiased;
   overflow-x:hidden; word-break:keep-all;
-  line-height:1.5;
-  padding-top:6.4rem;    /* fixed HUD 여백 */
+  line-height:1.6;
 }
-:lang(ko),.kr{font-family:var(--kr)}
 a{color:inherit;text-decoration:none}
 .mono{font-family:var(--mono)}
-.dim{color:var(--dim)}
 .tnum{font-variant-numeric:tabular-nums}
 .visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 :focus-visible{outline:2px solid var(--coral);outline-offset:2px}
-.skip{position:absolute;left:.6rem;top:-3rem;z-index:60;background:var(--coral);color:#0b0b0b;
-  padding:.5rem .9rem;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;transition:top .15s}
+.skip{position:absolute;left:.6rem;top:-3rem;z-index:60;background:var(--navy);color:#fff;
+  padding:.55rem 1rem;font-size:.8rem;transition:top .15s}
 .skip:focus{top:.6rem}
 
-/* ── 상단 텔레메트리 HUD 바 ── */
-.hud-top{position:fixed;top:0;left:0;right:0;z-index:30;
-  display:grid;grid-template-columns:1fr auto 1fr;align-items:start;
-  padding:1.15rem clamp(1.2rem,.6rem + 2vw,2.6rem) 1rem;
-  background:linear-gradient(var(--bg) 55%,rgba(26,61,117,.86));
-  backdrop-filter:blur(6px);
+/* ── 페이지 히어로 (네이비) ── */
+.hero{background:var(--navy);color:#fff;
+  padding:7rem clamp(1.2rem,.6rem + 2vw,2.6rem) 3.2rem}
+.hero-inner{max-width:1120px;margin:0 auto}
+.hero .kick{font-size:.85rem;font-weight:600;letter-spacing:.08em;color:#9db4d8;margin-bottom:.9rem}
+.hero h1{font-weight:800;letter-spacing:-.015em;
+  font-size:clamp(2.1rem,1.3rem + 2.8vw,3rem);color:#fff;line-height:1.15}
+.hero .lede{max-width:42rem;margin-top:1.1rem;font-size:1rem;color:#c6d2e4;line-height:1.75}
+.hero .lede b{color:#fff;font-weight:600}
+
+/* ── 섹션 공통 ── */
+.sec{max-width:1120px;margin:0 auto;
+  padding:clamp(3rem,2rem + 3.5vw,4.8rem) clamp(1.2rem,.6rem + 2vw,2.6rem);
   border-bottom:1px solid var(--line-soft)}
-.tl{font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;line-height:1.9;color:var(--dim)}
-.tl b{color:var(--txt-hi);font-weight:500}
-.tl .row{display:flex;gap:1.4rem;flex-wrap:wrap;align-items:center}
-.tl .row .u{color:var(--coral)}
-/* LIVE 점멸 도트 */
-.live{display:inline-flex;align-items:center;gap:.4rem}
-.live .pulse{width:6px;height:6px;border-radius:50%;background:var(--coral);position:relative}
-.live .pulse::after{content:"";position:absolute;inset:-3px;border-radius:50%;
-  border:1px solid var(--coral);opacity:.6;animation:ping 2s ease-out infinite}
-@keyframes ping{0%{transform:scale(.6);opacity:.7}100%{transform:scale(1.9);opacity:0}}
-@media (prefers-reduced-motion:reduce){.live .pulse::after{animation:none;opacity:.4}}
-.crest{justify-self:center;text-align:center;padding-top:.1rem}
-.crest .mk{font-family:var(--kr);font-weight:800;letter-spacing:.12em;font-size:.95rem;color:#fff}
-.crest .sub{font-size:.56rem;letter-spacing:.3em;color:var(--dim);margin-top:.25rem}
-.hud-nav{justify-self:end;text-align:right;font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;padding-top:.15rem}
-.hud-nav a{color:var(--dim);margin-left:1.05rem;transition:color .15s}
-.hud-nav a:hover{color:var(--txt-hi)}
-.hud-nav a[aria-current]{color:var(--coral)}
-.hud-nav .join{color:var(--coral)}
-
-/* ── 페이지 타이틀 / 브레드크럼 ── */
-.pagehead{padding:2.4rem clamp(1.2rem,.6rem + 2vw,2.6rem) 1.4rem;
-  max-width:1320px;margin:0 auto;position:relative}
-.crumb{font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:1.1rem}
-.crumb a{color:var(--dim)}.crumb a:hover{color:var(--txt-hi)}
-.crumb .sep{color:var(--dimmer);margin:0 .5rem}
-.crumb b{color:var(--coral);font-weight:400}
-.pagehead h1{font-family:var(--kr);font-weight:800;letter-spacing:-.01em;
-  font-size:clamp(2rem,1.2rem + 3vw,3rem);color:#fff;line-height:1.04;margin-bottom:.7rem}
-.pagehead h1 .en{display:block;font-family:var(--mono);font-weight:300;
-  font-size:.32em;letter-spacing:.32em;color:var(--dim);margin-top:.6rem;text-transform:uppercase}
-.pagehead .lede{max-width:48rem;font-family:var(--kr);font-size:.94rem;color:var(--txt);line-height:1.7}
-.pagehead .lede b{color:var(--txt-hi);font-weight:600}
-/* HUD 코너 마커 (관제 프레임) */
-.pagehead::before,.pagehead::after{content:"";position:absolute;width:14px;height:14px;pointer-events:none}
-.pagehead::before{top:1.4rem;right:clamp(1.2rem,.6rem + 2vw,2.6rem);border-top:1px solid var(--coral);border-right:1px solid var(--coral);opacity:.7}
-.pagehead::after{bottom:.2rem;right:clamp(1.2rem,.6rem + 2vw,2.6rem);border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
-
-/* ── 메인 그리드: 피드 + 사이드 요약 ── */
-.wrap{max-width:1320px;margin:0 auto;padding:0 clamp(1.2rem,.6rem + 2vw,2.6rem)}
-.layout{display:grid;grid-template-columns:minmax(0,1fr) 20rem;gap:2.2rem;align-items:start}
-
-/* ── 필터 바 (sticky) ── */
-.filterbar{position:sticky;top:6.4rem;z-index:20;
-  background:linear-gradient(var(--bg),rgba(26,61,117,.92));
-  backdrop-filter:blur(6px);
-  border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line);
-  padding:.85rem 0;margin-bottom:.4rem}
-.filter-top{display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
-.filter-search{display:flex;align-items:center;gap:.55rem;flex:1;min-width:14rem;
-  border:1px solid var(--line);background:var(--panel-2);padding:.5rem .75rem;transition:border-color .15s}
-.filter-search:focus-within{border-color:var(--coral)}
-.filter-search svg{flex:none;color:var(--dim)}
-.filter-search input{flex:1;background:none;border:0;outline:none;color:var(--txt-hi);
-  font-family:var(--mono);font-size:.78rem;letter-spacing:.02em;min-width:0}
-.filter-search input::placeholder{color:var(--dimmer);letter-spacing:.04em}
-.filter-status{font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);white-space:nowrap;
+.sec:last-of-type{border-bottom:0}
+.sec-head{display:flex;justify-content:space-between;align-items:flex-end;
+  gap:1.2rem 1.5rem;flex-wrap:wrap;margin-bottom:clamp(1.6rem,1rem + 1.6vw,2.4rem)}
+.sec-kick{font-family:var(--mono);font-size:.66rem;letter-spacing:.24em;
+  text-transform:uppercase;color:var(--coral)}
+.sec-title{font-weight:700;color:var(--navy);
+  font-size:clamp(1.5rem,1rem + 2vw,2.1rem);line-height:1.24;letter-spacing:-.01em;
+  margin-top:.5rem}
+.sec-count{font-size:.84rem;color:var(--muted);white-space:nowrap;
   font-variant-numeric:tabular-nums}
-.filter-status b{color:var(--coral);font-weight:500}
-.fchips{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;margin-top:.7rem}
-.fchips-label{font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;color:var(--dimmer);margin-right:.35rem;flex:none}
-.fchip{display:inline-flex;align-items:center;gap:.42rem;cursor:pointer;
-  border:1px solid var(--line);background:transparent;color:var(--dim);
-  font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;
-  padding:.34rem .6rem;transition:border-color .15s,color .15s,background .15s;white-space:nowrap}
-.fchip:hover{color:var(--txt-hi);border-color:var(--dim)}
-.fchip .cdot{width:6px;height:6px;border-radius:50%;background:var(--chip-c,var(--coral));flex:none}
-.fchip .cnt{color:var(--dimmer);font-size:.9em}
-.fchip[aria-pressed="true"]{color:#0b0b0b;background:var(--coral);border-color:var(--coral)}
-.fchip[aria-pressed="true"] .cnt{color:rgba(0,0,0,.55)}
-.fchip[aria-pressed="true"] .cdot{background:#0b0b0b}
+.sec-note{max-width:44rem;margin-top:.8rem;font-size:.92rem;color:var(--sub);line-height:1.7;flex-basis:100%}
 
-/* ── 디스패치 로그 피드 ── */
-.feed{padding:.4rem 0 1rem}
-.log-legend{display:grid;
-  grid-template-columns:5.2rem 6.4rem minmax(6rem,auto) minmax(9rem,1fr);
-  gap:1rem;align-items:center;
-  padding:.55rem .3rem;border-bottom:1px solid var(--line);
-  font-size:.56rem;letter-spacing:.16em;text-transform:uppercase;color:var(--dimmer)}
-.log-list{display:block}
-.log{display:grid;
-  grid-template-columns:5.2rem 6.4rem minmax(6rem,auto) minmax(9rem,1fr);
-  gap:1rem;align-items:baseline;
-  padding:.95rem .3rem;border-bottom:1px solid var(--line-soft);
-  position:relative;transition:background .12s}
-.log:hover{background:rgba(255,255,255,.025)}
-.log:hover .l-idx{color:var(--coral)}
-.log.is-pinned{background:var(--coral-soft);box-shadow:inset 2px 0 0 var(--coral)}
-/* 행 순번 */
-.l-idx{font-size:.64rem;letter-spacing:.04em;color:var(--dim);font-variant-numeric:tabular-nums;transition:color .12s;white-space:nowrap}
-/* 날짜 (mono, tabular) */
-.l-date{font-size:.66rem;letter-spacing:.02em;color:var(--txt);font-variant-numeric:tabular-nums;white-space:nowrap}
-/* 카테고리 도트 태그 */
-.l-cat{display:inline-flex;align-items:center;gap:.42rem;font-size:.62rem;letter-spacing:.04em;
-  color:var(--txt);white-space:nowrap}
-.l-cat .cdot{width:7px;height:7px;border-radius:50%;background:var(--cat-c,var(--coral));flex:none}
-/* 제목 (밝게) + 배지 + 출처 */
-.l-title{min-width:0}
-.l-title .t{font-family:var(--kr);font-weight:500;font-size:.94rem;color:var(--txt-hi);line-height:1.4;
-  transition:color .12s}
-.log:hover .l-title .t{color:#fff}
-.l-title .src{display:block;font-family:var(--mono);font-size:.56rem;letter-spacing:.08em;color:var(--dimmer);
-  margin-top:.3rem;text-transform:uppercase}
-.badge{display:inline-block;font-family:var(--mono);font-size:.5rem;letter-spacing:.12em;text-transform:uppercase;
-  padding:.1rem .34rem;vertical-align:middle;margin-left:.45rem;position:relative;top:-.12em}
-.badge--new{border:1px solid var(--coral);color:var(--coral)}
-.badge--pin{border:1px solid var(--line);color:var(--dim)}
+/* 공지 탭 (학부 / 대학원) */
+.tabs{display:flex;gap:.5rem;flex-wrap:wrap}
+.tab{display:inline-flex;align-items:baseline;gap:.5rem;cursor:pointer;
+  border:1px solid var(--line);background:#fff;color:var(--sub);
+  font-family:var(--kr);font-weight:600;font-size:.88rem;
+  padding:.55rem 1.05rem;transition:border-color .15s,color .15s,background .15s;white-space:nowrap}
+.tab:hover{color:var(--navy);border-color:#b9c4d4}
+.tab[aria-pressed="true"]{background:var(--coral);border-color:var(--coral);color:#fff}
+.tab .cnt{font-size:.78em;font-weight:500;color:var(--label);font-variant-numeric:tabular-nums}
+.tab[aria-pressed="true"] .cnt{color:rgba(255,255,255,.8)}
 
-/* 빈 상태 */
-.empty{padding:3.4rem 1rem;text-align:center;color:var(--dim)}
-.empty .code{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--coral);margin-bottom:.9rem}
-.empty p{font-family:var(--kr);font-size:.9rem;margin-bottom:1.4rem}
-.empty button{cursor:pointer;background:transparent;border:1px solid var(--line);color:var(--txt);
-  font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;padding:.5rem 1rem;transition:border-color .15s,color .15s}
-.empty button:hover{border-color:var(--coral);color:var(--coral)}
+/* ── 목록 (제목 + 날짜) ── */
+.rows{border-top:1px solid var(--line)}
+.nrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1.4rem;align-items:baseline;
+  padding:1.1rem .9rem;border-bottom:1px solid var(--line-soft);transition:background .12s}
+a.nrow:hover{background:var(--row)}
+.nrow .t{font-size:.96rem;color:#2a3a56;line-height:1.55;min-width:0}
+a.nrow:hover .t{color:var(--navy)}
+.nrow .d{font-family:var(--mono);font-size:.74rem;color:#8b93a3;letter-spacing:.04em;
+  white-space:nowrap;font-variant-numeric:tabular-nums}
+.pin{display:inline-block;font-size:.7rem;font-weight:600;color:var(--coral);
+  border:1px solid rgba(226,89,60,.45);padding:.1rem .45rem;margin-right:.55rem;
+  vertical-align:.1em;white-space:nowrap}
 
-/* ── 사이드 요약 패널 ── */
-.side{position:sticky;top:8.8rem;display:flex;flex-direction:column;gap:1.6rem}
-.panel{border:1px solid var(--line-soft);background:var(--panel-2);padding:1.1rem 1.1rem 1.2rem;position:relative}
-.panel::before{content:"";position:absolute;top:-1px;left:-1px;width:12px;height:12px;
-  border-top:1px solid var(--coral);border-left:1px solid var(--coral);opacity:.7}
-.panel h2{font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-bottom:1rem;
-  display:flex;justify-content:space-between;align-items:baseline}
-.panel h2 .u{color:var(--coral);font-size:.9em}
-/* 다음 세미나 일정 */
-.sched{display:block}
-.sched .item{padding:.6rem 0;border-bottom:1px solid var(--line-soft)}
-.sched .item:last-child{border-bottom:0;padding-bottom:0}
-.sched .d{font-size:.6rem;letter-spacing:.04em;color:var(--coral);font-variant-numeric:tabular-nums;margin-bottom:.28rem}
-.sched .s{font-family:var(--kr);font-size:.8rem;color:var(--txt-hi);line-height:1.45}
-/* 하이라이트(수상/성과) */
-.hi{display:block}
-.hi .item{display:flex;gap:.55rem;padding:.55rem 0;border-bottom:1px solid var(--line-soft)}
-.hi .item:last-child{border-bottom:0;padding-bottom:0}
-.hi .item .m{color:var(--coral);flex:none;font-size:.7rem;line-height:1.5}
-.hi .item .x{font-family:var(--kr);font-size:.8rem;color:var(--txt);line-height:1.5}
-.hi .item .x b{color:var(--txt-hi);font-weight:600}
-/* 카테고리 분포 데이터바 */
-.mix .bd-row{font-size:.6rem;letter-spacing:.03em;color:var(--dim);margin-bottom:.75rem}
-.mix .bd-row:last-child{margin-bottom:0}
-.mix .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.3rem}
-.mix .lab{color:var(--txt);text-transform:none;letter-spacing:.01em;display:inline-flex;align-items:center;gap:.4rem}
-.mix .lab .cdot{width:6px;height:6px;border-radius:50%;background:var(--bd-c,var(--coral));flex:none}
-.mix .val{color:var(--txt-hi);font-variant-numeric:tabular-nums}
-.mix .bar{height:2px;background:var(--line-soft);position:relative}
-.mix .bar span{position:absolute;inset:0 auto 0 0;background:var(--bd-c,var(--coral));opacity:.85}
-
-/* ── 하단 HUD (텔레메트리) ── */
-.hud-bottom{border-top:1px solid var(--line);margin-top:2rem;
-  background:linear-gradient(rgba(26,61,117,.4),var(--bg))}
-.hud-bottom-inner{max-width:1320px;margin:0 auto;
-  padding:1.6rem clamp(1.2rem,.6rem + 2vw,2.6rem) 2.2rem;
-  display:flex;justify-content:space-between;align-items:flex-end;gap:2rem;flex-wrap:wrap}
-.counters{display:flex;gap:clamp(1.5rem,1rem + 3vw,3.6rem)}
-.ct .lab{font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:.4rem}
-.ct .num{font-family:var(--mono);font-weight:300;font-size:clamp(1.8rem,1rem + 3vw,2.8rem);
-  line-height:.9;letter-spacing:.02em;color:var(--txt-hi);font-variant-numeric:tabular-nums}
-.ct .num .u{color:var(--coral);font-size:.42em;margin-left:.15em;letter-spacing:.1em}
-.foot-tl{font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);text-align:right;line-height:2}
-.foot-tl b{color:var(--txt);font-weight:500}
+/* ── 세미나 · 행사 2단 ── */
+.duo{display:grid;grid-template-columns:1.35fr 1fr;gap:clamp(2rem,1rem + 3vw,3.5rem);align-items:start}
+.duo h3{font-size:1.02rem;font-weight:700;color:var(--navy);margin-bottom:.9rem}
+.duo h3 .cnt{font-size:.8rem;font-weight:500;color:var(--muted);margin-left:.45rem;
+  font-variant-numeric:tabular-nums}
+.duo .nrow{grid-template-columns:1fr;gap:.35rem;padding:1rem .9rem}
+.duo .nrow .d{justify-self:start}
 
 /* ── 반응형 ── */
-@media (max-width:980px){
-  .layout{grid-template-columns:1fr;gap:1.8rem}
-  .side{position:static;order:-1;flex-direction:row;flex-wrap:wrap}
-  .side .panel{flex:1;min-width:14rem}
-}
 @media (max-width:860px){
-  .hud-top{grid-template-columns:1fr auto}
-  .hud-nav{display:none}
+  .duo{grid-template-columns:1fr}
 }
-@media (max-width:680px){
-  .log-legend{display:none}
-  .log{grid-template-columns:1fr;gap:.35rem;padding:1rem .2rem;align-items:start}
-  .l-idx{order:1;display:inline-flex;gap:.8rem}
-  .l-idx::after{content:attr(data-date);color:var(--txt);letter-spacing:.02em}
-  .l-date{display:none}
-  .l-cat{order:2}
-  .l-title{order:3;margin-top:.15rem}
-  .side{flex-direction:column}
-  .side .panel{min-width:0}
+@media (max-width:640px){
+  .nrow{grid-template-columns:1fr;gap:.35rem}
+  .nrow .d{justify-self:start}
 }
 </style>
-<style>.hud-top{display:none}</style>
 </head>
 <body>
-<a class="skip" href="#feed">본문(디스패치 피드) 바로가기</a>
-
-<!-- 상단 텔레메트리 HUD -->
-<header class="hud-top">
-  <div class="tl">
-    <div class="row"><span><b>연세대학교 기계공학부 · 소식</b></span></div>
-    <div class="row">
-      <span>공지 · 뉴스 · 세미나 <b class="tnum" id="tl-total">0</b>건</span>
-    </div>
-  </div>
-  <div class="crest">
-    <div class="mk"><a href="G-console.html" style="color:inherit;text-decoration:none">YONSEI · ME</a></div>
-    <div class="sub">SCHOOL OF MECHANICAL ENGINEERING</div>
-  </div>
-  <nav class="hud-nav" aria-label="주메뉴">
-    <a href="G-about.html">소개</a><a href="G-academics.html">교육</a><a href="G-research.html">연구</a><a href="G-people.html">구성원</a><a href="G-news.html" aria-current="page" style="color:#e2593c">소식</a><a href="G-admissions.html">입학</a><a class="join" href="G-admissions.html">입학 안내 ↗</a>
-  </nav>
-</header>
+<a class="skip" href="#feed">공지사항 바로가기</a>
 
 <main>
-  <!-- 페이지 헤더 -->
-  <section class="pagehead" aria-labelledby="ptitle">
-    <nav class="crumb" aria-label="브레드크럼">
-      <a href="#">홈</a><span class="sep">/</span><a href="#">커뮤니티</a><span class="sep">/</span><b>소식</b>
-    </nav>
-    <h1 id="ptitle" class="kr">소식</h1>
-    <p class="lede kr">학부·대학원 <b>공지</b>, 연구 <b>뉴스</b>, <b>세미나</b> 안내를 한곳에 모았습니다. 게시일 내림차순으로 정렬되며, 카테고리 칩·검색으로 필터하세요.</p>
+  <!-- 페이지 히어로 -->
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="kick">소식</p>
+      <h1>공지 · 뉴스 · 세미나</h1>
+      <p class="lede">학부·대학원 <b>공지사항</b>과 연구 <b>뉴스</b>, <b>세미나·행사</b> 안내를
+        한곳에 모았습니다. 제목을 누르면 학부 홈페이지의 원문으로 이동합니다.</p>
+    </div>
+  </header>
+
+  <!-- 공지사항 -->
+  <section class="sec" id="feed" aria-labelledby="t-feed">
+    <div class="sec-head">
+      <div>
+        <p class="sec-kick">공지</p>
+        <h2 class="sec-title" id="t-feed">공지사항</h2>
+      </div>
+      <div class="tabs" role="group" aria-label="공지 구분" id="noticeTabs"></div>
+    </div>
+    <div class="rows" id="noticeRows"></div>
   </section>
 
-  <div class="wrap">
-    <div class="layout">
-
-      <!-- 좌: 피드 -->
+  <!-- 뉴스 · 연구 성과 -->
+  <section class="sec" id="hi" aria-labelledby="t-hi">
+    <div class="sec-head">
       <div>
-        <!-- 필터 바 -->
-        <div class="filterbar" role="search" aria-label="소식 필터">
-          <div class="filter-top">
-            <label class="filter-search">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-              <span class="visually-hidden">제목 · 카테고리 · 출처 검색</span>
-              <input type="search" id="pq" placeholder="SEARCH · 제목 · 카테고리 · 출처" autocomplete="off" />
-            </label>
-            <span class="filter-status" id="fstatus" role="status" aria-live="polite"></span>
-          </div>
-          <div class="fchips" role="group" aria-label="카테고리 필터" id="cChips"></div>
-        </div>
-
-        <!-- 디스패치 로그 피드 -->
-        <section class="feed" id="feed" aria-label="소식 디스패치 피드">
-          <div class="log-legend" aria-hidden="true">
-            <span>번호</span><span>날짜</span><span>분류</span><span>제목</span>
-          </div>
-          <div class="log-list" id="rows"></div>
-          <div class="empty" id="empty" hidden>
-            <p class="code">조건에 맞는 소식 없음</p>
-            <p class="kr">검색어나 카테고리 필터를 조정해 보세요.</p>
-            <button type="button" id="reset">필터 초기화</button>
-          </div>
-        </section>
+        <p class="sec-kick">뉴스</p>
+        <h2 class="sec-title" id="t-hi">연구 성과와 소식</h2>
       </div>
-
-      <!-- 우: 사이드 요약 -->
-      <aside class="side" aria-label="요약">
-        <section class="panel" aria-labelledby="s-sched">
-          <h2 id="s-sched">최근 세미나</h2>
-          <div class="sched" id="sched"></div>
-        </section>
-        <section class="panel" aria-labelledby="s-hi">
-          <h2 id="s-hi">연구 성과 하이라이트</h2>
-          <div class="hi" id="hi"></div>
-        </section>
-        <section class="panel mix" aria-labelledby="s-mix">
-          <h2 id="s-mix">카테고리 분포</h2>
-          <div id="mix"></div>
-        </section>
-      </aside>
-
+      <span class="sec-count" id="newsCount"></span>
     </div>
-  </div>
+    <div class="rows" id="newsRows"></div>
+  </section>
 
-  <!-- 하단 HUD 텔레메트리 -->
-  <footer class="hud-bottom">
-    <div class="hud-bottom-inner">
-      <div class="counters">
-        <div class="ct">
-          <div class="lab">전체 소식 · 항목</div>
-          <div class="num"><span data-count="32">0</span></div>
-        </div>
-        <div class="ct">
-          <div class="lab">카테고리 채널</div>
-          <div class="num"><span data-count="4">0</span></div>
-        </div>
-        <div class="ct">
-          <div class="lab">SINCE</div>
-          <div class="num">1962</div>
-        </div>
-      </div>
-      <div class="foot-tl">
-        <div>YONSEI · ME · 機制</div>
+  <!-- 세미나 · 행사 -->
+  <section class="sec" id="sched" aria-labelledby="t-sched">
+    <div class="sec-head">
+      <div>
+        <p class="sec-kick">세미나 · 행사</p>
+        <h2 class="sec-title" id="t-sched">세미나와 행사</h2>
       </div>
     </div>
-  </footer>
+    <div class="duo">
+      <div>
+        <h3>세미나<span class="cnt" id="semCount"></span></h3>
+        <div class="rows" id="semRows"></div>
+      </div>
+      <div>
+        <h3>행사<span class="cnt" id="evtCount"></span></h3>
+        <div class="rows" id="evtRows"></div>
+      </div>
+    </div>
+  </section>
 </main>
 
+<script src="assets/js/data.js?v=d10"></script>
 <script>
 (function(){
   'use strict';
-  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ── 데이터 (data.js posts 배열에서 인라인 하드코딩) ── */
-  var posts = [
-    { cat:'학부',   title:'기계공학부「홈페이지 구축 경진대회」안내', date:'2026-06-23', pinned:true, source:'community/notice.do' },
-    { cat:'학부',   title:'2026-여름계절학기 학부연구(3) 연구참여 신청서 제출 안내', date:'2026-06-29', source:'community/notice.do' },
-    { cat:'학부',   title:'VAR 2026 여름학기 모집 안내', date:'2026-06-24', source:'community/notice.do' },
-    { cat:'학부',   title:'일몰된 교과목(기계공학수학)에 대한 재수강처리 요청서 제출 안내', date:'2026-06-18', source:'community/notice.do' },
-    { cat:'학부',   title:'기계공학과 2026 여름학기 해외집중강의 시리즈 수강생 모집 안내', date:'2026-06-11', source:'community/notice.do' },
-    { cat:'학부',   title:'2026학년도 2학기 재입학 전형 안내문', date:'2026-05-29', source:'community/notice.do' },
-    { cat:'학부',   title:'2026학년도 2학기 학생설계전공 제도 시행 안내', date:'2026-05-12', source:'community/notice.do' },
-    { cat:'학부',   title:"2026 공과대학 'ZERO to AI Challenge' 공모 안내", date:'2026-05-11', source:'community/notice.do' },
-    { cat:'학부',   title:'[항공우주전략연구원] 2026년 연세 우주항공 주간 개최 안내', date:'2026-05-08', source:'community/notice.do' },
-    { cat:'학부',   title:'공과대학 Global Day 행사 안내', date:'2026-04-14', source:'community/notice.do' },
-    { cat:'대학원', title:'2026학년도 2학기 대학원 휴학·복학 신청 안내', date:'2026-07-02', source:'index.do' },
-    { cat:'대학원', title:'8월 졸업예정자 학위논문 제출 안내', date:'2026-06-19', source:'index.do' },
-    { cat:'대학원', title:'1학기 APR 계획서 작성 마감일 안내', date:'2026-06-16', source:'index.do' },
-    { cat:'대학원', title:'2학기 학위과정 변경 신청 안내', date:'2026-06-09', source:'index.do' },
-    { cat:'대학원', title:'박사우수장학금 및 석사우수장학금 신청 안내', date:'2026-05-29', source:'index.do' },
-    { cat:'대학원', title:'K-STAR 비자트랙 프로그램 신청 안내', date:'2026-05-14', source:'index.do' },
-    { cat:'뉴스',   title:'비압전성 폴리머 필름을 이용한 유연한 음향파 발생장치 개발과 생체조직 분야로의 응용', date:'2026-05-18', source:'community/news.do' },
-    { cat:'뉴스',   title:'리소그래피 공정 없이 제작 가능한 대기전력이 없는 수소 감지 스위치 개발', date:'2026-05-18', source:'community/news.do' },
-    { cat:'뉴스',   title:'리튬이온전지 열폭주 초기 SEI 분해 반응의 반응속도론적 모델링', date:'2026-05-18', source:'community/news.do' },
-    { cat:'뉴스',   title:'중온 직접 암모니아 SOFC 성능·내구성 향상을 위한 Co–GDC 나노촉매 연료극 개발', date:'2026-05-18', source:'community/news.do' },
-    { cat:'뉴스',   title:'부분 매립형 수직 정렬 탄소나노튜브 기반 고해상도 유연 촉각 센서 어레이 개발', date:'2026-05-18', source:'community/news.do' },
-    { cat:'뉴스',   title:'Nature Forum: The Future of Sensing Technologies 성황리 개최', date:'2026-04-21', source:'community/news.do' },
-    { cat:'뉴스',   title:'연세대 기계공학부, 일본 게이오대·도쿄대와 글로벌 학술·산업 교류 프로그램 성황리 개최', date:'2026-03-11', source:'community/news.do' },
-    { cat:'뉴스',   title:'고체산화물연료전지 공기 공급 중단 조건에서의 공기극 분해 메커니즘 규명', date:'2026-03-11', source:'community/news.do' },
-    { cat:'뉴스',   title:'전흥재 교수 한국복합재료학회 KAL-KSCM상 수상', date:'2026-03-11', source:'community/news.do' },
-    { cat:'뉴스',   title:'바이오헬스 및 정밀의료기술 심포지움 개최', date:'2026-02-19', source:'community/news.do' },
-    { cat:'세미나', title:'Prof. Dvir Yelin (Technion) — Imaging tympanic membrane vibration', date:'2026-06-04', source:'community/seminar.do' },
-    { cat:'세미나', title:'김석 교수 — Programmable Mechanical Matter', date:'2026-06-04', source:'community/seminar.do' },
-    { cat:'세미나', title:'나성수 교수 — From Conventional Dynamics', date:'2026-06-04', source:'community/seminar.do' },
-    { cat:'세미나', title:'임근배 교수 — Mechanics for Biomedical Engineering', date:'2026-05-28', source:'community/seminar.do' },
-    { cat:'세미나', title:'정성남 교수 — Overall Rotorcraft Aeromechanics', date:'2026-05-28', source:'community/seminar.do' },
-    { cat:'세미나', title:'김원정 교수 — 미세유체역학 이해 및 연구 사례 소개', date:'2026-05-19', source:'community/seminar.do' }
-  ];
-
-  /* 카테고리 메타 (순서 = 칩 순서) */
-  var CATS = [
-    { id:'학부',   label:'학부공지',   cvar:'--c-notice'  },
-    { id:'대학원', label:'대학원공지', cvar:'--c-grad'    },
-    { id:'뉴스',   label:'뉴스',       cvar:'--c-news'    },
-    { id:'세미나', label:'세미나',     cvar:'--c-seminar' }
-  ];
-  var catVar = {}; CATS.forEach(function(c){ catVar[c.id] = c.cvar; });
-
-  var NOW = new Date('2026-07-15');   /* 오늘(기준일) */
-  var NEW_DAYS = 21;                  /* NEW 배지 기준 */
+  /* ── 데이터 (공유 데이터 소스 window.YSME) ── */
+  var D = window.YSME;
 
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){
     return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
-  function fmtDate(iso){ return iso.replace(/-/g,'.'); }
-  function isNew(iso){
-    var d = new Date(iso);
-    return (NOW - d) / 86400000 <= NEW_DAYS;
+
+  /* 목록 행: 제목(+상단 고정 공지 표시) + 날짜, 원문 링크 */
+  function itemRow(x){
+    var pin = (x.no === '공지') ? '<span class="pin">공지</span>' : '';
+    return '<a class="nrow" href="'+esc(x.url)+'" target="_blank" rel="noopener">'
+      + '<span class="t">'+pin+esc(x.title)+'</span>'
+      + '<time class="d">'+esc(x.date)+'</time>'
+      + '</a>';
   }
+  function renderList(el, list){ el.innerHTML = list.map(itemRow).join(''); }
 
-  /* 정렬: 고정 최상단 → 게시일 내림차순 */
-  posts.sort(function(a,b){
-    var pa = a.pinned?1:0, pb = b.pinned?1:0;
-    if(pa!==pb) return pb-pa;
-    return a.date < b.date ? 1 : a.date > b.date ? -1 : 0;
-  });
-  /* 행 순번: 정렬 후 고정 순번 */
-  posts.forEach(function(p,i){ p.logIdx = String(i+1).padStart(3,'0'); });
-
-  var total = posts.length;
-  document.getElementById('tl-total').textContent = total;
-
-  /* 카테고리별 카운트 */
-  var catCount = {}; posts.forEach(function(p){ catCount[p.cat] = (catCount[p.cat]||0)+1; });
-
-  var rowsEl = document.getElementById('rows'),
-      emptyEl = document.getElementById('empty'),
-      statusEl = document.getElementById('fstatus'),
-      pq = document.getElementById('pq'),
-      cWrap = document.getElementById('cChips'),
-      resetBtn = document.getElementById('reset');
-
-  var state = { c:'all', q:'' };
-
-  /* ── 필터 칩 렌더 ── */
-  function chip(val,label,cvar,cnt,pressed){
-    return '<button type="button" class="fchip" data-c="'+esc(val)+'" aria-pressed="'+pressed+'">'+
-      (cvar ? '<span class="cdot" style="--chip-c:var('+cvar+')" aria-hidden="true"></span>' : '') +
-      esc(label) + (cnt!=null ? ' <span class="cnt">'+cnt+'</span>' : '') + '</button>';
-  }
-  cWrap.innerHTML = '<span class="fchips-label" aria-hidden="true">분류</span>' +
-    chip('all','전체',null,total,state.c==='all') +
-    CATS.map(function(c){ return chip(c.id,c.label,c.cvar,catCount[c.id]||0,state.c===c.id); }).join('');
-
-  function syncChips(){
-    cWrap.querySelectorAll('.fchip').forEach(function(b){ b.setAttribute('aria-pressed',String(b.dataset.c===state.c)); });
-  }
-
-  /* ── 로그 행 ── */
-  function rowHtml(p){
-    var cvar = catVar[p.cat] || '--coral';
-    var newB = isNew(p.date) ? '<span class="badge badge--new">NEW</span>' : '';
-    var pinB = p.pinned ? '<span class="badge badge--pin">PIN</span>' : '';
-    return '<article class="log'+(p.pinned?' is-pinned':'')+'" aria-label="'+esc(p.cat+' · '+p.title)+'">'
-      + '<div class="l-idx tnum" data-date="'+esc(fmtDate(p.date))+'">'+esc(p.logIdx)+'</div>'
-      + '<div class="l-date tnum">'+esc(fmtDate(p.date))+'</div>'
-      + '<div class="l-cat"><span class="cdot" style="--cat-c:var('+cvar+')" aria-hidden="true"></span>'+esc(p.cat)+'</div>'
-      + '<div class="l-title">'
-        + '<span class="t kr">'+esc(p.title)+newB+pinB+'</span>'
-        + '<span class="src">'+esc(p.source)+'</span>'
-      + '</div>'
-      + '</article>';
-  }
-
-  function apply(){
-    var ql = state.q.trim().toLowerCase();
-    var hits = posts.filter(function(p){
-      if(state.c!=='all' && p.cat!==state.c) return false;
-      if(ql){
-        var hay = (p.title+' '+p.cat+' '+p.source).toLowerCase();
-        if(hay.indexOf(ql)<0) return false;
-      }
-      return true;
-    });
-    rowsEl.innerHTML = hits.map(rowHtml).join('');
-    emptyEl.hidden = hits.length>0;
-    statusEl.innerHTML = '전체 '+total+'건 중 <b>'+hits.length+'</b>건';
-    syncChips();
-  }
-
-  cWrap.addEventListener('click', function(e){
-    var b = e.target.closest('.fchip'); if(!b) return;
-    state.c = b.dataset.c; apply();
-  });
-  var deb = null;
-  pq.addEventListener('input', function(){
-    clearTimeout(deb);
-    deb = setTimeout(function(){ state.q = pq.value; apply(); }, 120);
-  });
-  resetBtn.addEventListener('click', function(){
-    state = { c:'all', q:'' };
-    pq.value = '';
-    apply();
-    pq.focus();
-  });
-
-  apply();
-
-  /* ── 사이드: 최근 세미나 (게시일 내림차순 상위 3) ── */
-  var sched = document.getElementById('sched');
-  var seminars = posts.filter(function(p){ return p.cat==='세미나'; }).slice(0,3);
-  sched.innerHTML = seminars.map(function(p){
-    return '<div class="item">'
-      + '<div class="d tnum">'+esc(fmtDate(p.date))+'</div>'
-      + '<div class="s kr">'+esc(p.title)+'</div>'
-      + '</div>';
-  }).join('') || '<div class="s dim">세미나 없음</div>';
-
-  /* ── 사이드: 연구 성과 하이라이트 (수상·성과·포럼 등 큐레이션) ── */
-  var hiPicks = [
-    '전흥재 교수 <b>한국복합재료학회 KAL-KSCM상</b> 수상',
-    '<b>Nature Forum</b> — The Future of Sensing Technologies 성황리 개최',
-    '게이오대·도쿄대와 <b>글로벌 학술·산업 교류</b> 프로그램 개최'
+  /* ── 공지사항: 학부 / 대학원 탭 ── */
+  var noticeRows = document.getElementById('noticeRows');
+  var tabWrap = document.getElementById('noticeTabs');
+  var TABS = [
+    { id:'ug',   label:'학부',   list:D.noticesUG },
+    { id:'grad', label:'대학원', list:D.noticesGrad }
   ];
-  document.getElementById('hi').innerHTML = hiPicks.map(function(x){
-    return '<div class="item"><span class="m" aria-hidden="true">▸</span><span class="x kr">'+x+'</span></div>';
+  var cur = 'ug';
+  tabWrap.innerHTML = TABS.map(function(t){
+    return '<button type="button" class="tab" data-tab="'+t.id+'" aria-pressed="'+(cur===t.id)+'">'
+      + esc(t.label)+' <span class="cnt">'+t.list.length+'</span></button>';
   }).join('');
 
-  /* ── 사이드: 카테고리 분포 데이터바 ── */
-  var mix = document.getElementById('mix');
-  var maxC = Math.max.apply(null, CATS.map(function(c){ return catCount[c.id]||0; }));
-  mix.innerHTML = CATS.map(function(c){
-    var n = catCount[c.id]||0;
-    var pct = Math.round(n/total*100);
-    return '<div class="bd-row">'
-      + '<div class="top"><span class="lab"><span class="cdot" style="--bd-c:var('+c.cvar+')" aria-hidden="true"></span>'+esc(c.label)+'</span>'
-        + '<span class="val">'+n+' <span class="dim">· '+pct+'%</span></span></div>'
-      + '<div class="bar"><span style="width:'+(maxC?(n/maxC*100):0).toFixed(1)+'%;background:var('+c.cvar+')"></span></div>'
-      + '</div>';
-  }).join('');
-
-  /* ── 카운트업 (reduced-motion 존중) ── */
-  document.querySelectorAll('[data-count]').forEach(function(el){
-    var target = parseInt(el.dataset.count,10);
-    if(reduce){ el.textContent = target; return; }
-    var t0=null, dur=1200;
-    function step(t){
-      if(!t0) t0=t;
-      var pp = Math.min((t-t0)/dur,1), e = 1-Math.pow(1-pp,3);
-      el.textContent = Math.round(target*e);
-      if(pp<1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
+  function renderNotices(){
+    var t = TABS.filter(function(x){ return x.id===cur; })[0];
+    renderList(noticeRows, t.list);
+    tabWrap.querySelectorAll('.tab').forEach(function(b){
+      b.setAttribute('aria-pressed', String(b.dataset.tab===cur));
+    });
+  }
+  tabWrap.addEventListener('click', function(e){
+    var b = e.target.closest('.tab'); if(!b) return;
+    if(b.dataset.tab===cur) return;
+    cur = b.dataset.tab; renderNotices();
   });
+  renderNotices();
+
+  /* ── 뉴스 · 세미나 · 행사 ── */
+  renderList(document.getElementById('newsRows'), D.newsList);
+  renderList(document.getElementById('semRows'), D.seminars);
+  renderList(document.getElementById('evtRows'), D.events);
+  document.getElementById('newsCount').textContent = '전체 '+D.newsList.length+'건';
+  document.getElementById('semCount').textContent = D.seminars.length+'건';
+  document.getElementById('evtCount').textContent = D.events.length+'건';
 })();
 </script>
 <script src="assets/nav.js?v=15"></script>
+<footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--dimmer)">
+  © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
+</footer>
 </body>
 </html>

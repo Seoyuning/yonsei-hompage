@@ -4,37 +4,37 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>[시안 G · 관제] 입학 · 진로 — 연세대학교 기계공학부</title>
-<meta name="description" content="Design candidate G — Console / 관제. 학부 입학, 대학원 진학(석사 1971 · 박사 1972 · 4단계 BK21 2020), 진로 경로, 동문 · 대외협력을 관제 텔레메트리 HUD 톤으로 재구성한 입학 · 진로 페이지." />
+<meta name="description" content="연세대학교 기계공학부 입학·진로 안내 — 학부 입학, 대학원 진학, 장학 안내, 취업 정보, 진로 경로, 동문·대외협력, 자주 묻는 질문." />
 <meta name="theme-color" content="#1a3d75" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet" />
 <style>
-/* ═══════════════════════════════════════════════════════════
-   시안 G · 관제 — 입학 · 진로 (Admissions & Trajectory Console)
-   G-console.html / G-people.html 토큰·톤 계승:
-   검정 배경 · 모노 텔레메트리 · 코랄 액센트 · 헤어라인 ·
-   HUD 코너 마커 · 코랄 데이터바.
-   콘텐츠: 학부 입학 · 대학원 진학(석/박사·BK21) · 진로 경로
-   (페르소나/트랙) · 동문·대외협력 · FAQ · 문의 CTA.
-   ═══════════════════════════════════════════════════════════ */
+/* ───────────────────────────────────────────────
+   시안 G — 입학 · 진로 (라이트 테마)
+   메인(G-console)과 동일한 디자인 언어:
+   네이비 히어로 · 흰 배경 콘텐츠 · 코랄 포인트.
+   콘텐츠: 학부 입학 · 대학원 진학 · 장학 · 취업 ·
+   진로 경로 · 동문 · FAQ · 문의 CTA.
+   ─────────────────────────────────────────────── */
 :root{
-  --bg:#1a3d75;
-  --panel:#254e8f;
-  --panel-2:#204683;
-  --line:rgba(255,255,255,.22);
-  --line-soft:rgba(255,255,255,.12);
-  --txt:#e2e6ec;
-  --txt-hi:#eef0f4;
-  --dim:#8b9099;
-  --dimmer:#565c65;
-  --coral:#e2593c;--warm:#e2593c;
-  --coral-soft:rgba(226,89,60,.16);
-  --glow:#2b4a74;
+  --navy:#1a3d75;
+  --coral:#e2593c;
+  --sky:#9db4d8;
+  --ink:#2a3a56;
+  --body:#4a5a74;
+  --sub:#5c6b85;
+  --muted:#7b8595;
+  --faint:#9aa3b0;
+  --dimmer:#7b8595;
+  --line:rgba(10,26,51,.14);
+  --line-soft:rgba(10,26,51,.08);
+  --card:#f7f9fc;
+  --card-hover:#eef3fa;
   --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
   --kr:"Pretendard Variable","Pretendard",system-ui,sans-serif;
-  /* 트랙/페르소나 색 (G-people 클러스터 팔레트 계승) */
+  /* 진로 트랙 색 (연구 분야 팔레트 계승) */
   --c-solid:#e2593c;
   --c-thermal:#e8944e;
   --c-manuf:#c8b06b;
@@ -44,108 +44,71 @@
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 body{
-  font-family:var(--mono);
-  background:var(--bg); color:var(--txt);
+  font-family:var(--kr);
+  background:#fff; color:var(--body);
   -webkit-font-smoothing:antialiased;
   overflow-x:hidden; word-break:keep-all;
-  line-height:1.5;
-  padding-top:6.4rem;
+  line-height:1.65;
 }
-:lang(ko),.kr{font-family:var(--kr)}
 a{color:inherit;text-decoration:none}
 .mono{font-family:var(--mono)}
-.dim{color:var(--dim)}
 .tnum{font-variant-numeric:tabular-nums}
-.visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 :focus-visible{outline:2px solid var(--coral);outline-offset:2px}
-.skip{position:absolute;left:.6rem;top:-3rem;z-index:60;background:var(--coral);color:#0b0b0b;
-  padding:.5rem .9rem;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;transition:top .15s}
+.skip{position:absolute;left:.6rem;top:-3rem;z-index:60;background:var(--navy);color:#fff;
+  padding:.5rem .9rem;font-size:.8rem;transition:top .15s}
 .skip:focus{top:.6rem}
 
-/* ── 상단 텔레메트리 HUD 바 ── */
-.hud-top{position:fixed;top:0;left:0;right:0;z-index:30;
-  display:grid;grid-template-columns:1fr auto 1fr;align-items:start;
-  padding:1.15rem clamp(1.2rem,.6rem + 2vw,2.6rem) 1rem;
-  background:linear-gradient(var(--bg) 55%,rgba(26,61,117,.86));
-  backdrop-filter:blur(6px);
-  border-bottom:1px solid var(--line-soft)}
-.tl{font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;line-height:1.9;color:var(--dim)}
-.tl b{color:var(--txt-hi);font-weight:500}
-.tl .row{display:flex;gap:1.4rem;flex-wrap:wrap}
-.tl .row .u{color:var(--coral)}
-.tl .dot{color:var(--coral)}
-.crest{justify-self:center;text-align:center;padding-top:.1rem}
-.crest .mk{font-family:var(--kr);font-weight:800;letter-spacing:.12em;font-size:.95rem;color:#fff}
-.crest .sub{font-size:.56rem;letter-spacing:.3em;color:var(--dim);margin-top:.25rem}
-.hud-nav{justify-self:end;text-align:right;font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;padding-top:.15rem}
-.hud-nav a{color:var(--dim);margin-left:1.05rem;transition:color .15s}
-.hud-nav a:hover{color:var(--txt-hi)}
-.hud-nav a[aria-current]{color:var(--coral)}
-.hud-nav .join{color:var(--coral)}
-
 /* ── 컨테이너 ── */
-.wrap{max-width:1320px;margin:0 auto;padding-left:clamp(1.2rem,.6rem + 2vw,2.6rem);padding-right:clamp(1.2rem,.6rem + 2vw,2.6rem)}
+.wrap{max-width:1120px;margin:0 auto;
+  padding-left:clamp(1.2rem,.6rem + 2vw,2.6rem);padding-right:clamp(1.2rem,.6rem + 2vw,2.6rem)}
 
-/* ── 페이지 헤더 / 브레드크럼 ── */
-.pagehead{padding:2.4rem 0 1.6rem;position:relative}
-.crumb{font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:1.1rem}
-.crumb a{color:var(--dim)}.crumb a:hover{color:var(--txt-hi)}
-.crumb .sep{color:var(--dimmer);margin:0 .5rem}
-.crumb b{color:var(--coral);font-weight:400}
-.pagehead h1{font-family:var(--kr);font-weight:800;letter-spacing:-.01em;
-  font-size:clamp(2rem,1.2rem + 3vw,3rem);color:#fff;line-height:1.04;margin-bottom:.7rem}
-.pagehead h1 .en{display:block;font-family:var(--mono);font-weight:300;
-  font-size:.32em;letter-spacing:.32em;color:var(--dim);margin-top:.6rem;text-transform:uppercase}
-.pagehead .lede{max-width:48rem;font-family:var(--kr);font-size:.94rem;color:var(--txt);line-height:1.7}
-.pagehead .lede b{color:var(--txt-hi);font-weight:600}
-.pagehead::before,.pagehead::after{content:"";position:absolute;width:14px;height:14px;pointer-events:none}
-.pagehead::before{top:1.4rem;right:0;border-top:1px solid var(--coral);border-right:1px solid var(--coral);opacity:.7}
-.pagehead::after{bottom:.4rem;right:0;border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+/* ── 페이지 히어로 (네이비) ── */
+.pagehead-band{background:var(--navy);color:#fff;
+  padding:7rem 0 clamp(2.6rem,1.8rem + 2.5vw,3.6rem)}
+.pagehead .kick{font-family:var(--mono);font-size:.66rem;letter-spacing:.24em;
+  text-transform:uppercase;color:var(--sky)}
+.pagehead h1{font-weight:800;letter-spacing:-.015em;color:#fff;
+  font-size:clamp(2rem,1.2rem + 3vw,3rem);line-height:1.1;margin-top:.7rem}
+.pagehead .lede{max-width:44rem;font-size:1rem;color:#c6d2e4;line-height:1.85;margin-top:1.1rem}
+.pagehead .lede b{color:#fff;font-weight:600}
+/* 페이지 내 이동 칩 */
+.anchor-row{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.6rem}
+.anchor-row a{display:inline-flex;align-items:center;
+  border:1px solid rgba(255,255,255,.32);color:#c6d2e4;
+  font-size:.84rem;padding:.42rem .85rem;transition:border-color .15s,color .15s}
+.anchor-row a:hover{color:#fff;border-color:#fff}
 
-/* 앵커 칩(페이지 내 이동) */
-.anchor-row{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.5rem}
-.anchor-row a{display:inline-flex;align-items:center;gap:.4rem;
-  border:1px solid var(--line);color:var(--dim);
-  font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;
-  padding:.4rem .7rem;transition:border-color .15s,color .15s}
-.anchor-row a::before{content:"›";color:var(--coral)}
-.anchor-row a:hover{color:var(--txt-hi);border-color:var(--dim)}
-
-/* ── 섹션 골격 ── */
-.section{padding:2.6rem 0;border-top:1px solid var(--line-soft)}
-.section:first-of-type{border-top:0}
-.sec-head{display:grid;grid-template-columns:auto 1fr auto;gap:1.2rem;align-items:baseline;margin-bottom:1.8rem;flex-wrap:wrap}
-.sec-num{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--coral);
-  border:1px solid var(--coral);padding:.28rem .55rem;white-space:nowrap;align-self:start;margin-top:.4rem}
-.sec-body{min-width:0}
-.sec-title{font-family:var(--kr);font-weight:800;font-size:clamp(1.35rem,1rem + 1.6vw,1.9rem);
-  color:#fff;line-height:1.1;letter-spacing:-.01em}
-.sec-title .en{display:inline-block;font-family:var(--mono);font-weight:300;font-size:.5em;
-  letter-spacing:.24em;color:var(--dim);text-transform:uppercase;margin-left:.7rem;vertical-align:middle}
-.sec-sub{font-family:var(--kr);font-size:.9rem;color:var(--txt);margin-top:.6rem;max-width:44rem;line-height:1.65}
-.sec-more{font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);white-space:nowrap;
-  align-self:start;margin-top:.5rem;transition:color .15s}
+/* ── 섹션 골격 (흰 배경) ── */
+.section{padding:clamp(3rem,2rem + 3vw,4.5rem) 0}
+.section + .section{border-top:1px solid var(--line-soft)}
+.sec-head{display:flex;justify-content:space-between;align-items:baseline;
+  gap:1.5rem;flex-wrap:wrap;margin-bottom:clamp(1.6rem,1rem + 2vw,2.4rem)}
+.sec-kick{font-family:var(--mono);font-size:.66rem;letter-spacing:.24em;
+  text-transform:uppercase;color:var(--coral)}
+.sec-title{font-weight:700;color:var(--navy);letter-spacing:-.01em;
+  font-size:clamp(1.5rem,1rem + 2vw,2.1rem);line-height:1.24;margin-top:.5rem}
+.sec-sub{flex-basis:100%;font-size:.94rem;color:var(--sub);line-height:1.7;max-width:44rem;margin-top:.2rem}
+.sec-more{font-size:.9rem;color:var(--muted);white-space:nowrap;transition:color .15s}
 .sec-more:hover{color:var(--coral)}
 .sec-more .arr{color:var(--coral)}
 
-/* ── 관제 카드 (공통 패널) ── */
-.card{position:relative;border:1px solid var(--line);background:var(--panel);
-  padding:1.5rem 1.5rem 1.6rem}
-.card::before{content:"";position:absolute;top:-1px;left:-1px;width:9px;height:9px;
-  border-top:1px solid var(--coral);border-left:1px solid var(--coral)}
-.card--soft{background:var(--panel-2)}
-.card .overline{font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);display:block;margin-bottom:.9rem}
-.card h3{font-family:var(--kr);font-weight:700;font-size:1.05rem;color:var(--txt-hi);line-height:1.25;margin-bottom:.7rem}
-.card p{font-family:var(--kr);font-size:.86rem;color:var(--txt);line-height:1.7}
-.card p.mono{font-family:var(--mono);font-size:.7rem;letter-spacing:.04em;color:var(--dim);line-height:1.9}
-.card a.inline{color:var(--txt-hi);text-decoration:underline;text-underline-offset:2px;text-decoration-color:var(--dimmer);transition:text-decoration-color .15s}
+/* ── 카드 (공통 패널) ── */
+.card{border:1px solid var(--line-soft);background:var(--card);padding:1.6rem 1.6rem 1.7rem}
+.card--soft{background:var(--card)}
+.card .overline{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--coral);display:block;margin-bottom:.9rem}
+.card h3{font-weight:700;font-size:1.1rem;color:var(--navy);line-height:1.3;margin-bottom:.7rem}
+.card p{font-size:.9rem;color:var(--body);line-height:1.75}
+.card p.contact-line{font-size:.86rem;color:var(--sub);line-height:1.8}
+.card a.inline{color:var(--navy);text-decoration:underline;text-underline-offset:2px;
+  text-decoration-color:var(--line);transition:text-decoration-color .15s}
 .card a.inline:hover{text-decoration-color:var(--coral)}
-.card b{color:var(--txt-hi);font-weight:600}
-.card .kbd{font-family:var(--mono);font-size:.68em;border:1px solid var(--line);padding:.05em .4em;color:var(--dim);white-space:nowrap}
+.card b{color:var(--ink);font-weight:600}
+.card .kbd{font-family:var(--mono);font-size:.82em;border:1px solid var(--line);
+  padding:.05em .4em;color:var(--sub);white-space:nowrap}
 
 /* 그리드 유틸 */
 .grid{display:grid;gap:1.1rem}
-.grid--2{grid-template-columns:repeat(auto-fit,minmax(19rem,1fr))}
 .grid--3{grid-template-columns:repeat(auto-fit,minmax(15rem,1fr))}
 .grid--4{grid-template-columns:repeat(auto-fit,minmax(15rem,1fr))}
 .duo{display:grid;gap:1.1rem;grid-template-columns:1.3fr 1fr}
@@ -154,189 +117,191 @@ a{color:inherit;text-decoration:none}
 /* 번호 리스트 (지원 절차) */
 .num-list{list-style:none;margin:1rem 0 1.2rem;display:flex;flex-direction:column;gap:.7rem}
 .num-list li{display:grid;grid-template-columns:auto 1fr;gap:.8rem;align-items:start;
-  font-family:var(--kr);font-size:.84rem;color:var(--txt);line-height:1.6}
-.num-list .n{font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;color:var(--coral);
+  font-size:.9rem;color:var(--body);line-height:1.65}
+.num-list .n{font-family:var(--mono);font-size:.68rem;color:var(--coral);
   border:1px solid var(--line);padding:.15rem .4rem;line-height:1.2;align-self:start;margin-top:.15rem}
-.num-list a{color:var(--txt-hi);text-decoration:underline;text-underline-offset:2px;text-decoration-color:var(--dimmer)}
+.num-list a{color:var(--navy);text-decoration:underline;text-underline-offset:2px;text-decoration-color:var(--line)}
 .num-list a:hover{text-decoration-color:var(--coral)}
 
 /* 데이터 정의 행 (연혁/스펙) */
-.def{border-top:1px solid var(--line-soft)}
+.def{border-top:1px solid var(--line)}
 .def .drow{display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:baseline;
-  padding:.55rem 0;border-bottom:1px solid var(--line-soft);
-  font-size:.7rem;letter-spacing:.04em}
-.def .drow .k{font-family:var(--kr);color:var(--dim);text-transform:none;letter-spacing:0}
-.def .drow .v{color:var(--txt-hi);font-variant-numeric:tabular-nums}
+  padding:.6rem 0;border-bottom:1px solid var(--line-soft);font-size:.86rem}
+.def .drow .k{color:var(--muted)}
+.def .drow .v{font-family:var(--mono);color:var(--navy);font-variant-numeric:tabular-nums}
 .def .drow .v.hl{color:var(--coral)}
 
-/* CTA 버튼 */
-.btns{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.1rem}
+/* 버튼 */
+.btns{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.2rem}
 .btn{display:inline-flex;align-items:center;gap:.45rem;cursor:pointer;
-  font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;
-  padding:.62rem 1rem;border:1px solid var(--line);color:var(--txt);
+  font-size:.9rem;font-weight:600;padding:.66rem 1.1rem;
+  border:1px solid var(--line);color:var(--navy);background:#fff;
   transition:border-color .15s,color .15s,background .15s}
-.btn:hover{border-color:var(--dim);color:var(--txt-hi)}
+.btn:hover{border-color:var(--navy)}
 .btn .arr{color:var(--coral)}
-.btn--coral{background:var(--coral);border-color:var(--coral);color:#0b0b0b;font-weight:500}
-.btn--coral .arr{color:#0b0b0b}
-.btn--coral:hover{background:#f06a4c;border-color:#f06a4c;color:#0b0b0b}
+.btn--coral{background:var(--coral);border-color:var(--coral);color:#fff}
+.btn--coral .arr{color:#fff}
+.btn--coral:hover{background:#c94a30;border-color:#c94a30;color:#fff}
 
-/* ── 대학원 진학 3스텝 ── */
-.step{position:relative;border:1px solid var(--line);background:var(--panel);padding:1.4rem 1.4rem 1.5rem;display:flex;flex-direction:column}
-.step .sn{font-family:var(--mono);font-weight:300;font-size:2.4rem;line-height:.9;color:var(--dimmer);margin-bottom:.7rem}
+/* ── 대학원 진학 3단계 ── */
+.step{border:1px solid var(--line-soft);background:var(--card);
+  padding:1.5rem 1.5rem 1.6rem;display:flex;flex-direction:column}
+.step .sn{font-family:var(--mono);font-weight:300;font-size:2.2rem;line-height:.9;
+  color:#ccd6e5;margin-bottom:.8rem}
 .step .sn u{color:var(--coral);text-decoration:none}
-.step h3{font-family:var(--kr);font-weight:700;font-size:1rem;color:var(--txt-hi);margin-bottom:.55rem}
-.step p{font-family:var(--kr);font-size:.83rem;color:var(--txt);line-height:1.65;margin-bottom:1rem}
-.step .go{margin-top:auto;font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);transition:color .15s}
+.step h3{font-weight:700;font-size:1.05rem;color:var(--navy);margin-bottom:.55rem}
+.step p{font-size:.88rem;color:var(--body);line-height:1.7;margin-bottom:1rem}
+.step .go{margin-top:auto;font-size:.86rem;color:var(--muted);transition:color .15s}
 .step .go:hover{color:var(--coral)}
 .step .go .arr{color:var(--coral)}
 
-/* 대학원 공지(정적 데이터 행) */
+/* 대학원 공지 리스트 */
+.list-lab{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--coral);display:block;margin-bottom:.9rem}
 .post-list{border-top:1px solid var(--line)}
-.post-row{display:grid;grid-template-columns:5rem 1fr auto;gap:1rem;align-items:baseline;
-  padding:.7rem .2rem;border-bottom:1px solid var(--line-soft);transition:background .12s}
-.post-row:hover{background:rgba(255,255,255,.025)}
-.post-cat{font-size:.56rem;letter-spacing:.12em;text-transform:uppercase;color:var(--coral);
-  border:1px solid var(--line);padding:.15rem .35rem;justify-self:start;line-height:1.3}
-.post-title{font-family:var(--kr);font-size:.86rem;color:var(--txt-hi);line-height:1.4;min-width:0}
-.post-title .new{font-family:var(--mono);font-size:.52rem;letter-spacing:.1em;color:#0b0b0b;background:var(--coral);
-  padding:.1rem .3rem;margin-left:.5rem;vertical-align:middle}
-.post-date{font-family:var(--mono);font-size:.66rem;color:var(--dim);font-variant-numeric:tabular-nums;white-space:nowrap}
+.post-row{display:grid;grid-template-columns:auto 1fr auto;gap:1rem;align-items:baseline;
+  padding:.8rem .2rem;border-bottom:1px solid var(--line-soft);transition:background .12s}
+.post-row:hover{background:var(--card)}
+.post-cat{font-size:.72rem;color:var(--coral);border:1px solid var(--line);
+  padding:.15rem .4rem;justify-self:start;line-height:1.3;white-space:nowrap}
+.post-title{font-size:.92rem;color:var(--ink);line-height:1.45;min-width:0}
+.post-title .new{font-family:var(--mono);font-size:.56rem;letter-spacing:.1em;color:#fff;
+  background:var(--coral);padding:.12rem .32rem;margin-left:.5rem;vertical-align:middle}
+.post-date{font-family:var(--mono);font-size:.72rem;color:var(--muted);
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+.note{font-size:.86rem;color:var(--muted);margin-top:1.2rem;line-height:1.7}
+.note a{color:var(--navy);text-decoration:underline;text-underline-offset:2px;transition:color .15s}
+.note a:hover{color:var(--coral)}
 
-/* ── 진로 트랙(페르소나) 카드 ── */
-.route{position:relative;border:1px solid var(--line);background:var(--panel);
-  padding:1.4rem 1.4rem 1.5rem;display:flex;flex-direction:column;
+/* ── 진로 트랙 카드 ── */
+.route{border:1px solid var(--line-soft);background:var(--card);
+  padding:1.5rem 1.5rem 1.6rem;display:flex;flex-direction:column;
   border-top:2px solid var(--route-c,var(--coral))}
 .route .persona{display:inline-flex;align-items:center;gap:.45rem;
-  font-family:var(--mono);font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-bottom:.8rem}
+  font-size:.8rem;color:var(--muted);margin-bottom:.8rem}
 .route .persona .pdot{width:7px;height:7px;border-radius:50%;background:var(--route-c,var(--coral));flex:none}
-.route h3{font-family:var(--kr);font-weight:700;font-size:1rem;color:var(--txt-hi);margin-bottom:.85rem;line-height:1.25}
+.route h3{font-weight:700;font-size:1.05rem;color:var(--navy);margin-bottom:.85rem;line-height:1.3}
 .route .flow{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;margin-bottom:.85rem}
-.route .flow .st{font-family:var(--mono);font-size:.6rem;letter-spacing:.04em;color:var(--txt);
-  border:1px solid var(--line-soft);background:var(--panel-2);padding:.25rem .5rem;white-space:nowrap}
+.route .flow .st{font-size:.76rem;color:var(--sub);
+  border:1px solid var(--line-soft);background:#fff;padding:.25rem .55rem;white-space:nowrap}
 .route .flow .ar{color:var(--route-c,var(--coral));font-size:.7rem}
-.route p{font-family:var(--kr);font-size:.82rem;color:var(--txt);line-height:1.65;margin-bottom:1rem}
-.route .go{margin-top:auto;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);transition:color .15s}
+.route p{font-size:.86rem;color:var(--body);line-height:1.7;margin-bottom:1rem}
+.route .go{margin-top:auto;font-size:.86rem;color:var(--muted);transition:color .15s}
 .route .go:hover{color:var(--route-c,var(--coral))}
 .route .go .arr{color:var(--route-c,var(--coral))}
-.note{font-family:var(--kr);font-size:.78rem;color:var(--dim);margin-top:1.2rem;line-height:1.6}
 
 /* ── 동문 타임라인 ── */
-.timeline{border-left:1px solid var(--line);margin-top:.4rem;padding-left:1.1rem;display:flex;flex-direction:column;gap:1.1rem}
+.timeline{border-left:1px solid var(--line);margin-top:.4rem;padding-left:1.1rem;
+  display:flex;flex-direction:column;gap:1.1rem}
 .tl-item{position:relative}
 .tl-item::before{content:"";position:absolute;left:calc(-1.1rem - 1px);top:.35rem;
-  width:7px;height:7px;border-radius:50%;background:var(--dim);transform:translateX(-50%)}
+  width:7px;height:7px;border-radius:50%;background:var(--faint);transform:translateX(-50%)}
 .tl-item--hl::before{background:var(--coral)}
-.tl-date{font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;color:var(--coral);margin-bottom:.2rem}
-.tl-text{font-family:var(--kr);font-size:.82rem;color:var(--txt);line-height:1.55}
+.tl-date{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;color:var(--coral);margin-bottom:.2rem}
+.tl-text{font-size:.88rem;color:var(--body);line-height:1.6}
 
-/* ── FAQ (details 아코디언) ── */
+/* ── FAQ ── */
 .faq{border-top:1px solid var(--line)}
 .faq details{border-bottom:1px solid var(--line-soft)}
-.faq summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:auto 1fr auto;gap:.9rem;align-items:baseline;
-  padding:1rem .2rem;transition:color .12s}
+.faq summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:auto 1fr auto;
+  gap:.9rem;align-items:baseline;padding:1.05rem .2rem;transition:background .12s}
 .faq summary::-webkit-details-marker{display:none}
-.faq summary:hover{color:var(--txt-hi)}
-.faq summary .qm{font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;color:var(--coral);align-self:start;margin-top:.15rem}
-.faq summary .qt{font-family:var(--kr);font-size:.92rem;color:var(--txt-hi);line-height:1.4}
-.faq summary .mk{position:relative;width:12px;height:12px;flex:none;align-self:start;margin-top:.3rem}
+.faq summary:hover{background:var(--card)}
+.faq summary .qm{font-family:var(--mono);font-size:.68rem;color:var(--coral);align-self:start;margin-top:.2rem}
+.faq summary .qt{font-size:.96rem;color:var(--ink);font-weight:600;line-height:1.45}
+.faq summary .mk{position:relative;width:12px;height:12px;flex:none;align-self:start;margin-top:.35rem}
 .faq summary .mk::before,.faq summary .mk::after{content:"";position:absolute;background:var(--coral);transition:transform .2s}
 .faq summary .mk::before{top:5px;left:0;width:12px;height:1px}
 .faq summary .mk::after{top:0;left:5px;width:1px;height:12px}
 .faq details[open] summary .mk::after{transform:scaleY(0)}
-.faq .fbody{padding:0 .2rem 1.1rem;font-family:var(--kr);font-size:.85rem;color:var(--txt);line-height:1.75;max-width:52rem}
-.faq .fbody a{color:var(--txt-hi);text-decoration:underline;text-underline-offset:2px;text-decoration-color:var(--dimmer)}
+.faq .fbody{padding:0 .2rem 1.2rem;font-size:.9rem;color:var(--body);line-height:1.8;max-width:52rem}
+.faq .fbody a{color:var(--navy);text-decoration:underline;text-underline-offset:2px;text-decoration-color:var(--line)}
 .faq .fbody a:hover{text-decoration-color:var(--coral)}
-.faq .fbody b{color:var(--txt-hi);font-weight:600}
-.faq .fbody .m{font-family:var(--mono);font-size:.92em;color:var(--coral);letter-spacing:.02em}
-.faq .fbody .kbd{font-family:var(--mono);font-size:.82em;border:1px solid var(--line);padding:.05em .4em;color:var(--dim);white-space:nowrap}
+.faq .fbody b{color:var(--ink);font-weight:600}
+.faq .fbody .m{font-family:var(--mono);font-size:.92em;color:var(--coral)}
 
-/* ── 문의 CTA 밴드 ── */
-.cta{position:relative;border:1px solid var(--coral);background:
-  radial-gradient(120% 160% at 100% 0%,rgba(226,89,60,.14),transparent 55%),var(--panel);
-  padding:2.4rem clamp(1.4rem,1rem + 2vw,2.6rem)}
-.cta::after{content:"";position:absolute;bottom:-1px;right:-1px;width:12px;height:12px;
-  border-bottom:1px solid var(--coral);border-right:1px solid var(--coral)}
-.cta .eyebrow{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--coral);margin-bottom:.8rem}
-.cta h2{font-family:var(--kr);font-weight:800;font-size:clamp(1.4rem,1rem + 2vw,2rem);color:#fff;line-height:1.15;margin-bottom:.9rem}
-.cta p{font-family:var(--kr);font-size:.9rem;color:var(--txt);max-width:40rem;line-height:1.7;margin-bottom:1.2rem}
+/* ── 문의 CTA 밴드 (네이비) ── */
+.cta{background:var(--navy);color:#fff;
+  padding:clamp(2.6rem,1.6rem + 3.5vw,4.2rem) clamp(1.4rem,.6rem + 2vw,3rem)}
+.cta .eyebrow{font-family:var(--mono);font-size:.66rem;letter-spacing:.24em;
+  text-transform:uppercase;color:var(--sky);margin-bottom:.8rem}
+.cta h2{font-weight:700;font-size:clamp(1.4rem,1rem + 2vw,2.1rem);color:#fff;
+  line-height:1.3;letter-spacing:-.01em;margin-bottom:.9rem}
+.cta p{font-size:.98rem;color:#c6d2e4;max-width:40rem;line-height:1.7;margin-bottom:1.4rem}
+.cta .btn{background:transparent;border-color:rgba(255,255,255,.55);color:#fff}
+.cta .btn:hover{border-color:#fff}
+.cta .btn .arr{color:var(--coral)}
+.cta .btn--coral{background:#fff;border-color:#fff;color:var(--navy)}
+.cta .btn--coral .arr{color:var(--coral)}
+.cta .btn--coral:hover{background:transparent;color:#fff}
 
-/* ── 장학 안내 (교내/교외 패널·리스트) ── */
-.subtabs{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.4rem}
-.subtabs .st-lab{display:inline-flex;align-items:center;gap:.5rem;
-  border:1px solid var(--line);color:var(--dim);
-  font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;
-  padding:.4rem .7rem}
-.subtabs .st-lab .cnt{color:var(--coral);font-variant-numeric:tabular-nums}
+/* ── 장학 안내 ── */
 .sch-block{margin-top:1.6rem}
 .sch-block:first-child{margin-top:0}
-.sch-block > .overline{font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);display:block;margin-bottom:.9rem}
-.sch-block > .overline .cnt{color:var(--coral);font-variant-numeric:tabular-nums;margin-left:.4rem}
+.sch-block > .overline{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--coral);display:block;margin-bottom:.9rem}
+.sch-block > .overline .cnt{color:var(--navy);font-variant-numeric:tabular-nums;margin-left:.4rem}
 /* 교내: details 리스트 */
 .sch-list{border-top:1px solid var(--line)}
 .sch-list details{border-bottom:1px solid var(--line-soft)}
-.sch-list summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:auto 1fr auto;gap:.9rem;align-items:baseline;
-  padding:.85rem .2rem;transition:color .12s}
+.sch-list summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:auto 1fr auto;
+  gap:.9rem;align-items:baseline;padding:.9rem .2rem;transition:background .12s}
 .sch-list summary::-webkit-details-marker{display:none}
-.sch-list summary:hover{color:var(--txt-hi)}
-.sch-list summary .idx{font-family:var(--mono);font-size:.6rem;letter-spacing:.06em;color:var(--coral);
-  border:1px solid var(--line);padding:.12rem .4rem;line-height:1.3;align-self:start;margin-top:.1rem;font-variant-numeric:tabular-nums}
-.sch-list summary .nm{font-family:var(--kr);font-size:.9rem;color:var(--txt-hi);line-height:1.4}
+.sch-list summary:hover{background:var(--card)}
+.sch-list summary .idx{font-family:var(--mono);font-size:.64rem;color:var(--coral);
+  border:1px solid var(--line);padding:.12rem .4rem;line-height:1.3;align-self:start;margin-top:.1rem;
+  font-variant-numeric:tabular-nums}
+.sch-list summary .nm{font-size:.94rem;color:var(--ink);font-weight:600;line-height:1.45}
 .sch-list summary .mk{position:relative;width:12px;height:12px;flex:none;align-self:start;margin-top:.3rem}
 .sch-list summary .mk::before,.sch-list summary .mk::after{content:"";position:absolute;background:var(--coral);transition:transform .2s}
 .sch-list summary .mk::before{top:5px;left:0;width:12px;height:1px}
 .sch-list summary .mk::after{top:0;left:5px;width:1px;height:12px}
 .sch-list details[open] summary .mk::after{transform:scaleY(0)}
-.sch-list .sbody{padding:0 .2rem 1rem 2.4rem;font-family:var(--kr);font-size:.82rem;color:var(--txt);line-height:1.7;max-width:54rem}
-/* 교외: 카드 그리드 (정의 행) */
+.sch-list .sbody{padding:0 .2rem 1.1rem 2.6rem;font-size:.88rem;color:var(--body);line-height:1.75;max-width:54rem}
+/* 교외: 카드 그리드 */
 .sch-cards{display:grid;gap:1.1rem;grid-template-columns:repeat(auto-fit,minmax(19rem,1fr))}
-.sch-card{position:relative;border:1px solid var(--line);background:var(--panel);padding:1.2rem 1.2rem 1.3rem}
-.sch-card::before{content:"";position:absolute;top:-1px;left:-1px;width:9px;height:9px;
-  border-top:1px solid var(--coral);border-left:1px solid var(--coral)}
-.sch-card h4{font-family:var(--kr);font-weight:700;font-size:.95rem;color:var(--txt-hi);line-height:1.35;margin-bottom:.8rem;
+.sch-card{border:1px solid var(--line-soft);background:var(--card);padding:1.3rem 1.3rem 1.4rem}
+.sch-card h4{font-weight:700;font-size:.98rem;color:var(--navy);line-height:1.4;margin-bottom:.8rem;
   display:flex;gap:.55rem;align-items:baseline}
-.sch-card h4 .idx{font-family:var(--mono);font-size:.58rem;letter-spacing:.06em;color:var(--coral);
-  border:1px solid var(--line);padding:.1rem .38rem;line-height:1.3;flex:none;font-variant-numeric:tabular-nums;align-self:start;margin-top:.05rem}
+.sch-card h4 .idx{font-family:var(--mono);font-size:.6rem;color:var(--coral);
+  border:1px solid var(--line);padding:.1rem .38rem;line-height:1.3;flex:none;
+  font-variant-numeric:tabular-nums;align-self:start;margin-top:.15rem}
 .sch-card .def{border-top:1px solid var(--line-soft)}
 .sch-card .def .drow{grid-template-columns:5.2rem 1fr}
-.sch-card .def .drow .k{font-family:var(--mono);font-size:.56rem;letter-spacing:.08em;text-transform:uppercase;color:var(--coral)}
-.sch-card .def .drow .v{font-family:var(--kr);font-size:.78rem;color:var(--txt);text-align:left;letter-spacing:0;line-height:1.55;font-variant-numeric:normal;white-space:normal}
+.sch-card .def .drow .k{font-size:.78rem;color:var(--muted)}
+.sch-card .def .drow .v{font-family:var(--kr);font-size:.84rem;color:var(--body);text-align:left;
+  line-height:1.6;font-variant-numeric:normal;white-space:normal}
 @media (max-width:520px){.sch-card .def .drow{grid-template-columns:1fr}.sch-card .def .drow .v{margin-top:.15rem}}
 
 /* ── 취업 정보 (게시판 리스트) ── */
 .job-head{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:.9rem}
-.job-head .overline{font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
-.job-head .cnt{font-family:var(--mono);font-size:.62rem;color:var(--coral);font-variant-numeric:tabular-nums}
+.job-head .overline{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--coral)}
+.job-head .cnt{font-size:.84rem;color:var(--muted);font-variant-numeric:tabular-nums}
 .job-list{border-top:1px solid var(--line)}
 .job-row{display:grid;grid-template-columns:3.6rem 1fr auto;gap:1rem;align-items:baseline;
-  padding:.72rem .2rem;border-bottom:1px solid var(--line-soft);transition:background .12s}
-.job-row:hover{background:rgba(255,255,255,.025)}
+  padding:.8rem .2rem;border-bottom:1px solid var(--line-soft);transition:background .12s}
+.job-row:hover{background:var(--card)}
 .job-row:hover .job-title{color:var(--coral)}
-.job-no{font-family:var(--mono);font-size:.64rem;color:var(--dimmer);font-variant-numeric:tabular-nums;letter-spacing:.02em}
-.job-title{font-family:var(--kr);font-size:.86rem;color:var(--txt-hi);line-height:1.45;min-width:0;transition:color .12s}
+.job-no{font-family:var(--mono);font-size:.7rem;color:var(--faint);font-variant-numeric:tabular-nums}
+.job-title{font-size:.92rem;color:var(--ink);line-height:1.5;min-width:0;transition:color .12s}
 .job-title .ext{font-family:var(--mono);color:var(--coral);margin-left:.35rem;font-size:.8em}
-.job-date{font-family:var(--mono);font-size:.66rem;color:var(--dim);font-variant-numeric:tabular-nums;white-space:nowrap;letter-spacing:.02em}
+.job-date{font-family:var(--mono);font-size:.72rem;color:var(--muted);
+  font-variant-numeric:tabular-nums;white-space:nowrap}
 
-/* ── 하단 HUD (카운터 텔레메트리) ── */
-.hud-bottom{border-top:1px solid var(--line);margin-top:2.6rem;
-  background:linear-gradient(rgba(26,61,117,.4),var(--bg))}
-.hud-bottom-inner{padding:1.6rem 0 2.2rem;
+/* ── 학부 현황 (숫자) ── */
+.stats{border-top:1px solid var(--line-soft);margin-top:1rem}
+.stats-inner{padding:2.4rem 0 2.6rem;
   display:flex;justify-content:space-between;align-items:flex-end;gap:2rem;flex-wrap:wrap}
-.counters{display:flex;gap:clamp(1.5rem,1rem + 3vw,3.6rem)}
-.ct .lab{font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:.4rem}
-.ct .num{font-family:var(--mono);font-weight:300;font-size:clamp(1.8rem,1rem + 3vw,2.8rem);
-  line-height:.9;letter-spacing:.02em;color:var(--txt-hi);font-variant-numeric:tabular-nums}
-.ct .num .u{color:var(--coral);font-size:.42em;margin-left:.15em;letter-spacing:.1em}
-.foot-tl{font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);text-align:right;line-height:2}
-.foot-tl b{color:var(--txt);font-weight:500}
+.counters{display:flex;gap:clamp(2rem,1rem + 4vw,4.5rem);flex-wrap:wrap}
+.ct .lab{font-size:.84rem;color:var(--muted);margin-bottom:.4rem}
+.ct .num{font-family:var(--mono);font-weight:300;color:var(--navy);
+  font-size:clamp(1.9rem,1rem + 2.6vw,2.6rem);line-height:1;font-variant-numeric:tabular-nums}
+.stats-contact{font-size:.86rem;color:var(--muted);text-align:right;line-height:1.9}
+.stats-contact b{color:var(--sub);font-weight:600}
 
 /* ── 반응형 ── */
 @media (max-width:860px){
-  .hud-top{grid-template-columns:1fr auto}
-  .hud-nav{display:none}
-  .sec-head{grid-template-columns:1fr;gap:.7rem}
-  .sec-num{justify-self:start;margin-top:0}
-  .sec-more{margin-top:.2rem}
   .post-row{grid-template-columns:1fr auto;gap:.5rem 1rem}
   .post-cat{grid-row:1;grid-column:1}
   .post-date{grid-row:1;grid-column:2;justify-self:end}
@@ -345,70 +310,52 @@ a{color:inherit;text-decoration:none}
   .job-no{grid-row:1;grid-column:1;align-self:center}
   .job-date{grid-row:1;grid-column:2;justify-self:end}
   .job-title{grid-row:2;grid-column:1 / -1}
-  .hud-bottom-inner{flex-direction:column;align-items:flex-start}
-  .foot-tl{text-align:left}
+  .stats-inner{flex-direction:column;align-items:flex-start}
+  .stats-contact{text-align:left}
 }
 </style>
-<style>.hud-top{display:none}</style>
 </head>
 <body>
 <a class="skip" href="#main">본문 바로가기</a>
 
-<!-- 상단 텔레메트리 HUD -->
-<header class="hud-top">
-  <div class="tl">
-    <div class="row"><span>입학·진로</span></div>
-    <div class="row"><span>학부 <b class="tnum">02-2123-4426</b></span></div>
-  </div>
-  <div class="crest">
-    <a href="G-console.html" aria-label="연세대학교 기계공학부 관제 홈">
-      <div class="mk"><a href="G-console.html" style="color:inherit;text-decoration:none">YONSEI · ME</a></div>
-      <div class="sub">SCHOOL OF MECHANICAL ENGINEERING</div>
-    </a>
-  </div>
-  <nav class="hud-nav" aria-label="주메뉴">
-    <a href="G-about.html">소개</a><a href="G-academics.html">교육</a><a href="G-research.html">연구</a><a href="G-people.html">구성원</a><a href="G-news.html">소식</a><a href="G-admissions.html" aria-current="page">입학</a><a class="join" href="G-admissions.html">입학 안내 ↗</a>
-  </nav>
-</header>
-
 <main id="main">
 
-  <!-- 페이지 헤더 -->
-  <section class="wrap pagehead" aria-labelledby="ptitle">
-    <nav class="crumb" aria-label="브레드크럼">
-      <a href="G-console.html">홈</a><span class="sep">/</span><b>입학·진로</b>
-    </nav>
-    <h1 id="ptitle" class="kr">입학 · 진로 안내</h1>
-    <p class="lede kr">예비신입생 · 재학생 · 대학원 지원자 · 기업 · 동문 — <b>각자의 경로에서 시작</b>하세요. 학부 입학, 대학원 진학(석사 1971 · 박사 1972 · 4단계 BK21 2020), 진로 트랙, 동문 · 대외협력을 하나의 관제 콘솔에 정렬했습니다.</p>
-    <nav class="anchor-row" aria-label="페이지 내 이동">
-      <a href="#undergraduate">학부 입학</a>
-      <a href="#graduate">대학원 진학</a>
-      <a href="#scholarships">장학 안내</a>
-      <a href="#jobs">취업 정보</a>
-      <a href="#careers">진로 경로</a>
-      <a href="#alumni">동문 · 대외협력</a>
-      <a href="#faq">FAQ</a>
-    </nav>
+  <!-- ═══ 페이지 히어로 ═══ -->
+  <section class="pagehead-band" aria-labelledby="ptitle">
+    <div class="wrap pagehead">
+      <p class="kick">Admissions</p>
+      <h1 id="ptitle">입학 · 진로 안내</h1>
+      <p class="lede">학부 입학부터 대학원 진학, 장학·취업 정보까지 — 지원자와 재학생에게 필요한 안내를 <b>한 페이지에</b> 모았습니다. 전형 일정과 방법은 연세대학교 입학처·대학원 모집요강이 기준입니다.</p>
+      <nav class="anchor-row" aria-label="페이지 내 이동">
+        <a href="#undergraduate">학부 입학</a>
+        <a href="#graduate">대학원 진학</a>
+        <a href="#scholarships">장학 안내</a>
+        <a href="#jobs">취업 정보</a>
+        <a href="#careers">진로 경로</a>
+        <a href="#alumni">동문 · 대외협력</a>
+        <a href="#faq">자주 묻는 질문</a>
+      </nav>
+    </div>
   </section>
 
   <!-- ═══ §01 학부 입학 ═══ -->
   <section class="wrap section" id="undergraduate" aria-labelledby="ug-h">
     <div class="sec-head">
-      <span class="sec-num">SEC 01</span>
-      <div class="sec-body">
-        <h2 id="ug-h" class="sec-title kr">학부 입학</h2>
-        <p class="sec-sub kr">예비신입생을 위한 안내 — 전형 일정 · 방법은 연세대학교 입학처 모집요강이 기준입니다.</p>
+      <div>
+        <p class="sec-kick">입학</p>
+        <h2 id="ug-h" class="sec-title">학부 입학</h2>
       </div>
       <a class="sec-more" href="G-about.html">문의 · 오시는 길 <span class="arr" aria-hidden="true">→</span></a>
+      <p class="sec-sub">예비 신입생을 위한 안내입니다. 전형 일정과 방법은 연세대학교 입학처 모집요강을 확인해 주세요.</p>
     </div>
     <div class="duo">
       <article class="card">
         <span class="overline">지원 방법</span>
-        <p class="kr">학부 신입생 선발(수시 · 정시 등 전형별 일정 · 방법)은 <b>연세대학교 입학처의 해당 연도 모집요강</b>에 따라 진행됩니다. 기계공학부 단위의 교육과정 · 전공 관련 문의는 학부 행정팀 <span class="kbd">02-2123-4426</span>으로 연락해 주세요.</p>
+        <p>학부 신입생 선발(수시 · 정시 등 전형별 일정 · 방법)은 <b>연세대학교 입학처의 해당 연도 모집요강</b>에 따라 진행됩니다. 기계공학부 교육과정 · 전공 관련 문의는 학부 행정팀 <span class="kbd">02-2123-4426</span>으로 연락해 주세요.</p>
         <ol class="num-list">
           <li><span class="n">01</span><span>모집요강 확인 — 연세대학교 입학처 공지 기준</span></li>
-          <li><span class="n">02</span><span>전공 미리보기 — <a href="G-academics.html">교육과정</a>의 4대 역학과 이수 체계로 4년을 조망</span></li>
-          <li><span class="n">03</span><span>연구 분야 탐색 — <a href="G-research.html">33개 연구실 · 6 클러스터</a></span></li>
+          <li><span class="n">02</span><span>전공 미리보기 — <a href="G-academics.html">교육과정</a>에서 4대 역학과 이수 체계로 4년을 조망</span></li>
+          <li><span class="n">03</span><span>연구 분야 탐색 — <a href="G-research.html">33개 연구실 · 6개 분야</a></span></li>
         </ol>
         <div class="btns">
           <a class="btn btn--coral" href="G-academics.html">교육과정 미리보기 <span class="arr" aria-hidden="true">→</span></a>
@@ -417,17 +364,17 @@ a{color:inherit;text-decoration:none}
       </article>
       <article class="card card--soft">
         <span class="overline">학부의 강점</span>
-        <h3 class="kr">1962년에 시작한 학부입니다.</h3>
-        <p class="kr">4대 역학에서 종합설계까지, 탄탄한 설계 교육을 제공합니다.</p>
+        <h3>1962년에 시작한 학부입니다.</h3>
+        <p>4대 역학에서 종합설계까지, 탄탄한 설계 교육을 제공합니다.</p>
         <div class="def" style="margin-top:1.1rem">
-          <div class="drow"><span class="k kr">SINCE · 창립</span><span class="v tnum">1962</span></div>
-          <div class="drow"><span class="k kr">전임 교수 · 연구실</span><span class="v tnum">33 · 33</span></div>
-          <div class="drow"><span class="k kr">ABEEK 공학교육인증 가입</span><span class="v tnum">2003</span></div>
-          <div class="drow"><span class="k kr">학부 분리 독립</span><span class="v tnum">2002</span></div>
-          <div class="drow"><span class="k kr">4단계 BK21 선정</span><span class="v hl tnum">2020</span></div>
+          <div class="drow"><span class="k">창립</span><span class="v tnum">1962</span></div>
+          <div class="drow"><span class="k">전임 교수 · 연구실</span><span class="v tnum">33 · 33</span></div>
+          <div class="drow"><span class="k">ABEEK 공학교육인증 가입</span><span class="v tnum">2003</span></div>
+          <div class="drow"><span class="k">학부 분리 독립</span><span class="v tnum">2002</span></div>
+          <div class="drow"><span class="k">4단계 BK21 선정</span><span class="v hl tnum">2020</span></div>
         </div>
         <div class="btns">
-          <a class="btn" href="G-about.html">연혁 Since 1962 <span class="arr" aria-hidden="true">→</span></a>
+          <a class="btn" href="G-about.html">학부 연혁 보기 <span class="arr" aria-hidden="true">→</span></a>
         </div>
       </article>
     </div>
@@ -436,70 +383,70 @@ a{color:inherit;text-decoration:none}
   <!-- ═══ §02 대학원 진학 ═══ -->
   <section class="wrap section" id="graduate" aria-labelledby="grad-h">
     <div class="sec-head">
-      <span class="sec-num">SEC 02</span>
-      <div class="sec-body">
-        <h2 id="grad-h" class="sec-title kr">대학원 진학</h2>
-        <p class="sec-sub kr">석사과정 1971년 · 박사과정 1972년 신설, 2020년 4단계 BK21 선정 — 연구로 이어지는 경로.</p>
+      <div>
+        <p class="sec-kick">대학원</p>
+        <h2 id="grad-h" class="sec-title">대학원 진학</h2>
       </div>
-      <a class="sec-more" href="G-research.html">Lab Explorer <span class="arr" aria-hidden="true">→</span></a>
+      <a class="sec-more" href="G-research.html">연구 분야 보기 <span class="arr" aria-hidden="true">→</span></a>
+      <p class="sec-sub">석사과정 1971년 · 박사과정 1972년 신설, 2020년 4단계 BK21 선정 — 연구로 이어지는 경로를 안내합니다.</p>
     </div>
 
     <div class="grid grid--3" style="margin-bottom:1.6rem">
       <article class="step">
-        <div class="sn mono"><u>01</u></div>
-        <h3 class="kr">분야를 탐색한다</h3>
-        <p class="kr">33개 연구실이 6개 클러스터로 맞물려 있습니다. Lab Explorer에서 분야 · 키워드로 좁히거나, 통합 검색으로 교수 · 연구실을 바로 찾을 수 있습니다.</p>
-        <a class="go" href="G-research.html">Lab Explorer <span class="arr" aria-hidden="true">→</span></a>
+        <div class="sn"><u>01</u></div>
+        <h3>분야를 탐색한다</h3>
+        <p>33개 연구실이 6개 분야로 나뉘어 있습니다. 연구 페이지에서 분야 · 키워드로 살펴보고, 관심 있는 연구실을 찾아보세요.</p>
+        <a class="go" href="G-research.html">연구 분야 보기 <span class="arr" aria-hidden="true">→</span></a>
       </article>
       <article class="step">
-        <div class="sn mono"><u>02</u></div>
-        <h3 class="kr">지도교수와 컨택한다</h3>
-        <p class="kr">관심 연구실의 지도교수(PI)에게 연구 관심사를 정리해 사전 컨택하는 것이 일반적입니다. 교수진 디렉터리에서 연구실 · 클러스터 · 위치를 확인하세요.</p>
-        <a class="go" href="G-people.html">교수진 디렉터리 <span class="arr" aria-hidden="true">→</span></a>
+        <div class="sn"><u>02</u></div>
+        <h3>지도교수와 컨택한다</h3>
+        <p>관심 연구실의 지도교수에게 연구 관심사를 정리해 미리 연락하는 것이 일반적입니다. 교수진 페이지에서 연구실 · 분야 · 위치를 확인하세요.</p>
+        <a class="go" href="G-people.html">교수진 보기 <span class="arr" aria-hidden="true">→</span></a>
       </article>
       <article class="step">
-        <div class="sn mono"><u>03</u></div>
-        <h3 class="kr">모집요강을 확인한다</h3>
-        <p class="kr">석 · 박사 모집 일정과 제출 서류는 연세대학교 대학원 모집요강이 기준입니다. 학과 단위 공지는 소식 허브의 대학원 공지에서 갱신됩니다.</p>
+        <div class="sn"><u>03</u></div>
+        <h3>모집요강을 확인한다</h3>
+        <p>석 · 박사 모집 일정과 제출 서류는 연세대학교 대학원 모집요강이 기준입니다. 학과 단위 공지는 소식 페이지의 대학원 공지에서 갱신됩니다.</p>
         <a class="go" href="G-news.html">대학원 공지 <span class="arr" aria-hidden="true">→</span></a>
       </article>
     </div>
 
     <div class="duo">
       <div>
-        <span class="overline" style="display:block;font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-bottom:.9rem">최근 대학원 공지</span>
+        <span class="list-lab">최근 대학원 공지</span>
         <div class="post-list">
           <a class="post-row" href="G-news.html">
             <span class="post-cat">대학원</span>
-            <span class="post-title kr">2026학년도 후기 석·박사 신입생 모집요강 안내<span class="new">NEW</span></span>
+            <span class="post-title">2026학년도 후기 석·박사 신입생 모집요강 안내<span class="new">NEW</span></span>
             <time class="post-date" datetime="2026-07-01">2026.07.01</time>
           </a>
           <a class="post-row" href="G-news.html">
             <span class="post-cat">대학원</span>
-            <span class="post-title kr">4단계 BK21 교육연구단 대학원생 연구장학 신청 안내</span>
+            <span class="post-title">4단계 BK21 교육연구단 대학원생 연구장학 신청 안내</span>
             <time class="post-date" datetime="2026-06-18">2026.06.18</time>
           </a>
           <a class="post-row" href="G-news.html">
             <span class="post-cat">대학원</span>
-            <span class="post-title kr">대학원 신입생 지도교수 사전 컨택 안내 · 연구실 라운드</span>
+            <span class="post-title">대학원 신입생 지도교수 사전 컨택 안내 · 연구실 라운드</span>
             <time class="post-date" datetime="2026-06-05">2026.06.05</time>
           </a>
           <a class="post-row" href="G-news.html">
             <span class="post-cat">대학원</span>
-            <span class="post-title kr">BK21 국제학술대회 참가 지원 프로그램 공고</span>
+            <span class="post-title">BK21 국제학술대회 참가 지원 프로그램 공고</span>
             <time class="post-date" datetime="2026-05-22">2026.05.22</time>
           </a>
         </div>
-        <p class="note kr">공지 데이터는 소식 허브의 대학원 카테고리를 단일 소스로 정렬합니다. 최신 공지는 <a href="G-news.html" style="color:var(--txt-hi);text-decoration:underline;text-underline-offset:2px;text-decoration-color:var(--dimmer)">소식 페이지</a>에서 확인하세요.</p>
+        <p class="note">최신 공지는 <a href="G-news.html">소식 페이지</a>의 대학원 카테고리에서 확인할 수 있습니다.</p>
       </div>
       <article class="card card--soft">
         <span class="overline">대학원 연혁</span>
         <div class="def">
-          <div class="drow"><span class="k kr">석사과정 신설</span><span class="v tnum">1971</span></div>
-          <div class="drow"><span class="k kr">박사과정 신설</span><span class="v tnum">1972</span></div>
-          <div class="drow"><span class="k kr">4단계 BK21 선정</span><span class="v hl tnum">2020</span></div>
+          <div class="drow"><span class="k">석사과정 신설</span><span class="v tnum">1971</span></div>
+          <div class="drow"><span class="k">박사과정 신설</span><span class="v tnum">1972</span></div>
+          <div class="drow"><span class="k">4단계 BK21 선정</span><span class="v hl tnum">2020</span></div>
         </div>
-        <p class="mono" style="margin-top:1rem">GRAD · 02-2123-2810<br>BK21 · 02-2123-7817</p>
+        <p class="contact-line" style="margin-top:1rem">대학원 행정 02-2123-2810<br>BK21 사업단 02-2123-7817</p>
         <div class="btns">
           <a class="btn" href="G-news.html">대학원 공지 <span class="arr" aria-hidden="true">→</span></a>
         </div>
@@ -510,17 +457,12 @@ a{color:inherit;text-decoration:none}
   <!-- ═══ §03 장학 안내 ═══ -->
   <section class="wrap section" id="scholarships" aria-labelledby="sch-h">
     <div class="sec-head">
-      <span class="sec-num">SEC 03</span>
-      <div class="sec-body">
-        <h2 id="sch-h" class="sec-title kr">장학 안내<span class="en">Scholarships</span></h2>
-        <p class="sec-sub kr">교내 장학과 교외 · 기금 장학을 함께 안내합니다. 세부 기준 · 금액 · 선발 시기는 학사 공지 · 각 재단 안내가 최종 기준입니다.</p>
+      <div>
+        <p class="sec-kick">장학</p>
+        <h2 id="sch-h" class="sec-title">장학 안내</h2>
       </div>
       <a class="sec-more" href="G-about.html">문의 · 학부 행정 <span class="arr" aria-hidden="true">→</span></a>
-    </div>
-
-    <div class="subtabs" aria-hidden="true">
-      <span class="st-lab">교내 장학 <span class="cnt" id="sch-in-cnt">0</span></span>
-      <span class="st-lab">교외 · 기금 장학 <span class="cnt" id="sch-ex-cnt">0</span></span>
+      <p class="sec-sub">교내 장학과 교외 · 기금 장학을 함께 안내합니다. 세부 기준 · 금액 · 선발 시기는 학사 공지와 각 재단 안내가 최종 기준입니다.</p>
     </div>
 
     <div class="sch-block">
@@ -533,94 +475,94 @@ a{color:inherit;text-decoration:none}
       <div class="sch-cards" id="schExternal" aria-label="교외 · 기금 장학 목록"></div>
     </div>
 
-    <p class="note kr">본 목록은 학부 데이터 기준이며, 신청 방법 · 마감은 매 학기 학사 공지와 각 장학재단 안내를 확인하세요.</p>
+    <p class="note">신청 방법과 마감은 매 학기 학사 공지와 각 장학재단 안내를 확인하세요.</p>
   </section>
 
   <!-- ═══ §04 취업 정보 ═══ -->
   <section class="wrap section" id="jobs" aria-labelledby="job-h">
     <div class="sec-head">
-      <span class="sec-num">SEC 04</span>
-      <div class="sec-body">
-        <h2 id="job-h" class="sec-title kr">취업 정보<span class="en">Jobs &amp; Recruiting</span></h2>
-        <p class="sec-sub kr">기업 채용 · 인턴 · 연구인력 모집 등 학부에 접수된 취업 공고입니다. 최신순으로 정렬되며, 제목을 누르면 원문 공고로 이동합니다.</p>
+      <div>
+        <p class="sec-kick">취업</p>
+        <h2 id="job-h" class="sec-title">취업 정보</h2>
       </div>
       <a class="sec-more" href="https://me.yonsei.ac.kr/me/community/job.do" target="_blank" rel="noopener">전체 공고 <span class="arr" aria-hidden="true">↗</span></a>
+      <p class="sec-sub">기업 채용 · 인턴 · 연구인력 모집 등 학부에 접수된 취업 공고입니다. 최신순으로 정렬되며, 제목을 누르면 원문 공고로 이동합니다.</p>
     </div>
     <div class="job-head">
       <span class="overline">채용 · 모집 공고</span>
-      <span class="cnt"><span id="job-cnt">0</span> 건</span>
+      <span class="cnt"><span id="job-cnt">0</span>건</span>
     </div>
     <div class="job-list" id="jobList" aria-label="취업 공고 목록"></div>
-    <p class="note kr">공고는 학부 취업 게시판을 단일 소스로 정렬합니다. 접수 · 마감 등 세부 사항은 각 공고 원문을 확인하세요.</p>
+    <p class="note">접수 · 마감 등 세부 사항은 각 공고 원문을 확인하세요.</p>
   </section>
 
-  <!-- ═══ §05 진로 경로 (페르소나/트랙) ═══ -->
+  <!-- ═══ §05 진로 경로 ═══ -->
   <section class="wrap section" id="careers" aria-labelledby="car-h">
     <div class="sec-head">
-      <span class="sec-num">SEC 05</span>
-      <div class="sec-body">
-        <h2 id="car-h" class="sec-title kr">진로 경로</h2>
-        <p class="sec-sub kr">같은 4대 역학에서 출발해도 나아가는 길은 다양합니다. 대표적인 진로 · 취업 트랙 네 가지를 페르소나별로 정렬했습니다.</p>
+      <div>
+        <p class="sec-kick">진로</p>
+        <h2 id="car-h" class="sec-title">진로 경로</h2>
       </div>
+      <p class="sec-sub">같은 4대 역학에서 출발해도 나아가는 길은 다양합니다. 졸업 후 이어지는 대표적인 네 갈래 길을 소개합니다.</p>
     </div>
     <div class="grid grid--4">
       <article class="route" style="--route-c:var(--c-solid)">
-        <span class="persona"><span class="pdot" aria-hidden="true"></span>예비신입생 → 설계·R&amp;D</span>
-        <h3 class="kr">제품을 설계하는 엔지니어</h3>
+        <span class="persona"><span class="pdot" aria-hidden="true"></span>예비 신입생 → 설계·R&amp;D</span>
+        <h3>제품을 설계하는 엔지니어</h3>
         <div class="flow" aria-label="경로 단계">
-          <span class="st kr">4대 역학</span><span class="ar" aria-hidden="true">→</span>
-          <span class="st kr">창의제품설계</span><span class="ar" aria-hidden="true">→</span>
-          <span class="st kr">기업 설계·R&amp;D</span>
+          <span class="st">4대 역학</span><span class="ar" aria-hidden="true">→</span>
+          <span class="st">창의제품설계</span><span class="ar" aria-hidden="true">→</span>
+          <span class="st">기업 설계·R&amp;D</span>
         </div>
-        <p class="kr">고체 · 열 · 유체 · 동역학의 기초 위에 캡스톤 설계(MEU4300)로 종합 설계 역량을 완성하고, 제조 · 모빌리티 · 에너지 산업의 설계 · 연구개발 직무로 나아가는 경로.</p>
+        <p>고체 · 열 · 유체 · 동역학의 기초 위에 캡스톤 설계(MEU4300)로 종합 설계 역량을 완성하고, 제조 · 모빌리티 · 에너지 산업의 설계 · 연구개발 직무로 나아가는 길입니다.</p>
         <a class="go" href="G-academics.html">교육과정 이수 체계 <span class="arr" aria-hidden="true">→</span></a>
       </article>
       <article class="route" style="--route-c:var(--c-dyn)">
         <span class="persona"><span class="pdot" aria-hidden="true"></span>재학생 → 대학원 연구자</span>
-        <h3 class="kr">연구로 깊어지는 길</h3>
+        <h3>연구로 깊어지는 길</h3>
         <div class="flow" aria-label="경로 단계">
-          <span class="st kr">학부연구 참여</span><span class="ar" aria-hidden="true">→</span>
-          <span class="st kr">석사 · 박사</span><span class="ar" aria-hidden="true">→</span>
-          <span class="st kr">학계 · 연구소</span>
+          <span class="st">학부연구 참여</span><span class="ar" aria-hidden="true">→</span>
+          <span class="st">석사 · 박사</span><span class="ar" aria-hidden="true">→</span>
+          <span class="st">학계 · 연구소</span>
         </div>
-        <p class="kr">학부연구 · 학사논문(MEU4400)으로 연구를 맛보고, 33개 연구실 중 자신의 분야에서 석 · 박사로 이어가는 경로. 4단계 BK21 사업단이 대학원 연구를 뒷받침합니다.</p>
-        <a class="go" href="#graduate">대학원 진학 3스텝 ↑</a>
+        <p>학부연구 · 학사논문(MEU4400)으로 연구를 경험하고, 33개 연구실 중 자신의 분야에서 석 · 박사로 이어 가는 길입니다. 4단계 BK21 사업단이 대학원 연구를 뒷받침합니다.</p>
+        <a class="go" href="#graduate">대학원 진학 안내 ↑</a>
       </article>
       <article class="route" style="--route-c:var(--c-manuf)">
         <span class="persona"><span class="pdot" aria-hidden="true"></span>대학원생 → 심화 전문가</span>
-        <h3 class="kr">산업의 문제를 푸는 전문가</h3>
+        <h3>산업의 문제를 푸는 전문가</h3>
         <div class="flow" aria-label="경로 단계">
-          <span class="st kr">연구실 심화</span><span class="ar" aria-hidden="true">→</span>
-          <span class="st kr">산학 프로젝트</span><span class="ar" aria-hidden="true">→</span>
-          <span class="st kr">전문 연구 인력</span>
+          <span class="st">연구실 심화</span><span class="ar" aria-hidden="true">→</span>
+          <span class="st">산학 프로젝트</span><span class="ar" aria-hidden="true">→</span>
+          <span class="st">전문 연구 인력</span>
         </div>
-        <p class="kr">반도체 장비 · 정밀제조 · 로보틱스 · 에너지 시스템 등 연구실의 산학 과제를 통해 산업 현장의 문제를 직접 다루며 전문성을 쌓는 경로.</p>
-        <a class="go" href="G-research.html">6개 연구 클러스터 <span class="arr" aria-hidden="true">→</span></a>
+        <p>반도체 장비 · 정밀제조 · 로보틱스 · 에너지 시스템 등 연구실의 산학 과제를 통해 산업 현장의 문제를 직접 다루며 전문성을 쌓는 길입니다.</p>
+        <a class="go" href="G-research.html">6개 연구 분야 <span class="arr" aria-hidden="true">→</span></a>
       </article>
       <article class="route" style="--route-c:var(--c-thermal)">
         <span class="persona"><span class="pdot" aria-hidden="true"></span>기업 · 채용 담당자</span>
-        <h3 class="kr">인재와 기술을 찾는 기업</h3>
+        <h3>인재와 기술을 찾는 기업</h3>
         <div class="flow" aria-label="경로 단계">
-          <span class="st kr">연구 분야 확인</span><span class="ar" aria-hidden="true">→</span>
-          <span class="st kr">산학·채용 문의</span><span class="ar" aria-hidden="true">→</span>
-          <span class="st kr">협력 · 채용</span>
+          <span class="st">연구 분야 확인</span><span class="ar" aria-hidden="true">→</span>
+          <span class="st">산학·채용 문의</span><span class="ar" aria-hidden="true">→</span>
+          <span class="st">협력 · 채용</span>
         </div>
-        <p class="kr">33개 연구실의 연구 분야를 클러스터 지도로 확인하고, 산학 협력 · 채용 연계는 학부 행정팀 <span class="mono" style="color:var(--dim)">02-2123-4426</span>으로 문의하는 경로.</p>
+        <p>33개 연구실의 연구 분야를 확인하고, 산학 협력 · 채용 연계는 학부 행정팀(02-2123-4426)으로 문의해 주세요.</p>
         <a class="go" href="G-about.html">연락처 · 오시는 길 <span class="arr" aria-hidden="true">→</span></a>
       </article>
     </div>
-    <p class="note kr">취업률 · 진출 기업 등 통계는 검증된 공개 데이터를 확보한 뒤 게시할 예정입니다.</p>
+    <p class="note">취업률 · 진출 기업 등 통계 자료는 준비되는 대로 게시할 예정입니다.</p>
   </section>
 
   <!-- ═══ §06 동문 · 대외협력 ═══ -->
   <section class="wrap section" id="alumni" aria-labelledby="alu-h">
     <div class="sec-head">
-      <span class="sec-num">SEC 06</span>
-      <div class="sec-body">
-        <h2 id="alu-h" class="sec-title kr">동문 · 대외협력</h2>
-        <p class="sec-sub kr">1964년 첫 졸업생부터 — 60년을 이어 온 연세 기계인의 네트워크.</p>
+      <div>
+        <p class="sec-kick">동문</p>
+        <h2 id="alu-h" class="sec-title">동문 · 대외협력</h2>
       </div>
       <a class="sec-more" href="G-about.html">전체 연혁 <span class="arr" aria-hidden="true">→</span></a>
+      <p class="sec-sub">1964년 첫 졸업생부터 — 60년을 이어 온 연세 기계인의 네트워크입니다.</p>
     </div>
     <div class="duo">
       <article class="card">
@@ -628,70 +570,70 @@ a{color:inherit;text-decoration:none}
         <div class="timeline">
           <div class="tl-item tl-item--hl">
             <p class="tl-date">1962.12</p>
-            <p class="tl-text kr">기계공학과로 분리 — 고체 · 열 · 유체 · 동역학, 네 개의 역학에서 출발.</p>
+            <p class="tl-text">기계공학과로 분리 — 고체 · 열 · 유체 · 동역학, 네 개의 역학에서 출발.</p>
           </div>
           <div class="tl-item">
             <p class="tl-date">1963.02</p>
-            <p class="tl-text kr">첫 신입생 입학 — 학부 교육의 첫 사이클 개시.</p>
+            <p class="tl-text">첫 신입생 입학 — 학부 교육의 시작.</p>
           </div>
           <div class="tl-item tl-item--hl">
             <p class="tl-date">1964.02</p>
-            <p class="tl-text kr">첫 졸업생 배출 — 연세 기계인 네트워크의 시작점.</p>
+            <p class="tl-text">첫 졸업생 배출 — 연세 기계인 네트워크의 시작점.</p>
           </div>
           <div class="tl-item">
             <p class="tl-date">2010.11</p>
-            <p class="tl-text kr">창립 50주년 — 반세기의 설계 교육을 기념.</p>
+            <p class="tl-text">창립 50주년 — 반세기의 설계 교육을 기념.</p>
           </div>
         </div>
         <div class="btns">
-          <a class="btn" href="G-about.html">전체 연혁 Since 1962 <span class="arr" aria-hidden="true">→</span></a>
+          <a class="btn" href="G-about.html">전체 연혁 보기 <span class="arr" aria-hidden="true">→</span></a>
         </div>
       </article>
       <article class="card card--soft">
         <span class="overline">동문 네트워크</span>
-        <p class="kr">동문 행사 · 초청 세미나 · 학부 소식은 <a class="inline" href="G-news.html">소식 허브</a>에서 갱신됩니다. 동문 네트워크 참여 · 기부 · 초청 강연 등 협력 문의는 학부 행정팀으로 연락해 주세요.</p>
-        <p class="mono" style="margin-top:1rem">CONTACT · 학부 행정팀<br>02-2123-4426</p>
+        <p>동문 행사 · 초청 세미나 · 학부 소식은 <a class="inline" href="G-news.html">소식 페이지</a>에서 갱신됩니다. 동문 네트워크 참여 · 기부 · 초청 강연 등 협력 문의는 학부 행정팀으로 연락해 주세요.</p>
+        <p class="contact-line" style="margin-top:1rem">학부 행정팀 02-2123-4426</p>
         <div class="btns">
-          <a class="btn btn--coral" href="G-news.html">소식 허브 <span class="arr" aria-hidden="true">→</span></a>
+          <a class="btn btn--coral" href="G-news.html">소식 보기 <span class="arr" aria-hidden="true">→</span></a>
           <a class="btn" href="G-about.html">문의하기</a>
         </div>
       </article>
     </div>
   </section>
 
-  <!-- ═══ §07 FAQ ═══ -->
+  <!-- ═══ §07 자주 묻는 질문 ═══ -->
   <section class="wrap section" id="faq" aria-labelledby="faq-h">
     <div class="sec-head">
-      <span class="sec-num">SEC 07</span>
-      <div class="sec-body">
-        <h2 id="faq-h" class="sec-title kr">자주 묻는 질문</h2>
-        <p class="sec-sub kr">입학 · 진학 · 진로에서 가장 많이 받는 질문 여섯 가지.</p>
+      <div>
+        <p class="sec-kick">FAQ</p>
+        <h2 id="faq-h" class="sec-title">자주 묻는 질문</h2>
       </div>
+      <p class="sec-sub">입학 · 진학 · 진로에서 가장 많이 받는 질문 여섯 가지를 모았습니다.</p>
     </div>
     <div class="faq" id="faqList">
       <details>
-        <summary><span class="qm">Q1</span><span class="qt kr">졸업하려면 몇 학점을 이수해야 하나요?</span><span class="mk" aria-hidden="true"></span></summary>
-        <div class="fbody kr">총 <b class="m">130</b>학점입니다. 전공 · 교양 등 세부 이수 기준은 입학 연도별 학사요람이 기준이며, <a href="G-academics.html">교육과정의 학부 트랙</a>에서 4년 전체를 조망할 수 있습니다.</div>
+        <summary><span class="qm">Q1</span><span class="qt">졸업하려면 몇 학점을 이수해야 하나요?</span><span class="mk" aria-hidden="true"></span></summary>
+        <div class="fbody">총 <b class="m">130</b>학점입니다. 전공 · 교양 등 세부 이수 기준은 입학 연도별 학사요람이 기준이며, <a href="G-academics.html">교육과정의 학부 트랙</a>에서 4년 전체를 조망할 수 있습니다.</div>
       </details>
       <details>
-        <summary><span class="qm">Q2</span><span class="qt kr">전공필수 과목은 무엇인가요?</span><span class="mk" aria-hidden="true"></span></summary>
-        <div class="fbody kr">전공필수는 8과목(각 3학점, 총 24학점) — <span class="m">MEU2600</span> 고체역학, <span class="m">MEU2610</span> 열역학, <span class="m">MEU2640</span> 유체역학, <span class="m">MEU2650</span> 동역학, <span class="m">MEU2104</span> · <span class="m">MEU3005</span> 기계공학실험1·2, <span class="m">MEU4300</span> 창의제품설계, <span class="m">MEU4400</span> 학사논문입니다. 상세는 <a href="G-academics.html">전공필수 교과목 표</a>에서 확인하세요.</div>
+        <summary><span class="qm">Q2</span><span class="qt">전공필수 과목은 무엇인가요?</span><span class="mk" aria-hidden="true"></span></summary>
+        <div class="fbody">전공필수는 8과목(각 3학점, 총 24학점) — <span class="m">MEU2600</span> 고체역학, <span class="m">MEU2610</span> 열역학, <span class="m">MEU2640</span> 유체역학, <span class="m">MEU2650</span> 동역학, <span class="m">MEU2104</span> · <span class="m">MEU3005</span> 기계공학실험1·2, <span class="m">MEU4300</span> 창의제품설계, <span class="m">MEU4400</span> 학사논문입니다. 상세는 <a href="G-academics.html">전공필수 교과목 표</a>에서 확인하세요.</div>
       </details>
       <details>
-        <summary><span class="qm">Q3</span><span class="qt kr">대학원 진학을 위해 연구실은 어떻게 찾나요?</span><span class="mk" aria-hidden="true"></span></summary>
-        <div class="fbody kr"><a href="G-research.html">Lab Explorer</a>에서 33개 연구실을 6개 클러스터(고체 · 열유체 · 제조 · 나노바이오 · 광학 · 동역학AI)로 필터링할 수 있고, 어느 페이지에서든 통합 검색으로 교수 · 연구실을 찾을 수 있습니다. 이후 지도교수 사전 컨택 → 모집요강 확인 순서를 권합니다(<a href="#graduate">대학원 진학 안내</a>).</div>
+        <summary><span class="qm">Q3</span><span class="qt">대학원 진학을 위해 연구실은 어떻게 찾나요?</span><span class="mk" aria-hidden="true"></span></summary>
+        <div class="fbody"><a href="G-research.html">연구 페이지</a>에서 33개 연구실을 6개 분야(고체 · 열유체 · 제조 · 나노바이오 · 광학 · 동역학AI)로 나누어 살펴볼 수 있고, 어느 페이지에서든 통합 검색으로 교수 · 연구실을 찾을 수 있습니다. 이후 지도교수 사전 컨택 → 모집요강 확인 순서를 권합니다(<a href="#graduate">대학원 진학 안내</a>).</div>
       </details>
       <details>
-        <summary><span class="qm">Q4</span><span class="qt kr">학부 · 대학원 행정 문의는 어디로 하나요?</span><span class="mk" aria-hidden="true"></span></summary>
-        <div class="fbody kr">학부 <span class="m">02-2123-4426</span> · 대학원 <span class="m">02-2123-2810</span> · BK21 <span class="m">02-2123-7817</span> — 주소와 오시는 길은 <a href="G-about.html">소개 · 연락처</a>에 정리되어 있습니다.</div>
+        <summary><span class="qm">Q4</span><span class="qt">학부 · 대학원 행정 문의는 어디로 하나요?</span><span class="mk" aria-hidden="true"></span></summary>
+        <div class="fbody">학부 <span class="m">02-2123-4426</span> · 대학원 <span class="m">02-2123-2810</span> · BK21 <span class="m">02-2123-7817</span> — 주소와 오시는 길은 <a href="G-about.html">소개 · 연락처</a>에 정리되어 있습니다.</div>
       </details>
       <details>
-        <summary><span class="qm">Q5</span><span class="qt kr">ABEEK 공학교육인증이란 무엇인가요?</span><span class="mk" aria-hidden="true"></span></summary>
-        <div class="fbody kr">한국공학교육인증원(ABEEK)이 공학 교육의 이수 체계 · 학습 성과를 국제 기준으로 인증하는 제도로, 본 학부는 <b>2003년 3월</b> 가입했습니다. 세부 내용은 <a href="G-academics.html">교육과정의 ABEEK 안내</a>를 참고하세요.</div>
+        <summary><span class="qm">Q5</span><span class="qt">ABEEK 공학교육인증이란 무엇인가요?</span><span class="mk" aria-hidden="true"></span></summary>
+        <div class="fbody">한국공학교육인증원(ABEEK)이 공학 교육의 이수 체계 · 학습 성과를 국제 기준으로 인증하는 제도로, 본 학부는 <b>2003년 3월</b> 가입했습니다. 세부 내용은 <a href="G-academics.html">교육과정의 ABEEK 안내</a>를 참고하세요.</div>
       </details>
       <details>
-        <summary><span class="qm">Q6</span><span class="qt kr">입학 전형 일정은 어디서 확인하나요?</span><span class="mk" aria-hidden="true"></span></summary>
-        <div class="fbody kr">학부 신입학(수시 · 정시 등)은 연세대학교 입학처, 대학원은 연세대학교 대학원의 해당 연도 모집요강이 기준입니다. 본 페이지는 검증된 학부 데이터만 게시하며, 전형 일정 · 정원 등 모집요강 수치는 원문 확인 후 반영합니다. 학과 관련 문의는 <span class="m">02-2123-4426</span>으로 연락해 주세요.</div>
+        <summary><span class="qm">Q6</span><span class="qt">입학 전형 일정은 어디서 확인하나요?</span><span class="mk" aria-hidden="true"></span></summary>
+        <div class="fbody">학부 신입학(수시 · 정시 등)은 연세대학교 입학처, 대학원은 연세대학교 대학원의 해당 연도 모집요강이 기준입니다. 전형 일정 · 정원 등 세부 사항은 모집요강 원문을 확인해 주세요. 학과 관련 문의는 <span class="m">02-2123-4426</span>으로 연락하시면 됩니다.</div>
       </details>
     </div>
   </section>
@@ -700,8 +642,8 @@ a{color:inherit;text-decoration:none}
   <section class="wrap section" aria-labelledby="cta-h">
     <div class="cta">
       <p class="eyebrow">문의 안내</p>
-      <h2 id="cta-h" class="kr">궁금한 점이 있으면<br>문의해 주세요.</h2>
-      <p class="kr">입학 · 진학 · 진로 어느 단계든, 학과 관련 문의는 학부 행정팀이 안내합니다. 전형 일정은 입학처 · 대학원 모집요강을 확인하세요.</p>
+      <h2 id="cta-h">궁금한 점이 있으면<br>문의해 주세요.</h2>
+      <p>입학 · 진학 · 진로 어느 단계든, 학과 관련 문의는 학부 행정팀이 안내합니다. 전형 일정은 입학처 · 대학원 모집요강을 확인하세요.</p>
       <div class="btns" style="margin-top:0">
         <a class="btn btn--coral" href="G-about.html">문의 · 오시는 길 <span class="arr" aria-hidden="true">→</span></a>
         <a class="btn" href="G-academics.html">교육과정 보기</a>
@@ -709,29 +651,28 @@ a{color:inherit;text-decoration:none}
     </div>
   </section>
 
-  <!-- 하단 HUD 텔레메트리 -->
-  <footer class="hud-bottom">
-    <div class="wrap hud-bottom-inner">
+  <!-- ═══ 학부 현황 ═══ -->
+  <section class="wrap stats" aria-label="학부 현황">
+    <div class="stats-inner">
       <div class="counters">
         <div class="ct">
           <div class="lab">석사 · 박사 신설</div>
           <div class="num"><span data-count="1971">0</span> · <span data-count="1972">0</span></div>
         </div>
         <div class="ct">
-          <div class="lab">4단계 BK21</div>
+          <div class="lab">4단계 BK21 선정</div>
           <div class="num"><span data-count="2020">0</span></div>
         </div>
         <div class="ct">
-          <div class="lab">SINCE</div>
+          <div class="lab">설립</div>
           <div class="num">1962</div>
         </div>
       </div>
-      <div class="foot-tl">
-        <div>학부 · <b>02-2123-4426</b> · 대학원 <b>02-2123-2810</b></div>
-        <div>YONSEI · ME · 機制</div>
+      <div class="stats-contact">
+        <div>학부 <b>02-2123-4426</b> · 대학원 <b>02-2123-2810</b></div>
       </div>
     </div>
-  </footer>
+  </section>
 </main>
 
 <script src="assets/js/data.js?v=d10"></script>
@@ -833,5 +774,8 @@ a{color:inherit;text-decoration:none}
 })();
 </script>
 <script src="assets/nav.js?v=15"></script>
+<footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--dimmer)">
+  © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
+</footer>
 </body>
 </html>

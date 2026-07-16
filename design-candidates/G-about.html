@@ -71,13 +71,13 @@ a{color:inherit;text-decoration:none}
 .section{max-width:1120px;margin:0 auto;
   padding:clamp(3.2rem,2rem + 4vw,5rem) clamp(1.2rem,.6rem + 2vw,2.6rem)}
 .section + .section{border-top:1px solid var(--line-soft)}
-.sec-head{display:flex;justify-content:space-between;align-items:baseline;
-  gap:1.5rem;flex-wrap:wrap;margin-bottom:clamp(1.6rem,1rem + 2vw,2.6rem)}
+.sec-head{margin-bottom:clamp(1.6rem,1rem + 2vw,2.6rem)}
+.sec-top{display:flex;justify-content:space-between;align-items:baseline;gap:1.5rem;flex-wrap:wrap}
 .sec-kick{font-family:var(--mono);font-size:.66rem;letter-spacing:.24em;
   text-transform:uppercase;color:var(--coral)}
 .sec-title{font-weight:700;color:var(--navy);letter-spacing:-.01em;
   font-size:clamp(1.5rem,1rem + 2vw,2.1rem);line-height:1.24;margin-top:.5rem}
-.sec-sub{flex-basis:100%;font-size:.94rem;color:var(--sub);line-height:1.7;max-width:44rem;margin-top:.2rem}
+.sec-sub{font-size:.94rem;color:var(--muted);line-height:1.7;max-width:44rem;margin-top:.55rem}
 .sec-more{font-size:.9rem;color:var(--muted);white-space:nowrap;transition:color .15s}
 .sec-more:hover{color:var(--coral)}
 .sec-more .arr{color:var(--coral)}
@@ -123,7 +123,7 @@ a{color:inherit;text-decoration:none}
 
 .goals-lab{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;
   color:var(--coral);margin-bottom:1rem}
-.goal-row{display:grid;grid-template-columns:3.4rem minmax(6.4rem,10rem) 1fr;gap:1rem;align-items:baseline;
+.goal-row{display:grid;grid-template-columns:3.4rem 8.5rem 1fr;gap:1rem;align-items:baseline;
   padding:.95rem .2rem;border-bottom:1px solid var(--line-soft);transition:background .12s}
 .goal-row:first-of-type{border-top:1px solid var(--line)}
 .goal-row:hover{background:var(--card)}
@@ -178,7 +178,7 @@ a{color:inherit;text-decoration:none}
 /* ── §04 주요 연혁 — 타임라인 ── */
 .timeline{border-top:1px solid var(--line)}
 .tl-row{display:grid;grid-template-columns:6.5rem 1fr;gap:1.4rem;align-items:baseline;
-  padding:1.05rem .2rem;border-bottom:1px solid var(--line-soft);transition:background .12s}
+  padding:1.05rem .5rem 1.05rem .8rem;border-bottom:1px solid var(--line-soft);transition:background .12s}
 .tl-row:hover{background:var(--card)}
 .tl-row:hover .tl-year{color:var(--coral)}
 .tl-row.key{box-shadow:inset 2px 0 0 var(--coral)}
@@ -244,18 +244,19 @@ a{color:inherit;text-decoration:none}
     <div class="pagehead-inner">
       <p class="kick">About</p>
       <h1 id="ptitle">학부 소개</h1>
-      <p class="lede">1962년 기계공학과 독립 이래 반세기가 넘는 시간 동안, 연세대학교 기계공학부는 교육과 연구의 중심에서 <b>정밀과 신뢰</b>의 가치를 지켜 왔습니다. 오늘은 <b>33명의 교수진과 33개 연구실</b>이 여섯 개 분야에서 함께 연구하고 가르칩니다.</p>
+      <p class="lede">연세대학교 기계공학부는 1962년 기계공학과로 독립한 이래 <b>정밀과 신뢰</b>를 바탕으로 교육과 연구를 이어 왔습니다. 지금은 <b>33명의 교수진과 33개 연구실</b>이 여섯 개 분야에서 연구하며 학생을 가르칩니다.</p>
     </div>
   </section>
 
   <!-- ═══ §01 학과장 인사말 ═══ -->
   <section class="section" id="greeting" aria-labelledby="greeting-h">
     <div class="sec-head">
-      <div>
+      <div class="sec-top">
         <p class="sec-kick">인사말</p>
-        <h2 id="greeting-h" class="sec-title">학과장 인사말</h2>
+        <a class="sec-more" href="G-people.html#kim-woochul">학과장 프로필 <span class="arr" aria-hidden="true">→</span></a>
       </div>
-      <a class="sec-more" href="G-people.html#kim-woochul">학과장 프로필 <span class="arr" aria-hidden="true">→</span></a>
+      <h2 id="greeting-h" class="sec-title">학과장 인사말</h2>
+      <p class="sec-sub">학과장 김우철 교수가 인사를 전합니다.</p>
     </div>
     <div class="greet-grid">
       <div>
@@ -272,8 +273,8 @@ a{color:inherit;text-decoration:none}
         <p class="pull">“정밀과 신뢰의 가치를 지키며,<br>멈추지 않는 도전을 이어 갑니다.”</p>
         <div class="flow">
           <p>연세대학교 기계공학부 홈페이지를 찾아 주셔서 진심으로 감사드립니다.</p>
-          <p>우리 학부는 1962년 기계공학과로 독립한 이래 반세기가 넘는 시간 동안 기계공학 교육과 연구의 중심에서 정밀과 신뢰의 가치를 지켜 왔습니다. <span class="hi">33명의 교수진과 33개 연구실</span>이 고체·열·유체에서 나노·로보틱스·인공지능까지 폭넓은 스펙트럼을 아우르며, 이론적 깊이와 실험적 검증을 함께 추구합니다.</p>
-          <p>‘멈추지 않는 50년, 100년을 향한 도전’이라는 모토처럼, 우리는 어제의 성취에 머무르지 않고 내일의 문제를 향해 나아갑니다. 학생 한 사람 한 사람이 기계공학의 원리를 손끝으로 익히고, 세상의 난제를 스스로 설계·해결하는 <b>공학자</b>로 성장하도록 최선을 다하겠습니다. 여러분의 따뜻한 관심과 성원을 부탁드립니다.</p>
+          <p>우리 학부는 1962년 기계공학과로 독립한 이래 60년 넘게 기계공학 교육과 연구의 중심 역할을 해 왔습니다. <span class="hi">33명의 교수진과 33개 연구실</span>이 고체·열·유체부터 나노·로보틱스·인공지능까지 넓은 분야를 다루며, 이론의 깊이와 실험을 통한 검증을 함께 추구합니다.</p>
+          <p>우리는 어제의 성취에 머무르지 않고 내일의 문제를 향해 나아갑니다. 학생 한 사람 한 사람이 기계공학의 원리를 손끝으로 익히고, 세상의 난제를 스스로 설계·해결하는 <b>공학자</b>로 성장하도록 최선을 다하겠습니다. 여러분의 따뜻한 관심과 성원을 부탁드립니다.</p>
         </div>
         <div class="sign">
           <span class="role">연세대학교 기계공학부 학과장</span>
@@ -287,16 +288,16 @@ a{color:inherit;text-decoration:none}
   <!-- ═══ §02 비전 · 교육철학 ═══ -->
   <section class="section" id="vision" aria-labelledby="vision-h">
     <div class="sec-head">
-      <div>
+      <div class="sec-top">
         <p class="sec-kick">비전</p>
-        <h2 id="vision-h" class="sec-title">비전 · 교육철학</h2>
       </div>
+      <h2 id="vision-h" class="sec-title">비전 · 교육철학</h2>
       <p class="sec-sub">기독교 정신을 바탕으로 창의적 설계 역량과 글로벌 리더십을 갖춘 공학 인재를 양성합니다.</p>
     </div>
     <div class="vision-grid">
       <div>
         <p class="declare">멈추지 않는 50년,<br>100년을 향한 <em>도전</em>.</p>
-        <p class="motto-note">— 연세대학교 기계공학부 연구 모토</p>
+        <p class="motto-note">연세대학교 기계공학부 연구 모토</p>
       </div>
       <div class="vision-desc">
         <span class="overline">교육철학</span>
@@ -319,12 +320,12 @@ a{color:inherit;text-decoration:none}
   <!-- ═══ §03 조직 · 행정 ═══ -->
   <section class="section" id="organization" aria-labelledby="org-h">
     <div class="sec-head">
-      <div>
+      <div class="sec-top">
         <p class="sec-kick">조직</p>
-        <h2 id="org-h" class="sec-title">조직 · 행정</h2>
+        <a class="sec-more" href="G-people.html">교수진 전체 <span class="arr" aria-hidden="true">→</span></a>
       </div>
-      <a class="sec-more" href="G-people.html">교수진 전체 <span class="arr" aria-hidden="true">→</span></a>
-      <p class="sec-sub">학과장과 학부지도교수, 그리고 행정 연락처를 안내합니다.</p>
+      <h2 id="org-h" class="sec-title">조직 · 행정</h2>
+      <p class="sec-sub">학과장·학부지도교수와 행정실 연락처를 안내합니다.</p>
     </div>
     <div class="org-grid">
       <div>
@@ -358,7 +359,7 @@ a{color:inherit;text-decoration:none}
           <div class="c-row"><span class="lab">학부 행정<span class="note">학사 · 수업 문의</span></span><span class="val">02-2123-4426</span></div>
           <div class="c-row"><span class="lab">대학원 행정<span class="note">대학원 학사 문의</span></span><span class="val">02-2123-2810</span></div>
           <div class="c-row"><span class="lab">BK21 사업단<span class="note">BK21 FOUR 문의</span></span><span class="val">02-2123-7817</span></div>
-          <div class="c-row addr"><span class="val">(03722) 서울특별시 서대문구 연세로 50 · 연세대학교 공과대학 — <a href="#location">오시는 길</a></span></div>
+          <div class="c-row addr"><span class="val">(03722) 서울특별시 서대문구 연세로 50 · 연세대학교 공과대학 · <a href="#location">오시는 길</a></span></div>
         </div>
         <p class="side-note">4단계 BK21(BK21 FOUR) 사업에 선정되어, <a href="G-research.html">대학원 연구</a>를 중심으로 다음 세대 연구자를 양성하고 있습니다.</p>
       </div>
@@ -368,21 +369,21 @@ a{color:inherit;text-decoration:none}
   <!-- ═══ §04 주요 연혁 ═══ -->
   <section class="section" id="history" aria-labelledby="hist-h">
     <div class="sec-head">
-      <div>
+      <div class="sec-top">
         <p class="sec-kick">연혁</p>
-        <h2 id="hist-h" class="sec-title">주요 연혁</h2>
+        <a class="sec-more" href="G-news.html">전체 연혁 <span class="arr" aria-hidden="true">→</span></a>
       </div>
-      <a class="sec-more" href="G-news.html">전체 연혁 <span class="arr" aria-hidden="true">→</span></a>
-      <p class="sec-sub">1958년 건설공학과 신설에서 오늘의 기계공학부까지 — 60여 년의 걸음을 정리했습니다.</p>
+      <h2 id="hist-h" class="sec-title">주요 연혁</h2>
+      <p class="sec-sub">1958년 건설공학과 신설부터 오늘의 기계공학부까지 60여 년의 걸음을 담았습니다.</p>
     </div>
     <div class="timeline" role="list" aria-label="주요 연혁">
-      <div class="tl-row" role="listitem"><span class="tl-year">1958</span><span class="tl-body">건설공학과 신설 — 공학 교육의 출발점.</span></div>
+      <div class="tl-row" role="listitem"><span class="tl-year">1958</span><span class="tl-body">건설공학과 신설. 연세 공학 교육이 시작되었습니다.</span></div>
       <div class="tl-row key" role="listitem"><span class="tl-year">1962</span><span class="tl-body"><b>기계공학과로 독립.</b> 고체·열·유체·동역학, 네 개의 역학에서 출발했습니다.</span></div>
-      <div class="tl-row" role="listitem"><span class="tl-year">1964</span><span class="tl-body">첫 졸업생 배출 — 동문 네트워크의 출발점.</span></div>
+      <div class="tl-row" role="listitem"><span class="tl-year">1964</span><span class="tl-body">첫 졸업생 배출. 오늘의 동문 네트워크로 이어졌습니다.</span></div>
       <div class="tl-row key" role="listitem"><span class="tl-year">2010</span><span class="tl-body"><b>창립 50주년.</b> 반세기의 축적을 기념했습니다.</span></div>
       <div class="tl-row" role="listitem"><span class="tl-year">2016</span><span class="tl-body">3단계 BK21 플러스 사업단 협약.</span></div>
       <div class="tl-row key" role="listitem"><span class="tl-year">2020</span><span class="tl-body"><b>4단계 BK21(FOUR) 사업 선정.</b> 대학원 연구·인력 양성의 국가 거점.</span></div>
-      <div class="tl-row" role="listitem"><span class="tl-year">2026</span><span class="tl-body">오늘은 6개 분야, 33개 연구실이 함께 연구하고 가르칩니다.</span></div>
+      <div class="tl-row" role="listitem"><span class="tl-year">2026</span><span class="tl-body">6개 분야 · 33개 연구실 체제로 오늘에 이릅니다.</span></div>
     </div>
     <p class="hist-more">동문·대외협력 소식은 <a href="G-news.html">소식</a>에서, 입학·진로는 <a href="G-admissions.html">입학 안내</a>에서 이어집니다.</p>
   </section>
@@ -390,11 +391,11 @@ a{color:inherit;text-decoration:none}
   <!-- ═══ §05 연락처 · 오시는 길 ═══ -->
   <section class="section" id="location" aria-labelledby="loc-h">
     <div class="sec-head">
-      <div>
+      <div class="sec-top">
         <p class="sec-kick">연락처</p>
-        <h2 id="loc-h" class="sec-title">연락처 · 오시는 길</h2>
       </div>
-      <p class="sec-sub">행정 문의는 전화 또는 대표 이메일로, 방문은 아래 주소로 안내합니다.</p>
+      <h2 id="loc-h" class="sec-title">연락처 · 오시는 길</h2>
+      <p class="sec-sub">궁금한 점은 전화나 대표 이메일로 문의해 주세요.</p>
     </div>
     <div class="org-grid">
       <div>
@@ -426,7 +427,7 @@ a{color:inherit;text-decoration:none}
             <circle cx="30" cy="27" r="1.9" />
             <path d="M30 20v1.8M30 32.2V34M37 27h-1.8M24.8 27H23M34.9 22.1l-1.2 1.2M26.3 30.7l-1.2 1.2M34.9 31.9l-1.2-1.2M26.3 23.3l-1.2-1.2" />
           </svg>
-          <figcaption><b>캠퍼스 스냅</b> — 학부 전경 · 연구실 사진은 준비되는 대로 이 자리에 게시합니다.</figcaption>
+          <figcaption><b>캠퍼스 스냅</b> · 학부 전경과 연구실 사진이 준비되는 대로 이 자리에 게시됩니다.</figcaption>
         </figure>
       </div>
     </div>
@@ -455,7 +456,7 @@ a{color:inherit;text-decoration:none}
     <div class="cta-txt">
       <p class="cta-kick">입학 안내</p>
       <h2 id="cta-h">연세 기계공학의 다음 이야기를<br>함께 만들 사람을 기다립니다.</h2>
-      <p>학부 입학부터 대학원 진학까지 — 지원 절차와 장학·진로 정보를 한곳에 정리했습니다.</p>
+      <p>학부 입학부터 대학원 진학까지, 지원 절차와 장학·진로 정보를 한곳에 모았습니다.</p>
     </div>
     <a class="cta-btn" href="G-admissions.html">입학 · 진로 안내 <span class="arr" aria-hidden="true">→</span></a>
   </section>

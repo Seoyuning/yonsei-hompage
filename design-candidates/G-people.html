@@ -102,16 +102,15 @@ a{color:inherit;text-decoration:none}
 /* ── 디렉토리 (데이터 행) ── */
 .dir{max-width:1320px;margin:0 auto;padding:2.2rem clamp(1.2rem,.6rem + 2vw,2.6rem) 2.6rem}
 .dir-legend{display:grid;
-  grid-template-columns:3.4rem minmax(9rem,1.1fr) minmax(9rem,1.3fr) minmax(6rem,.8fr);
+  grid-template-columns:3.4rem 220px minmax(0,1fr) 250px;
   gap:1.6rem;align-items:center;
   padding:.8rem 1.1rem;border-bottom:1px solid var(--line);
   font-size:.76rem;color:var(--label)}
-.dir-legend .rt{text-align:right}
 
 .dir-list{display:block}
 .row{display:grid;
-  grid-template-columns:3.4rem minmax(9rem,1.1fr) minmax(9rem,1.3fr) minmax(6rem,.8fr);
-  gap:1.6rem;align-items:center;
+  grid-template-columns:3.4rem 220px minmax(0,1fr) 250px;
+  gap:1.6rem;align-items:start;
   padding:1.5rem 1.1rem;border-bottom:1px solid var(--line-soft);
   position:relative;transition:background .12s;
   scroll-margin-top:6rem}
@@ -123,41 +122,39 @@ a{color:inherit;text-decoration:none}
   background:#e8eef7;color:var(--navy);
   font-family:var(--kr);font-weight:700;font-size:1.02rem;line-height:1}
 
-/* 이름 블록 */
+/* ① 이름 블록 — 이름 · 직위 칩 · 영문명 */
 .r-name{min-width:0}
-.r-name .ko{font-family:var(--kr);font-weight:700;font-size:1.06rem;color:var(--navy);line-height:1.3}
-.r-name .en{font-family:var(--mono);font-size:.66rem;letter-spacing:.04em;color:var(--label);margin-top:.3rem;
+.r-name .ko{font-family:var(--kr);font-weight:700;font-size:1.05rem;color:var(--navy);line-height:1.35}
+.r-name .en{font-family:var(--kr);font-size:.78rem;color:var(--label);margin-top:.28rem;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.r-contact{margin-top:.55rem}
-.r-contact .lk{display:block;font-family:var(--mono);font-size:.7rem;letter-spacing:.01em;color:var(--sub);
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.r-contact .lk:hover{color:var(--coral)}
-.r-contact .lk.tel{color:var(--muted);margin-top:.14rem}
-.r-contact .lk.tel:hover{color:var(--coral)}
-.r-contact .loc{font-size:.72rem;color:var(--muted);margin-top:.18rem;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.loc .loclab{color:var(--label);margin-right:.3rem}
 .r-badges{display:inline-flex;gap:.35rem;margin-left:.55rem;vertical-align:middle}
 .badge{display:inline-block;font-family:var(--kr);font-size:.68rem;font-weight:500;
   padding:.14rem .45rem;border:1px solid var(--line);color:var(--muted);vertical-align:middle}
 .badge--role{border-color:var(--coral);color:var(--coral)}
 
-/* 연구분야 태그 + 연구실 */
-.r-cluster{min-width:0}
+/* ② 연구 블록 — 분야 배지 · 연구실명 · 위치 한 줄 */
+.r-research{min-width:0}
 .tag{display:inline-flex;align-items:center;gap:.45rem;font-size:.8rem;color:var(--body)}
 .tag .dot{width:7px;height:7px;border-radius:50%;background:var(--tag-c,var(--coral));flex:none}
-.r-lab{min-width:0;margin-top:.55rem}
-.r-lab .lk{font-size:.86rem;color:var(--body);line-height:1.45;display:block;
+.r-lab{min-width:0;margin-top:.5rem}
+.r-lab .lk{font-size:.88rem;font-weight:600;color:var(--body);line-height:1.45;display:block;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.r-lab .lk:hover{color:var(--navy);text-decoration:underline;text-underline-offset:2px}
-.r-lab .loc{font-size:.72rem;color:var(--label);margin-top:.22rem}
+.r-lab a.lk:hover{color:var(--navy);text-decoration:underline;text-underline-offset:2px}
+.r-loc{font-size:.78rem;color:var(--muted);margin-top:.3rem;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.r-loc .loclab{color:var(--label);margin-right:.25rem}
+.r-loc .sep{color:var(--label);margin:0 .35rem}
 
-/* 우측 링크 */
-.r-act{text-align:right;font-family:var(--kr);font-size:.8rem;white-space:nowrap}
-.r-act a{color:var(--muted);transition:color .15s}
-.r-act a:hover{color:var(--coral)}
-.r-act a.ext{color:var(--coral)}
-.r-act .div{color:var(--label);margin:0 .4rem}
+/* ③ 연락 블록 — 라인 아이콘 + 텍스트 세로 스택 */
+.r-contact{min-width:0;display:flex;flex-direction:column;gap:.35rem;padding-top:.1rem}
+.r-contact .cline{display:flex;align-items:center;gap:.5rem;min-width:0;
+  font-size:.8rem;color:var(--sub);transition:color .15s}
+.r-contact .cline svg{flex:none;color:var(--label)}
+.r-contact a.cline:hover{color:var(--coral)}
+.r-contact .ct{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.r-contact .profile{font-size:.76rem;color:var(--muted);margin-top:.1rem;
+  padding-left:calc(16px + .5rem);transition:color .15s}
+.r-contact a.profile:hover{color:var(--coral)}
 
 /* 빈 상태 */
 .empty{padding:4rem 1rem;text-align:center;color:var(--muted)}
@@ -180,17 +177,17 @@ a{color:inherit;text-decoration:none}
 .bd-row .bar{height:2px;background:var(--line-soft);position:relative}
 .bd-row .bar span{position:absolute;inset:0 auto 0 0;background:var(--bd-c,var(--coral))}
 
-/* ── 반응형: 모바일 열 스택 ── */
-@media (max-width:860px){
+/* ── 반응형: 모바일 — 이니셜+이름 첫 줄, 나머지 블록 세로 스택 ── */
+@media (max-width:820px){
   .dir-legend{display:none}
-  .row{grid-template-columns:2.7rem 1fr;gap:.5rem 1.1rem;
+  .row{grid-template-columns:2.7rem 1fr;gap:.6rem 1.1rem;
     padding:1.4rem .3rem;align-items:start}
-  .r-ava{grid-row:1 / span 2;grid-column:1;width:2.7rem;height:2.7rem;align-self:start;margin-top:.15rem}
-  .r-name{grid-column:2;grid-row:1}
-  .r-cluster{grid-column:2;grid-row:2;display:flex;flex-wrap:wrap;gap:.6rem 1.1rem;align-items:center;margin-top:.6rem}
-  .r-lab{margin-top:.6rem}
+  .r-ava{grid-column:1;grid-row:1}
+  .r-name{grid-column:2;grid-row:1;align-self:center}
+  .r-research{grid-column:2;grid-row:2;margin-top:.15rem}
+  .r-contact{grid-column:2;grid-row:3;margin-top:.35rem;padding-top:0}
   .r-lab .lk{white-space:normal}
-  .r-act{grid-column:2;grid-row:3;text-align:left;margin-top:.7rem}
+  .r-loc{white-space:normal}
 }
 </style>
 </head>
@@ -230,7 +227,7 @@ a{color:inherit;text-decoration:none}
   <!-- 디렉토리 (데이터 행) -->
   <section class="dir" id="dir" aria-label="전임 교수 디렉토리">
     <div class="dir-legend" aria-hidden="true">
-      <span></span><span>이름 · 직위</span><span>연구분야 · 연구실</span><span class="rt">바로가기</span>
+      <span></span><span>이름 · 직위</span><span>연구분야 · 연구실</span><span>연락처</span>
     </div>
     <div class="dir-list" id="rows"></div>
     <div class="empty" id="empty" hidden>
@@ -272,6 +269,17 @@ a{color:inherit;text-decoration:none}
 
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){
     return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+  /* 사무실 영문 → 국문 축약: "Engineering Building #3, Room C324" → "제3공학관 C324"
+     매핑되지 않는 값은 원문 유지 */
+  function officeKo(s){
+    var m = /^Engineering\s*Building\s*#\s*([123])\s*,\s*Room\s*(.+)$/i.exec(String(s).trim());
+    return m ? '제'+m[1]+'공학관 '+m[2].trim() : String(s).trim();
+  }
+
+  /* 연락 블록 16px 라인 아이콘 (stroke 1.5) */
+  var ICON_MAIL = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="m3.5 6.5 8.5 6 8.5-6"/></svg>';
+  var ICON_TEL = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>';
 
   var rowsEl = document.getElementById('rows'),
       emptyEl = document.getElementById('empty'),
@@ -329,7 +337,7 @@ a{color:inherit;text-decoration:none}
     rWrap.querySelectorAll('.fchip').forEach(function(b){ b.setAttribute('aria-pressed',String(b.dataset.r===state.r)); });
   }
 
-  /* ── 데이터 행 ── */
+  /* ── 데이터 행: [이니셜] [① 이름] [② 연구] [③ 연락] ── */
   function rowHtml(p){
     var lab = labs[p.labId] || {};
     var cl = clusterOf[p.cluster] || {};
@@ -338,38 +346,42 @@ a{color:inherit;text-decoration:none}
       + '<span class="badge">'+esc(p.rank)+'</span>'
       + (p.role ? '<span class="badge badge--role">'+esc(p.role)+'</span>' : '')
       + '</span>';
-    var labLink = labUrl
+    /* 연구실명 — site 있으면 외부 링크, 없으면 링크 없이 표기 */
+    var labLine = labUrl
       ? '<a class="lk" href="'+esc(labUrl)+'" target="_blank" rel="noopener">'+esc(lab.ko)+' <span aria-hidden="true">↗</span><span class="visually-hidden"> (새 창)</span></a>'
-      : '<a class="lk" href="#'+esc(p.labId)+'">'+esc(lab.ko)+'</a>';
-    var detailHref = p.detail ? p.detail : '#'+esc(p.id);
-    var detailAttr = p.detail ? ' target="_blank" rel="noopener"' : '';
-    var act = '<a href="'+esc(detailHref)+'"'+detailAttr+'>프로필'+(p.detail?' ↗':'')+'</a>'
-      + '<span class="div" aria-hidden="true">·</span>'
-      + (labUrl
-          ? '<a class="ext" href="'+esc(labUrl)+'" target="_blank" rel="noopener">연구실 ↗</a>'
-          : '<a href="#'+esc(p.labId)+'">연구실</a>');
+      : (lab.ko ? '<span class="lk">'+esc(lab.ko)+'</span>' : '');
+    /* 위치 한 줄 통합 — 연구실 위치 · 사무실(국문 축약) */
+    var locBits = [];
+    if(lab.loc) locBits.push('<span class="loclab">연구실</span>'+esc(lab.loc));
+    if(p.office) locBits.push('<span class="loclab">사무실</span>'+esc(officeKo(p.office)));
+    var locLine = locBits.length
+      ? '<div class="r-loc">'+locBits.join('<span class="sep" aria-hidden="true">·</span>')+'</div>' : '';
+    /* ③ 연락 블록 — 이메일 · 전화 · 프로필 */
     var contact = '';
-    if(p.email) contact += '<a class="lk" href="mailto:'+esc(p.email)+'">'+esc(p.email)+'</a>';
+    if(p.email) contact += '<a class="cline" href="mailto:'+esc(p.email)+'">'+ICON_MAIL
+      + '<span class="ct">'+esc(p.email)+'</span></a>';
     if(p.phone){
       String(p.phone).split(',').forEach(function(t){
         t = t.trim(); if(!t) return;
         var disp = t.replace(/\)/g,'-'); /* "02)2123-…" → "02-2123-…" */
-        contact += '<a class="lk tel" href="tel:'+esc(disp.replace(/[^0-9+]/g,''))+'">'+esc(disp)+'</a>';
+        contact += '<a class="cline" href="tel:'+esc(disp.replace(/[^0-9+]/g,''))+'">'+ICON_TEL
+          + '<span class="ct">'+esc(disp)+'</span></a>';
       });
     }
-    if(p.office) contact += '<div class="loc"><span class="loclab">사무실</span>'+esc(p.office)+'</div>';
+    if(p.detail) contact += '<a class="profile" href="'+esc(p.detail)+'" target="_blank" rel="noopener">'
+      + '프로필 <span aria-hidden="true">↗</span><span class="visually-hidden"> (새 창)</span></a>';
     return '<div class="row" id="'+esc(p.id)+'" role="group" aria-label="'+esc(p.ko+' '+p.rank)+'">'
       + '<div class="r-ava" aria-hidden="true">'+esc(p.initial)+'</div>'
       + '<div class="r-name">'
         + '<div class="ko">'+esc(p.ko)+badges+'</div>'
         + '<div class="en">'+esc(p.en)+'</div>'
-        + (contact ? '<div class="r-contact">'+contact+'</div>' : '')
       + '</div>'
-      + '<div class="r-cluster">'
+      + '<div class="r-research">'
         + '<span class="tag"><span class="dot" style="--tag-c:var('+CVAR[p.cluster]+')" aria-hidden="true"></span>'+esc(cl.ko||'')+'</span>'
-        + '<div class="r-lab">'+labLink+'<div class="loc">'+(lab.loc?'<span class="loclab">연구실</span>'+esc(lab.loc):'')+'</div></div>'
+        + '<div class="r-lab">'+labLine+'</div>'
+        + locLine
       + '</div>'
-      + '<div class="r-act">'+act+'</div>'
+      + '<div class="r-contact">'+contact+'</div>'
       + '</div>';
   }
 
@@ -381,6 +393,7 @@ a{color:inherit;text-decoration:none}
       if(ql){
         var lab = labs[p.labId] || {};
         var hay = (p.ko+' '+p.en+' '+p.rank+' '+(p.role||'')+' '+(p.email||'')+' '+(p.office||'')+' '+
+          (p.office?officeKo(p.office):'')+' '+
           (p.phone||'')+' '+String(p.phone||'').replace(/\)/g,'-')+' '+
           (lab.ko||'')+' '+(lab.en||'')+' '+(lab.loc||'')).toLowerCase();
         if(hay.indexOf(ql)<0) return false;

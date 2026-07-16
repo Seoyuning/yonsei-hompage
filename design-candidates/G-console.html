@@ -24,7 +24,7 @@
   --txt:#cbced4;
   --dim:#6a6f78;
   --dimmer:#484d55;
-  --coral:#3a60aa;--warm:#e2593c;         /* 궤도·마커·액센트 */
+  --coral:#e2593c;--warm:#e2593c;         /* 궤도·마커·액센트 */
   --glow:#2b4a74;          /* 코어 뒤 냉광 */
   --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
   --kr:"Pretendard Variable","Pretendard",system-ui,sans-serif;
@@ -56,8 +56,8 @@ a{color:inherit;text-decoration:none}
 .ht-en{font-family:var(--mono);font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);margin-top:1rem}
 /* 대형 타이틀 "기계공학부" 호버 강조 — Cover 효과 바닐라(블루 빔+글로우) */
 .ht-ko .cover-lg{position:relative;display:inline-block;transition:text-shadow .25s;cursor:default}
-.ht-ko .cover-lg:hover{text-shadow:0 0 28px rgba(58,96,170,.85),0 0 10px rgba(58,96,170,.6)}
-.ht-ko .cover-lg::before,.ht-ko .cover-lg::after{content:"";position:absolute;left:-3%;right:-3%;height:2px;background:linear-gradient(90deg,transparent,var(--coral,#3a60aa),transparent);opacity:0;transform:translateX(-110%);pointer-events:none}
+.ht-ko .cover-lg:hover{text-shadow:0 0 28px rgba(226,89,60,.85),0 0 10px rgba(226,89,60,.6)}
+.ht-ko .cover-lg::before,.ht-ko .cover-lg::after{content:"";position:absolute;left:-3%;right:-3%;height:2px;background:linear-gradient(90deg,transparent,var(--coral,#e2593c),transparent);opacity:0;transform:translateX(-110%);pointer-events:none}
 .ht-ko .cover-lg:hover::before{top:22%;animation:ynbeamlg 1.15s linear infinite}
 .ht-ko .cover-lg:hover::after{bottom:16%;animation:ynbeamlg 1.45s linear infinite .3s}
 @keyframes ynbeamlg{0%{opacity:0;transform:translateX(-110%)}12%{opacity:1}88%{opacity:1}100%{opacity:0;transform:translateX(110%)}}
@@ -80,7 +80,7 @@ a{color:inherit;text-decoration:none}
 .nd::before{content:"";position:absolute;top:-.6rem;left:0;right:0;height:.6rem}
 .ni:hover .nd,.ni:focus-within .nd{opacity:1;visibility:visible;transform:translateY(0)}
 .nd a{font-family:var(--kr);font-size:.86rem;color:var(--dim);padding:.55rem 1.2rem;white-space:nowrap;transition:color .12s,background .12s}
-.nd a:hover{color:#fff;background:rgba(58,96,170,.14)}
+.nd a:hover{color:#fff;background:rgba(226,89,60,.14)}
 /* 우측 — 스크롤 섹션 스파이 */
 .hud-spy{justify-self:end;text-align:right;pointer-events:auto}
 .spy-lab{display:block;font-family:var(--mono);font-size:.58rem;letter-spacing:.24em;color:var(--dimmer);text-transform:uppercase}
@@ -718,7 +718,7 @@ a.log:hover{background:#10131a}
 })();
 </script>
 <script type="module" src="assets/gear3d.js?v=5"></script>
-<script src="assets/nav.js?v=10"></script>
+<script src="assets/nav.js?v=11"></script>
 <script async src="https://www.instagram.com/embed.js"></script>
 <script>window.addEventListener("load",function(){if(window.instgrm)window.instgrm.Embeds.process();});</script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--dimmer)">

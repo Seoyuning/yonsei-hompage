@@ -191,6 +191,13 @@ a{color:inherit;text-decoration:none}
 .hist-more a:hover{color:var(--coral)}
 @media (max-width:640px){.tl-row{grid-template-columns:4.6rem 1fr}}
 
+/* 캠퍼스 스냅 자리 (사진 준비 중 — <img> 교체 예정) */
+.photo-slot{margin-top:1.3rem;border:1px solid var(--line-soft);background:var(--card);
+  padding:1.05rem 1.2rem;display:flex;align-items:center;gap:1rem}
+.photo-slot svg{flex:none;width:36px;height:36px;color:var(--faint)}
+.photo-slot figcaption{font-size:.82rem;color:var(--muted);line-height:1.65}
+.photo-slot figcaption b{font-weight:600;color:var(--sub)}
+
 /* ── 학부 현황 (숫자) ── */
 .stats{border-top:1px solid var(--line-soft)}
 .stats-inner{max-width:1120px;margin:0 auto;
@@ -408,6 +415,18 @@ a{color:inherit;text-decoration:none}
           &nbsp;·&nbsp;
           <a href="https://map.naver.com/p/search/연세대학교%20제1공학관" target="_blank" rel="noopener">네이버 지도에서 보기 <span aria-hidden="true">↗</span></a>
         </p>
+        <!-- 사진 교체 지점: assets/photos/campus-1.jpg -->
+        <figure class="photo-slot" aria-label="캠퍼스 사진 자리 (준비 중)">
+          <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="5" y="15" width="16" height="19" />
+            <path d="M5 15l8-7 8 7" />
+            <path d="M10 21h2M10 26h2M16 21h2M16 26h2M12 34v-4h2v4" />
+            <circle cx="30" cy="27" r="5.2" />
+            <circle cx="30" cy="27" r="1.9" />
+            <path d="M30 20v1.8M30 32.2V34M37 27h-1.8M24.8 27H23M34.9 22.1l-1.2 1.2M26.3 30.7l-1.2 1.2M34.9 31.9l-1.2-1.2M26.3 23.3l-1.2-1.2" />
+          </svg>
+          <figcaption><b>캠퍼스 스냅</b> — 학부 전경 · 연구실 사진은 준비되는 대로 이 자리에 게시합니다.</figcaption>
+        </figure>
       </div>
     </div>
   </section>
@@ -461,7 +480,7 @@ a{color:inherit;text-decoration:none}
   });
 })();
 </script>
-<script src="assets/nav.js?v=16"></script>
+<script src="assets/nav.js?v=17"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--dimmer)">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

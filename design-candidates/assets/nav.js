@@ -35,7 +35,26 @@
     '.ynav-spy .lab{display:block;font-size:.58rem;letter-spacing:.24em;color:#9aa3b0;text-transform:uppercase}' +
     '.ynav-spy .val{display:block;font-family:var(--kr);font-size:.96rem;font-weight:600;color:#1a3d75;margin-top:.15rem;transition:opacity .2s}' +
     '[id]{scroll-margin-top:5.5rem}' +
-    '@media(max-width:920px){.ynav-menu,.ynav-spy{display:none}.ynav{grid-template-columns:1fr}}';
+    '@media(max-width:920px){.ynav-menu,.ynav-spy{display:none}.ynav{grid-template-columns:1fr}}' +
+    /* ── 모바일 햄버거 + 풀스크린 오버레이(≤920px) ── */
+    '.ynav-burger{display:none;justify-self:end;width:44px;height:44px;align-items:center;justify-content:center;' +
+      'flex-direction:column;gap:5px;background:none;border:0;padding:0;cursor:pointer;pointer-events:auto}' +
+    '.ynav-burger span{display:block;width:22px;height:2px;background:#1a3d75;border-radius:1px}' +
+    '.ynav-ovl{position:fixed;inset:0;z-index:60;background:#fff;display:flex;flex-direction:column;' +
+      'overflow-y:auto;-webkit-overflow-scrolling:touch;font-family:var(--mono,ui-monospace,monospace);' +
+      'opacity:0;visibility:hidden;transition:opacity .18s,visibility 0s .18s}' +
+    '.ynav-ovl.open{opacity:1;visibility:visible;transition:opacity .18s,visibility 0s}' +
+    '.ynav-ovl-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex:0 0 auto;' +
+      'padding:.75rem clamp(1.2rem,.6rem + 2vw,2.6rem);border-bottom:1px solid rgba(0,0,0,.08)}' +
+    '.ynav-ovl-close{width:44px;height:44px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;' +
+      'background:none;border:0;padding:0;cursor:pointer;font-size:1.35rem;line-height:1;color:#1a3d75}' +
+    '.ynav-ovl-body{display:flex;flex-direction:column;padding:.6rem clamp(1.2rem,.6rem + 2vw,2.6rem) 3rem}' +
+    '.ynav-ovl-top{display:block;font-family:var(--kr);font-size:1.12rem;font-weight:800;color:#1a3d75;' +
+      'padding:.85rem 0 .4rem;margin-top:.5rem;border-bottom:1px solid rgba(0,0,0,.06)}' +
+    '.ynav-ovl-sub{display:block;font-family:var(--kr);font-size:.95rem;color:#5c6b85;padding:.55rem 0 .55rem 1.1rem}' +
+    '@media(max-width:920px){.ynav{grid-template-columns:1fr auto}.ynav-burger{display:inline-flex}}' +
+    '@media(min-width:921px){.ynav-ovl{display:none!important}}' +
+    '@media(prefers-reduced-motion:reduce){.ynav-ovl,.ynav-ovl.open{transition:none}}';
   var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
 
   /* ── 2. 메뉴 정의 ── */
@@ -76,6 +95,58 @@
   function mount() {
     var old = document.querySelector('.hud-top'); if (old) old.remove();
     document.body.insertBefore(nav, document.body.firstChild);
+    /* ── 모바일 햄버거 버튼 + 풀스크린 오버레이 메뉴(≤920px) ── */
+    var burger = document.createElement('button');
+    burger.className = 'ynav-burger'; burger.type = 'button';
+    burger.setAttribute('aria-label', '메뉴 열기');
+    burger.setAttribute('aria-expanded', 'false');
+    burger.setAttribute('aria-controls', 'ynavOvl');
+    burger.innerHTML = '<span></span><span></span><span></span>';
+    nav.appendChild(burger);
+    var ovl = document.createElement('div');
+    ovl.className = 'ynav-ovl'; ovl.id = 'ynavOvl';
+    ovl.setAttribute('role', 'dialog');
+    ovl.setAttribute('aria-modal', 'true');
+    ovl.setAttribute('aria-label', '모바일 메뉴');
+    ovl.innerHTML =
+      '<div class="ynav-ovl-head">' +
+        '<a class="ynav-brand" href="G-console.html" aria-label="연세대학교 기계공학부 홈">' +
+          '<span class="ynav-logo" role="img" aria-label="연세대학교"></span>' +
+          '<span class="dept">연세대학교 기계공학부</span></a>' +
+        '<button class="ynav-ovl-close" type="button" aria-label="메뉴 닫기">✕</button></div>' +
+      '<nav class="ynav-ovl-body" aria-label="모바일 주메뉴">' +
+        MENU.map(function (m) {
+          var subs = m.sub.map(function (s) { return '<a class="ynav-ovl-sub" href="' + s[1] + '">' + esc(s[0]) + '</a>'; }).join('');
+          return '<a class="ynav-ovl-top" href="' + m.h + '">' + esc(m.t) + '</a>' + subs;
+        }).join('') + '</nav>';
+    document.body.appendChild(ovl);
+    var ovlClose = ovl.querySelector('.ynav-ovl-close');
+    var prevOverflow = '';
+    var openOvl = function () {
+      if (ovl.classList.contains('open')) return;
+      ovl.classList.add('open');
+      burger.setAttribute('aria-expanded', 'true');
+      prevOverflow = document.body.style.overflow || '';
+      document.body.style.overflow = 'hidden';
+      var first = ovl.querySelector('.ynav-ovl-body a'); if (first) first.focus();
+    };
+    var closeOvl = function () {
+      if (!ovl.classList.contains('open')) return;
+      ovl.classList.remove('open');
+      burger.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = prevOverflow;
+      burger.focus();
+    };
+    burger.addEventListener('click', function () { if (ovl.classList.contains('open')) closeOvl(); else openOvl(); });
+    if (ovlClose) ovlClose.addEventListener('click', closeOvl);
+    ovl.addEventListener('click', function (e) {
+      var a = (e.target && e.target.closest) ? e.target.closest('a') : null;
+      if (a) closeOvl();
+    });
+    document.addEventListener('keydown', function (e) {
+      if ((e.key === 'Escape' || e.key === 'Esc') && ovl.classList.contains('open')) closeOvl();
+    });
+    window.addEventListener('resize', function () { if (window.innerWidth > 920) closeOvl(); });
     if (isHome) {
       var spy = document.getElementById('ynavSpy');
       var secs = [].slice.call(document.querySelectorAll('.stage,.doc .sec,.cta'));

@@ -19,14 +19,6 @@
       'background:url(assets/yonsei-logo.png) no-repeat left center;background-size:auto 34px;' +
       'filter:brightness(0) invert(1)}' +
     '.ynav-brand .dept{font-family:var(--kr);font-weight:800;font-size:1.04rem;color:#fff;letter-spacing:.01em;white-space:nowrap}' +
-    /* "기계공학부" 호버 강조 — Cover 효과 바닐라 이식(블루 빔+글로우) */
-    '.ynav-brand .cover{position:relative;display:inline-block;padding:.04em .3em;border-radius:3px;overflow:hidden;transition:background .2s,color .2s,text-shadow .2s}' +
-    '.ynav-brand .cover:hover{background:rgba(59,130,246,.16);color:#fff;text-shadow:0 0 10px rgba(59,130,246,.7)}' +
-    '.ynav-brand .cover::before,.ynav-brand .cover::after{content:"";position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--coral,#3b82f6),transparent);opacity:0;transform:translateX(-100%);pointer-events:none}' +
-    '.ynav-brand .cover:hover::before{top:24%;animation:ynbeam 1.05s linear infinite}' +
-    '.ynav-brand .cover:hover::after{bottom:24%;animation:ynbeam 1.35s linear infinite .28s}' +
-    '@keyframes ynbeam{0%{opacity:0;transform:translateX(-110%)}12%{opacity:1}88%{opacity:1}100%{opacity:0;transform:translateX(110%)}}' +
-    '@media(prefers-reduced-motion:reduce){.ynav-brand .cover:hover::before,.ynav-brand .cover:hover::after{animation:none}}' +
     '.ynav-menu{justify-self:center;display:flex;gap:1.7rem;align-items:center;pointer-events:auto}' +
     '.ynav-item{position:relative}' +
     '.ynav-top{font-family:var(--kr);font-size:1rem;font-weight:600;color:var(--txt,#cbced4);transition:color .15s;padding:.3rem 0;display:inline-block}' +
@@ -39,10 +31,10 @@
     '.ynav-drop::before{content:"";position:absolute;top:-.6rem;left:0;right:0;height:.6rem}' +
     '.ynav-item:hover .ynav-drop,.ynav-item:focus-within .ynav-drop{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}' +
     '.ynav-drop a{font-family:var(--kr);font-size:.86rem;color:var(--dim,#6a6f78);padding:.55rem 1.2rem;white-space:nowrap;transition:color .12s,background .12s}' +
-    '.ynav-drop a:hover{color:#fff;background:rgba(59,130,246,.14)}' +
+    '.ynav-drop a:hover{color:#fff;background:rgba(69,116,196,.14)}' +
     '.ynav-spy{justify-self:end;text-align:right;pointer-events:auto}' +
     '.ynav-spy .lab{display:block;font-size:.58rem;letter-spacing:.24em;color:var(--dimmer,#484d55);text-transform:uppercase}' +
-    '.ynav-spy .val{display:block;font-family:var(--kr);font-size:.96rem;font-weight:600;color:var(--coral,#3b82f6);margin-top:.15rem;transition:opacity .2s}' +
+    '.ynav-spy .val{display:block;font-family:var(--kr);font-size:.96rem;font-weight:600;color:var(--coral,#4574c4);margin-top:.15rem;transition:opacity .2s}' +
     '[id]{scroll-margin-top:5.5rem}' +
     '@media(max-width:920px){.ynav-menu,.ynav-spy{display:none}.ynav{grid-template-columns:1fr}}';
   var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
@@ -77,7 +69,7 @@
   nav.innerHTML =
     '<a class="ynav-brand" href="G-console.html" aria-label="연세대학교 기계공학부 홈">' +
       '<span class="ynav-logo" role="img" aria-label="연세대학교"></span>' +
-      '<span class="dept">연세대학교 <span class="cover">기계공학부</span></span></a>' +
+      '<span class="dept">연세대학교 기계공학부</span></a>' +
     '<nav class="ynav-menu" aria-label="주메뉴">' + menuHtml + '</nav>' +
     '<div class="ynav-spy" aria-live="polite"><span class="lab">SECTION</span>' +
       '<span class="val" id="ynavSpy">' + esc(spyDefault) + '</span></div>';

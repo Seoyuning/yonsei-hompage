@@ -33,7 +33,7 @@
 html{-webkit-text-size-adjust:100%}
 body{
   font-family:var(--mono);
-  background:var(--bg); color:var(--txt);
+  background:#fff; color:var(--txt);
   -webkit-font-smoothing:antialiased;
   overflow-x:hidden; word-break:keep-all;
 }
@@ -87,7 +87,7 @@ a{color:inherit;text-decoration:none}
 .spy-val{display:block;font-family:var(--kr);font-size:.98rem;font-weight:600;color:var(--coral);margin-top:.15rem;transition:opacity .2s}
 
 /* ── 스테이지(중앙 뷰) ── */
-.stage{position:relative;height:100vh;min-height:660px;overflow:hidden}
+.stage{position:relative;height:100vh;min-height:660px;overflow:hidden;background:var(--bg)}
 /* 잔해/별 입자 */
 #field{position:absolute;inset:0;z-index:1}
 .dot{position:absolute;background:#fff;border-radius:50%;opacity:.5}
@@ -312,6 +312,43 @@ a.log:hover{background:#10131a}
   .log .lcat{grid-column:1;justify-self:start}
   .log .ltitle{grid-column:1 / -1;order:3}
 }
+
+/* ── 메인 아래 라이트(흰) 테마 ── */
+.doc{background:#fff;border-top:0}
+.doc .sec{border-bottom:1px solid rgba(10,26,51,.08)}
+.doc .sec-title{color:#14305c}
+.doc .sec-more{color:#7b8595}
+.doc .sec-more:hover{color:var(--warm)}
+.doc .intro .lead{color:#2a3a56}
+.doc .intro .lead b{color:#14305c}
+.doc .intro .body{color:#4a5a74}
+.doc .metric{border-bottom:1px solid rgba(10,26,51,.08)}
+.doc .metric .m-lab{color:#7b8595}
+.doc .metric .m-val{color:#14305c}
+.doc .metric .m-val.acc{color:var(--warm)}
+.doc .crow{border-top:1px solid rgba(10,26,51,.1)}
+.doc .crow .cno{color:#9aa3b0}
+.doc .crow .cko{color:#14305c}
+.doc .crow .cdesc{color:#5c6b85}
+.doc .crow .cbar{background:rgba(10,26,51,.08)}
+.doc .crow .clabs{color:#7b8595}
+.doc .crow .clabs b{color:#14305c}
+.doc .clist .crow:hover .cko{color:#0b1e3c}
+.doc .clist .crow:hover .cdesc{color:#2a3a56}
+.doc .people{background:rgba(10,26,51,.08);border:1px solid rgba(10,26,51,.08)}
+.doc .pcard{background:#f7f9fc}
+.doc a.pcard:hover{background:#eef3fa}
+.doc .pcard .pko{color:#14305c}
+.doc .pcard .pclu{color:#5c6b85}
+.doc .log{border-top:1px solid rgba(10,26,51,.08)}
+.doc a.log:hover{background:#f4f7fb}
+.doc .log .lcat{border:1px solid rgba(10,26,51,.14)}
+.doc .log .ltitle{color:#2a3a56}
+.doc .log .ldate{color:#8b93a3}
+.doc .ig-grid + noscript a,.doc .muted{color:#7b8595}
+.doc .ig-cell{border:1px solid rgba(10,26,51,.14);background:#f7f9fc;color:#9aa3b0}
+.doc .ig-cell:hover{border-color:var(--warm);color:var(--warm)}
+body>footer{background:#fff}
 </style>
 <style>.hud-top{display:none}</style>
 </head>

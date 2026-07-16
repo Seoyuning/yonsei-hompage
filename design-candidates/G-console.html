@@ -138,6 +138,21 @@ a{color:inherit;text-decoration:none}
 .r-row .val{color:var(--txt);font-variant-numeric:tabular-nums}
 .r-row .bar{grid-column:1 / -1;height:2px;width:60%;background:var(--line-soft);position:relative;margin-top:.2rem}
 .r-row .bar span{position:absolute;inset:0 auto 0 0;background:var(--warm);opacity:1}
+/* 기계공학이 움직이는 것들 — 응용 분야 행 */
+.app{display:flex;gap:.75rem;align-items:center;padding:.62rem 0;border-bottom:1px solid var(--line-soft);
+  transition:transform .18s,opacity .18s}
+.app svg{width:20px;height:20px;flex:0 0 auto;color:var(--warm)}
+.app-t{font-family:var(--kr);font-size:.84rem;font-weight:500;color:#fff;line-height:1.35;display:block}
+.app-t small{display:block;font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;color:var(--dim);
+  text-transform:uppercase;margin-top:.14rem}
+.app:hover{transform:translateX(5px)}
+.app:hover .app-t{color:var(--warm)}
+/* 스크롤 리빌 — 내리면 떠오르고, 올리면 내려온다 */
+@media (prefers-reduced-motion: no-preference){
+  .anim{opacity:0;transform:translateY(36px);transition:opacity .6s ease,transform .65s cubic-bezier(.22,.61,.36,1)}
+  .anim.from-top{transform:translateY(-36px)}
+  .anim.vis{opacity:1;transform:none}
+}
 /* 연구 구성 아래 — 최근 소식 미니 피드 */
 .r-feed{margin-top:1.7rem;border-top:1px solid var(--line);padding-top:1.1rem}
 .r-feed .r-head{margin-bottom:.7rem}
@@ -432,13 +447,13 @@ body>footer{background:#fff}
 
   <!-- 우: 연구 구성 -->
   <aside class="hud-right">
-    <div class="r-head">연구 구성</div>
-    <div class="r-row"><span class="lab">역학 · 소재</span><span class="val">18%</span><span class="bar"><span style="width:18%"></span></span></div>
-    <div class="r-row"><span class="lab">에너지 · 열유체</span><span class="val">21%</span><span class="bar"><span style="width:21%"></span></span></div>
-    <div class="r-row"><span class="lab">로보틱스 · 제어</span><span class="val">12%</span><span class="bar"><span style="width:12%"></span></span></div>
-    <div class="r-row"><span class="lab">설계 · 제조</span><span class="val">18%</span><span class="bar"><span style="width:18%"></span></span></div>
-    <div class="r-row"><span class="lab">마이크로 · 나노</span><span class="val">15%</span><span class="bar"><span style="width:15%"></span></span></div>
-    <div class="r-row"><span class="lab">바이오 · 포토닉스</span><span class="val">15%</span><span class="bar"><span style="width:15%"></span></span></div>
+    <div class="r-head">기계공학이 움직이는 것들</div>
+    <a class="app" href="G-research.html#dynamics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="6" y="4" width="12" height="10" rx="2.5"/><circle cx="10" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="14" cy="9" r="1" fill="currentColor" stroke="none"/><path d="M9 14v3m6-3v3M4 8v3m16-3v3"/></svg><span class="app-t">휴머노이드 · 로봇<small>로보틱스 · 제어</small></span></a>
+    <a class="app" href="G-research.html#thermal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M13 3 6 13h5l-1 8 7-10h-5l1-8z"/></svg><span class="app-t">수소 · 배터리 · 청정에너지<small>에너지 · 열유체</small></span></a>
+    <a class="app" href="G-research.html#manufacturing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="1.5"/><path d="M10 7V4m4 3V4m-4 16v-3m4 3v-3M7 10H4m3 4H4m16-4h-3m3 4h-3"/></svg><span class="app-t">반도체 · 디스플레이 장비<small>설계 · 제조</small></span></a>
+    <a class="app" href="G-research.html#solid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 15 12 4l8 11M8 15l4-6 4 6M2 19h20"/></svg><span class="app-t">우주항공 · 모빌리티 구조<small>역학 · 소재</small></span></a>
+    <a class="app" href="G-research.html#optics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 12h4l2-5 3 10 2-5h7"/></svg><span class="app-t">바이오칩 · 의료기기<small>바이오 · 포토닉스</small></span></a>
+    <a class="app" href="G-research.html#micro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="2"/><ellipse cx="12" cy="12" rx="9" ry="4"/><ellipse cx="12" cy="12" rx="9" ry="4" transform="rotate(60 12 12)"/></svg><span class="app-t">나노소자 · 초정밀 센서<small>마이크로 · 나노</small></span></a>
     <div class="r-feed">
       <div class="r-head">최근 소식</div>
       <div id="rfFeed">
@@ -732,6 +747,40 @@ body>footer{background:#fff}
     }
     requestAnimationFrame(step);
   });
+})();
+</script>
+<script>
+/* 스크롤 리빌 — 아래로 내리면 떠오르고(from-bottom), 위로 올리면 내려온다(from-top) */
+(function () {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!('IntersectionObserver' in window)) return;
+  var targets = [];
+  document.querySelectorAll('.doc .sec, section.cta').forEach(function (sec) {
+    [].slice.call(sec.children).forEach(function (el, i) {
+      el.classList.add('anim');
+      el.style.transitionDelay = Math.min(i, 4) * 80 + 'ms';
+      targets.push(el);
+    });
+  });
+  var fired = false;
+  var io = new IntersectionObserver(function (es) {
+    fired = true;
+    es.forEach(function (e) {
+      if (e.isIntersecting) {
+        e.target.classList.add('vis');
+      } else {
+        e.target.classList.remove('vis');
+        /* 뷰포트 위로 나간 요소는 다음 진입 때 위에서 내려오게 */
+        if (e.boundingClientRect.top < 0) e.target.classList.add('from-top');
+        else e.target.classList.remove('from-top');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -5% 0px' });
+  targets.forEach(function (t) { io.observe(t); });
+  /* 안전망: 옵저버가 안 도는 환경(백그라운드 탭 등)에서도 콘텐츠가 숨지 않게 */
+  setTimeout(function () {
+    if (!fired) targets.forEach(function (t) { t.classList.add('vis'); });
+  }, 2000);
 })();
 </script>
 <script>

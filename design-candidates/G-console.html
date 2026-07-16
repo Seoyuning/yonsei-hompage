@@ -599,7 +599,7 @@ body>footer{background:#fff}
       </div>
       <a class="sec-more" href="G-people.html">교수진 전체 <span class="arr">→</span></a>
     </div>
-    <div class="people">
+    <div class="people" id="peopleGrid">
       <a class="pcard" href="G-people.html#kim-woochul">
         <span class="pinit">김<img src="assets/faculty/kim-woochul.jpg" alt="" loading="lazy" onerror="this.remove()"></span>
         <span class="pko">김우철</span>
@@ -861,6 +861,25 @@ body>footer{background:#fff}
   t.addEventListener('mouseenter',function(){ timer=setTimeout(function(){t.classList.add('paused');},700); });
   t.addEventListener('mouseleave',function(){ clearTimeout(timer); t.classList.remove('paused'); });
 })();
+</script>
+<script>
+/* 홈 구성원 카드 — 33명 중 무작위 6명 로테이션(새로고침마다 공평 노출). JS 미동작 시 정적 6명 유지 */
+window.addEventListener('DOMContentLoaded', function () {
+  var Y=window.YSME; var grid=document.getElementById('peopleGrid');
+  if(!Y||!Y.professors||!grid) return;
+  function esc(t){return String(t).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  var cl={}; (Y.clusters||[]).forEach(function(c){cl[c.id]=c.ko;});
+  var pool=Y.professors.slice();
+  for(var i=pool.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=pool[i];pool[i]=pool[j];pool[j]=t;}
+  grid.innerHTML=pool.slice(0,6).map(function(p){
+    var role=p.rank+(p.role?' · '+p.role:'');
+    return '<a class="pcard" href="G-people.html#'+esc(p.id)+'">'
+      +'<span class="pinit">'+esc(p.initial)+'<img src="assets/faculty/'+esc(p.id)+'.jpg" alt="" loading="lazy" onerror="this.remove()"></span>'
+      +'<span class="pko">'+esc(p.ko)+'</span>'
+      +'<span class="prole">'+esc(role)+'</span>'
+      +'<span class="pclu">'+esc(cl[p.cluster]||'')+'</span></a>';
+  }).join('');
+});
 </script>
 <script type="module" src="assets/gear3d.js?v=7"></script>
 <script src="assets/nav.js?v=17"></script>

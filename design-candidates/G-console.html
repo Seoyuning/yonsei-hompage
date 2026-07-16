@@ -284,7 +284,12 @@ a.log:hover{background:#10131a}
 
 /* 입학 CTA — 코랄 강조 밴드 */
 /* 인스타그램 릴스 */
-.ig-grid{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;align-items:flex-start}
+.ig-grid{overflow:hidden;position:relative}
+.ig-track{display:flex;width:max-content;animation:ig-scroll 80s linear infinite}
+.ig-track:hover{animation-play-state:paused}
+.ig-set{display:flex;gap:1rem;padding-right:1rem;align-items:flex-start}
+@keyframes ig-scroll{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.ig-track{animation:none}.ig-grid{overflow-x:auto}}
 
 .ig-cell{position:relative;aspect-ratio:9 / 16;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--dim);background:#204683;transition:border-color .15s,color .15s}
 .ig-cell:hover{border-color:var(--coral);color:var(--coral)}
@@ -682,7 +687,22 @@ body>footer{background:#fff}
       <a class="sec-more" href="https://www.instagram.com/yonsei_mech/" target="_blank" rel="noopener">팔로우 <span class="arr">↗</span></a>
     </div>
     <div class="ig-grid">
-      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DYw5QYTBARf/" data-instgrm-version="14" style="background:#fff;border:0;margin:0;min-width:220px;max-width:280px;width:100%;padding:0"></blockquote><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DYkHGXiBpu0/" data-instgrm-version="14" style="background:#fff;border:0;margin:0;min-width:220px;max-width:280px;width:100%;padding:0"></blockquote><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DYheXVhBD5b/" data-instgrm-version="14" style="background:#fff;border:0;margin:0;min-width:220px;max-width:280px;width:100%;padding:0"></blockquote><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DW34mrHgfL0/" data-instgrm-version="14" style="background:#fff;border:0;margin:0;min-width:220px;max-width:280px;width:100%;padding:0"></blockquote><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DWRVdiaASYk/" data-instgrm-version="14" style="background:#fff;border:0;margin:0;min-width:220px;max-width:280px;width:100%;padding:0"></blockquote>
+      <div class="ig-track">
+        <div class="ig-set">
+        <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DYw5QYTBARf/" data-instgrm-version="14" style="background:#fff;border:0;margin:0;min-width:220px;max-width:280px;width:100%;padding:0"></blockquote>
+        <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DYkHGXiBpu0/" data-instgrm-version="14" style="background:#fff;border:0;margin:0;min-width:220px;max-width:280px;width:100%;padding:0"></blockquote>
+        <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DYheXVhBD5b/" data-instgrm-version="14" style="background:#fff;border:0;margin:0;min-width:220px;max-width:280px;width:100%;padding:0"></blockquote>
+        <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DW34mrHgfL0/" data-instgrm-version="14" style="background:#fff;border:0;margin:0;min-width:220px;max-width:280px;width:100%;padding:0"></blockquote>
+        <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DWRVdiaASYk/" data-instgrm-version="14" style="background:#fff;border:0;margin:0;min-width:220px;max-width:280px;width:100%;padding:0"></blockquote>
+        </div>
+        <div class="ig-set" aria-hidden="true">
+        <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DYw5QYTBARf/" data-instgrm-version="14" style="background:#fff;border:0;margin:0;min-width:220px;max-width:280px;width:100%;padding:0"></blockquote>
+        <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DYkHGXiBpu0/" data-instgrm-version="14" style="background:#fff;border:0;margin:0;min-width:220px;max-width:280px;width:100%;padding:0"></blockquote>
+        <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DYheXVhBD5b/" data-instgrm-version="14" style="background:#fff;border:0;margin:0;min-width:220px;max-width:280px;width:100%;padding:0"></blockquote>
+        <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DW34mrHgfL0/" data-instgrm-version="14" style="background:#fff;border:0;margin:0;min-width:220px;max-width:280px;width:100%;padding:0"></blockquote>
+        <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DWRVdiaASYk/" data-instgrm-version="14" style="background:#fff;border:0;margin:0;min-width:220px;max-width:280px;width:100%;padding:0"></blockquote>
+        </div>
+      </div>
       <noscript><p class="muted"><a href="https://www.instagram.com/yonsei_mech/" target="_blank" rel="noopener">@yonsei_mech 인스타그램 →</a></p></noscript>
     </div>
   </section>

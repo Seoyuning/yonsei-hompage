@@ -117,14 +117,16 @@ a{color:inherit;text-decoration:none}
 .row:hover{background:var(--row)}
 .row:target{background:rgba(226,89,60,.06);box-shadow:inset 2px 0 0 var(--coral)}
 
-/* 이니셜 아바타 */
-.r-ava{width:2.7rem;height:2.7rem;display:grid;place-items:center;
-  background:#e8eef7;color:var(--navy);
+/* 아바타 — 사진(없으면 이니셜 폴백) */
+.r-ava{width:3.4rem;height:3.4rem;display:grid;place-items:center;position:relative;overflow:hidden;
+  background:#e8eef7;color:var(--navy);border:1px solid var(--line-soft);border-radius:3px;
   font-family:var(--kr);font-weight:700;font-size:1.02rem;line-height:1}
+.r-ava img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 
 /* ① 이름 블록 — 이름 · 직위 칩 · 영문명 */
 .r-name{min-width:0}
-.r-name .ko{font-family:var(--kr);font-weight:700;font-size:1.05rem;color:var(--navy);line-height:1.35}
+.r-name .ko{font-family:var(--kr);font-weight:700;font-size:1.05rem;color:var(--navy);line-height:1.35;
+  display:flex;align-items:center;flex-wrap:wrap;min-height:1.5rem}
 .r-name .en{font-family:var(--kr);font-size:.78rem;color:var(--label);margin-top:.28rem;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .r-badges{display:inline-flex;gap:.35rem;margin-left:.55rem;vertical-align:middle}
@@ -134,7 +136,7 @@ a{color:inherit;text-decoration:none}
 
 /* ② 연구 블록 — 분야 배지 · 연구실명 · 위치 한 줄 */
 .r-research{min-width:0}
-.tag{display:inline-flex;align-items:center;gap:.45rem;font-size:.8rem;color:var(--body)}
+.tag{display:inline-flex;align-items:center;gap:.45rem;font-size:.8rem;color:var(--body);min-height:1.5rem}
 .tag .dot{width:7px;height:7px;border-radius:50%;background:var(--tag-c,var(--coral));flex:none}
 .r-lab{min-width:0;margin-top:.5rem}
 .r-lab .lk{font-size:.88rem;font-weight:600;color:var(--body);line-height:1.45;display:block;
@@ -146,9 +148,10 @@ a{color:inherit;text-decoration:none}
 .r-loc .sep{color:var(--label);margin:0 .35rem}
 
 /* ③ 연락 블록 — 라인 아이콘 + 텍스트 세로 스택 */
-.r-contact{min-width:0;display:flex;flex-direction:column;gap:.35rem;padding-top:.1rem}
+.r-contact{min-width:0;display:flex;flex-direction:column;gap:.35rem}
 .r-contact .cline{display:flex;align-items:center;gap:.5rem;min-width:0;
   font-size:.8rem;color:var(--sub);transition:color .15s}
+.r-contact .cline:first-child{min-height:1.5rem}
 .r-contact .cline svg{flex:none;color:var(--label)}
 .r-contact a.cline:hover{color:var(--coral)}
 .r-contact .ct{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -371,7 +374,8 @@ a{color:inherit;text-decoration:none}
     if(p.detail) contact += '<a class="profile" href="'+esc(p.detail)+'" target="_blank" rel="noopener">'
       + '프로필 <span aria-hidden="true">↗</span><span class="visually-hidden"> (새 창)</span></a>';
     return '<div class="row" id="'+esc(p.id)+'" role="group" aria-label="'+esc(p.ko+' '+p.rank)+'">'
-      + '<div class="r-ava" aria-hidden="true">'+esc(p.initial)+'</div>'
+      + '<div class="r-ava" aria-hidden="true">'+esc(p.initial)
+      + '<img src="assets/faculty/'+esc(p.id)+'.jpg" alt="" loading="lazy" onerror="this.remove()"></div>'
       + '<div class="r-name">'
         + '<div class="ko">'+esc(p.ko)+badges+'</div>'
         + '<div class="en">'+esc(p.en)+'</div>'

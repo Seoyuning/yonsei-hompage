@@ -81,7 +81,11 @@ var PAGE_NAMES = {
   'academics.html': '교육', 'research.html': '연구', 'lab.html': '연구실',
   'people.html': '구성원', 'professor.html': '교수', 'news.html': '소식',
   'admissions.html': '입학', 'contact.html': '연락처', 'engineering.html': '공학 이야기',
-  'accessibility.html': '접근성', 'privacy.html': '개인정보처리방침', 'terms.html': '이용약관'
+  'accessibility.html': '접근성', 'privacy.html': '개인정보처리방침', 'terms.html': '이용약관',
+  /* 관제(G · design-candidates) 사이트 페이지 */
+  'G-console.html': '관제 · 홈', 'G-about.html': '관제 · 소개', 'G-academics.html': '관제 · 교육',
+  'G-research.html': '관제 · 연구', 'G-people.html': '관제 · 구성원', 'G-news.html': '관제 · 소식',
+  'G-admissions.html': '관제 · 입학', 'D-drafting.html': '도면 시안'
 };
 function pageTitle(name) {
   return PAGE_NAMES[name] || name.replace(/\.html?$/i, '');

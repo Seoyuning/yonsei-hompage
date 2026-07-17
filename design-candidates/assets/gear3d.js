@@ -187,42 +187,54 @@ import * as THREE from './vendor/three.module.min.js';
   var sats = new THREE.Group();
   scene.add(sats);
   function mkTurbine() {
+    /* 제트엔진형 로터: 허브 콘 + 비틀린 블레이드 13 + 슈라우드 링 */
     var gp = new THREE.Group();
-    var disc = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.1, 20), matHub);
-    disc.rotation.x = Math.PI / 2; gp.add(disc);
-    for (var i = 0; i < 9; i++) {
-      var b = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.13, 0.045), matSteel);
-      var a = i / 9 * Math.PI * 2;
-      b.position.set(Math.cos(a) * 0.36, Math.sin(a) * 0.36, 0);
-      b.rotation.z = a; b.rotation.y = 0.55;
-      gp.add(b);
+    var hub = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.17, 0.22, 24), matHub);
+    hub.rotation.x = Math.PI / 2; gp.add(hub);
+    for (var i = 0; i < 13; i++) {
+      var a = i / 13 * Math.PI * 2;
+      var blade = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.085, 0.018), matSteel);
+      var holder = new THREE.Group();
+      blade.position.x = 0.27;          // 허브에서 바깥으로
+      blade.rotation.x = 0.72;          // 블레이드 비틀림(피치)
+      holder.rotation.z = a;
+      holder.add(blade);
+      gp.add(holder);
     }
+    var shroud = new THREE.Mesh(new THREE.TorusGeometry(0.46, 0.035, 10, 48), matRing);
+    gp.add(shroud);
+    gp.rotation.y = 0.5; gp.rotation.x = 0.12;   // 3/4 시점
     return gp;
   }
   function mkBolt() {
     var gp = new THREE.Group();
-    var head = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.18, 6), matSteel);
+    var head = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.26, 0.15, 6), matSteel);
     gp.add(head);
-    var shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.13, 0.55, 16), matRing);
-    shaft.position.y = -0.36; gp.add(shaft);
-    for (var i = 0; i < 6; i++) {
-      var th = new THREE.Mesh(new THREE.TorusGeometry(0.135, 0.014, 6, 20), matArm);
-      th.rotation.x = Math.PI / 2; th.position.y = -0.16 - i * 0.075;
+    var washer = new THREE.Mesh(new THREE.CylinderGeometry(0.31, 0.31, 0.035, 28), matRing);
+    washer.position.y = -0.09; gp.add(washer);
+    var shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.115, 0.115, 0.52, 24), matRing);
+    shaft.position.y = -0.37; gp.add(shaft);
+    for (var i = 0; i < 7; i++) {
+      var th = new THREE.Mesh(new THREE.TorusGeometry(0.122, 0.011, 8, 26), matArm);
+      th.rotation.x = Math.PI / 2; th.position.y = -0.16 - i * 0.066;
       gp.add(th);
     }
-    gp.rotation.z = 0.5; gp.rotation.x = 0.35;
+    gp.rotation.z = 0.55; gp.rotation.x = 0.3;
     return gp;
   }
   function mkBearing() {
     var gp = new THREE.Group();
-    gp.add(new THREE.Mesh(new THREE.TorusGeometry(0.4, 0.075, 12, 36), matSteel));
-    gp.add(new THREE.Mesh(new THREE.TorusGeometry(0.21, 0.055, 10, 28), matRing));
-    for (var i = 0; i < 8; i++) {
-      var a = i / 8 * Math.PI * 2;
-      var ball = new THREE.Mesh(new THREE.SphereGeometry(0.062, 12, 12), matHub);
-      ball.position.set(Math.cos(a) * 0.305, Math.sin(a) * 0.305, 0);
+    gp.add(new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.085, 14, 48), matSteel));
+    gp.add(new THREE.Mesh(new THREE.TorusGeometry(0.2, 0.06, 12, 36), matRing));
+    var cage = new THREE.Mesh(new THREE.TorusGeometry(0.31, 0.012, 8, 48), matArm);
+    gp.add(cage);
+    for (var i = 0; i < 9; i++) {
+      var a = i / 9 * Math.PI * 2;
+      var ball = new THREE.Mesh(new THREE.SphereGeometry(0.068, 16, 16), matHub);
+      ball.position.set(Math.cos(a) * 0.31, Math.sin(a) * 0.31, 0);
       gp.add(ball);
     }
+    gp.rotation.x = 0.55; gp.rotation.y = -0.25;  // 3/4 시점
     return gp;
   }
   var satTurbine = mkTurbine(); satTurbine.position.set(-4.7, -2.3, -1.6); sats.add(satTurbine);
@@ -333,8 +345,6 @@ import * as THREE from './vendor/three.module.min.js';
     curY += (tgY - curY) * 0.05;
     root.rotation.y = baseRotY + curX * 0.5;
     root.rotation.x = baseRotX + curY * 0.32 - scrollF * 0.12;
-    sats.rotation.y = curX * 0.18;
-    sats.rotation.x = curY * 0.1;
 
     renderer.render(scene, camera);
   }

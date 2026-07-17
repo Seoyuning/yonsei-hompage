@@ -95,6 +95,13 @@ a{color:inherit;text-decoration:none}
 .fchip .cnt{color:var(--label);font-size:.9em}
 .fchip[aria-pressed="true"]{color:#fff;background:var(--coral);border-color:var(--coral)}
 .fchip[aria-pressed="true"] .cnt{color:rgba(255,255,255,.8)}
+/* 연구분야(주 축) = 언더라인 탭 — 직위 pill과 위계 분리 */
+#cChips{gap:1.15rem}
+#cChips .fchip{border:0;border-bottom:2px solid transparent;background:none;
+  padding:.42rem .1rem;font-weight:700;font-size:.88rem;color:var(--muted)}
+#cChips .fchip:hover{color:var(--navy)}
+#cChips .fchip[aria-pressed="true"]{background:none;border-bottom-color:var(--coral);color:var(--navy)}
+#cChips .fchip[aria-pressed="true"] .cnt{color:var(--coral)}
 .fchip[aria-pressed="true"] .cdot{background:#fff}
 .fchip-sep{width:1px;align-self:stretch;background:var(--line-soft);margin:0 .25rem}
 .filter-rows{display:flex;gap:1.6rem;flex-wrap:wrap;align-items:flex-start}

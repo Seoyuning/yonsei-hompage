@@ -90,15 +90,15 @@ a{color:inherit;text-decoration:none}
 .sec-sub{font-size:.94rem;color:var(--sub);line-height:1.7;max-width:44rem;margin-top:.55rem}
 
 /* 공지 탭 (학부 / 대학원) — 검색창과 같은 줄, 같은 높이 */
-.tabs{display:flex;gap:.5rem;flex-wrap:wrap}
-.tab{display:inline-flex;align-items:baseline;gap:.5rem;cursor:pointer;
-  border:1px solid var(--line);background:#fff;color:var(--sub);
-  font-family:var(--kr);font-weight:600;font-size:.9rem;line-height:1.4;
-  padding:.5rem 1rem;transition:border-color .15s,color .15s,background .15s;white-space:nowrap}
-.tab:hover{color:var(--navy);border-color:#b9c4d4}
-.tab[aria-pressed="true"]{background:var(--coral);border-color:var(--coral);color:#fff}
-.tab .cnt{font-size:.78em;font-weight:500;color:var(--label);font-variant-numeric:tabular-nums}
-.tab[aria-pressed="true"] .cnt{color:rgba(255,255,255,.8)}
+.tabs{display:flex;gap:1.5rem;flex-wrap:wrap}
+.tab{display:inline-flex;align-items:baseline;gap:.45rem;cursor:pointer;
+  border:0;border-bottom:2px solid transparent;background:none;color:var(--muted);
+  font-family:var(--kr);font-weight:700;font-size:1.02rem;line-height:1.4;
+  padding:.4rem .1rem;transition:color .15s,border-color .15s;white-space:nowrap}
+.tab:hover{color:var(--navy)}
+.tab[aria-pressed="true"]{color:var(--navy);border-bottom-color:var(--coral)}
+.tab .cnt{font-size:.72em;font-weight:500;color:var(--label);font-variant-numeric:tabular-nums}
+.tab[aria-pressed="true"] .cnt{color:var(--coral)}
 
 /* 공지 검색 + 카테고리 칩 (G-people 필터 패턴 계승) */
 .ntool{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:.85rem}
@@ -112,7 +112,9 @@ a{color:inherit;text-decoration:none}
 .nsearch input::placeholder{color:var(--label)}
 .nstatus{font-size:.8rem;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
 .nstatus b{color:var(--coral);font-weight:600}
-.nchips{display:flex;align-items:center;gap:.45rem;flex-wrap:wrap;margin-bottom:1.1rem}
+.chiprow{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;margin-bottom:1.1rem}
+.flab{font-family:var(--kr);font-size:.78rem;color:var(--label);flex:none}
+.nchips{display:flex;align-items:center;gap:.45rem;flex-wrap:wrap}
 .nchip{display:inline-flex;align-items:baseline;gap:.4rem;cursor:pointer;
   border:1px solid var(--line);background:#fff;color:var(--sub);
   font-family:var(--kr);font-weight:600;font-size:.8rem;
@@ -187,7 +189,7 @@ a.nrow:hover .t{color:var(--navy)}
       </label>
       <span class="nstatus" id="nStatus" role="status" aria-live="polite"></span>
     </div>
-    <div class="nchips" role="group" aria-label="공지 카테고리 필터" id="noticeChips"></div>
+    <div class="chiprow"><span class="flab">분류</span><div class="nchips" role="group" aria-label="공지 카테고리 필터" id="noticeChips"></div></div>
     <div class="rows" id="noticeRows"></div>
     <p class="nempty" id="noticeEmpty" hidden>조건에 맞는 공지가 없습니다. 검색어나 카테고리를 조정해 보세요.</p>
   </section>

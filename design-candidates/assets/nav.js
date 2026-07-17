@@ -63,7 +63,7 @@
     { t: '교육', h: 'G-academics.html', key: 'academics', sub: [['교육과정 개관', 'G-academics.html#curriculum'], ['이수 체계도', 'G-academics.html#roadmap'], ['전공 교과', 'G-academics.html#courses'], ['대학원 교과', 'G-academics.html#grad']] },
     { t: '연구', h: 'G-research.html', key: 'research', sub: [['여섯 개 분야', 'G-research.html#clusters'], ['연구실 전체', 'G-research.html#clusterBlocks']] },
     { t: '구성원', h: 'G-people.html', key: 'people', sub: [['교수진 디렉토리', 'G-people.html']] },
-    { t: '소식', h: 'G-news.html', key: 'news', sub: [['공지사항', 'G-news.html#feed'], ['세미나 · 행사', 'G-news.html#sched'], ['연구 성과', 'G-news.html#hi']] },
+    { t: '소식', h: 'G-news.html', key: 'news', sub: [['공지사항', 'G-news.html#feed'], ['뉴스 · 연구 성과', 'G-news.html#hi'], ['세미나 · 행사', 'G-news.html#sched']] },
     { t: '입학', h: 'G-admissions.html', key: 'admissions', join: true, sub: [['학부 입학', 'G-admissions.html#undergraduate'], ['대학원 진학', 'G-admissions.html#graduate'], ['장학 안내', 'G-admissions.html#scholarships'], ['취업 정보', 'G-admissions.html#jobs'], ['진로 안내', 'G-admissions.html#careers']] }
   ];
   var path = (location.pathname.split('/').pop() || '').toLowerCase();

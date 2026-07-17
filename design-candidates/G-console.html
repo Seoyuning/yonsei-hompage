@@ -233,13 +233,16 @@ a{color:inherit;text-decoration:none}
 .clist{display:grid;gap:0}
 .crow{display:grid;grid-template-columns:auto 1fr auto;gap:1.2rem;align-items:baseline;
   padding:1.3rem 0;border-top:1px solid var(--line-soft);transition:border-color .15s}
-.crow{transition:opacity .22s,transform .22s,border-color .15s}
-.clist:hover .crow{opacity:.38}
-.clist .crow:hover{opacity:1;border-top-color:var(--coral);transform:translateX(8px)}
-.clist .crow:hover .cko{color:#fff}
-.clist .crow:hover .cdesc{color:var(--txt)}
-.clist .crow:hover .cbar span{background:var(--coral);opacity:1}
-.clist .crow:hover .clabs b{color:var(--coral)}
+.crow{position:relative;transition:opacity .22s,transform .22s,border-color .15s,background .15s}
+.clist:hover .crow{opacity:.55}
+.clist .crow:hover{opacity:1;border-top-color:var(--warm);transform:translateX(10px);background:#fdf6f4}
+.clist .crow:hover .cko{color:var(--warm)}
+.clist .crow:hover .cdesc{color:#2a3a56}
+.clist .crow:hover .cbar span{background:var(--warm);opacity:1}
+.clist .crow:hover .clabs b{color:var(--warm)}
+.crow::after{content:"→";position:absolute;right:.2rem;top:1.4rem;font-family:var(--kr);
+  color:var(--warm);font-weight:700;opacity:0;transform:translateX(-6px);transition:opacity .18s,transform .18s}
+.clist .crow:hover::after{opacity:1;transform:translateX(0)}
 .crow .cno{font-family:var(--mono);font-size:.72rem;color:var(--dimmer);
   letter-spacing:.1em;padding-top:.35rem}
 .crow .cmain{min-width:0}
@@ -339,13 +342,13 @@ a.log:hover{background:#10131a}
 .doc .metric .m-lab{color:#7b8595}
 .doc .metric .m-val{color:#1a3d75}
 .doc .metric .m-val.acc{color:var(--warm)}
-.doc .crow{border-top:1px solid rgba(10,26,51,.1)}
-.doc .crow .cno{color:#9aa3b0}
-.doc .crow .cko{color:#1a3d75}
+.doc .crow{border-top:1px solid rgba(10,26,51,.12);padding:1.5rem 0}
+.doc .crow .cno{color:var(--warm);font-weight:600}
+.doc .crow .cko{color:#1a3d75;font-weight:700;font-size:clamp(1.15rem,1rem + .7vw,1.45rem)}
 .doc .crow .cdesc{color:#5c6b85}
-.doc .crow .cbar{background:rgba(10,26,51,.08)}
+.doc .crow .cbar{background:rgba(10,26,51,.08);height:3px}
 .doc .crow .clabs{color:#7b8595}
-.doc .crow .clabs b{color:#1a3d75}
+.doc .crow .clabs b{color:#1a3d75;font-size:1.9rem}
 .doc .clist .crow:hover .cko{color:#0b1e3c}
 .doc .clist .crow:hover .cdesc{color:#2a3a56}
 .doc .people{background:rgba(10,26,51,.08);border:1px solid rgba(10,26,51,.08)}
@@ -504,7 +507,7 @@ body>footer{background:#fff}
       <a class="sec-more" href="G-research.html">연구실 전체 <span class="arr">→</span></a>
     </div>
     <div class="clist">
-      <a class="crow" href="G-research.html">
+      <a class="crow" href="G-research.html#solid">
         <span class="cno">01</span>
         <span class="cmain">
           <span class="cko">역학 · 소재</span>
@@ -513,7 +516,7 @@ body>footer{background:#fff}
         </span>
         <span class="clabs"><b>6</b>연구실</span>
       </a>
-      <a class="crow" href="G-research.html">
+      <a class="crow" href="G-research.html#thermal">
         <span class="cno">02</span>
         <span class="cmain">
           <span class="cko">에너지 · 열유체</span>
@@ -522,7 +525,7 @@ body>footer{background:#fff}
         </span>
         <span class="clabs"><b>7</b>연구실</span>
       </a>
-      <a class="crow" href="G-research.html">
+      <a class="crow" href="G-research.html#dynamics">
         <span class="cno">03</span>
         <span class="cmain">
           <span class="cko">로보틱스 · 제어</span>
@@ -531,7 +534,7 @@ body>footer{background:#fff}
         </span>
         <span class="clabs"><b>4</b>연구실</span>
       </a>
-      <a class="crow" href="G-research.html">
+      <a class="crow" href="G-research.html#manufacturing">
         <span class="cno">04</span>
         <span class="cmain">
           <span class="cko">설계 · 제조</span>
@@ -540,7 +543,7 @@ body>footer{background:#fff}
         </span>
         <span class="clabs"><b>6</b>연구실</span>
       </a>
-      <a class="crow" href="G-research.html">
+      <a class="crow" href="G-research.html#micro">
         <span class="cno">05</span>
         <span class="cmain">
           <span class="cko">마이크로 · 나노</span>
@@ -549,7 +552,7 @@ body>footer{background:#fff}
         </span>
         <span class="clabs"><b>5</b>연구실</span>
       </a>
-      <a class="crow" href="G-research.html">
+      <a class="crow" href="G-research.html#optics">
         <span class="cno">06</span>
         <span class="cmain">
           <span class="cko">바이오 · 포토닉스</span>

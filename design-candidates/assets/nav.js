@@ -94,6 +94,7 @@
 
   function mount() {
     var old = document.querySelector('.hud-top'); if (old) old.remove();
+    var ph = document.querySelector('.ynav-ph'); if (ph) ph.remove();
     document.body.insertBefore(nav, document.body.firstChild);
     /* ── 모바일 햄버거 버튼 + 풀스크린 오버레이 메뉴(≤920px) ── */
     var burger = document.createElement('button');

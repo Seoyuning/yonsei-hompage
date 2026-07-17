@@ -183,6 +183,52 @@ import * as THREE from './vendor/three.module.min.js';
     planets.push(planet);
   }
 
+  /* ── 주변 소품: 기계과 상징 소구조물(터빈·볼트·베어링) ── */
+  var sats = new THREE.Group();
+  scene.add(sats);
+  function mkTurbine() {
+    var gp = new THREE.Group();
+    var disc = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.1, 20), matHub);
+    disc.rotation.x = Math.PI / 2; gp.add(disc);
+    for (var i = 0; i < 9; i++) {
+      var b = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.13, 0.045), matSteel);
+      var a = i / 9 * Math.PI * 2;
+      b.position.set(Math.cos(a) * 0.36, Math.sin(a) * 0.36, 0);
+      b.rotation.z = a; b.rotation.y = 0.55;
+      gp.add(b);
+    }
+    return gp;
+  }
+  function mkBolt() {
+    var gp = new THREE.Group();
+    var head = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.18, 6), matSteel);
+    gp.add(head);
+    var shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.13, 0.55, 16), matRing);
+    shaft.position.y = -0.36; gp.add(shaft);
+    for (var i = 0; i < 6; i++) {
+      var th = new THREE.Mesh(new THREE.TorusGeometry(0.135, 0.014, 6, 20), matArm);
+      th.rotation.x = Math.PI / 2; th.position.y = -0.16 - i * 0.075;
+      gp.add(th);
+    }
+    gp.rotation.z = 0.5; gp.rotation.x = 0.35;
+    return gp;
+  }
+  function mkBearing() {
+    var gp = new THREE.Group();
+    gp.add(new THREE.Mesh(new THREE.TorusGeometry(0.4, 0.075, 12, 36), matSteel));
+    gp.add(new THREE.Mesh(new THREE.TorusGeometry(0.21, 0.055, 10, 28), matRing));
+    for (var i = 0; i < 8; i++) {
+      var a = i / 8 * Math.PI * 2;
+      var ball = new THREE.Mesh(new THREE.SphereGeometry(0.062, 12, 12), matHub);
+      ball.position.set(Math.cos(a) * 0.305, Math.sin(a) * 0.305, 0);
+      gp.add(ball);
+    }
+    return gp;
+  }
+  var satTurbine = mkTurbine(); satTurbine.position.set(-4.7, -2.3, -1.6); sats.add(satTurbine);
+  var satBolt = mkBolt();       satBolt.position.set(5.1, 2.5, -2.2);      sats.add(satBolt);
+  var satBearing = mkBearing(); satBearing.position.set(4.6, -2.9, -1.2);  sats.add(satBearing);
+
   /* ── 조명 ── */
   scene.add(new THREE.AmbientLight(0x2a3040, 1.1));
   scene.add(new THREE.HemisphereLight(0x8ea0c8, 0x0a0c10, 0.7));
@@ -228,7 +274,9 @@ import * as THREE from './vendor/three.module.min.js';
     if (!w || !h) return;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
+    camera.position.z = Math.max(10, 12.5 * (h / 540));
     camera.updateProjectionMatrix();
+    sats.visible = (w / h) > 1.05;
   }
   resize();
   window.addEventListener('resize', resize);
@@ -275,11 +323,18 @@ import * as THREE from './vendor/three.module.min.js';
     for (var i = 0; i < planets.length; i++) planets[i].rotation.z += wP_rel * sp * dt;
     telRing.rotation.z -= 0.04 * dt;
 
+    // 소품 자전(느리게)
+    satTurbine.rotation.z += 0.35 * dt;
+    satBearing.rotation.z -= 0.22 * dt;
+    satBolt.rotation.y += 0.28 * dt;
+
     // 포인터 시차
     curX += (tgX - curX) * 0.05;
     curY += (tgY - curY) * 0.05;
     root.rotation.y = baseRotY + curX * 0.5;
     root.rotation.x = baseRotX + curY * 0.32 - scrollF * 0.12;
+    sats.rotation.y = curX * 0.18;
+    sats.rotation.x = curY * 0.1;
 
     renderer.render(scene, camera);
   }

@@ -95,7 +95,10 @@ a{color:inherit;text-decoration:none}
   filter:blur(6px)}
 .core svg{width:100%;height:100%;overflow:visible}
 .core canvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1}
-.gl-on .core-fallback{display:none}
+.core-fallback{display:none}
+.gl-off .core-fallback{display:block}
+.core canvas{opacity:0;transition:opacity .6s ease}
+.gl-on .core canvas{opacity:1}
 .spin{transform-origin:center;transform-box:view-box;animation:spin 60s linear infinite}
 .spin.f{animation-duration:34s}
 .spin.r{animation-name:spinr;animation-duration:80s}
@@ -840,7 +843,12 @@ window.addEventListener('DOMContentLoaded', function () {
   }).join('');
 });
 </script>
-<script type="module" src="assets/gear3d.js?v=7"></script>
+<script>
+/* 3D 미기동(느린 네트워크·모듈 실패) 시 2.5s 후 2D 폴백 표시 */
+setTimeout(function(){if(!document.body.classList.contains('gl-on'))document.body.classList.add('gl-off');},2500);
+</script>
+<noscript><style>.core-fallback{display:block!important}</style></noscript>
+<script type="module" src="assets/gear3d.js?v=8"></script>
 <script src="assets/nav.js?v=19"></script>
 <script async src="https://www.instagram.com/embed.js"></script>
 <script>window.addEventListener("load",function(){if(window.instgrm)window.instgrm.Embeds.process();});</script>

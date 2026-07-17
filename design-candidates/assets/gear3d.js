@@ -26,7 +26,7 @@ import * as THREE from './vendor/three.module.min.js';
         (c.getContext('webgl') || c.getContext('experimental-webgl')));
     } catch (e) { return false; }
   }
-  if (!webglOK()) return;
+  if (!webglOK()) { document.body.classList.add('gl-off'); return; }
 
   /* ── 색 ── */
   var CORAL = 0xffffff;   /* 흰색 액센트 (팀 결정: 3D는 흰색+밝은 회색) */

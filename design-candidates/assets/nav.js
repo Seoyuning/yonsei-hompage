@@ -34,6 +34,12 @@
     '.ynav-spy{justify-self:end;text-align:right;pointer-events:auto}' +
     '.ynav-spy .lab{display:block;font-size:.58rem;letter-spacing:.24em;color:#9aa3b0;text-transform:uppercase}' +
     '.ynav-spy .val{display:block;font-family:var(--kr);font-size:.96rem;font-weight:600;color:#1a3d75;margin-top:.15rem;transition:opacity .2s}' +
+    '.ytop{position:fixed;right:1.4rem;bottom:1.4rem;z-index:45;width:2.9rem;height:2.9rem;border-radius:50%;' +
+      'background:#fff;border:1px solid rgba(10,26,51,.15);box-shadow:0 6px 18px rgba(10,26,51,.15);' +
+      'color:#1a3d75;display:grid;place-items:center;cursor:pointer;opacity:0;visibility:hidden;transform:translateY(8px);' +
+      'transition:opacity .2s,transform .2s,visibility .2s}' +
+    '.ytop.show{opacity:1;visibility:visible;transform:none}' +
+    '.ytop:hover{color:#e2593c;border-color:#e2593c}' +
     '[id]{scroll-margin-top:5.5rem}' +
     '@media(max-width:920px){.ynav-menu,.ynav-spy{display:none}.ynav{grid-template-columns:1fr}}' +
     /* ── 모바일 햄버거 + 풀스크린 오버레이(≤920px) ── */
@@ -95,6 +101,20 @@
   function mount() {
     var old = document.querySelector('.hud-top'); if (old) old.remove();
     var ph = document.querySelector('.ynav-ph'); if (ph) ph.remove();
+    /* 맨 위로 버튼 */
+    var topBtn = document.createElement('button');
+    topBtn.type = 'button'; topBtn.className = 'ytop'; topBtn.setAttribute('aria-label', '맨 위로');
+    topBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
+    document.body.appendChild(topBtn);
+    topBtn.addEventListener('click', function () {
+      var smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top: 0, behavior: smooth ? 'smooth' : 'auto' });
+    });
+    var topVis = false;
+    window.addEventListener('scroll', function () {
+      var s = (window.pageYOffset || 0) > 400;
+      if (s !== topVis) { topVis = s; topBtn.classList.toggle('show', s); }
+    }, { passive: true });
     document.body.insertBefore(nav, document.body.firstChild);
     /* ── 모바일 햄버거 버튼 + 풀스크린 오버레이 메뉴(≤920px) ── */
     var burger = document.createElement('button');

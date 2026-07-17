@@ -125,7 +125,6 @@ a.arrow:hover{gap:.7rem}
 .req-list a{display:inline-block;font-family:var(--kr);font-size:.8rem;color:#2a3a56;
   background:#fff;border:1px solid var(--line);padding:.34rem .65rem;transition:border-color .15s,color .15s}
 .req-list a:hover{border-color:var(--coral);color:var(--coral)}
-.req-list .code{font-family:var(--mono);font-size:.62rem;letter-spacing:.05em;color:var(--label);margin-right:.45em}
 
 /* ── 공학교육인증 (#abeek) ── */
 .abeek-card{border:1px solid var(--line-soft);background:var(--card);
@@ -141,7 +140,7 @@ a.arrow:hover{gap:.7rem}
 .mech:hover{background:var(--card-hover)}
 .mech-idx{font-family:var(--mono);font-weight:300;font-size:2.2rem;line-height:1;color:#c2cbdb;font-variant-numeric:tabular-nums}
 .mech-name{font-family:var(--kr);font-weight:700;font-size:1.25rem;color:var(--ink);margin-top:.9rem;line-height:1.25}
-.mech-code{display:inline-block;font-family:var(--mono);font-size:.66rem;letter-spacing:.05em;color:var(--sub);
+.mech-code{display:inline-block;font-family:var(--kr);font-size:.72rem;color:var(--sub);
   background:#fff;border:1px solid var(--line);padding:.28rem .55rem;margin-top:.6rem;
   font-variant-numeric:tabular-nums;transition:border-color .15s,color .15s}
 .mech-code:hover,.mech-code:focus-visible{border-color:var(--coral);color:var(--coral)}
@@ -179,7 +178,6 @@ a.cur-item:hover .ci-name,a.cur-item:focus-visible .ci-name{color:var(--coral)}
 a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:var(--coral)}
 .cur-group-note{font-family:var(--kr);font-size:.76rem;color:var(--muted);line-height:1.6;padding:.6rem 1.1rem;border-bottom:1px solid var(--line-soft)}
 .cur-item .ci-main{min-width:0}
-.cur-item .ci-code{display:block;font-family:var(--mono);font-size:.58rem;letter-spacing:.05em;color:var(--label);font-variant-numeric:tabular-nums}
 .cur-item .ci-name{display:block;font-family:var(--kr);font-weight:600;font-size:.9rem;color:#2a3a56;margin-top:.2rem;line-height:1.35}
 .cur-item .ci-side{display:flex;flex-direction:column;align-items:flex-end;gap:.3rem;flex:none;text-align:right}
 .cur-item .ci-cr{font-family:var(--kr);font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -358,7 +356,7 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
       <div>
         <p class="sec-kick">이수체계도</p>
         <h2 id="rm-h" class="sec-title">교과목 이수체계도</h2>
-        <p class="sec-sub">학년·학기별 이수 교과를 한눈에 배치했습니다. 각 과목의 코드·과목명·구분·학점·시수를 표기했으며, 과목명을 누르면 아래 학부 전공 교과의 상세 설명으로 이동합니다.</p>
+        <p class="sec-sub">학년·학기별 이수 교과를 한눈에 배치했습니다. 각 과목의 과목명·구분·학점·시수를 표기했으며, 과목명을 누르면 아래 학부 전공 교과의 상세 설명으로 이동합니다.</p>
       </div>
     </div>
     <div class="cur-legend">
@@ -482,7 +480,7 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
       return '<article class="mech">'
         + '<span class="mech-idx" aria-hidden="true">0'+(i+1)+'</span>'
         + '<h3 class="mech-name">'+esc(c.ko||'')+'</h3>'
-        + '<a class="mech-code" href="#course-'+esc(p.code)+'" title="'+esc(c.ko||p.code)+' — 상세 설명으로 이동">'+esc(p.code)+' <span aria-hidden="true">↓</span></a>'
+        + '<a class="mech-code" href="#course-'+esc(p.code)+'" title="'+esc(c.ko||p.code)+' — 상세 설명으로 이동">과목 상세 <span aria-hidden="true">↓</span></a>'
         + '<p class="mech-desc">'+esc(p.desc)+'</p>'
         + '<span class="mech-tag"><span class="dot" style="--tag-c:var('+cvar+')" aria-hidden="true"></span>'+esc(clu.ko||'')+'</span>'
       + '</article>';
@@ -519,7 +517,6 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
         var attrs = linked ? ' href="#course-'+esc(c.code)+'" title="'+esc(c.ko)+' — 상세 설명으로 이동"' : '';
         return '<'+tag+' class="cur-item"'+attrs+'>'
           + '<div class="ci-main">'
-            + '<span class="ci-code mono">'+esc(c.code)+'</span>'
             + '<span class="ci-name">'+esc(c.ko)+'</span>'
           + '</div>'
           + '<div class="ci-side">'
@@ -676,7 +673,7 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
     if(metricReqEl) metricReqEl.textContent = reqCourses.length;
     reqListEl.innerHTML = reqCourses.map(function(c){
       return '<li><a href="#course-'+esc(c.code)+'">'
-        + '<span class="code">'+esc(c.code)+'</span>'+esc(c.ko)
+        + esc(c.ko)
       + '</a></li>';
     }).join('');
   }
@@ -696,7 +693,7 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
   });
 })();
 </script>
-<script src="assets/nav.js?v=19"></script>
+<script src="assets/nav.js?v=20"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--kr);font-size:.74rem;color:#7b8595">
   © 2026 연세대학교 기계공학부 &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

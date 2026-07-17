@@ -82,10 +82,6 @@ a{color:inherit;text-decoration:none}
 
 /* ── 스테이지(중앙 뷰) ── */
 .stage{position:relative;height:100vh;min-height:660px;overflow:hidden;background:var(--bg)}
-/* 잔해/별 입자 */
-#field{position:absolute;inset:0;z-index:1}
-.dot{position:absolute;background:#fff;border-radius:50%;opacity:.5}
-.dot.c{background:var(--warm)}
 
 /* 코어(기계) */
 .core{position:absolute;top:50%;left:50%;translate:-50% -50%;
@@ -109,12 +105,7 @@ a{color:inherit;text-decoration:none}
 /* 궤도 + 위성 마커 */
 .orbits{position:absolute;top:50%;left:50%;translate:-50% -50%;
   width:min(94vw,1120px);aspect-ratio:2.35 / 1;z-index:1;overflow:visible;pointer-events:none}
-.orbits ellipse{fill:none;stroke:var(--warm);stroke-width:1;opacity:.55}
-.orbits .sat{fill:var(--warm)}
-.orbit-move{animation:orbit 22s linear infinite}
-.orbit-move.b{animation-duration:34s;animation-direction:reverse}
-@keyframes orbit{to{transform:rotate(360deg)}}
-@media (prefers-reduced-motion:reduce){.orbit-move{animation:none}}
+.orbits ellipse{fill:none;stroke:rgba(255,255,255,.16);stroke-width:1}
 
 /* ── 좌측: 주요 연혁 주석 ── */
 .hud-left{position:absolute;top:16%;left:clamp(1.2rem,.6rem + 2vw,2.6rem);z-index:6;max-width:15rem}
@@ -373,16 +364,11 @@ body>footer{background:#fff}
 
 
 <main class="stage">
-  <div id="field" aria-hidden="true"></div>
 
   <!-- 궤도 + 위성 -->
   <svg class="orbits" viewBox="0 0 1120 476" aria-hidden="true">
     <g transform="translate(560 238)">
       <ellipse rx="540" ry="150" transform="rotate(-8)"/>
-      <ellipse rx="410" ry="96" transform="rotate(6)" opacity=".4"/>
-      <g class="orbit-move"><g transform="rotate(-8)"><circle class="sat" r="4" cx="540" cy="0"/></g></g>
-      <g class="orbit-move b"><g transform="rotate(6)"><circle class="sat" r="3" cx="-410" cy="0"/></g></g>
-      <g class="orbit-move" style="animation-duration:28s"><g transform="rotate(-8)"><circle class="sat" r="3" cx="0" cy="150"/></g></g>
     </g>
   </svg>
 
@@ -698,20 +684,6 @@ body>footer{background:#fff}
   'use strict';
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* 잔해/별 입자 */
-  var field = document.getElementById('field');
-  if (field) {
-    var n = 90, html = '';
-    for (var i = 0; i < n; i++) {
-      var x = (i * 47 % 100), y = (i * 29 % 100);
-      var s = (i % 7 === 0) ? 2.2 : (i % 3 === 0 ? 1.4 : 1);
-      var op = 0.15 + (i % 5) * 0.13;
-      var c = (i % 11 === 0) ? ' c' : '';
-      html += '<span class="dot' + c + '" style="left:' + x + '%;top:' + y + '%;width:' + s + 'px;height:' + s + 'px;opacity:' + op.toFixed(2) + '"></span>';
-    }
-    field.innerHTML = html;
-  }
-
   /* 터빈 블레이드 생성 */
   var blades = document.getElementById('blades');
   if (blades) {
@@ -851,7 +823,7 @@ window.addEventListener('DOMContentLoaded', function () {
 setTimeout(function(){if(!document.body.classList.contains('gl-on'))document.body.classList.add('gl-off');},2500);
 </script>
 <noscript><style>.core-fallback{display:block!important}</style></noscript>
-<script type="module" src="assets/gear3d.js?v=8"></script>
+<script type="module" src="assets/gear3d.js?v=9"></script>
 <script src="assets/nav.js?v=19"></script>
 <script async src="https://www.instagram.com/embed.js"></script>
 <script>window.addEventListener("load",function(){if(window.instgrm)window.instgrm.Embeds.process();});</script>

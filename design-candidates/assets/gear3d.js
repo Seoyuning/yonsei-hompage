@@ -119,7 +119,7 @@ import * as THREE from './vendor/three.module.min.js';
 
   /* ── 재질(관제 톤): 건메탈 바디 + 코랄 태양/액센트 ── */
   var matSteel = new THREE.MeshStandardMaterial({ color: 0xc4cbd6, metalness: 0.72, roughness: 0.36 });
-  var matSun = new THREE.MeshStandardMaterial({ color: 0xdfe4ea, metalness: 0.55, roughness: 0.4, emissive: CORAL, emissiveIntensity: 0.22 });
+  var matSun = new THREE.MeshStandardMaterial({ color: 0xdfe4ea, metalness: 0.55, roughness: 0.4, emissive: CORAL, emissiveIntensity: 0.12 });
   var matRing = new THREE.MeshStandardMaterial({ color: 0x9ba5b3, metalness: 0.68, roughness: 0.46 });
   var matHub = new THREE.MeshStandardMaterial({ color: CORAL, metalness: 0.5, roughness: 0.3, emissive: CORAL, emissiveIntensity: 0.55 });
   var matArm = new THREE.MeshStandardMaterial({ color: 0x7b8595, metalness: 0.66, roughness: 0.48 });
@@ -195,7 +195,7 @@ import * as THREE from './vendor/three.module.min.js';
   var fill = new THREE.DirectionalLight(GLOW, 0.9);
   fill.position.set(2, -5, 3);
   scene.add(fill);
-  var coreGlow = new THREE.PointLight(CORAL, 3, 6, 2);
+  var coreGlow = new THREE.PointLight(CORAL, 1.1, 6, 2);
   coreGlow.position.set(0, 0, 1.4);
   scene.add(coreGlow);
 

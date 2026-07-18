@@ -180,6 +180,21 @@ async function buildRenderHtml(sourceDoc, opts) {
   boot.textContent = "try{localStorage.removeItem('ysme-lang');}catch(e){}";
   if (doc.head) doc.head.insertBefore(boot, doc.head.firstChild);
 
+  // 리다이렉트 무력화: index.html 스텁의 meta refresh·location.replace 가
+  // srcdoc 프레임에서는 admin 오리진 기준으로 풀려 캔버스를 404 로 끌고 간다
+  var metas = doc.querySelectorAll('meta[http-equiv]');
+  for (i = 0; i < metas.length; i++) {
+    if (/^refresh$/i.test(metas[i].getAttribute('http-equiv')) && metas[i].parentNode) {
+      metas[i].parentNode.removeChild(metas[i]);
+    }
+  }
+  var inlines = doc.querySelectorAll('script:not([src])');
+  for (i = 0; i < inlines.length; i++) {
+    if (/location\.(replace|assign)\s*\(/.test(inlines[i].textContent) && inlines[i].parentNode) {
+      inlines[i].parentNode.removeChild(inlines[i]);
+    }
+  }
+
   var links = doc.querySelectorAll('link[rel="stylesheet"][href]');
   for (i = 0; i < links.length; i++) {
     el = links[i];

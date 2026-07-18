@@ -33,7 +33,7 @@ Admin.bus.on('auth:login', function () {
   if (!Admin.fs.isReady()) {
     Admin.fs.reconnect(false).then(function (ok) {
       if (!ok) {
-        Admin.toast('「사이트 폴더 열기」로 편집할 사이트(prototype-v3 또는 design-candidates)를 선택하세요.', 'info');
+        Admin.toast('「사이트 폴더 열기」로 편집할 사이트(design-candidates 또는 prototype-v3)를 선택하세요.', 'info');
       }
     });
   }
@@ -61,8 +61,10 @@ Admin.bus.on('site:opened', function (d) {
   renderPageList(d.pages);
   fillCodeFileSelect(d.pages, d.assets);
   Admin.audit.log('site-open', d.name, d.pages.length + '개 페이지');
-  // 첫 페이지 자동 로드
-  var first = d.pages.find(function (p) { return p.name === 'index.html'; }) || d.pages[0];
+  // 첫 페이지 자동 로드 — index.html 은 G-console 로 넘기는 리다이렉트 스텁일 수
+  // 있으므로(design-candidates) 실제 홈인 G-console.html 을 우선한다
+  var first = d.pages.find(function (p) { return p.name === 'G-console.html'; }) ||
+    d.pages.find(function (p) { return p.name === 'index.html'; }) || d.pages[0];
   if (first) openPage(first.path);
 });
 

@@ -366,22 +366,21 @@ body>footer{background:#fff}
 
 /* ═══ 첫 방문 인트로(씰 조립) — assets/intro3d.js ═══ */
 html.intro-lock{overflow:hidden}
-#intro{position:fixed;inset:0;z-index:400;background:#0a1a33;transition:opacity .48s ease}
+#intro{position:fixed;inset:0;z-index:400;transition:opacity .48s ease;
+  background:radial-gradient(ellipse 90% 80% at 50% 38%,#132a52 0%,#0a1428 42%,#03060d 100%)}
 #intro.is-out{opacity:0;pointer-events:none}
 #intro canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
-#intro .intro-halo{position:absolute;left:50%;top:39%;width:min(92vh,900px);aspect-ratio:1;
-  transform:translate(-50%,-50%);pointer-events:none;opacity:.4;will-change:opacity,transform;
-  background:radial-gradient(circle,rgba(155,195,255,.55),rgba(95,135,235,.24) 36%,rgba(60,95,190,.1) 56%,transparent 72%)}
+#intro .intro-halo{position:absolute;left:50%;top:39%;width:min(100vh,980px);aspect-ratio:1;
+  transform:translate(-50%,-50%);pointer-events:none;opacity:.55;will-change:opacity,transform;
+  background:radial-gradient(circle,rgba(185,215,255,.85),rgba(110,150,245,.4) 30%,rgba(70,105,205,.16) 52%,transparent 70%)}
 #intro .intro-title{position:absolute;left:0;right:0;top:71%;margin:0;
   display:flex;align-items:center;justify-content:center;gap:clamp(.6rem,.4rem + 1vw,1.1rem);
   font-family:var(--kr);color:#fff;font-weight:800;
   font-size:clamp(1.6rem,1rem + 3.2vw,3.1rem);
   opacity:0;transform:translateY(18px) scale(.96);
   transition:opacity .7s ease,transform .9s cubic-bezier(.16,.8,.24,1)}
-#intro .intro-title img{height:1.3em;width:auto;display:block;
-  filter:drop-shadow(0 0 16px rgba(255,255,255,.4))}
+#intro .intro-title img{height:1.3em;width:auto;display:block}
 #intro .intro-title span{letter-spacing:.42em;white-space:nowrap;
-  text-shadow:0 2px 34px rgba(130,170,255,.45);
   transition:letter-spacing 1.15s cubic-bezier(.16,.8,.24,1)}
 #intro.is-on .intro-title{opacity:1;transform:translateY(0) scale(1)}
 #intro.is-on .intro-title span{letter-spacing:.06em}
@@ -885,7 +884,7 @@ setTimeout(function(){if(!document.body.classList.contains('gl-on'))document.bod
 /* 인트로 변형 선택 — 기본은 독수리(B). 비교용: ?intro=seal 은 씰 조립(A) */
 if (document.getElementById('intro')) {
   var pick = new URLSearchParams(location.search).get('intro');
-  import(pick === 'seal' ? './assets/intro3d.js?v=4' : './assets/intro-eagle.js?v=5');
+  import(pick === 'seal' ? './assets/intro3d.js?v=4' : './assets/intro-eagle.js?v=6');
 }
 </script>
 <script src="assets/nav.js?v=20"></script>

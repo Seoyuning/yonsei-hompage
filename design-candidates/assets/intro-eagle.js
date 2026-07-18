@@ -81,7 +81,7 @@ function extractPieces(img) {
   var KEYS = ['body', 'wingL', 'wingR', 'tail', 'talons'];
   var region = new Int8Array(S * S); region.fill(-1);
   var A = new Uint8Array(S * S);
-  for (var i = 0; i < S * S; i++) A[i] = dd[i * 4 + 3] > 40 ? 1 : 0;
+  for (var i = 0; i < S * S; i++) A[i] = dd[i * 4 + 3] > 120 ? 1 : 0;
 
   var label = new Int32Array(S * S); label.fill(-1);
   var q = new Int32Array(S * S), comps = [];
@@ -466,7 +466,8 @@ function start(tex) {
     var whole = easeOut(clamp01(t / (asmEnd + 200)));
     root.rotation.y = -0.5 * (1 - whole);
     root.rotation.x = -0.13 * (1 - whole);
-    cam.position.z = 7.5 - 1.6 * whole;
+    var tz = easeIO(clamp01((t - (F0 + 380)) / 600));   // 타이틀 등장 때 살짝 축소
+    cam.position.z = 7.5 - 2.3 * whole + 0.8 * tz;
 
     /* 완성 리빌: 어두운 강판 → 점등(흰) → 샴페인 골드 */
     var goldT = easeIO(clamp01((t - F0) / 650));
@@ -491,7 +492,7 @@ function start(tex) {
       groups.wingR.grp.rotation.x = -0.08 * pose;
     }
     var rise = easeIO(clamp01((t - (F0 + 100)) / 1200));
-    root.position.y = 0.35 + 0.26 * rise;
+    root.position.y = 0.35 + 0.2 * rise;
     var s2 = 1 + 0.06 * rise;
     root.scale.set(s2, s2, s2);
 

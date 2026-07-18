@@ -231,8 +231,10 @@ function start(tex) {
   tex.colorSpace = THREE.SRGBColorSpace;
   var capMat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, side: THREE.DoubleSide });
   var sideMat = new THREE.MeshBasicMaterial({ color: 0x8fa0bd });
-  var armMat = new THREE.MeshBasicMaterial({ color: 0x3d4d6e });
-  var padMat = new THREE.MeshBasicMaterial({ color: 0x5a6d92 });
+  var armMat = new THREE.MeshBasicMaterial({ color: 0x26344f });   // 몸체(다크 네이비 금속)
+  var jointMat = new THREE.MeshBasicMaterial({ color: 0x7f8ea8 }); // 관절 디스크
+  var darkMat = new THREE.MeshBasicMaterial({ color: 0x141d2e });  // 케이블 콘딧
+  var warnMat = new THREE.MeshBasicMaterial({ color: 0xe2593c });  // 액센트 링
   var DEPTH = 0.13;
 
   var HINGE = { body: [385, 400], wingL: [315, 292], wingR: [455, 315], tail: [300, 420], talons: [395, 472] };
@@ -276,37 +278,77 @@ function start(tex) {
     mesh.position.copy(staging);
     G.grp.add(mesh);
 
-    /* ── 그리퍼: 샤프트(가장자리로 뻗는 팔) + 부품을 무는 집게 패드 2 ──
-       부품과 같은 그룹에 넣고 매 프레임 부품 위치를 따라간다 */
-    var cAbs = new THREE.Vector3(toWX(pc.cx), toWY(pc.cy), DEPTH / 2 + 0.02);
+    /* ── 관절 로봇팔(참고: 산업용 다관절 로봇) ──
+       가장자리 고정 베이스 → 상완 → 팔꿈치 → 전완 → 손목 → 클로 핸드.
+       매 프레임 2링크 IK로 팔꿈치가 실제로 굽혀지며 부품을 나른다 */
+    var cAbs = new THREE.Vector3(toWX(pc.cx), toWY(pc.cy), DEPTH / 2 + 0.05);
     var perp = dir.x !== 0 ? new THREE.Vector3(0, 1, 0) : new THREE.Vector3(1, 0, 0);
-    var half = dir.x !== 0
-      ? (pc.bb[3] - pc.bb[1]) / 2 / 320   // 좌우 진입 → 상하로 문다
-      : (pc.bb[2] - pc.bb[0]) / 2 / 320;  // 상하 진입 → 좌우로 문다
-    half = Math.min(half, 0.55) + 0.07;
+    var halfA = Math.min((dir.x !== 0 ? (pc.bb[2] - pc.bb[0]) : (pc.bb[3] - pc.bb[1])) / 2 / 320, 0.6);
+    var halfP = Math.min((dir.x !== 0 ? (pc.bb[3] - pc.bb[1]) : (pc.bb[2] - pc.bb[0])) / 2 / 320, 0.55);
+    var ARMZ = 0.14;
+    var L1 = 1.8, L2 = 1.65;
+    var Bfix = cAbs.clone().add(home).add(dir.clone().multiplyScalar(3.1));
+    Bfix.z = ARMZ;
+    var bend = (G.items.length % 2 ? 1 : -1);   // 팔꿈치 굽는 방향 교차
 
-    var grip = new THREE.Group();
-    var shaft = new THREE.Mesh(
-      dir.x !== 0 ? new THREE.BoxGeometry(3.6, 0.05, 0.05) : new THREE.BoxGeometry(0.05, 3.6, 0.05),
-      armMat
-    );
-    shaft.position.copy(cAbs).add(dir.clone().multiplyScalar(1.9));
-    grip.add(shaft);
-    var pads = [];
+    var grip = new THREE.Group();               // 팔 전체(링크·관절·핸드)
+    function linkBox(w, h) {                    // 단위 길이(x) 링크 — scale.x 로 늘인다
+      var g2 = new THREE.Group();
+      var body = new THREE.Mesh(new THREE.BoxGeometry(1, w, h), armMat);
+      body.position.x = 0.5;
+      g2.add(body);
+      var conduit = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.016, 0.86, 8), darkMat);
+      conduit.rotation.z = Math.PI / 2;
+      conduit.position.set(0.5, w * 0.28, h / 2 + 0.02);
+      g2.add(conduit);
+      return g2;
+    }
+    function jointDisc(r, mat) {
+      var m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, 0.12, 20), mat);
+      m.rotation.x = Math.PI / 2;
+      return m;
+    }
+    /* 베이스 마운트(고정) */
+    var baseMount = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.26, 0.22), armMat);
+    baseMount.position.copy(Bfix).add(dir.clone().multiplyScalar(0.22));
+    grip.add(baseMount);
+    var baseDisc = jointDisc(0.13, jointMat); baseDisc.position.copy(Bfix); grip.add(baseDisc);
+    var baseHub = jointDisc(0.045, warnMat); baseHub.position.copy(Bfix); baseHub.position.z += 0.02; grip.add(baseHub);
+    /* 링크·관절 */
+    var upper = linkBox(0.12, 0.11); grip.add(upper);
+    var fore = linkBox(0.085, 0.085); grip.add(fore);
+    var elbow = jointDisc(0.1, jointMat); grip.add(elbow);
+    var elbowHub = jointDisc(0.04, darkMat); grip.add(elbowHub);
+    var wrist = jointDisc(0.075, jointMat); grip.add(wrist);
+    /* 클로 핸드 — 정준 좌표(+X = 부품 방향)로 만들고 진입 방향으로 회전 */
+    var hand = new THREE.Group();
+    var palm = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.26, 0.17), armMat);
+    palm.position.x = 0.02; hand.add(palm);
+    var fingers = [];
+    var lenP = Math.min(halfP * 0.8 + 0.24, 0.7), lenD = Math.min(halfP * 0.5 + 0.18, 0.5);
     [1, -1].forEach(function (sgn) {
-      var pad = new THREE.Mesh(
-        dir.x !== 0 ? new THREE.BoxGeometry(0.24, 0.06, 0.2) : new THREE.BoxGeometry(0.06, 0.24, 0.2),
-        padMat
-      );
-      pad.position.copy(cAbs).add(perp.clone().multiplyScalar(sgn * half));
-      grip.add(pad);
-      pads.push({ mesh: pad, base: pad.position.clone(), sgn: sgn });
+      var fing = new THREE.Group();
+      fing.position.set(0.06, sgn * 0.12, 0);
+      var prox = new THREE.Mesh(new THREE.BoxGeometry(lenP, 0.045, 0.11), armMat);
+      prox.position.x = lenP / 2; fing.add(prox);
+      var dist = new THREE.Group();
+      dist.position.x = lenP; dist.rotation.z = -sgn * 0.95;
+      var dm = new THREE.Mesh(new THREE.BoxGeometry(lenD, 0.04, 0.09), jointMat);
+      dm.position.x = lenD / 2; dist.add(dm);
+      fing.add(dist);
+      fing.rotation.z = sgn * 0.52;
+      hand.add(fing);
+      fingers.push({ grp: fing, sgn: sgn, base: sgn * 0.52 });
     });
-    grip.position.copy(staging).sub(home);   // 부품과 함께 스테이징에서 시작
+    hand.rotation.z = Math.atan2(-dir.y, -dir.x);
+    grip.add(hand);
     G.grp.add(grip);
 
     G.items.push({
-      mesh: mesh, grip: grip, pads: pads, perp: perp, dir: dir,
+      mesh: mesh, grip: grip, dir: dir, perp: perp, cAbs: cAbs,
+      Bfix: Bfix, L1: L1, L2: L2, bend: bend,
+      upper: upper, fore: fore, elbow: elbow, elbowHub: elbowHub, wrist: wrist,
+      hand: hand, fingers: fingers, halfA: halfA,
       staging: staging, hover: hover, home: home
     });
   });
@@ -355,15 +397,37 @@ function start(tex) {
       }
       it.mesh.position.copy(pp);
 
-      /* 그리퍼: 압입까지 동행 → 집게 벌림 → 급속 후퇴 → 숨김 */
+      /* 로봇팔: IK로 손목이 부품을 따라간다 → 손가락 벌림 → 팔 접힘 후퇴 → 숨김 */
       if (e >= 1) { it.grip.visible = false; }
       else {
-        var open = e < 0.62 ? 0 : Math.min(1, (e - 0.62) / 0.1) * 0.16;
-        it.pads.forEach(function (pd) {
-          pd.mesh.position.copy(pd.base).add(it.perp.clone().multiplyScalar(pd.sgn * open));
+        var open2 = e < 0.62 ? 0 : Math.min(1, (e - 0.62) / 0.1);
+        it.fingers.forEach(function (fg) {
+          fg.grp.rotation.z = fg.base + fg.sgn * open2 * 0.45;
         });
-        var back = e < 0.72 ? 0 : easeIn((e - 0.72) / 0.28) * 4.5;
-        it.grip.position.copy(pp).sub(it.home).add(it.dir.clone().multiplyScalar(back));
+        var back = e < 0.7 ? 0 : easeIn((e - 0.7) / 0.3);
+        var pcNow = it.cAbs.clone().add(pp);
+        var T = pcNow.add(it.dir.clone().multiplyScalar(it.halfA + 0.24 + back * 2.6));
+        T.z = it.Bfix.z;
+        var BT = T.clone().sub(it.Bfix); BT.z = 0;
+        var d = BT.length();
+        d = Math.max(Math.abs(it.L1 - it.L2) + 0.08, Math.min(it.L1 + it.L2 - 0.05, d));
+        var ah = BT.normalize();
+        var Tc = it.Bfix.clone().add(ah.clone().multiplyScalar(d));
+        var nh = new THREE.Vector3(-ah.y * it.bend, ah.x * it.bend, 0);
+        var a1 = (it.L1 * it.L1 - it.L2 * it.L2 + d * d) / (2 * d);
+        var hh = Math.sqrt(Math.max(0.01, it.L1 * it.L1 - a1 * a1));
+        var E = it.Bfix.clone().add(ah.clone().multiplyScalar(a1)).add(nh.clone().multiplyScalar(hh));
+        function place(link, from, to) {
+          var vx = to.x - from.x, vy = to.y - from.y;
+          link.position.copy(from);
+          link.rotation.z = Math.atan2(vy, vx);
+          link.scale.x = Math.sqrt(vx * vx + vy * vy);
+        }
+        place(it.upper, it.Bfix, E);
+        place(it.fore, E, Tc);
+        it.elbow.position.copy(E); it.elbowHub.position.copy(E); it.elbowHub.position.z += 0.02;
+        it.wrist.position.copy(Tc);
+        it.hand.position.copy(Tc);
       }
     });
 

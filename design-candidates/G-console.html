@@ -369,12 +369,22 @@ html.intro-lock{overflow:hidden}
 #intro{position:fixed;inset:0;z-index:400;background:#0a1a33;transition:opacity .48s ease}
 #intro.is-out{opacity:0;pointer-events:none}
 #intro canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
-#intro .intro-title{position:absolute;left:0;right:0;top:72.5%;margin:0;text-align:center;
-  font-family:var(--kr);color:#fff;font-weight:700;
-  font-size:clamp(1.45rem,1rem + 2.6vw,2.55rem);
-  letter-spacing:.5em;text-indent:.5em;opacity:0;
-  transition:letter-spacing 1.1s cubic-bezier(.2,.7,.2,1),text-indent 1.1s cubic-bezier(.2,.7,.2,1),opacity .8s ease}
-#intro.is-on .intro-title{letter-spacing:.12em;text-indent:.12em;opacity:1}
+#intro .intro-halo{position:absolute;left:50%;top:39%;width:min(92vh,900px);aspect-ratio:1;
+  transform:translate(-50%,-50%);pointer-events:none;opacity:.4;will-change:opacity,transform;
+  background:radial-gradient(circle,rgba(155,195,255,.55),rgba(95,135,235,.24) 36%,rgba(60,95,190,.1) 56%,transparent 72%)}
+#intro .intro-title{position:absolute;left:0;right:0;top:71%;margin:0;
+  display:flex;align-items:center;justify-content:center;gap:clamp(.6rem,.4rem + 1vw,1.1rem);
+  font-family:var(--kr);color:#fff;font-weight:800;
+  font-size:clamp(1.6rem,1rem + 3.2vw,3.1rem);
+  opacity:0;transform:translateY(18px) scale(.96);
+  transition:opacity .7s ease,transform .9s cubic-bezier(.16,.8,.24,1)}
+#intro .intro-title img{height:1.3em;width:auto;display:block;
+  filter:drop-shadow(0 0 16px rgba(255,255,255,.4))}
+#intro .intro-title span{letter-spacing:.42em;white-space:nowrap;
+  text-shadow:0 2px 34px rgba(130,170,255,.45);
+  transition:letter-spacing 1.15s cubic-bezier(.16,.8,.24,1)}
+#intro.is-on .intro-title{opacity:1;transform:translateY(0) scale(1)}
+#intro.is-on .intro-title span{letter-spacing:.06em}
 #intro #introFb{position:absolute;left:50%;top:40%;width:min(46vw,290px);
   transform:translate(-50%,-50%) scale(.85);opacity:0;
   transition:opacity .8s ease,transform .95s cubic-bezier(.2,.7,.2,1)}
@@ -386,9 +396,10 @@ html.intro-lock{overflow:hidden}
 <body>
 
 <div id="intro" aria-hidden="true">
+  <div class="intro-halo"></div>
   <canvas id="introCv"></canvas>
   <img id="introFb" src="assets/yonsei-seal.png" alt="" hidden />
-  <p class="intro-title">연세대학교 기계공학부</p>
+  <p class="intro-title"><img src="assets/yonsei-seal-t.png" alt="" /><span>연세대학교 기계공학부</span></p>
 </div>
 <script>
 /* 인트로 가드 — 세션당 1회, iframe(관리자 캔버스)·모션 최소화에선 재생 안 함.
@@ -874,7 +885,7 @@ setTimeout(function(){if(!document.body.classList.contains('gl-on'))document.bod
 /* 인트로 변형 선택 — 기본은 독수리(B). 비교용: ?intro=seal 은 씰 조립(A) */
 if (document.getElementById('intro')) {
   var pick = new URLSearchParams(location.search).get('intro');
-  import(pick === 'seal' ? './assets/intro3d.js?v=4' : './assets/intro-eagle.js?v=3');
+  import(pick === 'seal' ? './assets/intro3d.js?v=4' : './assets/intro-eagle.js?v=5');
 }
 </script>
 <script src="assets/nav.js?v=20"></script>

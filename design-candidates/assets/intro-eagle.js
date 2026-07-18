@@ -35,7 +35,7 @@ function finish() {
 }
 box.addEventListener('click', finish);
 /* 백그라운드 탭(rAF 정지)·예외 등 어떤 경우에도 인트로가 화면을 잡아두지 않게 */
-setTimeout(finish, 6500);
+setTimeout(finish, 7000);
 
 function fallback() {
   var fb = document.getElementById('introFb');
@@ -222,6 +222,7 @@ function start(tex) {
   var root = new THREE.Group();
   root.position.y = 0.35;
   scene.add(root);
+  var halo = box.querySelector('.intro-halo');
 
   function toWX(px) { return px / 320 - 1; }
   function toWY(py) { return 1 - py / 320; }
@@ -257,26 +258,25 @@ function start(tex) {
     var hx = toWX(HINGE[pc.group][0]), hy = toWY(HINGE[pc.group][1]);
     var mesh = new THREE.Mesh(geo, [capMat, sideMat]);
     var home = new THREE.Vector3(-hx, -hy, -DEPTH / 2);
-    /* 진입: 독수리 중심에서 바깥 방향 + 깊이·회전 텀블은 인덱스 기반(결정적) */
-    var dx = pc.cx - 320, dy = pc.cy - 318, L = Math.sqrt(dx * dx + dy * dy) || 1;
-    var reach = 1.9 + (idx % 3) * 0.45;
-    var from = home.clone().add(new THREE.Vector3(dx / L * reach, -dy / L * reach, 0.35 + (idx % 4) * 0.16));
-    mesh.position.copy(from);
-    var tumble = {
-      x: ((idx % 3) - 1) * 0.35,
-      y: (((idx + 1) % 3) - 1) * 0.3,
-      z: (idx % 2 ? 0.3 : -0.3)
-    };
-    mesh.rotation.set(tumble.x, tumble.y, tumble.z);
+    /* 픽앤플레이스 경로: 화면 아래 스테이징 → 제자리 앞 호버 → 축 방향 압입.
+       기계가 물어다 놓는 부품이므로 평평하게 운반(텀블 없음), 미세 기울기만 */
+    var staging = home.clone().add(new THREE.Vector3((idx % 2 ? 0.3 : -0.3), -2.7, 0.6));
+    var hover = home.clone().add(new THREE.Vector3(0, 0, 0.62));
+    mesh.position.copy(staging);
+    var sway = (idx % 2 ? 0.09 : -0.09);
+    mesh.rotation.set(0, 0, sway);
     G.grp.add(mesh);
-    G.items.push({ mesh: mesh, from: from, home: home, tumble: tumble });
+    G.items.push({ mesh: mesh, staging: staging, hover: hover, home: home, sway: sway });
   });
 
-  /* 부위 순서대로, 부위 안에서는 큰 부품(섀시)부터 여유 있게 체결 */
-  ORDER.forEach(function (key, ord) {
-    groups[key].items.forEach(function (it, j) {
-      it.st = ord * 350 + j * 60;
-      it.dur = 800;
+  /* 부위 순서대로 전역 일련 체결 — 앞 부품이 압입되는 동안 다음 부품이 이미
+     상승 중이라 여러 대의 기계가 동시에 나르는 느낌이 난다 */
+  var gi = 0;
+  ORDER.forEach(function (key) {
+    groups[key].items.forEach(function (it) {
+      it.st = gi * 120;
+      it.dur = 880;
+      gi++;
     });
   });
 
@@ -286,7 +286,7 @@ function start(tex) {
   function easeIO(t) { return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
 
   var T0 = performance.now();
-  var textOn = false, endAt = 4250;
+  var textOn = false, endAt = 4700;
 
   function frame(now) {
     if (done) return;
@@ -294,20 +294,26 @@ function start(tex) {
 
     ORDER.forEach(function (key) {
       groups[key].items.forEach(function (it) {
-        var e = snap(clamp01((t - it.st) / it.dur));
-        it.mesh.position.lerpVectors(it.from, it.home, e);
-        it.mesh.rotation.set(it.tumble.x * (1 - e), it.tumble.y * (1 - e), it.tumble.z * (1 - e));
+        var e = clamp01((t - it.st) / it.dur);
+        if (e < 0.46) {                     // 운반: 아래에서 제자리 앞까지 상승
+          it.mesh.position.lerpVectors(it.staging, it.hover, easeIO(e / 0.46));
+        } else if (e < 0.56) {              // 정렬: 슬롯 위에서 잠깐 멈춤
+          it.mesh.position.copy(it.hover);
+        } else {                            // 압입: 축 방향 스냅 체결
+          it.mesh.position.lerpVectors(it.hover, it.home, snap((e - 0.56) / 0.44));
+        }
+        it.mesh.rotation.z = it.sway * (1 - clamp01(e / 0.5));   // 운반 기울기 → 정렬 시 0
       });
     });
     /* 조립 동안 큰 각도에서 정면으로 돌아오며 판 두께(3D)가 보인다 */
-    var whole = easeOut(clamp01(t / 2300));
+    var whole = easeOut(clamp01(t / 2600));
     root.rotation.y = -0.55 * (1 - whole);
     root.rotation.x = -0.15 * (1 - whole);
     cam.position.z = 7.5 - 1.6 * whole;
 
     /* ── 날갯짓(어깨 관절 기준, 몸통은 안 끌려간다) ──
        내리칠 때: 면내 스윕으로 날개 끝이 바깥-아래로 + 앞으로 깊이 틸트 */
-    var f = clamp01((t - 2450) / 1500);
+    var f = clamp01((t - 2850) / 1500);
     if (f > 0) {
       var amp = Math.sin(Math.PI * f);
       var phi = Math.sin(f * Math.PI * 4) * amp;      // 2회 퍼덕임
@@ -319,12 +325,28 @@ function start(tex) {
       groups.wingR.grp.rotation.y = -0.16 * phi;
       groups.tail.grp.rotation.x = -0.18 * phi;       // 꼬리만 살짝 반대 젓기
     }
-    var rise = easeIO(clamp01((t - 2550) / 1200));
+    var rise = easeIO(clamp01((t - 2950) / 1200));
     root.position.y = 0.35 + 0.26 * rise;
     var s = 1 + 0.05 * rise;
     root.scale.set(s, s, s);
 
-    if (!textOn && t > 3000) { textOn = true; box.classList.add('is-on'); }
+    /* 후광: 부품이 체결될 때마다 맥동, 완성(날갯짓 시작) 순간 크게 플레어 */
+    if (halo) {
+      var pulse = 0;
+      ORDER.forEach(function (key) {
+        groups[key].items.forEach(function (it) {
+          var dt = t - (it.st + it.dur);
+          if (dt > 0 && dt < 520) pulse += Math.exp(-dt / 150);
+        });
+      });
+      var flare = f > 0 ? Math.sin(Math.PI * clamp01(f * 1.6)) : 0;
+      var op = 0.38 + Math.min(0.3, pulse * 0.22) + 0.34 * flare;
+      var sc = 1 + 0.05 * Math.min(1.4, pulse) + 0.12 * flare;
+      halo.style.opacity = op.toFixed(3);
+      halo.style.transform = 'translate(-50%,-50%) scale(' + sc.toFixed(3) + ')';
+    }
+
+    if (!textOn && t > 3350) { textOn = true; box.classList.add('is-on'); }
     if (t > endAt) { renderer.render(scene, cam); finish(); return; }
 
     renderer.render(scene, cam);

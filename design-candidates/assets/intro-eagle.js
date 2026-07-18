@@ -218,6 +218,35 @@ function extractPieces(img) {
   return solos.slice(0, 11);
 }
 
+/* 선화 명도에서 노멀맵 베이크 — 음각 라인·패널 경계가 빛을 받는다 */
+function bakeNormal(img) {
+  var c = document.createElement('canvas'); c.width = c.height = S;
+  var x = c.getContext('2d');
+  x.drawImage(img, 0, 0, S, S);
+  var dd = x.getImageData(0, 0, S, S).data;
+  var lum = new Float32Array(S * S);
+  for (var i = 0; i < S * S; i++) {
+    lum[i] = dd[i * 4 + 3] < 60 ? 255 : (0.299 * dd[i * 4] + 0.587 * dd[i * 4 + 1] + 0.114 * dd[i * 4 + 2]);
+  }
+  var out = x.createImageData(S, S), od = out.data;
+  var K = 2.2 / 255;
+  for (var y = 1; y < S - 1; y++) {
+    for (var x2 = 1; x2 < S - 1; x2++) {
+      var p = y * S + x2;
+      var gx = (lum[p + 1] - lum[p - 1]) * K;
+      var gy = (lum[p + S] - lum[p - S]) * K;
+      var il = 1 / Math.sqrt(gx * gx + gy * gy + 1);
+      od[p * 4] = Math.round((-gx * il * 0.5 + 0.5) * 255);
+      od[p * 4 + 1] = Math.round((gy * il * 0.5 + 0.5) * 255);
+      od[p * 4 + 2] = Math.round((il * 0.5 + 0.5) * 255);
+      od[p * 4 + 3] = 255;
+    }
+  }
+  x.putImageData(out, 0, 0);
+  var t = new THREE.CanvasTexture(c);
+  return t;
+}
+
 function start(tex) {
   if (done) return;
   var pieces = extractPieces(tex.image);
@@ -230,7 +259,7 @@ function start(tex) {
 
   /* 조명 — 로봇팔·부품 옆면 금속 셰이딩용(독수리 도장면은 Basic) */
   scene.add(new THREE.AmbientLight(0xbfd0e8, 0.85));
-  var keyL = new THREE.DirectionalLight(0xffffff, 1.6);
+  var keyL = new THREE.DirectionalLight(0xffffff, 1.9);
   keyL.position.set(2.5, 3.5, 5);
   scene.add(keyL);
   var rimL = new THREE.DirectionalLight(0x7fa8ff, 0.7);
@@ -260,8 +289,14 @@ function start(tex) {
   /* 조립 중 어두운 강판 → 완성 때 점등(흰)·금빛. 색은 프레임에서 구동 */
   var DARKC = new THREE.Color(0.42, 0.47, 0.58);
   var WHITE = new THREE.Color(1, 1, 1);
-  var GOLD = new THREE.Color(1.0, 0.85, 0.58);
-  var capMat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, side: THREE.DoubleSide });
+  var GOLD = new THREE.Color(1.0, 0.78, 0.42);
+  var KEYWARM = new THREE.Color(1.0, 0.88, 0.64);
+  var normalTex = bakeNormal(tex.image);
+  var capMat = new THREE.MeshStandardMaterial({
+    map: tex, transparent: true, side: THREE.DoubleSide,
+    metalness: 0.22, roughness: 0.4,
+    normalMap: normalTex, normalScale: new THREE.Vector2(0.55, 0.55)
+  });
   capMat.color.copy(DARKC);
   var sideMat = new THREE.MeshStandardMaterial({ color: 0x6b7a96, metalness: 0.55, roughness: 0.45 });
   var armMat = new THREE.MeshStandardMaterial({ color: 0x2c3a58, metalness: 0.7, roughness: 0.38 });
@@ -300,15 +335,28 @@ function start(tex) {
       shape.closePath();
       return shape;
     });
-    var geo = new THREE.ExtrudeGeometry(shapes, { depth: DEPTH, bevelEnabled: false });
+    /* 부위별 두께·전면 층 — 몸통이 도톰하게 앞으로, 깃은 얇게 뒤로(주조 부조) */
+    var TH = { body: 0.2, talons: 0.16, wingL: 0.12, wingR: 0.12, tail: 0.12 }[pc.group];
+    var FZ = { body: 0.05, talons: 0.03, wingL: -0.01, wingR: -0.01, tail: -0.02 }[pc.group];
+    var geo = new THREE.ExtrudeGeometry(shapes, {
+      depth: TH, bevelEnabled: true, bevelThickness: 0.024,
+      bevelSize: 0.02, bevelOffset: -0.02, bevelSegments: 2
+    });
     var pos = geo.attributes.position, uv = geo.attributes.uv;
+    /* 날개 곡률: 끝단이 카메라 쪽으로 살짝 캠버(전 부품 공통 함수라 이음새 유지) */
+    for (var v0 = 0; v0 < pos.count; v0++) {
+      var wx = pos.getX(v0);
+      var bendd = Math.max(0, Math.abs(wx) - 0.22) / 0.8;
+      pos.setZ(v0, pos.getZ(v0) + 0.15 * bendd * bendd);
+    }
+    geo.computeVertexNormals();
     for (var v = 0; v < uv.count; v++) uv.setXY(v, pos.getX(v) / 2 + 0.5, pos.getY(v) / 2 + 0.5);
     uv.needsUpdate = true;
 
     var G = groups[pc.group];
     var hx = toWX(HINGE[pc.group][0]), hy = toWY(HINGE[pc.group][1]);
     var mesh = new THREE.Mesh(geo, [capMat, sideMat]);
-    var home = new THREE.Vector3(-hx, -hy, -DEPTH / 2);
+    var home = new THREE.Vector3(-hx, -hy, FZ - TH);
     var dir = edgeDir(pc.cx, pc.cy);
     var staging = home.clone().add(dir.clone().multiplyScalar(3.4)).add(new THREE.Vector3(0, 0, 0.5));
     var hover = home.clone().add(new THREE.Vector3(0, 0, 0.5));
@@ -316,7 +364,7 @@ function start(tex) {
     G.grp.add(mesh);
 
     /* ── 로봇팔: 화면 앞쪽 깊이의 베이스에서 비스듬히 뻗는 2링크 IK ── */
-    var cAbs = new THREE.Vector3(toWX(pc.cx), toWY(pc.cy), DEPTH / 2 + 0.04);
+    var cAbs = new THREE.Vector3(toWX(pc.cx), toWY(pc.cy), FZ + 0.06);
     var perp = dir.x !== 0 ? new THREE.Vector3(0, 1, 0) : new THREE.Vector3(1, 0, 0);
     var halfA = Math.min((dir.x !== 0 ? (pc.bb[2] - pc.bb[0]) : (pc.bb[3] - pc.bb[1])) / 2 / 320, 0.6);
     var halfP = Math.min((dir.x !== 0 ? (pc.bb[3] - pc.bb[1]) : (pc.bb[2] - pc.bb[0])) / 2 / 320, 0.55);
@@ -472,7 +520,8 @@ function start(tex) {
     /* 완성 리빌: 어두운 강판 → 점등(흰) → 샴페인 골드 */
     var goldT = easeIO(clamp01((t - F0) / 650));
     if (goldT < 0.45) capMat.color.copy(DARKC).lerp(WHITE, goldT / 0.45);
-    else capMat.color.copy(WHITE).lerp(GOLD, (goldT - 0.45) / 0.55 * 0.8);
+    else capMat.color.copy(WHITE).lerp(GOLD, (goldT - 0.45) / 0.55);
+    keyL.color.copy(WHITE).lerp(KEYWARM, goldT);   // 리빌 때 조명도 따뜻하게
 
     var f = clamp01((t - F0) / 1500);
     if (f > 0) {

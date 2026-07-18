@@ -21,6 +21,9 @@ ADMIN = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(ADMIN)
 SRC_HTML = os.path.join(ADMIN, "index.html")
 DST = os.path.join(ROOT, "prototype-v3", "studio")
+# 배포 경로. 상대 asset 경로(css/·js/)를 이 절대경로로 바꿔, /studio 를 트레일링
+# 슬래시 없이 열어도(브라우저가 base 를 루트로 잡아도) 스타일·스크립트가 안 깨지게 한다.
+STUDIO_BASE = "/studio/"
 
 # 배포본 index.html 의 <head> 바로 뒤에 주입할 내용.
 # defer 모듈 스크립트보다 먼저 실행되어 remotefs.js/online.js 가 온라인으로 동작한다.
@@ -57,6 +60,9 @@ def build_html():
     if "YSME_ONLINE" not in html:
         # <head> 는 파일에 정확히 한 번 등장 → 그 바로 뒤에 주입
         html = html.replace("<head>", "<head>" + ONLINE_HEAD, 1)
+    # 상대 asset 경로 → 절대(/studio/…). '/studio'(슬래시 없음)로 접속해도 안 깨진다.
+    html = html.replace('href="css/', 'href="' + STUDIO_BASE + 'css/')
+    html = html.replace('src="js/', 'src="' + STUDIO_BASE + 'js/')
     with open(os.path.join(DST, "index.html"), "w", encoding="utf-8", newline="\n") as f:
         f.write(html)
 

@@ -885,12 +885,12 @@ setTimeout(function(){if(!document.body.classList.contains('gl-on'))document.bod
 </script>
 <noscript><style>.core-fallback{display:block!important}</style></noscript>
 <!-- 기어 버전 보존: assets/gear3d.js?v=11 (되돌릴 때 아래 한 줄 교체) -->
-<script type="module" src="assets/hero-eagle.js?v=3"></script>
+<script type="module" src="assets/hero-eagle.js?v=4"></script>
 <script type="module">
 /* 인트로 변형 선택 — 기본은 독수리(B). 비교용: ?intro=seal 은 씰 조립(A) */
 if (document.getElementById('intro')) {
   var pick = new URLSearchParams(location.search).get('intro');
-  import(pick === 'seal' ? './assets/intro3d.js?v=4' : './assets/intro-eagle.js?v=24');
+  import(pick === 'seal' ? './assets/intro3d.js?v=4' : './assets/intro-eagle.js?v=25');
 }
 </script>
 <script src="assets/nav.js?v=20"></script>

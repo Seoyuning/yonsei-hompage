@@ -8,6 +8,7 @@
    ═══════════════════════════════════════════════════════════════════ */
 import * as THREE from './vendor/three.module.min.js';
 import { GLTFLoader } from './vendor/GLTFLoader.js';
+import { rigWings } from './eagle-utils.js';
 
 (function () {
 'use strict';
@@ -74,6 +75,7 @@ new GLTFLoader().load(MODEL_URL, function (g) {
         if (o.material.emissive) o.material.emissiveIntensity = 1.5;
       }
     });
+    var wings = rigWings(obj);           // 정적 모델용 날개 분리 리깅
     if (g.animations && g.animations.length) {
       mixer = new THREE.AnimationMixer(obj);
       var act = mixer.clipAction(g.animations[0]);
@@ -95,8 +97,9 @@ new GLTFLoader().load(MODEL_URL, function (g) {
     root = new THREE.Group();
     root.add(obj);
     root.scale.setScalar(sc);
-    root.rotation.y = 0.15;
-    root.rotation.x = 0.05;
+    root.rotation.y = Math.PI - 0.12;    // 정면(부리·눈이 보이는 쪽) 3/4
+    root.rotation.x = 0.1;
+    root.userData.wings = wings;
     scene.add(root);
 
     renderer.render(scene, cam);          // 첫 프레임 동기 렌더
@@ -116,11 +119,17 @@ function loop(now) {
   prev = now;
   if (mixer) mixer.update(dt);
   if (root) {
-    /* 활공: 좌우 뱅킹 + 느린 요잉 + 상승기류 부유 (+ 마우스 시차) */
-    root.rotation.y += ((0.15 + mx * 0.24 + Math.sin(now / 3900) * 0.07) - root.rotation.y) * 0.06;
-    root.rotation.x += ((0.05 + my * 0.1) - root.rotation.x) * 0.06;
-    root.rotation.z = Math.sin(now / 2600) * 0.09;
+    /* 비행: 날갯짓 + 좌우 뱅킹 + 느린 요잉 + 상승기류 부유 (+ 마우스 시차) */
+    root.rotation.y += ((Math.PI - 0.12 + mx * 0.24 + Math.sin(now / 3900) * 0.06) - root.rotation.y) * 0.06;
+    root.rotation.x += ((0.1 + my * 0.1) - root.rotation.x) * 0.06;
+    root.rotation.z = Math.sin(now / 2600) * 0.07;
     root.position.y = Math.sin(now / 1700) * 0.14;
+    var wg = root.userData.wings;
+    if (wg) {
+      var fl = Math.sin(now / 420) * 0.26;
+      wg.left.rotation[wg.axis] = fl;
+      wg.right.rotation[wg.axis] = -fl;
+    }
   }
   renderer.render(scene, cam);
   requestAnimationFrame(loop);

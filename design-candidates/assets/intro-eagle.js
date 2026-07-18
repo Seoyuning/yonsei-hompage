@@ -14,6 +14,7 @@
    ═══════════════════════════════════════════════════════════════════ */
 import * as THREE from './vendor/three.module.min.js';
 import { GLTFLoader } from './vendor/GLTFLoader.js';
+import { rigWings } from './eagle-utils.js';
 
 (function () {
 'use strict';
@@ -288,6 +289,7 @@ function start(tex) {
           }
         }
       });
+      var wings = rigWings(obj);          // 정적 모델용 날개 분리 리깅
       var hasAnim = g.animations && g.animations.length;
       mixer = null;
       if (hasAnim) {
@@ -313,8 +315,9 @@ function start(tex) {
       wrap.add(obj);
       wrap.scale.setScalar(sc);
       wrap.userData.baseS = sc;
-      wrap.rotation.y = 0.15;            // 정면에 가까운 3/4 — 위용
-      wrap.rotation.x = 0.05;
+      wrap.rotation.y = Math.PI - 0.12;  // 정면(부리·눈이 보이는 쪽) 3/4
+      wrap.rotation.x = 0.1;
+      wrap.userData.wings = wings;
       wrap.position.set(0, 0.36, 0);
       wrap.visible = false;
       scene.add(wrap);
@@ -637,12 +640,18 @@ function start(tex) {
 
       var hold = easeIO(clamp01((t - (F0 + 420)) / 600));
       var fly = easeIn(clamp01((t - (F0 + 1150)) / 1150));
-      model.position.x = 2.7 * fly;
-      model.position.y = 0.36 + 0.08 * hold + 2.0 * fly;
-      model.position.z = 0.5 * fly;
-      model.rotation.y = 0.15 + 2.2 * fly;               // 몸을 돌려 선회 이탈
-      model.rotation.z = -0.28 * Math.sin(Math.PI * fly);
+      model.position.x = 2.6 * fly;
+      model.position.y = 0.36 + 0.08 * hold + 2.1 * fly;
+      model.position.z = 0.45 * fly;
+      model.rotation.y = (Math.PI - 0.12) - 0.5 * fly;   // 살짝 몸을 틀며
+      model.rotation.z = -0.3 * Math.sin(Math.PI * fly); // 뱅킹
       model.scale.setScalar(model.userData.baseS * (1 + 0.05 * hold));
+      var wg = model.userData.wings;
+      if (wg) {                                          // 펄럭이며 날아오른다
+        var ang = Math.sin(t / 220) * (0.2 + 0.16 * fly);
+        wg.left.rotation[wg.axis] = ang;
+        wg.right.rotation[wg.axis] = -ang;
+      }
     }
     prevNow = now;
 

@@ -1,15 +1,16 @@
 /* ═══════════════════════════════════════════════════════════════════
    YSME — intro-eagle.js  (인트로 후보 B — A는 intro3d.js 씰 조립)
-   기계 독수리(ME 로고)를 로봇 그리퍼들이 부품 단위로 물어 와 조립 →
-   날갯짓 → 학부명. 어두운 배경 + 독수리 뒤 강한 후광.
+   다관절 IK 로봇팔들이 기계 독수리를 부품 단위로 조립 → 점등·금빛 완성 →
+   날갯짓 → 학부명. 어두운 배경 + 강한 후광.
 
-   · 부품: 알파 연결 성분(+거대 성분은 관절 경계에서 해부학 분할) →
-     무어 경계 추적 → RDP → ExtrudeGeometry(두께 0.13)
-   · 조립: 부품마다 그리퍼(샤프트+집게 2)가 가장 가까운 화면 가장자리에서
-     물고 진입 → 슬롯 앞 정렬 → 축 방향 압입 → 집게 벌리고 급속 후퇴.
-     순서는 몸통 섀시 → 부위 교차(라운드로빈) — 위에서부터 쓸리지 않게
-   · 날갯짓: 어깨 관절 면내 스윕+깊이 틸트, 몸통은 상승만
-   · 총 ~5.2s · 클릭 스킵 · 하드킬 7s · WebGL 실패 시 2D 폴백
+   · 부품: 알파 연결 성분(+거대 성분은 관절 경계에서 해부학 분할).
+     작은 성분은 부위별 병합, 총 11개 이하 — 팔이 동시에 ~3대만 움직인다
+   · 리빌: 조립 중 부품은 어두운 강판 색 — 전 부품 체결 후 점등(흰색)되고
+     곧장 샴페인 골드로 물들며 골드 플레어 → 완성 전에는 위엄을 숨긴다
+   · 로봇팔: 화면 앞쪽 깊이에 고정된 베이스에서 비스듬히 뻗는 2링크 IK,
+     테이퍼 실린더 링크·구형 관절·클로 핸드, 조명+금속 재질(스탠다드)
+   · 마무리: 날갯짓 2회 + 상승 + 날개 살짝 편 정지 포즈
+   · 클릭 스킵 · 하드킬 8s · WebGL 실패 시 2D 폴백
    ═══════════════════════════════════════════════════════════════════ */
 import * as THREE from './vendor/three.module.min.js';
 
@@ -35,7 +36,7 @@ function finish() {
 }
 box.addEventListener('click', finish);
 /* 백그라운드 탭(rAF 정지)·예외 등 어떤 경우에도 인트로가 화면을 잡아두지 않게 */
-setTimeout(finish, 7000);
+setTimeout(finish, 8000);
 
 function fallback() {
   var fb = document.getElementById('introFb');
@@ -54,9 +55,9 @@ new THREE.TextureLoader().load('assets/me-eagle.png', function (tex) {
 }, undefined, fallback);
 
 var S = 640;
-var BIG = 30000;   // 이 넓이 이상이면 해부학 분할 대상(= 거대 성분)
+var BIG = 30000;     // 이 넓이 이상이면 해부학 분할 대상(= 거대 성분)
+var SOLO = 3200;     // 이 넓이 이상이면 단독 부품, 미만은 부위별 병합
 
-/* 거대 성분 픽셀의 부위 판정 — 관절·연결부를 지나는 경계 */
 function anatomyOf(x, y) {
   if ((x < 400 && y < 288) || (x < 240 && y < 330)) return 'wingL';
   if (x < 315 && y >= 395) return 'tail';
@@ -112,10 +113,10 @@ function extractPieces(img) {
   });
 
   label.fill(-1);
-  var pieces = [];
+  var units = [];
   for (var p2 = 0; p2 < S * S; p2++) {
     if (!A[p2] || label[p2] >= 0) continue;
-    var rg = region[p2], id2 = pieces.length, h2 = 0, t2 = 0;
+    var rg = region[p2], id2 = units.length, h2 = 0, t2 = 0;
     q[t2++] = p2; label[p2] = id2;
     var area2 = 0, sx2 = 0, sy2 = 0, top = [p2 % S, (p2 / S) | 0];
     var mnx = S, mxx = 0, mny = S, mxy = 0;
@@ -134,16 +135,16 @@ function extractPieces(img) {
         if (A[np] && region[np] === rg && label[np] < 0) { label[np] = id2; q[t2++] = np; }
       }
     }
-    pieces.push({ id: id2, area: area2, cx: sx2 / area2, cy: sy2 / area2, top: top,
+    units.push({ id: id2, area: area2, cx: sx2 / area2, cy: sy2 / area2, top: top,
       bb: [mnx, mny, mxx, mxy], group: KEYS[rg] });
   }
 
-  function inPiece(id3, x3, y3) {
+  function inUnit(id3, x3, y3) {
     return x3 >= 0 && x3 < S && y3 >= 0 && y3 < S && label[y3 * S + x3] === id3;
   }
   var DIR = [[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1],[0,-1],[1,-1]];
-  function trace(pc) {
-    var sxp = pc.top[0], syp = pc.top[1];
+  function trace(u) {
+    var sxp = u.top[0], syp = u.top[1];
     var pts = [[sxp, syp]];
     var cur = [sxp, syp], prev = [sxp - 1, syp], steps = 0;
     while (steps++ < 24000) {
@@ -155,7 +156,7 @@ function extractPieces(img) {
       for (var m = 1; m <= 8; m++) {
         var d = DIR[(pi + m) % 8];
         var nx = cur[0] + d[0], ny = cur[1] + d[1];
-        if (inPiece(pc.id, nx, ny)) {
+        if (inUnit(u.id, nx, ny)) {
           var pd = DIR[(pi + m - 1) % 8];
           prev = [cur[0] + pd[0], cur[1] + pd[1]];
           cur = [nx, ny];
@@ -189,15 +190,32 @@ function extractPieces(img) {
     return out;
   }
 
-  var out2 = [];
-  pieces.sort(function (a, b) { return b.area - a.area; });
-  for (var ci = 0; ci < pieces.length && out2.length < 40; ci++) {
-    var cm2 = pieces[ci];
-    if (cm2.area < 90) break;
-    var contour = rdp(trace(cm2), 2.2);
-    if (contour.length >= 3) out2.push({ contour: contour, cx: cm2.cx, cy: cm2.cy, bb: cm2.bb, group: cm2.group });
-  }
-  return out2;
+  /* 큰 성분은 단독 부품, 작은 성분들은 부위별로 병합해 한 부품으로 */
+  var solos = [], merged = {};
+  units.forEach(function (u) {
+    if (u.area < 90) return;
+    var contour = rdp(trace(u), 2.2);
+    if (contour.length < 3) return;
+    if (u.area >= SOLO) {
+      solos.push({ contours: [contour], cx: u.cx, cy: u.cy, bb: u.bb.slice(), area: u.area, group: u.group });
+    } else {
+      var m = merged[u.group];
+      if (!m) {
+        m = merged[u.group] = { contours: [], cx: 0, cy: 0, bb: [S, S, 0, 0], area: 0, group: u.group };
+      }
+      m.contours.push(contour);
+      m.cx += u.cx * u.area; m.cy += u.cy * u.area; m.area += u.area;
+      m.bb[0] = Math.min(m.bb[0], u.bb[0]); m.bb[1] = Math.min(m.bb[1], u.bb[1]);
+      m.bb[2] = Math.max(m.bb[2], u.bb[2]); m.bb[3] = Math.max(m.bb[3], u.bb[3]);
+    }
+  });
+  Object.keys(merged).forEach(function (k) {
+    var m = merged[k];
+    m.cx /= m.area; m.cy /= m.area;
+    solos.push(m);
+  });
+  solos.sort(function (a, b) { return b.area - a.area; });
+  return solos.slice(0, 11);
 }
 
 function start(tex) {
@@ -209,6 +227,15 @@ function start(tex) {
   var scene = new THREE.Scene();
   var cam = new THREE.PerspectiveCamera(34, 1, 0.1, 60);
   cam.position.set(0, 0, 7.5);
+
+  /* 조명 — 로봇팔·부품 옆면 금속 셰이딩용(독수리 도장면은 Basic) */
+  scene.add(new THREE.AmbientLight(0xbfd0e8, 0.85));
+  var keyL = new THREE.DirectionalLight(0xffffff, 1.6);
+  keyL.position.set(2.5, 3.5, 5);
+  scene.add(keyL);
+  var rimL = new THREE.DirectionalLight(0x7fa8ff, 0.7);
+  rimL.position.set(-3, -1, 2);
+  scene.add(rimL);
 
   function size() {
     var w = box.clientWidth || innerWidth, h = box.clientHeight || innerHeight;
@@ -224,31 +251,36 @@ function start(tex) {
   root.position.y = 0.35;
   scene.add(root);
   var halo = box.querySelector('.intro-halo');
+  var halo2 = box.querySelector('.intro-halo2');
 
   function toWX(px) { return px / 320 - 1; }
   function toWY(py) { return 1 - py / 320; }
 
   tex.colorSpace = THREE.SRGBColorSpace;
+  /* 조립 중 어두운 강판 → 완성 때 점등(흰)·금빛. 색은 프레임에서 구동 */
+  var DARKC = new THREE.Color(0.42, 0.47, 0.58);
+  var WHITE = new THREE.Color(1, 1, 1);
+  var GOLD = new THREE.Color(1.0, 0.85, 0.58);
   var capMat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, side: THREE.DoubleSide });
-  var sideMat = new THREE.MeshBasicMaterial({ color: 0x8fa0bd });
-  var armMat = new THREE.MeshBasicMaterial({ color: 0x26344f });   // 몸체(다크 네이비 금속)
-  var jointMat = new THREE.MeshBasicMaterial({ color: 0x7f8ea8 }); // 관절 디스크
-  var darkMat = new THREE.MeshBasicMaterial({ color: 0x141d2e });  // 케이블 콘딧
-  var warnMat = new THREE.MeshBasicMaterial({ color: 0xe2593c });  // 액센트 링
+  capMat.color.copy(DARKC);
+  var sideMat = new THREE.MeshStandardMaterial({ color: 0x6b7a96, metalness: 0.55, roughness: 0.45 });
+  var armMat = new THREE.MeshStandardMaterial({ color: 0x2c3a58, metalness: 0.7, roughness: 0.38 });
+  var jointMat = new THREE.MeshStandardMaterial({ color: 0x8fa0bd, metalness: 0.8, roughness: 0.3 });
+  var darkMat = new THREE.MeshStandardMaterial({ color: 0x161f31, metalness: 0.5, roughness: 0.6 });
+  var warnMat = new THREE.MeshStandardMaterial({ color: 0xe2593c, metalness: 0.4, roughness: 0.5 });
   var DEPTH = 0.13;
 
   var HINGE = { body: [385, 400], wingL: [315, 292], wingR: [455, 315], tail: [300, 420], talons: [395, 472] };
   var ORDER = ['body', 'wingL', 'wingR', 'tail', 'talons'];
 
   var groups = {};
-  ORDER.forEach(function (key) {
+  ORDER.forEach(function (key2) {
     var g = new THREE.Group();
-    g.position.set(toWX(HINGE[key][0]), toWY(HINGE[key][1]), 0);
+    g.position.set(toWX(HINGE[key2][0]), toWY(HINGE[key2][1]), 0);
     root.add(g);
-    groups[key] = { grp: g, items: [] };
+    groups[key2] = { grp: g, items: [] };
   });
 
-  /* 부품마다 진입 방향 = 가장 가까운 화면 가장자리(좌/우/상/하) */
   function edgeDir(cx, cy) {
     var dl = cx, dr = S - cx, dt = cy, db = S - cy;
     var m = Math.min(dl, dr, dt, db);
@@ -258,12 +290,17 @@ function start(tex) {
     return new THREE.Vector3(0, -1, 0);
   }
 
+  var X_AXIS = new THREE.Vector3(1, 0, 0);
+
   pieces.forEach(function (pc) {
-    var shape = new THREE.Shape();
-    shape.moveTo(toWX(pc.contour[0][0]), toWY(pc.contour[0][1]));
-    for (var i = 1; i < pc.contour.length; i++) shape.lineTo(toWX(pc.contour[i][0]), toWY(pc.contour[i][1]));
-    shape.closePath();
-    var geo = new THREE.ExtrudeGeometry(shape, { depth: DEPTH, bevelEnabled: false });
+    var shapes = pc.contours.map(function (contour) {
+      var shape = new THREE.Shape();
+      shape.moveTo(toWX(contour[0][0]), toWY(contour[0][1]));
+      for (var i = 1; i < contour.length; i++) shape.lineTo(toWX(contour[i][0]), toWY(contour[i][1]));
+      shape.closePath();
+      return shape;
+    });
+    var geo = new THREE.ExtrudeGeometry(shapes, { depth: DEPTH, bevelEnabled: false });
     var pos = geo.attributes.position, uv = geo.attributes.uv;
     for (var v = 0; v < uv.count; v++) uv.setXY(v, pos.getX(v) / 2 + 0.5, pos.getY(v) / 2 + 0.5);
     uv.needsUpdate = true;
@@ -273,67 +310,59 @@ function start(tex) {
     var mesh = new THREE.Mesh(geo, [capMat, sideMat]);
     var home = new THREE.Vector3(-hx, -hy, -DEPTH / 2);
     var dir = edgeDir(pc.cx, pc.cy);
-    var staging = home.clone().add(dir.clone().multiplyScalar(3.4)).add(new THREE.Vector3(0, 0, 0.55));
-    var hover = home.clone().add(new THREE.Vector3(0, 0, 0.55));
+    var staging = home.clone().add(dir.clone().multiplyScalar(3.4)).add(new THREE.Vector3(0, 0, 0.5));
+    var hover = home.clone().add(new THREE.Vector3(0, 0, 0.5));
     mesh.position.copy(staging);
     G.grp.add(mesh);
 
-    /* ── 관절 로봇팔(참고: 산업용 다관절 로봇) ──
-       가장자리 고정 베이스 → 상완 → 팔꿈치 → 전완 → 손목 → 클로 핸드.
-       매 프레임 2링크 IK로 팔꿈치가 실제로 굽혀지며 부품을 나른다 */
-    var cAbs = new THREE.Vector3(toWX(pc.cx), toWY(pc.cy), DEPTH / 2 + 0.05);
+    /* ── 로봇팔: 화면 앞쪽 깊이의 베이스에서 비스듬히 뻗는 2링크 IK ── */
+    var cAbs = new THREE.Vector3(toWX(pc.cx), toWY(pc.cy), DEPTH / 2 + 0.04);
     var perp = dir.x !== 0 ? new THREE.Vector3(0, 1, 0) : new THREE.Vector3(1, 0, 0);
     var halfA = Math.min((dir.x !== 0 ? (pc.bb[2] - pc.bb[0]) : (pc.bb[3] - pc.bb[1])) / 2 / 320, 0.6);
     var halfP = Math.min((dir.x !== 0 ? (pc.bb[3] - pc.bb[1]) : (pc.bb[2] - pc.bb[0])) / 2 / 320, 0.55);
-    var ARMZ = 0.14;
-    var L1 = 1.8, L2 = 1.65;
-    var Bfix = cAbs.clone().add(home).add(dir.clone().multiplyScalar(3.1));
-    Bfix.z = ARMZ;
-    var bend = (G.items.length % 2 ? 1 : -1);   // 팔꿈치 굽는 방향 교차
+    var L1 = 1.9, L2 = 1.75;
+    var Bfix = cAbs.clone().add(home).add(dir.clone().multiplyScalar(3.15));
+    Bfix.z = 0.55;                                // 베이스가 화면 앞쪽 — 팔이 깊이로 뻗는다
+    var bend = (G.items.length % 2 ? 1 : -1);
 
-    var grip = new THREE.Group();               // 팔 전체(링크·관절·핸드)
-    function linkBox(w, h) {                    // 단위 길이(x) 링크 — scale.x 로 늘인다
+    var grip = new THREE.Group();
+    function linkArm(rA, rB) {                    // +X 단위 길이 테이퍼 실린더 링크
       var g2 = new THREE.Group();
-      var body = new THREE.Mesh(new THREE.BoxGeometry(1, w, h), armMat);
-      body.position.x = 0.5;
-      g2.add(body);
-      var conduit = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.016, 0.86, 8), darkMat);
-      conduit.rotation.z = Math.PI / 2;
-      conduit.position.set(0.5, w * 0.28, h / 2 + 0.02);
-      g2.add(conduit);
+      var geo2 = new THREE.CylinderGeometry(rA, rB, 1, 14);
+      geo2.rotateZ(-Math.PI / 2); geo2.translate(0.5, 0, 0);
+      g2.add(new THREE.Mesh(geo2, armMat));
+      var cnd = new THREE.CylinderGeometry(0.016, 0.016, 0.82, 8);
+      cnd.rotateZ(-Math.PI / 2); cnd.translate(0.5, 0, 0);
+      var cm = new THREE.Mesh(cnd, darkMat);
+      cm.position.set(0, rB * 0.95, 0.02);
+      g2.add(cm);
       return g2;
     }
-    function jointDisc(r, mat) {
-      var m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, 0.12, 20), mat);
-      m.rotation.x = Math.PI / 2;
-      return m;
-    }
-    /* 베이스 마운트(고정) */
-    var baseMount = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.26, 0.22), armMat);
-    baseMount.position.copy(Bfix).add(dir.clone().multiplyScalar(0.22));
-    grip.add(baseMount);
-    var baseDisc = jointDisc(0.13, jointMat); baseDisc.position.copy(Bfix); grip.add(baseDisc);
-    var baseHub = jointDisc(0.045, warnMat); baseHub.position.copy(Bfix); baseHub.position.z += 0.02; grip.add(baseHub);
-    /* 링크·관절 */
-    var upper = linkBox(0.12, 0.11); grip.add(upper);
-    var fore = linkBox(0.085, 0.085); grip.add(fore);
-    var elbow = jointDisc(0.1, jointMat); grip.add(elbow);
-    var elbowHub = jointDisc(0.04, darkMat); grip.add(elbowHub);
-    var wrist = jointDisc(0.075, jointMat); grip.add(wrist);
-    /* 클로 핸드 — 정준 좌표(+X = 부품 방향)로 만들고 진입 방향으로 회전 */
+    var mount = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, 0.24), armMat);
+    mount.position.copy(Bfix).add(dir.clone().multiplyScalar(0.24));
+    grip.add(mount);
+    var shoulder = new THREE.Mesh(new THREE.SphereGeometry(0.13, 18, 14), jointMat);
+    shoulder.position.copy(Bfix); grip.add(shoulder);
+    var ring = new THREE.Mesh(new THREE.TorusGeometry(0.16, 0.02, 10, 24), warnMat);
+    ring.position.copy(Bfix); grip.add(ring);
+    var upper = linkArm(0.055, 0.075); grip.add(upper);
+    var fore = linkArm(0.038, 0.052); grip.add(fore);
+    var elbow = new THREE.Mesh(new THREE.SphereGeometry(0.085, 16, 12), jointMat); grip.add(elbow);
+    var wrist = new THREE.Mesh(new THREE.SphereGeometry(0.062, 14, 10), jointMat); grip.add(wrist);
+    /* 클로 핸드 — 정준(+X = 부품 방향) 후 진입 방향으로 회전 */
     var hand = new THREE.Group();
-    var palm = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.26, 0.17), armMat);
+    var palm = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.24, 0.15), armMat);
     palm.position.x = 0.02; hand.add(palm);
     var fingers = [];
-    var lenP = Math.min(halfP * 0.8 + 0.24, 0.7), lenD = Math.min(halfP * 0.5 + 0.18, 0.5);
+    var lenP = Math.min(halfP * 0.8 + 0.24, 0.68), lenD = Math.min(halfP * 0.5 + 0.18, 0.48);
     [1, -1].forEach(function (sgn) {
       var fing = new THREE.Group();
-      fing.position.set(0.06, sgn * 0.12, 0);
-      var prox = new THREE.Mesh(new THREE.BoxGeometry(lenP, 0.045, 0.11), armMat);
+      fing.position.set(0.06, sgn * 0.11, 0);
+      var prox = new THREE.Mesh(new THREE.BoxGeometry(lenP, 0.042, 0.1), armMat);
       prox.position.x = lenP / 2; fing.add(prox);
       var dist = new THREE.Group();
       dist.position.x = lenP; dist.rotation.z = -sgn * 0.95;
-      var dm = new THREE.Mesh(new THREE.BoxGeometry(lenD, 0.04, 0.09), jointMat);
+      var dm = new THREE.Mesh(new THREE.BoxGeometry(lenD, 0.038, 0.085), jointMat);
       dm.position.x = lenD / 2; dist.add(dm);
       fing.add(dist);
       fing.rotation.z = sgn * 0.52;
@@ -347,14 +376,13 @@ function start(tex) {
     G.items.push({
       mesh: mesh, grip: grip, dir: dir, perp: perp, cAbs: cAbs,
       Bfix: Bfix, L1: L1, L2: L2, bend: bend,
-      upper: upper, fore: fore, elbow: elbow, elbowHub: elbowHub, wrist: wrist,
+      upper: upper, fore: fore, elbow: elbow, wrist: wrist,
       hand: hand, fingers: fingers, halfA: halfA,
       staging: staging, hover: hover, home: home
     });
   });
 
-  /* 체결 순서: 몸통 섀시(최대 부품) 먼저 → 이후 부위 교차 라운드로빈.
-     위→아래로 쓸리지 않고 여러 로봇이 분담하는 그림이 된다 */
+  /* 체결 순서: 몸통 섀시 먼저 → 부위 교차 라운드로빈. 동시 운반 ~3대 */
   var seq = [];
   var chassis = groups.body.items[0];
   if (chassis) seq.push(chassis);
@@ -363,12 +391,13 @@ function start(tex) {
   var remain = true;
   while (remain) {
     remain = false;
-    RR.forEach(function (key) {
-      var it = groups[key].items[ptr[key]];
-      if (it) { seq.push(it); ptr[key]++; remain = true; }
+    RR.forEach(function (key2) {
+      var it = groups[key2].items[ptr[key2]];
+      if (it) { seq.push(it); ptr[key2]++; remain = true; }
     });
   }
-  seq.forEach(function (it, i) { it.st = i * 130; it.dur = 1000; });
+  seq.forEach(function (it, i) { it.st = i * 250; it.dur = 820; });
+  var asmEnd = (seq.length - 1) * 250 + 820;
 
   function clamp01(t) { return t < 0 ? 0 : t > 1 ? 1 : t; }
   function snap(t) { var c = 0.9; t -= 1; return 1 + (c + 1) * t * t * t + c * t * t; }
@@ -377,7 +406,8 @@ function start(tex) {
   function easeIO(t) { return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
 
   var T0 = performance.now();
-  var textOn = false, endAt = 4700;
+  var F0 = asmEnd + 250;                 // 완성(점등·금빛·날갯짓) 시점
+  var textOn = false, endAt = F0 + 1900;
 
   function frame(now) {
     if (done) return;
@@ -386,18 +416,18 @@ function start(tex) {
     seq.forEach(function (it) {
       var e = clamp01((t - it.st) / it.dur);
       var pp;
-      if (e < 0.4) {                       // 운반: 그리퍼가 물고 진입
+      if (e < 0.4) {
         pp = new THREE.Vector3().lerpVectors(it.staging, it.hover, easeIO(e / 0.4));
-      } else if (e < 0.5) {                // 정렬: 슬롯 앞 정지
+      } else if (e < 0.5) {
         pp = it.hover.clone();
-      } else if (e < 0.62) {               // 압입: 축 방향 스냅
+      } else if (e < 0.62) {
         pp = new THREE.Vector3().lerpVectors(it.hover, it.home, snap((e - 0.5) / 0.12));
       } else {
         pp = it.home.clone();
       }
       it.mesh.position.copy(pp);
 
-      /* 로봇팔: IK로 손목이 부품을 따라간다 → 손가락 벌림 → 팔 접힘 후퇴 → 숨김 */
+      /* 로봇팔: IK 추적 → 손가락 벌림 → 팔 접힘 후퇴 → 숨김 */
       if (e >= 1) { it.grip.visible = false; }
       else {
         var open2 = e < 0.62 ? 0 : Math.min(1, (e - 0.62) / 0.1);
@@ -407,68 +437,83 @@ function start(tex) {
         var back = e < 0.7 ? 0 : easeIn((e - 0.7) / 0.3);
         var pcNow = it.cAbs.clone().add(pp);
         var T = pcNow.add(it.dir.clone().multiplyScalar(it.halfA + 0.24 + back * 2.6));
-        T.z = it.Bfix.z;
-        var BT = T.clone().sub(it.Bfix); BT.z = 0;
+        var BT = T.clone().sub(it.Bfix);
         var d = BT.length();
-        d = Math.max(Math.abs(it.L1 - it.L2) + 0.08, Math.min(it.L1 + it.L2 - 0.05, d));
+        d = Math.max(Math.abs(it.L1 - it.L2) + 0.1, Math.min(it.L1 + it.L2 - 0.06, d));
         var ah = BT.normalize();
         var Tc = it.Bfix.clone().add(ah.clone().multiplyScalar(d));
         var nh = new THREE.Vector3(-ah.y * it.bend, ah.x * it.bend, 0);
+        if (nh.lengthSq() < 0.001) nh.set(it.bend, 0, 0);
+        nh.normalize();
         var a1 = (it.L1 * it.L1 - it.L2 * it.L2 + d * d) / (2 * d);
         var hh = Math.sqrt(Math.max(0.01, it.L1 * it.L1 - a1 * a1));
         var E = it.Bfix.clone().add(ah.clone().multiplyScalar(a1)).add(nh.clone().multiplyScalar(hh));
-        function place(link, from, to) {
-          var vx = to.x - from.x, vy = to.y - from.y;
+        E.z += 0.16;                               // 팔꿈치가 카메라 쪽으로 아치
+        var place = function (link, from, to) {
+          var vv = to.clone().sub(from), len = vv.length() || 0.001;
           link.position.copy(from);
-          link.rotation.z = Math.atan2(vy, vx);
-          link.scale.x = Math.sqrt(vx * vx + vy * vy);
-        }
+          link.quaternion.setFromUnitVectors(X_AXIS, vv.multiplyScalar(1 / len));
+          link.scale.x = len;
+        };
         place(it.upper, it.Bfix, E);
         place(it.fore, E, Tc);
-        it.elbow.position.copy(E); it.elbowHub.position.copy(E); it.elbowHub.position.z += 0.02;
+        it.elbow.position.copy(E);
         it.wrist.position.copy(Tc);
         it.hand.position.copy(Tc);
       }
     });
 
-    var whole = easeOut(clamp01(t / 2700));
+    var whole = easeOut(clamp01(t / (asmEnd + 200)));
     root.rotation.y = -0.5 * (1 - whole);
     root.rotation.x = -0.13 * (1 - whole);
     cam.position.z = 7.5 - 1.6 * whole;
 
-    /* 날갯짓: 어깨 관절 면내 스윕 + 깊이 틸트, 몸통은 상승만 */
-    var f = clamp01((t - 2900) / 1500);
+    /* 완성 리빌: 어두운 강판 → 점등(흰) → 샴페인 골드 */
+    var goldT = easeIO(clamp01((t - F0) / 650));
+    if (goldT < 0.45) capMat.color.copy(DARKC).lerp(WHITE, goldT / 0.45);
+    else capMat.color.copy(WHITE).lerp(GOLD, (goldT - 0.45) / 0.55 * 0.8);
+
+    var f = clamp01((t - F0) / 1500);
     if (f > 0) {
-      var amp = Math.sin(Math.PI * f);
+      var amp = Math.sin(Math.PI * Math.min(f, 0.999));
       var phi = Math.sin(f * Math.PI * 4) * amp;
       groups.wingL.grp.rotation.z = 0.34 * phi;
       groups.wingR.grp.rotation.z = -0.34 * phi;
       groups.wingL.grp.rotation.x = 0.42 * phi;
       groups.wingR.grp.rotation.x = 0.42 * phi;
-      groups.wingL.grp.rotation.y = 0.16 * phi;
-      groups.wingR.grp.rotation.y = -0.16 * phi;
       groups.tail.grp.rotation.x = -0.18 * phi;
     }
-    var rise = easeIO(clamp01((t - 3000) / 1200));
+    var pose = easeIO(clamp01((t - (F0 + 1450)) / 380));   // 날개 살짝 편 정지 포즈
+    if (pose > 0) {
+      groups.wingL.grp.rotation.z = 0.1 * pose;
+      groups.wingR.grp.rotation.z = -0.1 * pose;
+      groups.wingL.grp.rotation.x = -0.08 * pose;
+      groups.wingR.grp.rotation.x = -0.08 * pose;
+    }
+    var rise = easeIO(clamp01((t - (F0 + 100)) / 1200));
     root.position.y = 0.35 + 0.26 * rise;
-    var s = 1 + 0.05 * rise;
-    root.scale.set(s, s, s);
+    var s2 = 1 + 0.06 * rise;
+    root.scale.set(s2, s2, s2);
 
-    /* 후광: 어두운 배경 위에서 강하게 — 체결마다 맥동, 완성 순간 플레어 */
+    /* 후광: 체결 맥동(블루) + 완성 플레어(골드 레이어 크로스페이드) */
+    var flare = f > 0 ? Math.sin(Math.PI * clamp01(f * 1.4)) : 0;
     if (halo) {
       var pulse = 0;
       seq.forEach(function (it) {
-        var dt = t - (it.st + it.dur * 0.62);   // 압입 완료 시점 기준
+        var dt = t - (it.st + it.dur * 0.62);
         if (dt > 0 && dt < 520) pulse += Math.exp(-dt / 150);
       });
-      var flare = f > 0 ? Math.sin(Math.PI * clamp01(f * 1.6)) : 0;
-      var op = 0.55 + Math.min(0.35, pulse * 0.26) + 0.4 * flare;
-      var sc = 1 + 0.06 * Math.min(1.4, pulse) + 0.14 * flare;
+      var op = 0.5 + Math.min(0.32, pulse * 0.26) + 0.2 * flare;
+      var sc = 1 + 0.06 * Math.min(1.4, pulse) + 0.12 * flare;
       halo.style.opacity = Math.min(1, op).toFixed(3);
       halo.style.transform = 'translate(-50%,-50%) scale(' + sc.toFixed(3) + ')';
     }
+    if (halo2) {
+      halo2.style.opacity = (0.9 * flare + 0.35 * goldT * (1 - flare)).toFixed(3);
+      halo2.style.transform = 'translate(-50%,-50%) scale(' + (1 + 0.16 * flare).toFixed(3) + ')';
+    }
 
-    if (!textOn && t > 3400) { textOn = true; box.classList.add('is-on'); }
+    if (!textOn && t > F0 + 450) { textOn = true; box.classList.add('is-on'); }
     if (t > endAt) { renderer.render(scene, cam); finish(); return; }
 
     renderer.render(scene, cam);

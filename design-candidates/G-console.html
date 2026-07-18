@@ -373,6 +373,9 @@ html.intro-lock{overflow:hidden}
 #intro .intro-halo{position:absolute;left:50%;top:39%;width:min(100vh,980px);aspect-ratio:1;
   transform:translate(-50%,-50%);pointer-events:none;opacity:.55;will-change:opacity,transform;
   background:radial-gradient(circle,rgba(185,215,255,.85),rgba(110,150,245,.4) 30%,rgba(70,105,205,.16) 52%,transparent 70%)}
+#intro .intro-halo2{position:absolute;left:50%;top:39%;width:min(104vh,1020px);aspect-ratio:1;
+  transform:translate(-50%,-50%);pointer-events:none;opacity:0;will-change:opacity,transform;
+  background:radial-gradient(circle,rgba(255,232,180,.9),rgba(235,185,110,.4) 32%,rgba(190,140,70,.14) 54%,transparent 72%)}
 #intro .intro-title{position:absolute;left:0;right:0;top:71%;margin:0;
   display:flex;align-items:center;justify-content:center;gap:clamp(.6rem,.4rem + 1vw,1.1rem);
   font-family:var(--kr);color:#fff;font-weight:800;
@@ -396,6 +399,7 @@ html.intro-lock{overflow:hidden}
 
 <div id="intro" aria-hidden="true">
   <div class="intro-halo"></div>
+  <div class="intro-halo2"></div>
   <canvas id="introCv"></canvas>
   <img id="introFb" src="assets/yonsei-seal.png" alt="" hidden />
   <p class="intro-title"><img src="assets/yonsei-seal-t.png" alt="" /><span>연세대학교 기계공학부</span></p>
@@ -884,7 +888,7 @@ setTimeout(function(){if(!document.body.classList.contains('gl-on'))document.bod
 /* 인트로 변형 선택 — 기본은 독수리(B). 비교용: ?intro=seal 은 씰 조립(A) */
 if (document.getElementById('intro')) {
   var pick = new URLSearchParams(location.search).get('intro');
-  import(pick === 'seal' ? './assets/intro3d.js?v=4' : './assets/intro-eagle.js?v=9');
+  import(pick === 'seal' ? './assets/intro3d.js?v=4' : './assets/intro-eagle.js?v=10');
 }
 </script>
 <script src="assets/nav.js?v=20"></script>

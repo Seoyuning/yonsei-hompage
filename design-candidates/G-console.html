@@ -395,9 +395,10 @@ html.intro-lock{overflow:hidden}
    모듈 로드 전에 동기로 판단해 첫 페인트 깜빡임을 막는다 */
 (function () {
   var el = document.getElementById('intro'), skip = false;
+  var force = /[?&]intro=/.test(location.search);   // 비교용 강제 재생
   try {
     skip = window.self !== window.top ||
-      sessionStorage.getItem('ysme-intro') === '1' ||
+      (!force && sessionStorage.getItem('ysme-intro') === '1') ||
       matchMedia('(prefers-reduced-motion: reduce)').matches;
   } catch (e) { skip = true; }
   if (skip) { el.parentNode.removeChild(el); return; }
@@ -869,7 +870,13 @@ setTimeout(function(){if(!document.body.classList.contains('gl-on'))document.bod
 </script>
 <noscript><style>.core-fallback{display:block!important}</style></noscript>
 <script type="module" src="assets/gear3d.js?v=11"></script>
-<script type="module" src="assets/intro3d.js?v=4"></script>
+<script type="module">
+/* 인트로 변형 선택 — 기본은 독수리(B). 비교용: ?intro=seal 은 씰 조립(A) */
+if (document.getElementById('intro')) {
+  var pick = new URLSearchParams(location.search).get('intro');
+  import(pick === 'seal' ? './assets/intro3d.js?v=4' : './assets/intro-eagle.js?v=1');
+}
+</script>
 <script src="assets/nav.js?v=20"></script>
 <script async src="https://www.instagram.com/embed.js"></script>
 <script>window.addEventListener("load",function(){if(window.instgrm)window.instgrm.Embeds.process();});</script>

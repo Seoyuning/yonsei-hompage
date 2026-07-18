@@ -729,6 +729,9 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   display: flex;
   justify-content: center;
 }
+/* display:flex 가 UA의 [hidden]{display:none} 을 이기므로 명시 —
+   보드 모드에서 캔버스를 접는 유일한 장치다(빠지면 보드가 가려진다). */
+#canvasWrap[hidden] { display: none; }
 #canvasFrame {
   width: 100%;
   max-width: 1280px;
@@ -1478,4 +1481,371 @@ button:disabled { opacity: .5; cursor: not-allowed; }
     animation-iteration-count: 1 !important;
     transition-duration: .001ms !important;
   }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   보드 모드 — 사이트 전체 페이지를 무한 캔버스에 펼친다
+   ───────────────────────────────────────────────────────────────────
+   좌표계: #boardWorld 만 transform: translate(X,Y) scale(Z) 를 받는다.
+   그 안의 프레임은 전부 월드 좌표(1280px 실측)로 배치되고, 화면 크기는
+   scale 이 만든다. 따라서 라벨·테두리처럼 "줌과 무관하게 화면상 같은
+   크기"여야 하는 값은 board.js 가 심어 주는 --bz(=1/Z)로 역보정한다.
+     Z=0.04 → --bz=25 → 12px*25=300 월드px → 화면에선 다시 12px.
+   --bz 를 곱하지 않은 값(그림자 등)은 줌에 따라 같이 작아진다.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── 보드 툴바 ── */
+#boardBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  padding: 8px 12px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+/* 툴바 항목은 줄지 않는다 — 줄어들면 버튼 글자가 세로로 접힌다(「전체 맞춤」 → 3줄) */
+#boardBar > .mode-group,
+#boardBar > .mode-btn,
+#boardBar > .board-check,
+#boardBar > .mode-sep { flex: 0 0 auto; }
+#boardBar .mode-btn,
+#boardBar .board-check { white-space: nowrap; }
+#boardBar[hidden] { display: none; }
+
+.board-search {
+  flex: 0 1 200px;
+  min-width: 120px;
+  min-height: 30px;
+  padding: 4px 8px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  font-size: var(--step--1);
+}
+
+/* 4%~200% 사이를 오가도 툴바가 흔들리지 않도록 폭 고정 */
+#boardZoomLevel { min-width: 54px; }
+
+.board-check {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--step--1);
+  color: var(--text-2);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.board-check input { accent-color: var(--yonsei-800); }
+:root[data-theme="dark"] .board-check input { accent-color: var(--yonsei-400); }
+
+.board-count {
+  flex: 0 0 auto;
+  color: var(--text-3);
+  font-size: var(--step--1);
+  white-space: nowrap;
+}
+
+.board-hint {
+  margin-left: auto;
+  color: var(--text-3);
+  font-size: var(--step--1);
+  white-space: nowrap;
+}
+@media (max-width: 1100px) {
+  .board-hint { display: none; }
+  .board-count { margin-left: auto; }  /* 힌트가 빠져도 우측 정렬은 유지 */
+}
+
+/* 단축키 도움말 — #modeBar 안에서 .mode-path(margin-left:auto) 뒤에 오므로
+   별도 정렬 없이 우측 끝에 붙는다. */
+#btnShortcuts {
+  flex: 0 0 auto;
+  margin-left: 8px;
+  min-height: 30px;
+  min-width: 30px;
+  font-size: var(--step-0);
+  font-weight: 600;
+}
+
+/* ── 보드 캔버스 ── */
+#boardWrap {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  background-color: var(--surface-2);
+  /* 도트 격자 — --line 기준이라 라이트/다크 모두 은은하게 깔린다 */
+  background-image: radial-gradient(circle, var(--line) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+#boardWrap[hidden] { display: none; }
+
+#boardViewport {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;   /* 팬·줌은 JS 전담 — 브라우저 스크롤/핀치 금지 */
+  user-select: none;    /* 팬 드래그가 라벨 텍스트를 긁지 않도록 */
+}
+#boardViewport.is-space { cursor: grab; }
+#boardViewport.is-panning { cursor: grabbing; }
+/* .bframe-hit 의 cursor:pointer 가 뷰포트 커서를 덮으므로 팬 상태에선 되돌린다 */
+#boardViewport.is-space .bframe-hit { cursor: grab; }
+#boardViewport.is-panning .bframe-hit { cursor: grabbing; }
+
+#boardWorld {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+  --bz: 1;                              /* board.js 가 1/zoom 으로 갱신 */
+  /* 라벨 전용 역보정 = min(1/zoom, GAP_Y/24). 라벨(18+6px)을 --bz 로 역보정하면 월드
+     높이가 24/zoom 이라 zoom<0.2 에서 GAP_Y(120)를 넘어 위 프레임을 덮는다 → 상한을
+     둬 라벨 몫을 GAP_Y 안에 묶는다. 테두리·포커스 링은 --bz 를 그대로 쓴다. */
+  --bzl: 1;
+  --bframe-ring-current: var(--yonsei-600);
+}
+/* 다크에선 네이비 링이 어두운 캔버스에 묻힌다 → 밝은 톤으로.
+   .is-selected 와 특이도 싸움이 나지 않도록 색만 변수로 뺐다. */
+:root[data-theme="dark"] #boardWorld { --bframe-ring-current: var(--yonsei-400); }
+
+.board-empty {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-3);
+  font-size: var(--step-0);
+  text-align: center;
+  pointer-events: none;
+}
+.board-empty[hidden] { display: none; }
+
+/* ── 프레임 ── */
+.bframe { position: absolute; }        /* left/top/width 는 board.js 가 인라인 지정 */
+.bframe[hidden] { display: none; }
+
+/* 높이·여백 합(24px * --bzl)이 GAP_Y(120 월드px)를 넘지 않는다 → 낮은 줌에서도
+   아래 프레임의 라벨이 위 프레임 콘텐츠를 덮거나 클릭을 가로채지 않는다. */
+.bframe-label {
+  display: flex;
+  align-items: baseline;
+  gap: calc(6px * var(--bzl));
+  height: calc(18px * var(--bzl));
+  margin-bottom: calc(6px * var(--bzl));
+  cursor: pointer;
+  font-size: calc(12px * var(--bzl));
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+}
+/* 줌아웃할수록 라벨의 월드 폭이 프레임 폭(1280)을 넘어선다 → 말줄임으로 잘라낸다 */
+.bframe-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text);
+  font-weight: 600;
+}
+.bframe-file {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-3);
+  font-size: calc(10px * var(--bzl));
+}
+.bframe-badge {
+  display: none;                       /* 마크업엔 항상 있고, is-dirty 일 때만 보인다 */
+  flex: 0 0 auto;
+  /* 미저장 신호는 놓치면 안 되는 정보다 → --surface-2(#f2f5fa) 위 5.5:1 로 AA 충족.
+     계약서 8-2 의 #96760f 는 같은 배경에서 3.9:1 이라 AA(4.5:1) 미달이었다. */
+  color: #7a5f0c;
+  font-size: calc(10px * var(--bzl));
+}
+.bframe.is-dirty .bframe-badge { display: inline; }
+:root[data-theme="dark"] .bframe-badge { color: var(--accent-gold); }
+.bframe.is-current .bframe-name { color: var(--brand); }
+
+.bframe-box {
+  position: relative;
+  background: #ffffff;                 /* 사이트가 흰 배경 — 다크에서도 프레임 안은 흰색 */
+  border-radius: calc(4px * var(--bz));
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  /* border 가 아니라 outline — 박스 밖에 그려지므로 월드 폭이 1280 에서 틀어지지 않는다 */
+  outline: calc(1px * var(--bz)) solid var(--line);
+  outline-offset: 0;
+}
+/* 아래 둘은 특이도가 같다 → 뒤에 온 .is-selected 가 이긴다(선택이 더 최근 의도) */
+.bframe.is-current .bframe-box { outline: calc(2px * var(--bz)) solid var(--bframe-ring-current); }
+.bframe.is-selected .bframe-box { outline: calc(2px * var(--bz)) solid var(--accent-gold); }
+
+.bframe-frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #ffffff;
+  pointer-events: none;   /* 필수 — 없으면 프레임 위에서 팬/줌·클릭이 전부 죽는다 */
+}
+
+.bframe-hit {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  cursor: pointer;
+}
+/* .bframe-hit 은 inset:0 이라 보더 박스가 .bframe-box 의 overflow 클립 사각형과 정확히
+   일치한다 → offset:0 링은 띠 전체가 클립 밖이라 100% 잘려 포커스가 안 보인다.
+   폭과 같은 음수 offset 으로 링을 박스 안쪽에 그린다(계약서 8-3 「:focus-visible 링 유지」). */
+.bframe-hit:focus-visible {
+  outline: calc(3px * var(--bz)) solid var(--accent-gold);
+  outline-offset: calc(-3px * var(--bz));
+}
+
+.bframe-skel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 0 calc(8px * var(--bz));
+  background: var(--surface-2);
+  color: var(--text-3);
+  font-size: calc(12px * var(--bz));
+  white-space: nowrap;
+  text-align: center;
+}
+.bframe-skel[hidden] { display: none; }
+.bframe-skel span { animation: board-skel-pulse 1.6s ease-in-out infinite; }
+@keyframes board-skel-pulse {
+  0%, 100% { opacity: .45; }
+  50% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bframe-skel span { animation: none; }
+}
+
+/* 높이 상한(FRAME_H_MAX)에 걸려 잘린 프레임 — 하단 페이드 + 잘림 표시.
+   프레임 안은 항상 흰색이므로 페이드·글자색도 테마와 무관하게 고정한다. */
+/* 페이드 = 「아래로 더 있다」. 커버 모드에선 거의 모든 프레임이 여기 해당하므로
+   글자 없이 페이드만 준다. 「잘림」 배지는 .is-truncated (아래) 에서만. */
+.bframe-box.is-clipped::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(60px * var(--bz));
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: calc(5px * var(--bz)) calc(8px * var(--bz));
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, .92));
+  color: var(--ink-600);
+  font-family: var(--font-mono);
+  font-size: calc(10px * var(--bz));
+  line-height: 1;
+  pointer-events: none;
+}
+/* 전체 높이 모드에서 상한(4200px)에 실제로 걸려 페이지 끝이 잘린 프레임만 배지 표시 */
+.bframe-box.is-truncated::after { content: "잘림"; }
+
+/* ═══════════ 인스펙터 브레드크럼(요소 경로) ═══════════ */
+.insp-crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  margin: 0 0 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+}
+.insp-crumb {
+  padding: 1px 4px;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--text-2);
+  font-size: var(--step--1);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color .14s ease, color .14s ease;
+}
+.insp-crumb:hover { background: var(--surface-2); color: var(--text); }
+/* .page-item 과 같은 순서 — is-current 를 hover 뒤에 둬 현재 위치 표시를 잃지 않게 */
+.insp-crumb.is-current { background: var(--yonsei-100); color: var(--brand); font-weight: 600; }
+:root[data-theme="dark"] .insp-crumb.is-current { background: rgba(91, 143, 214, .16); }
+.insp-crumb-sep { color: var(--text-3); font-size: var(--step--1); }
+
+/* ═══════════ 페이지 목록 검색 ═══════════ */
+.side-search {
+  width: 100%;
+  min-height: 32px;
+  margin-bottom: 8px;
+  padding: 4px 8px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  font-size: var(--step--1);
+}
+.side-search[hidden] { display: none; }
+
+/* ═══════════ 단축키 도움말 모달 ═══════════ */
+.modal-title {
+  margin: 0 0 14px;
+  font-size: var(--step-2);
+  font-weight: 700;
+}
+.kbd-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: 60vh;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+.kbd-group-title {
+  margin: 0 0 6px;
+  font-size: var(--step--1);
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.kbd-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 3px 0;
+}
+.kbd-keys {
+  flex: 0 0 200px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+.kbd-desc { color: var(--text-2); font-size: var(--step-0); }
+kbd {
+  display: inline-block;
+  padding: 2px 6px;
+  border: 1px solid var(--line-strong);
+  border-bottom-width: 2px;
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--text);
+  line-height: 1.4;
 }

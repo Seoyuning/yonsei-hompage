@@ -101,8 +101,10 @@
       </div>
 
       <div id="panelPages" class="side-panel" role="tabpanel">
+        <input id="pageSearch" type="search" class="side-search" placeholder="페이지 검색…" aria-label="페이지 검색" hidden />
         <p class="side-empty" id="pagesEmpty">「사이트 폴더 열기」로<br />prototype-v3 폴더를 선택하세요.</p>
         <ul id="pageList" class="page-list"></ul>
+        <p id="pageSearchEmpty" class="side-empty" hidden>검색 결과가 없습니다.</p>
       </div>
 
       <div id="panelVersions" class="side-panel" role="tabpanel" hidden>
@@ -158,6 +160,7 @@
         <div class="mode-group" role="group" aria-label="편집 모드">
           <button id="modeEdit" type="button" class="mode-btn is-active" aria-pressed="true">편집</button>
           <button id="modePreview" type="button" class="mode-btn" aria-pressed="false">미리보기</button>
+          <button id="modeBoard" type="button" class="mode-btn" aria-pressed="false">보드</button>
           <button id="modeCode" type="button" class="mode-btn" aria-pressed="false">코드</button>
         </div>
         <span class="mode-sep" aria-hidden="true"></span>
@@ -171,6 +174,23 @@
           <button id="redoBtn" type="button" class="mode-btn" disabled aria-label="다시 실행 (Ctrl+Y)">↷ 재실행</button>
         </div>
         <span class="mode-path mono" id="currentPathLabel"></span>
+        <button id="btnShortcuts" type="button" class="btn-icon" title="단축키 (?)" aria-label="단축키 도움말">?</button>
+      </div>
+
+      <div id="boardBar" hidden>
+        <input id="boardSearch" type="search" class="board-search" placeholder="페이지 검색…" aria-label="보드 페이지 검색" />
+        <span class="mode-sep" aria-hidden="true"></span>
+        <div class="mode-group" role="group" aria-label="확대 축소">
+          <button id="boardZoomOut" type="button" class="mode-btn" aria-label="축소">−</button>
+          <button id="boardZoomLevel" type="button" class="mode-btn mono" aria-label="확대 비율 — 누르면 100%">100%</button>
+          <button id="boardZoomIn" type="button" class="mode-btn" aria-label="확대">＋</button>
+        </div>
+        <button id="boardFit" type="button" class="mode-btn">전체 맞춤</button>
+        <span class="mode-sep" aria-hidden="true"></span>
+        <label class="board-check"><input type="checkbox" id="boardMobile" /> 모바일 폭</label>
+  <label class="board-check"><input type="checkbox" id="boardFull" /> 전체 높이</label>
+        <span id="boardCount" class="board-count mono"></span>
+        <span id="boardHint" class="board-hint mono">드래그 이동 · Ctrl+휠 확대 · 더블클릭 편집</span>
       </div>
 
       <div id="draftBanner" hidden>
@@ -187,6 +207,13 @@
           </div>
           <textarea id="codeEditor" spellcheck="false" aria-label="파일 소스 코드"></textarea>
         </div>
+      </div>
+
+      <div id="boardWrap" hidden>
+        <div id="boardViewport">
+          <div id="boardWorld"></div>
+        </div>
+        <p id="boardEmpty" class="board-empty">사이트 폴더를 열면 모든 페이지가 여기에 펼쳐집니다.</p>
       </div>
     </section>
 
@@ -269,6 +296,7 @@
 <script src="js/versions.js" defer></script>
 <script src="js/editor.js" defer></script>
 <script src="js/ai.js" defer></script>
+<script src="js/board.js" defer></script>
 <script src="js/github.js" defer></script>
 <script src="js/findreplace.js" defer></script>
 <script src="js/qa.js" defer></script>

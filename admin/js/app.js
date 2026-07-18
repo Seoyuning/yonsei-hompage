@@ -9,7 +9,7 @@ var Admin = window.Admin;
 var U = Admin.util;
 
 var codeDirty = false;      // 코드 모드 미저장 변경
-var uiMode = 'edit';        // 'edit' | 'preview' | 'code'
+var uiMode = 'edit';        // 'edit' | 'preview' | 'board' | 'code'
 
 function $(id) { return document.getElementById(id); }
 
@@ -57,6 +57,7 @@ $('btnOpenSite').addEventListener('click', async function () {
 Admin.bus.on('site:opened', function (d) {
   $('siteLabel').textContent = d.name + '/';
   $('pagesEmpty').hidden = true;
+  $('pageSearch').hidden = false;
   renderPageList(d.pages);
   fillCodeFileSelect(d.pages, d.assets);
   Admin.audit.log('site-open', d.name, d.pages.length + '개 페이지');
@@ -73,7 +74,27 @@ function renderPageList(pages) {
       '<span class="page-file mono">' + U.escapeHtml(p.name) + '</span>' +
       '</button></li>';
   }).join('');
+  // 목록을 새로 그렸으므로 검색 필터는 초기화
+  $('pageSearch').value = '';
+  $('pageSearchEmpty').hidden = true;
 }
+
+/* 좌측 페이지 목록 검색 — 파일 경로 또는 한국어 이름에 부분일치(대소문자 무시) */
+function applyPageFilter() {
+  var q = ($('pageSearch').value || '').trim().toLowerCase();
+  var shown = 0;
+  $('pageList').querySelectorAll('li').forEach(function (li) {
+    var btn = li.querySelector('.page-item');
+    // btn.textContent = 한국어 이름 + 파일명. data-path 로 하위 경로까지 커버.
+    var hay = btn ? ((btn.getAttribute('data-path') || '') + ' ' + btn.textContent).toLowerCase() : '';
+    var hit = !q || hay.indexOf(q) >= 0;
+    li.hidden = !hit;
+    if (hit) shown += 1;
+  });
+  $('pageSearchEmpty').hidden = !(q && shown === 0);
+}
+
+$('pageSearch').addEventListener('input', U.debounce(applyPageFilter, 150));
 
 /* 파일명 → 사람이 읽는 이름 (알려진 페이지는 한국어 라벨) */
 var PAGE_NAMES = {
@@ -90,6 +111,8 @@ var PAGE_NAMES = {
 function pageTitle(name) {
   return PAGE_NAMES[name] || name.replace(/\.html?$/i, '');
 }
+/* board.js 등 다른 모듈이 런타임에 쓰도록 노출 (로드 순서 무관 — 호출 시점에만 참조된다) */
+Admin.util.pageTitle = pageTitle;
 
 function markActivePage(path) {
   document.querySelectorAll('.page-item').forEach(function (b) {
@@ -107,7 +130,11 @@ $('pageList').addEventListener('click', function (e) {
 /* 페이지 로드 (더티 가드 포함) */
 async function openPage(path) {
   if (!Admin.fs.isReady()) return;
-  if (path === Admin.editor.currentPath() && uiMode !== 'code') return;
+  if (path === Admin.editor.currentPath() && uiMode !== 'code') {
+    // 이미 열린 페이지 — 다시 읽지 않는다. 단 보드에서 고른 것이면 편집 모드로는 나와야 한다.
+    if (uiMode === 'board') await switchUiMode('edit');
+    return;
+  }
   if (Admin.editor.isDirty() || codeDirty) {
     var ok = await Admin.confirm('저장하지 않은 변경이 있습니다.\n버리고 다른 페이지로 이동할까요?');
     if (!ok) return;
@@ -120,7 +147,7 @@ async function openPage(path) {
     return;
   }
   codeDirty = false;
-  if (uiMode === 'code') switchUiMode('edit');
+  if (uiMode === 'code' || uiMode === 'board') await switchUiMode('edit');
   await Admin.editor.loadPage(path, html);
   markActivePage(path);
   // 최초 열람 시 원본 baseline 스냅샷
@@ -183,13 +210,6 @@ async function save() {
 
 $('btnSave').addEventListener('click', save);
 
-document.addEventListener('keydown', function (e) {
-  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
-    e.preventDefault();
-    save();
-  }
-});
-
 function updateSaveUi() {
   var isDirty = uiMode === 'code' ? codeDirty : Admin.editor.isDirty();
   var st = $('saveState');
@@ -215,10 +235,10 @@ window.addEventListener('beforeunload', function (e) {
   }
 });
 
-/* ═══════════ 모드 전환 (편집/미리보기/코드) ═══════════ */
+/* ═══════════ 모드 전환 (편집/미리보기/보드/코드) ═══════════ */
 
 function setModeButtons(m) {
-  [['modeEdit', 'edit'], ['modePreview', 'preview'], ['modeCode', 'code']].forEach(function (pair) {
+  [['modeEdit', 'edit'], ['modePreview', 'preview'], ['modeBoard', 'board'], ['modeCode', 'code']].forEach(function (pair) {
     var b = $(pair[0]);
     b.classList.toggle('is-active', m === pair[1]);
     b.setAttribute('aria-pressed', String(m === pair[1]));
@@ -234,25 +254,35 @@ async function switchUiMode(m) {
     codeDirty = false;
   }
 
+  var prev = uiMode;
   uiMode = m;
   Admin.state.mode = m;
   setModeButtons(m);
 
-  var isCode = m === 'code';
+  var isCode = m === 'code', isBoard = m === 'board';
   $('codeWrap').hidden = !isCode;
   $('canvasFrame').style.display = isCode ? 'none' : '';
+  $('canvasWrap').hidden = isBoard;      // admin.css 의 #canvasWrap[hidden]{display:none} 규칙이 받는다
+  $('boardWrap').hidden = !isBoard;
+  $('boardBar').hidden = !isBoard;
+
+  // 보드에서 나갈 때만 정지 (옵저버·렌더 큐. DOM 은 유지된다)
+  if (prev === 'board' && !isBoard && Admin.board) Admin.board.hide();
 
   if (isCode) {
     // 현재 편집 중인 페이지를 우선으로 연다 (미저장 편집도 반영됨)
     await loadCodeFile(Admin.editor.currentPath() || $('codeFileSelect').value);
+  } else if (isBoard) {
+    if (Admin.board) await Admin.board.show();
   } else {
-    Admin.editor.setMode(m);
+    Admin.editor.setMode(m);   // 'edit' | 'preview' 만 받는다
   }
   updateSaveUi();
 }
 
 $('modeEdit').addEventListener('click', function () { switchUiMode('edit'); });
 $('modePreview').addEventListener('click', function () { switchUiMode('preview'); });
+$('modeBoard').addEventListener('click', function () { switchUiMode('board'); });
 $('modeCode').addEventListener('click', function () { switchUiMode('code'); });
 
 /* 뷰포트 */
@@ -264,6 +294,32 @@ $('modeCode').addEventListener('click', function () { switchUiMode('code'); });
     $('vpMobile').setAttribute('aria-pressed', String(pair[1] === 'mobile'));
     Admin.editor.setViewport(pair[1]);
   });
+});
+
+/* ═══════════ 보드 모드 배선 ═══════════
+   실제 엔진은 board.js(Admin.board). 로드 실패해도 앱이 죽지 않도록 전부 방어적으로 호출한다. */
+
+$('boardZoomIn').addEventListener('click', function () { if (Admin.board) Admin.board.zoomIn(); });
+$('boardZoomOut').addEventListener('click', function () { if (Admin.board) Admin.board.zoomOut(); });
+$('boardZoomLevel').addEventListener('click', function () { if (Admin.board) Admin.board.reset100(); });
+$('boardFit').addEventListener('click', function () { if (Admin.board) Admin.board.fit(); });
+$('boardMobile').addEventListener('change', function () { if (Admin.board) Admin.board.setMobile(this.checked); });
+$('boardFull').addEventListener('change', function () { if (Admin.board) Admin.board.setFullHeight(this.checked); });
+
+$('boardSearch').addEventListener('input', U.debounce(function () {
+  if (Admin.board) Admin.board.filter($('boardSearch').value);
+}, 200));
+
+Admin.bus.on('board:zoom', function (d) {
+  $('boardZoomLevel').textContent = Math.round((d && d.zoom ? d.zoom : 1) * 100) + '%';
+});
+
+/* 프레임 더블클릭/Enter/라벨 클릭 → 그 페이지를 편집 모드로 연다.
+   모드 전환이 먼저다 — openPage 는 currentPath 가 같으면 일찍 반환하므로. */
+Admin.bus.on('board:open', async function (d) {
+  if (!d || !d.path) return;
+  await switchUiMode('edit');
+  await openPage(d.path);
 });
 
 /* ═══════════ 코드 모드 ═══════════ */
@@ -421,6 +477,119 @@ $('btnLogout').addEventListener('click', async function () {
   Admin.auth.logout();
 });
 
+/* ═══════════ 단축키 ═══════════
+   부모 document 의 keydown 과, 캔버스 iframe 안에서 editor.js 가 넘겨주는 'canvas:key' 를
+   같은 handleShortcut() 하나로 처리한다. (두 경로가 각자 save() 를 부르면 중복 저장된다) */
+
+function isTypingTarget(el) {
+  if (!el) return false;
+  var t = (el.tagName || '').toLowerCase();
+  return t === 'input' || t === 'textarea' || t === 'select' || el.isContentEditable === true;
+}
+
+function modalOpen() {
+  var r = $('modalRoot');
+  return !!r && !r.hidden;
+}
+
+var MODE_KEYS = { '1': 'edit', '2': 'preview', '3': 'board', '4': 'code' };
+
+/* k = {key, ctrlKey, metaKey, shiftKey, altKey, inEditable, preventDefault?}
+   preventDefault 는 부모 document 경로에만 있다 — iframe 쪽은 editor.js 가 이미 막았다. */
+function handleShortcut(k) {
+  if (!k || typeof k.key !== 'string') return false;
+  if ($('workspace').hidden) return false;   // 로그인 화면에서는 단축키 없음
+  if (modalOpen()) return false;             // 모달 뒤에서 모드가 바뀌면 안 된다
+
+  var mod = k.ctrlKey || k.metaKey;
+  var lower = k.key.toLowerCase();
+  function stop() { if (k.preventDefault) k.preventDefault(); }
+
+  /* 저장 — 입력 중이든 아니든 항상 */
+  if (mod && lower === 's') { stop(); save(); return true; }
+
+  /* 취소 / 재실행 — 편집 모드 + 입력 중 아닐 때만.
+     (입력 중이면 막지 않고 흘려보내 브라우저 기본 undo 가 동작하게 둔다) */
+  if (mod && !k.shiftKey && lower === 'z') {
+    if (k.inEditable || uiMode !== 'edit') return false;
+    stop(); Admin.editor.undo(); return true;
+  }
+  if (mod && ((k.shiftKey && lower === 'z') || lower === 'y')) {
+    if (k.inEditable || uiMode !== 'edit') return false;
+    stop(); Admin.editor.redo(); return true;
+  }
+
+  /* 이하 조합키 없는 단일 키 — 글자 입력 중이면 절대 발동하지 않는다 */
+  if (mod || k.altKey || k.inEditable) return false;
+
+  if (k.key === '?') { stop(); showShortcutHelp(); return true; }
+
+  if (MODE_KEYS[k.key]) {
+    if (!Admin.fs.isReady()) return false;   // 사이트 폴더가 없으면 전환할 것도 없다
+    stop(); switchUiMode(MODE_KEYS[k.key]); return true;
+  }
+  return false;
+}
+
+document.addEventListener('keydown', function (e) {
+  handleShortcut({
+    key: e.key, ctrlKey: e.ctrlKey, metaKey: e.metaKey,
+    shiftKey: e.shiftKey, altKey: e.altKey,
+    inEditable: isTypingTarget(e.target),
+    preventDefault: function () { e.preventDefault(); }
+  });
+});
+
+/* 캔버스 iframe 내부 키 — editor.js 가 자기가 처리하지 않은 것만 넘긴다 */
+Admin.bus.on('canvas:key', function (k) { handleShortcut(k); });
+
+/* ═══════════ 단축키 도움말 ═══════════ */
+
+function kbdRow(keys, desc) {
+  return '<div class="kbd-row"><span class="kbd-keys">' +
+    keys.map(function (k) { return '<kbd>' + U.escapeHtml(k) + '</kbd>'; }).join('') +
+    '</span><span class="kbd-desc">' + U.escapeHtml(desc) + '</span></div>';
+}
+
+function kbdGroup(title, rows) {
+  return '<div class="kbd-group"><p class="kbd-group-title mono">' + U.escapeHtml(title) + '</p>' +
+    rows.map(function (r) { return kbdRow(r[0], r[1]); }).join('') + '</div>';
+}
+
+function showShortcutHelp() {
+  var html = '<h2 class="modal-title">단축키</h2><div class="kbd-list">' +
+    kbdGroup('모드', [
+      [['1'], '편집'],
+      [['2'], '미리보기'],
+      [['3'], '보드'],
+      [['4'], '코드']
+    ]) +
+    kbdGroup('편집', [
+      [['Ctrl', 'S'], '저장'],
+      [['Ctrl', 'Z'], '취소'],
+      [['Ctrl', 'Y'], '재실행'],
+      [['Esc'], '선택 해제'],
+      [['Del'], '선택 요소 삭제'],
+      [['Ctrl', 'D'], '선택 요소 복제'],
+      [['Alt', '↑ / ↓'], '선택 요소 순서 이동']
+    ]) +
+    kbdGroup('보드', [
+      [['드래그'], '화면 이동'],
+      [['Space', '드래그'], '화면 이동 (프레임 위에서도)'],
+      [['Ctrl', '휠'], '확대 · 축소'],
+      [['휠'], '세로 이동'],
+      [['Shift', '휠'], '가로 이동'],
+      [['더블클릭'], '그 페이지를 편집 모드로 열기']
+    ]) +
+    kbdGroup('기타', [
+      [['?'], '이 도움말']
+    ]) +
+    '</div>';
+  Admin.modalShow(html, { okText: '닫기' });
+}
+
+$('btnShortcuts').addEventListener('click', showShortcutHelp);
+
 /* ═══════════ 부트 ═══════════ */
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -428,6 +597,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (Admin.auth.current()) showWorkspace();
   });
   if (Admin.ai && Admin.ai.init) Admin.ai.init();
+  if (Admin.board && Admin.board.init) Admin.board.init();
   if (Admin.github && Admin.github.init) Admin.github.init();
 });
 

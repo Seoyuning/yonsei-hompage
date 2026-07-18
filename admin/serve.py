@@ -39,14 +39,24 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         sys.stdout.write("  %s\n" % (fmt % args))
 
 
-def main():
-    # 포트 재사용 허용(직전 종료 후 곧바로 재실행해도 바인딩 실패 방지)
-    socketserver.TCPServer.allow_reuse_address = True
+class Server(socketserver.ThreadingTCPServer):
+    """요청마다 스레드를 쓴다.
 
+    단일 스레드 TCPServer 로 서빙하면 브라우저가 미리 열어 두는 speculative
+    preconnect(연결만 하고 요청은 안 보내는 소켓) 하나에 serve_forever 가 통째로
+    막혀 콘솔이 영영 열리지 않는다. Chrome/Edge 는 이 preconnect 를 일상적으로 만든다.
+    (표준 `python -m http.server` 도 같은 이유로 ThreadingHTTPServer 를 쓴다.)
+    """
+
+    allow_reuse_address = True   # 직전 종료 후 곧바로 재실행해도 바인딩 실패 방지
+    daemon_threads = True        # Ctrl+C 시 대기 중인 연결이 종료를 붙잡지 않도록
+
+
+def main():
     url = "http://localhost:%d%s" % (PORT, OPEN_PATH)
 
     try:
-        with socketserver.TCPServer(("127.0.0.1", PORT), Handler) as httpd:
+        with Server(("127.0.0.1", PORT), Handler) as httpd:
             print("=" * 56)
             print(" YSME Admin Studio 로컬 서버")
             print("=" * 56)

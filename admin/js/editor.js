@@ -60,7 +60,11 @@ function parseHtml(html) {
 /* 저장용: data-eid 및 편집 잔여물 제거 */
 function cleanClone() {
   var clone = pristineDoc.cloneNode(true);
-  var all = clone.querySelectorAll('[data-eid]');
+  // 안전망: 관리 UI 노드(선택 박스·태그 칩)는 라이브 DOM 전용이라 원본에 있을 수 없지만,
+  // 미러링 사고로 유입되면 저장본이 오염된다 → 저장 경계에서 한 번 더 걷어낸다.
+  var ui = clone.querySelectorAll('[data-admin-ui]');
+  for (var u = 0; u < ui.length; u++) ui[u].remove();
+  var all = clone.querySelectorAll('[data-eid],[contenteditable],[spellcheck]');
   for (var i = 0; i < all.length; i++) {
     all[i].removeAttribute('data-eid');
     all[i].removeAttribute('contenteditable');
@@ -282,7 +286,23 @@ async function renderCanvas(opts) {
 
 var hoverBox = null, selBox = null;
 
-function makeBox(doc, color, dashed) {
+var CHIP_H = 15;   // 칩 높이(px) — 박스 위에 얹는 오프셋
+
+/* 요소 라벨: tag + (#id 또는 .첫클래스). 태그 칩·브레드크럼 공용.
+   body/html 은 사이트 JS가 상태 클래스를 붙이므로 태그명으로 고정한다. */
+function elLabel(el) {
+  if (!el || !el.tagName) return '';
+  var t = el.tagName.toLowerCase();
+  if (t === 'body' || t === 'html') return t;
+  if (el.id) return t + '#' + el.id;
+  if (el.classList && el.classList.length) return t + '.' + el.classList[0];
+  return t;
+}
+
+/* 박스 + 라벨 칩 한 쌍 생성.
+   칩은 iframe 내부 요소라 admin.css 가 닿지 않는다 → 인라인 스타일로만 꾸민다.
+   둘 다 data-admin-ui + body 직속 — 미러링·저장 시 스크럽 대상이 된다. */
+function makeBox(doc, color, dashed, chipColor) {
   var b = doc.createElement('div');
   b.setAttribute('data-admin-ui', '');
   b.style.cssText =
@@ -290,9 +310,24 @@ function makeBox(doc, color, dashed) {
     'border:' + (dashed ? '1.5px dashed ' : '2px solid ') + color + ';' +
     'border-radius:2px;box-sizing:border-box;';
   doc.body.appendChild(b);
+
+  // 칩은 사이트 CSS 상속을 타지 않도록 글꼴·자간까지 전부 명시
+  var c = doc.createElement('div');
+  c.setAttribute('data-admin-ui', '');
+  c.style.cssText =
+    'position:absolute;z-index:2147483001;pointer-events:none;display:none;' +
+    'margin:0;padding:1px 5px;border-radius:2px 2px 0 0;' +
+    'background:' + chipColor + ';color:#fff;' +
+    'font-family:"IBM Plex Mono",monospace;font-size:11px;line-height:1.3;font-weight:500;' +
+    'letter-spacing:0;text-transform:none;white-space:nowrap;';
+  doc.body.appendChild(c);
+
+  b._chip = c;
   return b;
 }
 
+/* 박스와 칩을 요소 위치에 맞춘다.
+   칩은 박스 좌상단 바깥 위 — 화면 위쪽에 자리가 없으면 박스 안쪽 위로 넣는다. */
 function positionBox(box, el, win) {
   if (!box || !el || !el.getBoundingClientRect) return;
   var r = el.getBoundingClientRect();
@@ -301,6 +336,21 @@ function positionBox(box, el, win) {
   box.style.top = (r.top + win.scrollY) + 'px';
   box.style.width = r.width + 'px';
   box.style.height = r.height + 'px';
+
+  var c = box._chip;
+  if (!c) return;
+  var label = elLabel(el);
+  if (c._label !== label) { c.textContent = label; c._label = label; }   // 리플로우 최소화
+  c.style.display = 'block';
+  c.style.left = (r.left + win.scrollX) + 'px';
+  c.style.top = (r.top + win.scrollY - (r.top < 16 ? 0 : CHIP_H)) + 'px';
+}
+
+/* 박스를 숨기면 칩도 같이 숨긴다 (칩만 남아 떠다니면 안 된다) */
+function hideBox(box) {
+  if (!box) return;
+  box.style.display = 'none';
+  if (box._chip) box._chip.style.display = 'none';
 }
 
 function liveEl(eid) {
@@ -311,6 +361,91 @@ function liveEl(eid) {
 
 function pristineEl(eid) {
   return pristineDoc ? pristineDoc.querySelector('[data-eid="' + eid + '"]') : null;
+}
+
+/* ── 캔버스 키 처리 ──
+   "지금 캔버스에서 글자를 입력 중인가" 판정. 이 판정이 틀리면 Backspace 가 글자 지우기
+   대신 요소 삭제로 발동한다 → 반드시 포커스 기준으로 본다.
+   · select() 는 "선택"만으로 contenteditable 을 부여하므로 속성 유무로 판정하면 안 된다.
+     (단순 선택 상태에서는 Delete 가 요소 삭제로 동작해야 한다)
+   · 캐럿이 편집 영역 안에 들어가야 비로소 activeElement 가 그 편집 호스트가 된다.
+   · 사이트의 입력 필드(문의 폼 등)에 포커스가 있을 때도 타이핑으로 본다 —
+     여기서 1~4 를 모드 전환으로 넘기면 글자가 안 써진다. */
+function isTypingInCanvas(doc) {
+  var a = doc && doc.activeElement;
+  if (!a) return false;
+  var t = (a.tagName || '').toLowerCase();
+  if (t === 'input' || t === 'textarea' || t === 'select') return true;
+  return a.isContentEditable === true;
+}
+
+/* 요소 단축키 (편집 모드 전용). 처리했으면 true → 부모로 전달하지 않는다.
+   타이핑 중에는 어떤 요소 단축키도 발동시키지 않는다. */
+function handleElementKey(e, typing) {
+  var k = e.key;
+  var mod = e.ctrlKey || e.metaKey;
+  var isDup = mod && !e.altKey && (k === 'd' || k === 'D');
+
+  if (k === 'Escape') { select(null); return true; }
+  if (!selectedEid) return false;
+
+  if (typing) {
+    // 타이핑 중 Ctrl+D 는 브라우저 북마크 대화상자만 막고 복제는 하지 않는다
+    if (isDup) { e.preventDefault(); return true; }
+    return false;
+  }
+
+  if (k === 'Delete' || k === 'Backspace') {
+    e.preventDefault();
+    doAction(selectedEid, 'del');
+    return true;
+  }
+  if (isDup) {
+    e.preventDefault();
+    doAction(selectedEid, 'dup');
+    return true;
+  }
+  if (e.altKey && (k === 'ArrowUp' || k === 'ArrowDown')) {
+    e.preventDefault();
+    doAction(selectedEid, k === 'ArrowUp' ? 'up' : 'down');
+    return true;
+  }
+  return false;
+}
+
+/* editor.js 가 처리하지 않은 앱 단축키를 부모로 전달.
+   iframe 내부 keydown 은 부모 document 리스너에 도달하지 않으므로 버스가 유일한 통로다.
+   실제 동작 여부는 app.js 의 handleShortcut 이 판단한다. */
+function forwardCanvasKey(e, typing) {
+  var k = e.key;
+  var mod = e.ctrlKey || e.metaKey;
+  var low = (typeof k === 'string' && k.length === 1) ? k.toLowerCase() : k;
+  var send = false, prevent = false;
+
+  if (mod && low === 's') {
+    send = true; prevent = true;                // 브라우저 "페이지 저장" 차단
+  } else if (mod && (low === 'z' || low === 'y')) {
+    // 취소/재실행: 타이핑 중이면 브라우저 기본 undo 가 살아 있어야 하므로 막지 않는다
+    // (contenteditable 의 undo 는 input 이벤트를 발생시켜 원본에 미러링된다)
+    send = true; prevent = !typing;
+  } else if (!mod && !e.altKey && !typing && (k === '?' || /^[1-4]$/.test(k))) {
+    send = true;                                // 모드 전환·도움말은 글자 입력 중이면 전달 금지
+  }
+  if (!send) return;
+  if (prevent) e.preventDefault();
+
+  Admin.bus.emit('canvas:key', {
+    key: k, ctrlKey: e.ctrlKey, metaKey: e.metaKey,
+    shiftKey: e.shiftKey, altKey: e.altKey, inEditable: typing
+  });
+}
+
+function attachKeyBridge(doc, interactive) {
+  doc.addEventListener('keydown', function (e) {
+    var typing = isTypingInCanvas(doc);
+    if (interactive && handleElementKey(e, typing)) return;
+    forwardCanvasKey(e, typing);
+  }, true);
 }
 
 function attachInteraction(doc, win) {
@@ -332,27 +467,29 @@ function attachInteraction(doc, win) {
       }
       // 외부 링크는 편집 도구 안에서는 이동하지 않음
     }, true);
+    // 미리보기 중에도 앱 단축키(1~4 등)는 살아 있어야 한다 — 요소 단축키는 제외
+    attachKeyBridge(doc, false);
     return;
   }
 
-  hoverBox = makeBox(doc, 'rgba(26,91,176,.9)', true);
-  selBox = makeBox(doc, '#c9a227', false);
+  hoverBox = makeBox(doc, 'rgba(26,91,176,.9)', true, '#1a5bb0');
+  selBox = makeBox(doc, '#c9a227', false, '#c9a227');
 
   doc.addEventListener('mousemove', function (e) {
     var t = e.target && e.target.closest ? e.target.closest('[data-eid]') : null;
     if (!t || t.tagName === 'HTML' || t.tagName === 'BODY') {
-      hoverBox.style.display = 'none';
+      hideBox(hoverBox);
       return;
     }
     if (selectedEid && t.getAttribute('data-eid') === selectedEid) {
-      hoverBox.style.display = 'none';
+      hideBox(hoverBox);
       return;
     }
     positionBox(hoverBox, t, win);
   }, true);
 
   doc.addEventListener('mouseleave', function () {
-    if (hoverBox) hoverBox.style.display = 'none';
+    hideBox(hoverBox);
   });
 
   doc.addEventListener('click', function (e) {
@@ -371,9 +508,8 @@ function attachInteraction(doc, win) {
     select(t.getAttribute('data-eid'));
   }, true);
 
-  doc.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') select(null);
-  }, true);
+  // 요소 단축키(Esc·Del·Ctrl+D·Alt+↑↓) + 나머지 키는 부모로 전달
+  attachKeyBridge(doc, true);
 
   // 텍스트 편집 미러링
   doc.addEventListener('input', function (e) {
@@ -390,9 +526,9 @@ function attachInteraction(doc, win) {
     win.addEventListener(evt, function () {
       if (selectedEid) {
         var el = liveEl(selectedEid);
-        if (el) positionBox(selBox, el, win);
+        if (el) positionBox(selBox, el, win);   // 선택 박스·칩이 함께 따라간다
       }
-      if (hoverBox) hoverBox.style.display = 'none';
+      hideBox(hoverBox);
     }, { passive: true });
   });
 
@@ -460,7 +596,7 @@ function select(eid) {
 
   var f = getFrame();
   if (!selectedEid) {
-    if (selBox) selBox.style.display = 'none';
+    hideBox(selBox);
     renderInspector(null);
     Admin.bus.emit('editor:selected', null);
     return;
@@ -480,7 +616,9 @@ function select(eid) {
 }
 
 function isTextEditable(el) {
-  if (/^(script|style|iframe|svg|img|input|select|textarea|video|audio)$/i.test(el.tagName)) return false;
+  // body/html: 브레드크럼으로 선택은 되지만 통째로 contenteditable 이 되면
+  // 사이트 JS가 만든 DOM이 전부 원본에 미러링된다 → 텍스트 편집은 절대 금지.
+  if (/^(html|body|script|style|iframe|svg|img|input|select|textarea|video|audio)$/i.test(el.tagName)) return false;
   // 하위 요소 중 data-eid 없는 것 = 사이트 JS가 생성 → 미러링 시 원본 오염 위험
   var kids = el.querySelectorAll('*');
   for (var i = 0; i < kids.length; i++) {
@@ -490,19 +628,46 @@ function isTextEditable(el) {
   return true;
 }
 
-function elPath(el) {
-  var parts = [];
-  var cur = el;
-  var depth = 0;
-  while (cur && cur.tagName && cur.tagName !== 'BODY' && depth < 4) {
-    var s = cur.tagName.toLowerCase();
-    if (cur.id) s += '#' + cur.id;
-    else if (cur.classList && cur.classList.length) s += '.' + cur.classList[0];
-    parts.unshift(s);
+/* 선택 요소의 조상 경로 — pristine 기준(라이브는 사이트 JS가 감싼 노드가 섞일 수 있다).
+   BODY 까지 거슬러 올라간 뒤 바깥→안쪽 순으로 뒤집어 반환. 8개 초과 시 안쪽 8개만. */
+var CRUMB_MAX = 8;
+
+function ancestorList() {
+  if (!selectedEid) return [];
+  var cur = pristineEl(selectedEid);
+  if (!cur) return [];
+  var out = [];
+  while (cur && cur.tagName && cur.tagName !== 'HTML') {
+    var eid = cur.getAttribute('data-eid');
+    // eid 없는 조상(미러링 사고분)은 선택 대상이 못 되므로 건너뛰고 계속 올라간다
+    if (eid) {
+      out.push({
+        eid: eid,
+        tag: cur.tagName.toLowerCase(),
+        label: elLabel(cur),
+        current: eid === selectedEid
+      });
+    }
+    if (cur.tagName === 'BODY') break;
     cur = cur.parentElement;
-    depth += 1;
   }
-  return parts.join(' › ');
+  out.reverse();
+  if (out.length > CRUMB_MAX) out = out.slice(out.length - CRUMB_MAX);
+  return out;
+}
+
+/* 클릭 가능한 요소 경로 브레드크럼 */
+function crumbsHtml() {
+  var list = ancestorList();
+  if (!list.length) return '';
+  var parts = [];
+  list.forEach(function (a, i) {
+    if (i) parts.push('<span class="insp-crumb-sep" aria-hidden="true">›</span>');
+    parts.push('<button type="button" class="insp-crumb mono' + (a.current ? ' is-current' : '') +
+      '" data-crumb="' + U.escapeHtml(a.eid) + '"' + (a.current ? ' aria-current="true"' : '') + '>' +
+      U.escapeHtml(a.label) + '</button>');
+  });
+  return '<nav class="insp-crumbs" aria-label="요소 경로">' + parts.join('') + '</nav>';
 }
 
 /* 토큰 선택지 (사이트 디자인 시스템과 동일) */
@@ -582,7 +747,7 @@ function renderInspector(el, editable) {
   var tag = el.tagName.toLowerCase();
   var h = '';
 
-  h += '<p class="insp-elpath mono">' + U.escapeHtml(elPath(el)) + '</p>';
+  h += crumbsHtml();
 
   /* 텍스트 */
   h += '<div class="insp-sec"><p class="insp-sec-title">텍스트</p>';
@@ -703,6 +868,22 @@ function renderInspector(el, editable) {
 function wireInspector(eid, editable) {
   var body = document.getElementById('inspBody');
   if (!body) return;
+
+  /* 브레드크럼: 클릭 → 그 조상 선택, 호버 → 캔버스에서 하이라이트 */
+  body.querySelectorAll('[data-crumb]').forEach(function (btn) {
+    var target = btn.getAttribute('data-crumb');
+    btn.addEventListener('click', function () {
+      // select() 가 인스펙터를 다시 그려 이 버튼을 없애므로 mouseleave 가 안 온다 → 먼저 정리
+      hideBox(hoverBox);
+      select(target);
+    });
+    btn.addEventListener('mouseenter', function () {
+      if (!hoverBox || target === selectedEid) return;
+      var f = getFrame(), live = liveEl(target);
+      if (live && f && f.contentWindow) positionBox(hoverBox, live, f.contentWindow);
+    });
+    btn.addEventListener('mouseleave', function () { hideBox(hoverBox); });
+  });
 
   var txt = body.querySelector('#inspText');
   if (txt && editable) {
@@ -952,6 +1133,15 @@ async function doAction(eid, act) {
   var pris = pristineEl(eid);
   if (!pris) return;
 
+  // 브레드크럼은 BODY 를 선택할 수 있다(계약서 6-1) → 캔버스 click 핸들러의 BODY/HTML
+  // 가드를 우회한다. 골격 요소에 순서 이동·삭제·복제가 닿으면 pristineDoc 이 깨진
+  // 채로 그대로 파일에 저장된다(head/body 뒤집힘, 본문 소실). 여기서 한 번 막으면
+  // 인스펙터 버튼과 요소 단축키(handleElementKey) 경로가 함께 닫힌다.
+  if (act !== 'ai' && /^(html|head|body)$/i.test(pris.tagName)) {
+    Admin.toast('페이지 골격 요소에는 적용할 수 없습니다.', 'info');
+    return;
+  }
+
   if (act === 'ai') {
     var live = liveEl(eid);
     Admin.bus.emit('ai:editElement', {
@@ -1037,6 +1227,19 @@ Admin.editor = {
     var doc = parseHtml(html == null ? '' : html);
     return await buildRenderHtml(doc, { inline: true });
   },
+
+  /* 보드 프레임용 렌더 HTML. 편집 캔버스와 동일하게 blob: 자산 치환(inline:false) →
+     자산 캐시를 프레임 15개가 공유한다. sandbox 프레임이 아니므로 blob: 로드 가능. */
+  buildBoardHtml: async function (html) {
+    var doc = parseHtml(html == null ? '' : html);
+    return await buildRenderHtml(doc, { inline: false });
+  },
+
+  /* 인스펙터 브레드크럼에서 조상 요소를 선택 */
+  selectByEid: function (eid) { select(eid); },
+
+  /* 선택 요소의 조상 경로 (가장 바깥 → 선택 요소 순). BODY 포함, 최대 8개. */
+  ancestors: function () { return ancestorList(); },
 
   currentPath: function () { return path; },
 

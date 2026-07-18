@@ -62,35 +62,41 @@ addEventListener('pointermove', function (e) {
 }, { passive: true });
 
 var root = null, mixer = null, prev = 0;
-new GLTFLoader().load('assets/eagle-model/scene.gltf', function (g) {
+/* 기본: Neil Laguardia 'Mechanical Eagle'(텍스처 PBR·정적 → 활공 모션).
+   경로를 eagle-model/ 로 바꾸면 리깅(날갯짓) 버전 — 자동 감지 */
+var MODEL_URL = 'assets/eagle-model2/scene.gltf';
+new GLTFLoader().load(MODEL_URL, function (g) {
   try {
     var obj = g.scene;
-    /* 마스코트 로고의 흰 몸체 — 기어와 같은 백은 금속 톤 */
-    var silver = new THREE.MeshStandardMaterial({ color: 0xe3e9f2, metalness: 0.55, roughness: 0.34 });
-    obj.traverse(function (o) { if (o.isMesh || o.isSkinnedMesh) { o.material = silver; o.frustumCulled = false; } });
-
-    mixer = new THREE.AnimationMixer(obj);
-    var act = null;
+    obj.traverse(function (o) {
+      if ((o.isMesh || o.isSkinnedMesh) && o.material) {
+        o.frustumCulled = false;
+        if (o.material.emissive) o.material.emissiveIntensity = 1.5;
+      }
+    });
     if (g.animations && g.animations.length) {
-      act = mixer.clipAction(g.animations[0]);
+      mixer = new THREE.AnimationMixer(obj);
+      var act = mixer.clipAction(g.animations[0]);
       act.timeScale = 0.5;               // 유유히 계속 날갯짓
       act.play();
       act.time = g.animations[0].duration * 0.25;
+      mixer.update(0);
     }
-    mixer.update(0);
     obj.updateMatrixWorld(true);
     var bb = new THREE.Box3();
+    var hasBones = false;
     obj.traverse(function (o) {
-      if (o.isBone) bb.expandByPoint(o.getWorldPosition(new THREE.Vector3()));
+      if (o.isBone) { hasBones = true; bb.expandByPoint(o.getWorldPosition(new THREE.Vector3())); }
     });
+    if (!hasBones) bb.setFromObject(obj);
     var s = bb.getSize(new THREE.Vector3()), c = bb.getCenter(new THREE.Vector3());
-    var sc = 4.6 / Math.max(s.x, s.y, s.z, 0.01);
+    var sc = 4.8 / Math.max(s.x, s.y, s.z, 0.01);
     obj.position.sub(c);
     root = new THREE.Group();
     root.add(obj);
     root.scale.setScalar(sc);
-    root.rotation.y = 0.85;
-    root.rotation.x = 0.08;
+    root.rotation.y = 0.15;
+    root.rotation.x = 0.05;
     scene.add(root);
 
     renderer.render(scene, cam);          // 첫 프레임 동기 렌더
@@ -110,9 +116,11 @@ function loop(now) {
   prev = now;
   if (mixer) mixer.update(dt);
   if (root) {
-    root.rotation.y += ((0.85 + mx * 0.22) - root.rotation.y) * 0.06;
-    root.rotation.x += ((0.08 + my * 0.1) - root.rotation.x) * 0.06;
-    root.position.y = Math.sin(now / 1700) * 0.14;   // 상승 기류에 뜬 듯한 부유
+    /* 활공: 좌우 뱅킹 + 느린 요잉 + 상승기류 부유 (+ 마우스 시차) */
+    root.rotation.y += ((0.15 + mx * 0.24 + Math.sin(now / 3900) * 0.07) - root.rotation.y) * 0.06;
+    root.rotation.x += ((0.05 + my * 0.1) - root.rotation.x) * 0.06;
+    root.rotation.z = Math.sin(now / 2600) * 0.09;
+    root.position.y = Math.sin(now / 1700) * 0.14;
   }
   renderer.render(scene, cam);
   requestAnimationFrame(loop);

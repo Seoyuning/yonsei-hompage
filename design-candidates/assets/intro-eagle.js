@@ -267,39 +267,54 @@ function start(tex) {
   rimL.position.set(-3, -1, 2);
   scene.add(rimL);
 
-  /* 골드 리빌용 리깅 3D 독수리(Rukh3D 'Robot Bird Eagle', CC-BY-4.0) —
-     조립은 엠블럼 판으로, 완성 플레어 절정에서 이 모델이 깨어나 난다 */
-  var model = null, mixer = null, modelReady = false, modelShown = false, prevNow = 0;
-  new GLTFLoader().load('assets/eagle-model/scene.gltf', function (g) {
+  /* 골드 리빌용 3D 독수리 — 기본: Neil Laguardia 'Mechanical Eagle'(CC-BY-4.0,
+     텍스처 PBR·정적). 경로를 eagle-model/ 로 바꾸면 리깅 버전(Rukh3D)으로 복귀 —
+     애니메이션 유무는 자동 감지된다 */
+  var MODEL_URL = 'assets/eagle-model2/scene.gltf';
+  var model = null, mixer = null, modelMats = [], modelReady = false, modelShown = false, prevNow = 0;
+  new GLTFLoader().load(MODEL_URL, function (g) {
     try {
       var obj = g.scene;
-      var goldMat = new THREE.MeshStandardMaterial({ color: 0xd8b063, metalness: 0.8, roughness: 0.32 });
-      obj.traverse(function (o) { if (o.isMesh || o.isSkinnedMesh) { o.material = goldMat; o.frustumCulled = false; } });
-      mixer = new THREE.AnimationMixer(obj);
-      if (g.animations && g.animations.length) {
+      var seen = {};
+      obj.traverse(function (o) {
+        if ((o.isMesh || o.isSkinnedMesh) && o.material) {
+          o.frustumCulled = false;
+          if (!seen[o.material.uuid]) {
+            seen[o.material.uuid] = 1;
+            o.material.transparent = true;
+            o.material.opacity = 0;                      // 크로스페이드 인
+            if (o.material.emissive) o.material.emissiveIntensity = 1.5;
+            modelMats.push(o.material);
+          }
+        }
+      });
+      var hasAnim = g.animations && g.animations.length;
+      mixer = null;
+      if (hasAnim) {
+        mixer = new THREE.AnimationMixer(obj);
         var act = mixer.clipAction(g.animations[0]);
-        act.timeScale = 0.28;            // 원속도의 다운스트로크가 갈고리처럼 접혀 감속
+        act.timeScale = 0.28;
         act.play();
-        /* 시작 위상: 날개를 활짝 편 페이즈부터 (?wingphase= 로 튜닝 가능) */
         var ph = parseFloat((location.search.match(/wingphase=([0-9.]+)/) || [])[1] || '0.25');
         act.time = g.animations[0].duration * ph;
+        mixer.update(0);
       }
-      mixer.update(0);                   // 첫 프레임 포즈 적용 후 실측(바인드 포즈와 다름)
       obj.updateMatrixWorld(true);
-      /* 스킨드 메시는 지오메트리 bbox가 무의미 — 본 월드 위치로 실측 */
       var bb = new THREE.Box3();
+      var hasBones = false;
       obj.traverse(function (o) {
-        if (o.isBone) bb.expandByPoint(o.getWorldPosition(new THREE.Vector3()));
+        if (o.isBone) { hasBones = true; bb.expandByPoint(o.getWorldPosition(new THREE.Vector3())); }
       });
+      if (!hasBones) bb.setFromObject(obj);
       var sizeV = bb.getSize(new THREE.Vector3()), ctr = bb.getCenter(new THREE.Vector3());
-      var sc = 2.2 / Math.max(sizeV.x, sizeV.y, sizeV.z, 0.01);
+      var sc = 2.6 / Math.max(sizeV.x, sizeV.y, sizeV.z, 0.01);
       obj.position.sub(ctr);
       var wrap = new THREE.Group();
       wrap.add(obj);
       wrap.scale.setScalar(sc);
       wrap.userData.baseS = sc;
-      wrap.rotation.y = 0.85;            // 3/4 측면 — 날개폭과 머리가 함께 보이게
-      wrap.rotation.x = 0.1;
+      wrap.rotation.y = 0.15;            // 정면에 가까운 3/4 — 위용
+      wrap.rotation.x = 0.05;
       wrap.position.set(0, 0.36, 0);
       wrap.visible = false;
       scene.add(wrap);
@@ -340,7 +355,7 @@ function start(tex) {
     normalMap: normalTex, normalScale: new THREE.Vector2(0.55, 0.55)
   });
   capMat.color.copy(DARKC);
-  var sideMat = new THREE.MeshStandardMaterial({ color: 0x6b7a96, metalness: 0.55, roughness: 0.45 });
+  var sideMat = new THREE.MeshStandardMaterial({ color: 0x6b7a96, metalness: 0.55, roughness: 0.45, transparent: true });
   var armMat = new THREE.MeshStandardMaterial({ color: 0x2c3a58, metalness: 0.7, roughness: 0.38 });
   var jointMat = new THREE.MeshStandardMaterial({ color: 0x8fa0bd, metalness: 0.8, roughness: 0.3 });
   var darkMat = new THREE.MeshStandardMaterial({ color: 0x161f31, metalness: 0.5, roughness: 0.6 });
@@ -605,28 +620,33 @@ function start(tex) {
       halo2.style.transform = 'translate(-50%,-50%) scale(' + (1 + 0.16 * flare).toFixed(3) + ')';
     }
 
-    /* 플레어 절정에서 부조 → 리깅 3D 독수리로 스왑(모델 미로드 시 부조 유지) */
-    if (modelReady && !modelShown && t > F0 + 520) {
+    /* 플레어 속에서 부조 → 3D 독수리 크로스페이드(모델 미로드 시 부조 유지) */
+    if (modelReady && !modelShown && t > F0 + 420) {
       modelShown = true;
-      root.visible = false;
       model.visible = true;
-      endAt = F0 + 2600;                 // 비행 이탈 + 학부명 여유
+      box.classList.add('is-mid');       // 학부명을 독수리 자리(중앙)로
+      endAt = F0 + 2750;
     }
     if (modelShown && model) {
       if (mixer) mixer.update(Math.min(0.05, (now - prevNow) / 1000));
-      /* 잠깐 위용을 보이고 → 우상단으로 날아가 버린다(그 자리에 학부명) */
-      var hold = clamp01((t - (F0 + 520)) / 350);
-      var fly = easeIn(clamp01((t - (F0 + 950)) / 1050));
-      model.position.x = 2.9 * fly;
-      model.position.y = 0.36 + 0.1 * hold + 1.9 * fly;
+      var xf = easeIO(clamp01((t - (F0 + 420)) / 500));   // 크로스페이드
+      capMat.opacity = 1 - xf;
+      sideMat.opacity = 1 - xf;
+      for (var mi = 0; mi < modelMats.length; mi++) modelMats[mi].opacity = xf;
+      if (xf >= 1 && root.visible) root.visible = false;
+
+      var hold = easeIO(clamp01((t - (F0 + 420)) / 600));
+      var fly = easeIn(clamp01((t - (F0 + 1150)) / 1150));
+      model.position.x = 2.7 * fly;
+      model.position.y = 0.36 + 0.08 * hold + 2.0 * fly;
       model.position.z = 0.5 * fly;
-      model.rotation.y = 0.85 - 0.45 * fly;
-      model.rotation.z = -0.22 * fly;                    // 선회 뱅킹
-      model.scale.setScalar(model.userData.baseS * (1 + 0.06 * hold));
+      model.rotation.y = 0.15 + 2.2 * fly;               // 몸을 돌려 선회 이탈
+      model.rotation.z = -0.28 * Math.sin(Math.PI * fly);
+      model.scale.setScalar(model.userData.baseS * (1 + 0.05 * hold));
     }
     prevNow = now;
 
-    if (!textOn && t > F0 + 1500) { textOn = true; box.classList.add('is-on'); }
+    if (!textOn && t > F0 + 1650) { textOn = true; box.classList.add('is-on'); }
     if (t > endAt) { renderer.render(scene, cam); finish(); return; }
 
     renderer.render(scene, cam);

@@ -883,12 +883,13 @@ window.addEventListener('DOMContentLoaded', function () {
 setTimeout(function(){if(!document.body.classList.contains('gl-on'))document.body.classList.add('gl-off');},2500);
 </script>
 <noscript><style>.core-fallback{display:block!important}</style></noscript>
-<script type="module" src="assets/gear3d.js?v=11"></script>
+<!-- 기어 버전 보존: assets/gear3d.js?v=11 (되돌릴 때 아래 한 줄 교체) -->
+<script type="module" src="assets/hero-eagle.js?v=2"></script>
 <script type="module">
 /* 인트로 변형 선택 — 기본은 독수리(B). 비교용: ?intro=seal 은 씰 조립(A) */
 if (document.getElementById('intro')) {
   var pick = new URLSearchParams(location.search).get('intro');
-  import(pick === 'seal' ? './assets/intro3d.js?v=4' : './assets/intro-eagle.js?v=14');
+  import(pick === 'seal' ? './assets/intro3d.js?v=4' : './assets/intro-eagle.js?v=23');
 }
 </script>
 <script src="assets/nav.js?v=20"></script>
@@ -897,6 +898,7 @@ if (document.getElementById('intro')) {
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--dimmer)">
   <div style="margin-bottom:.55rem">02-2123-4426 &nbsp;·&nbsp; <a href="mailto:mech@yonsei.ac.kr" style="color:inherit;text-decoration:none">mech@yonsei.ac.kr</a> &nbsp;·&nbsp; 서울 서대문구 연세로 50</div>
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
+  <div style="margin-top:.5rem;font-size:.56rem;letter-spacing:.06em;opacity:.75">3D: “<a href="https://sketchfab.com/3d-models/robot-bird-eagle-a12a4a928c324ffb8af5724e21eadf0a" rel="noopener" target="_blank" style="color:inherit">Robot Bird Eagle</a>” by <a href="https://sketchfab.com/rukh3d" rel="noopener" target="_blank" style="color:inherit">Rukh3D</a>, CC-BY-4.0</div>
 </footer>
 </body>
 </html>

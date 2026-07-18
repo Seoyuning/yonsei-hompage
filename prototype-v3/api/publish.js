@@ -12,7 +12,10 @@
      GH_AUTHOR_EMAIL  (선택) 커밋에 쓸 공용 이메일 (기본 noreply)
 
    요청(POST JSON):
-     { passcode, action: "publish"|"history", path, content, author }
+     { passcode, action: "publish"|"history"|"read"|"list", path, content, author, encoding }
+       · read : { path } → { content }               (온라인 편집: 파일 읽기)
+       · list : {} → { pages:[{path,name}], assets:[…] }(온라인 편집: 파일 목록)
+       · publish 에서 encoding:"base64" 면 content 를 바이너리로 취급(이미지 업로드)
 */
 module.exports = async (req, res) => {
   // ── CORS (Admin Studio는 localhost/file 등 다른 오리진에서 호출) ──
@@ -47,6 +50,11 @@ module.exports = async (req, res) => {
 
   var action = body.action || 'publish';
   var sitePath = String(body.path == null ? '' : body.path).replace(/^\/+/, '');
+  // 경로 탈출 방지 (신뢰 관리자라도 방어적으로 — 사이트 폴더 밖 접근 차단)
+  if (/(^|\/)\.\.(\/|$)/.test(sitePath)) {
+    res.status(400).json({ error: '경로가 올바르지 않습니다.' });
+    return;
+  }
   var repoPath = (GH_BASEPATH ? GH_BASEPATH.replace(/^\/+|\/+$/g, '') + '/' : '') + sitePath;
   var encPath = repoPath.split('/').map(encodeURIComponent).join('/');
 
@@ -81,6 +89,49 @@ module.exports = async (req, res) => {
       return;
     }
 
+    // ── 파일 읽기 (온라인 편집) ──
+    if (action === 'read') {
+      if (!sitePath) { res.status(400).json({ error: 'path가 필요합니다.' }); return; }
+      var rr = await gh('/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + encPath +
+        '?ref=' + encodeURIComponent(GH_BRANCH), { headers: { 'Accept': 'application/vnd.github.raw' } });
+      if (rr.status === 404) { res.status(404).json({ error: '파일을 찾을 수 없습니다.' }); return; }
+      if (!rr.ok) { res.status(rr.status).json({ error: '파일 읽기 실패 (' + rr.status + ')' }); return; }
+      var content = await rr.text();
+      res.status(200).json({ content: content });
+      return;
+    }
+
+    // ── 파일 목록 (온라인 편집) — 로컬 fs.scanSite 와 동일 규칙 ──
+    if (action === 'list') {
+      var basePrefix = GH_BASEPATH ? GH_BASEPATH.replace(/^\/+|\/+$/g, '') + '/' : '';
+      var lr = await gh('/repos/' + GH_OWNER + '/' + GH_REPO + '/git/trees/' +
+        encodeURIComponent(GH_BRANCH) + '?recursive=1');
+      if (!lr.ok) { res.status(lr.status).json({ error: '파일 목록 조회 실패 (' + lr.status + ')' }); return; }
+      var ld = await lr.json();
+      var tree = (ld && ld.tree) || [];
+      var pages = [], assets = [];
+      for (var i = 0; i < tree.length; i++) {
+        var it = tree[i];
+        if (!it || it.type !== 'blob' || !it.path) continue;
+        if (basePrefix && it.path.indexOf(basePrefix) !== 0) continue;   // 사이트 폴더 밖 제외
+        var rel = basePrefix ? it.path.slice(basePrefix.length) : it.path;
+        if (!rel) continue;
+        if (rel.indexOf('/') === -1 && /\.html?$/i.test(rel)) {
+          pages.push({ path: rel, name: rel });                          // 루트 *.html = 페이지
+        } else if (/^assets\//.test(rel) && /\.(css|js)$/i.test(rel)) {
+          assets.push({ path: rel, name: rel.split('/').pop() });        // assets/**.css|js
+        }
+      }
+      pages.sort(function (a, b) {
+        if (a.name === 'index.html') return -1;
+        if (b.name === 'index.html') return 1;
+        return a.name.localeCompare(b.name);
+      });
+      assets.sort(function (a, b) { return a.path.localeCompare(b.path); });
+      res.status(200).json({ pages: pages, assets: assets });
+      return;
+    }
+
     // ── 게시(커밋) ──
     if (!sitePath || body.content == null) { res.status(400).json({ error: 'path·content가 필요합니다.' }); return; }
     var author = String(body.author == null ? '' : body.author).trim();
@@ -94,7 +145,10 @@ module.exports = async (req, res) => {
 
     var putBody = {
       message: 'YSME 게시: ' + sitePath + ' (' + author + ')',
-      content: Buffer.from(String(body.content), 'utf8').toString('base64'),
+      // encoding:"base64" 면 이미 base64(바이너리) → 그대로, 아니면 UTF-8 텍스트 인코딩
+      content: (body.encoding === 'base64'
+        ? String(body.content).replace(/\s/g, '')
+        : Buffer.from(String(body.content), 'utf8').toString('base64')),
       branch: GH_BRANCH,
       author: { name: author, email: AUTHOR_EMAIL },
       committer: { name: author, email: AUTHOR_EMAIL }

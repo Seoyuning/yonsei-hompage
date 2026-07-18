@@ -38,6 +38,34 @@
 4. `prototype-v3` 폴더를 고르고 접근을 허용한다. 좌측에 페이지 목록이 나타나면
    준비 완료다.
 
+## 온라인 편집 (인터넷에서 접속)
+
+로컬 폴더를 열지 않고, 인터넷 어디서든 **공용 암호 하나로** 사이트를 편집·배포하는
+모드다. 파일을 로컬 폴더 대신 서버 함수(`prototype-v3/api/publish.js`)를 통해 GitHub
+에서 직접 읽고 쓴다. 보드·비주얼 편집·찾기바꾸기·품질 검사 기능을 그대로 쓴다.
+
+- **주소**: 배포 사이트의 `/studio` (예: `https://prototype-v3-nine.vercel.app/studio`).
+- **접속**: 공용 암호 + 편집자 이름만 입력한다(계정 로그인 없음). 저장(Ctrl+S)하면
+  GitHub에 커밋되어 배포된 사이트에 바로 반영된다.
+- **보안**: 공용 암호 하나가 곧 사이트 쓰기 권한이다. 강한 암호를 쓰고, 저장마다 남는
+  버전 스냅샷·GitHub 이력·Vercel 롤백으로 되돌린다. 자세한 한계는 「보안 한계 고지」.
+- **동작 원리**: 호스팅된 `studio/index.html` 이 `window.YSME_ONLINE` 플래그를 켜면
+  `remotefs.js` 가 로컬 File System 대신 서버 함수를 쓰도록 `Admin.fs` 를 교체하고,
+  `online.js` 가 계정 게이트 대신 공용 암호 게이트를 띄운다. 플래그가 없는 로컬 모드는
+  전혀 영향받지 않는다.
+
+### 온라인 스튜디오 배포·갱신
+
+1. 서버 함수 env가 설정돼 있어야 한다(아래 「공동 게시」와 동일: `GH_TOKEN`, `GH_OWNER`,
+   `GH_REPO`, `GH_BASEPATH=prototype-v3`, `PUBLISH_PASSCODE`).
+2. `python admin/deploy-studio.py` 실행 → `admin/` 을 `prototype-v3/studio/` 로 복사하고
+   온라인 플래그를 주입한다. (`studio/` 는 **생성물**이니 직접 고치지 말고, `admin/` 을
+   고친 뒤 이 스크립트를 다시 돌려 동기화한다.)
+3. `prototype-v3/` 를 커밋·푸시하면 자동 배포되어 `/studio` 가 열린다.
+
+> 로컬에서 게이트를 미리 보려면 `?online=1` 을 붙인다:
+> `http://localhost:8787/admin/index.html?online=1` (성공 접속은 배포된 함수가 필요).
+
 ## 기능 사용법
 
 ### 비주얼 편집

@@ -410,10 +410,10 @@ html.intro-lock{overflow:hidden}
    모듈 로드 전에 동기로 판단해 첫 페인트 깜빡임을 막는다 */
 (function () {
   var el = document.getElementById('intro'), skip = false;
-  var force = /[?&]intro=/.test(location.search);   // 비교용 강제 재생
+  /* 인트로 보류 — ?intro=eagle|seal 로 열 때만 재생(연출 코드는 보존) */
+  var force = /[?&]intro=/.test(location.search);
   try {
-    skip = window.self !== window.top ||
-      (!force && sessionStorage.getItem('ysme-intro') === '1') ||
+    skip = !force || window.self !== window.top ||
       matchMedia('(prefers-reduced-motion: reduce)').matches;
   } catch (e) { skip = true; }
   if (skip) { el.parentNode.removeChild(el); return; }
@@ -880,12 +880,12 @@ window.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 <script>
-/* 3D 미기동(느린 네트워크·모듈 실패) 시 2.5s 후 2D 폴백 표시 */
-setTimeout(function(){if(!document.body.classList.contains('gl-on'))document.body.classList.add('gl-off');},2500);
+/* 3D 보류 — 히어로는 SVG 코어만 표시. 되살릴 땐 아래 주석의 script 한 줄 복원 */
+document.documentElement.classList.add('gl-off');
 </script>
 <noscript><style>.core-fallback{display:block!important}</style></noscript>
-<!-- 기어 버전 보존: assets/gear3d.js?v=11 (되돌릴 때 아래 한 줄 교체) -->
-<script type="module" src="assets/hero-eagle.js?v=4"></script>
+<!-- 3D 보존: 독수리 <script type="module" src="assets/hero-eagle.js?v=4"></script> · 기어 assets/gear3d.js?v=11 -->
+
 <script type="module">
 /* 인트로 변형 선택 — 기본은 독수리(B). 비교용: ?intro=seal 은 씰 조립(A) */
 if (document.getElementById('intro')) {

@@ -29,8 +29,12 @@ img{display:block;max-width:100%}
 
 /* ── 상단 유틸리티 바 ── */
 .topbar{background:var(--navy-d);color:#c6d2e6;font-size:.74rem}
-.topbar .wrap{display:flex;justify-content:flex-end;gap:1.4rem;padding-top:.42rem;padding-bottom:.42rem}
+.topbar .wrap{display:flex;align-items:center;justify-content:flex-end;gap:1.4rem;padding-top:.42rem;padding-bottom:.42rem}
 .topbar a:hover{color:#fff}
+.lang{display:flex;gap:.1rem;margin-left:.5rem;border:1px solid rgba(255,255,255,.28);border-radius:99px;padding:.12rem}
+.lang button{font-family:inherit;font-size:.66rem;font-weight:700;letter-spacing:.08em;color:#c6d2e6;
+  background:none;border:0;border-radius:99px;padding:.16rem .62rem;cursor:pointer;transition:background .12s,color .12s}
+.lang button.on{background:#fff;color:var(--navy-d)}
 
 /* ── 헤더 ── */
 .hdr{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.96);
@@ -47,21 +51,30 @@ img{display:block;max-width:100%}
 .gnb a:hover{color:var(--navy);border-color:var(--coral)}
 @media(max-width:840px){.gnb{display:none}}
 
-/* ── 히어로 ── */
-.hero{position:relative;overflow:hidden;background:linear-gradient(175deg,#f2f6fb 0%,#fff 62%)}
-.hero-in{position:relative;padding-top:clamp(3.6rem,9vh,6.5rem);padding-bottom:clamp(2.6rem,6vh,4.4rem)}
-.hero-kick{font-size:.74rem;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--coral)}
-.hero h1{margin-top:1rem;font-weight:800;letter-spacing:-.02em;line-height:1.18;
-  font-size:clamp(1.9rem,1.1rem + 3.4vw,3.4rem);color:var(--navy)}
-.hero .sub{margin-top:1.15rem;max-width:34rem;font-size:clamp(.94rem,.86rem + .3vw,1.05rem);color:var(--muted)}
-.hero-btns{margin-top:1.9rem;display:flex;gap:.7rem;flex-wrap:wrap}
-.btn{display:inline-block;padding:.72rem 1.5rem;border-radius:.2rem;font-weight:700;font-size:.92rem;
-  transition:transform .15s,box-shadow .15s,background .15s}
-.btn-navy{background:var(--navy);color:#fff}
-.btn-navy:hover{background:var(--navy-d)}
-.btn-line{border:1px solid var(--navy);color:var(--navy)}
-.btn-line:hover{background:rgba(26,61,117,.06)}
-.hero-mark{position:absolute;right:-4%;bottom:-12%;width:min(46vw,430px);opacity:.08;pointer-events:none;user-select:none}
+/* ── 히어로 — 풀블리드 이미지 + 중앙 학부명 (SNU ME 참고) ── */
+.hero{position:relative;min-height:clamp(30rem,88vh,54rem);display:flex;align-items:center;justify-content:center;
+  text-align:center;overflow:hidden;background:var(--navy-d);color:#fff}
+.hero-bg{position:absolute;inset:0;background:url("assets/hero-me.jpg") center 42%/cover no-repeat}
+.hero-veil{position:absolute;inset:0;background:
+  radial-gradient(ellipse 68% 62% at 50% 46%,rgba(10,19,38,.14),rgba(10,19,38,.62) 84%),
+  linear-gradient(180deg,rgba(10,19,38,.58),rgba(10,19,38,.16) 34%,rgba(10,19,38,.14) 60%,rgba(13,29,56,.78))}
+.hero-in{position:relative;padding:5.5rem 1.2rem 6rem;max-width:62rem}
+.hero-kick{font-size:clamp(.72rem,.66rem + .3vw,.88rem);font-weight:600;letter-spacing:.34em;
+  text-transform:uppercase;color:#e3ebf7;opacity:.94}
+.hero h1{margin-top:1.05rem;font-weight:800;letter-spacing:.015em;line-height:1.16;
+  font-size:clamp(2.2rem,1.1rem + 4.8vw,4.3rem);color:#fff}
+.hero .sub{margin:1.35rem auto 0;max-width:37rem;font-size:clamp(.94rem,.86rem + .3vw,1.08rem);color:#ccd8ea}
+.hero-btns{margin-top:2.1rem;display:flex;gap:.8rem;flex-wrap:wrap;justify-content:center}
+.btn{display:inline-block;padding:.74rem 1.6rem;border-radius:.2rem;font-weight:700;font-size:.92rem;
+  transition:background .15s,color .15s}
+.btn-white{background:#fff;color:var(--navy)}
+.btn-white:hover{background:#e7edf7}
+.btn-ghost{border:1px solid rgba(255,255,255,.62);color:#fff}
+.btn-ghost:hover{background:rgba(255,255,255,.14)}
+.hero-scroll{position:absolute;left:50%;bottom:1.3rem;transform:translateX(-50%);
+  font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.72)}
+.hero-scroll::after{content:"";display:block;width:1px;height:2rem;margin:.45rem auto 0;
+  background:linear-gradient(rgba(255,255,255,.8),transparent)}
 /* 히어로 하단 지표 스트립 */
 .stats{border-top:1px solid var(--line);background:#fff}
 .stats .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;
@@ -176,9 +189,13 @@ img{display:block;max-width:100%}
 
 <div class="topbar">
   <div class="wrap">
-    <a href="https://www.yonsei.ac.kr" target="_blank" rel="noopener">연세대학교</a>
-    <a href="https://engineering.yonsei.ac.kr" target="_blank" rel="noopener">공과대학</a>
-    <a href="https://me.yonsei.ac.kr" target="_blank" rel="noopener">기계공학부 현행 홈</a>
+    <a href="https://www.yonsei.ac.kr" target="_blank" rel="noopener" data-i18n="tbYonsei">연세대학교</a>
+    <a href="https://engineering.yonsei.ac.kr" target="_blank" rel="noopener" data-i18n="tbEng">공과대학</a>
+    <a href="https://me.yonsei.ac.kr" target="_blank" rel="noopener" data-i18n="tbCur">기계공학부 현행 홈</a>
+    <div class="lang" role="group" aria-label="언어 선택">
+      <button type="button" id="langKo" class="on">한국어</button>
+      <button type="button" id="langEn">ENG</button>
+    </div>
   </div>
 </div>
 
@@ -191,37 +208,38 @@ img{display:block;max-width:100%}
       </span>
     </a>
     <nav class="gnb">
-      <a href="G-about.html">학부소개</a>
-      <a href="G-people.html">구성원</a>
-      <a href="G-research.html">연구</a>
-      <a href="G-academics.html">학사</a>
-      <a href="G-news.html">소식</a>
-      <a href="G-admissions.html">입학</a>
+      <a href="G-about.html" data-i18n="navAbout">학부소개</a>
+      <a href="G-people.html" data-i18n="navPeople">구성원</a>
+      <a href="G-research.html" data-i18n="navResearch">연구</a>
+      <a href="G-academics.html" data-i18n="navAcad">학사</a>
+      <a href="G-news.html" data-i18n="navNews">소식</a>
+      <a href="G-admissions.html" data-i18n="navAdm">입학</a>
     </nav>
   </div>
 </header>
 
-<!-- ═══ 히어로 — 타이포 중심 (SNU ME 스타일) ═══ -->
-<section class="hero">
-  <img class="hero-mark" src="assets/me-eagle.png" alt="" aria-hidden="true" />
-  <div class="wrap hero-in">
-    <p class="hero-kick">School of Mechanical Engineering</p>
-    <h1>움직이는 모든 것의<br>원리를 탐구합니다</h1>
-    <p class="sub">1962년 이래 연세대학교 기계공학부는 고체·열·유체·동역학의 원리를
-      설계와 기술로 옮겨 왔습니다. 33개 연구실이 6개 연구 분야에서
-      에너지·로보틱스·제조·나노·바이오의 과제를 풉니다.</p>
+<!-- ═══ 히어로 — 풀블리드 터보팬 이미지 + 중앙 학부명 (SNU ME 참고) ═══ -->
+<section class="hero" aria-label="연세대학교 기계공학부">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="hero-veil" aria-hidden="true"></div>
+  <div class="hero-in">
+    <p class="hero-kick" data-i18n="heroKick">School of Mechanical Engineering</p>
+    <h1 data-i18n="heroTitle">연세대학교 기계공학부</h1>
+    <p class="sub" data-i18n="heroSub">1962년 이래 고체·열·유체·동역학의 원리를
+      설계와 기술로 옮겨 왔습니다. 33개 연구실 · 6개 연구 분야.</p>
     <div class="hero-btns">
-      <a class="btn btn-navy" href="#research">연구 분야 보기</a>
-      <a class="btn btn-line" href="G-admissions.html">입학 안내</a>
+      <a class="btn btn-white" href="#research" data-i18n="btnResearch">연구 분야 보기</a>
+      <a class="btn btn-ghost" href="G-admissions.html" data-i18n="btnAdm">입학 안내</a>
     </div>
   </div>
+  <div class="hero-scroll" aria-hidden="true">Scroll</div>
 </section>
 <div class="stats">
   <div class="wrap">
-    <div class="st"><b>33</b><span>전임 교수</span></div>
-    <div class="st"><b>33</b><span>연구실</span></div>
-    <div class="st"><b>6</b><span>연구 분야</span></div>
-    <div class="st"><b>1962</b><span>설립</span></div>
+    <div class="st"><b>33</b><span data-i18n="stFaculty">전임 교수</span></div>
+    <div class="st"><b>33</b><span data-i18n="stLabs">연구실</span></div>
+    <div class="st"><b>6</b><span data-i18n="stAreas">연구 분야</span></div>
+    <div class="st"><b>1962</b><span data-i18n="stFounded">설립</span></div>
   </div>
 </div>
 
@@ -232,9 +250,9 @@ img{display:block;max-width:100%}
     <div class="sec-head">
       <div>
         <p class="kick">Research &amp; News</p>
-        <h2 class="sec-title" id="h-news">연구 소식</h2>
+        <h2 class="sec-title" id="h-news" data-i18n="newsTitle">연구 소식</h2>
       </div>
-      <a class="more" href="G-news.html">전체 보기 →</a>
+      <a class="more" href="G-news.html" data-i18n="moreAll">전체 보기 →</a>
     </div>
     <div class="news-grid" id="newsGrid">
       <a class="ncard" href="G-news.html">
@@ -249,19 +267,19 @@ img{display:block;max-width:100%}
     <div class="wrap">
       <div>
         <div class="bhead">
-          <h3>공지사항</h3>
+          <h3 data-i18n="ntTitle">공지사항</h3>
           <div class="tabs" id="ntTabs">
-            <button class="tab on" data-k="all">전체</button>
-            <button class="tab" data-k="ug">학부</button>
-            <button class="tab" data-k="grad">대학원</button>
+            <button class="tab on" data-k="all" data-i18n="tabAll">전체</button>
+            <button class="tab" data-k="ug" data-i18n="tabUG">학부</button>
+            <button class="tab" data-k="grad" data-i18n="tabGrad">대학원</button>
           </div>
         </div>
         <div class="blist" id="ntList"><a class="brow" href="G-news.html"><span class="bt">공지 보기</span></a></div>
       </div>
       <div>
         <div class="bhead">
-          <h3>세미나</h3>
-          <a class="more" href="G-news.html">전체 →</a>
+          <h3 data-i18n="smTitle">세미나</h3>
+          <a class="more" href="G-news.html" data-i18n="moreShort">전체 →</a>
         </div>
         <div class="blist" id="smList"><a class="brow" href="G-news.html"><span class="bt">세미나 보기</span></a></div>
       </div>
@@ -273,9 +291,9 @@ img{display:block;max-width:100%}
     <div class="sec-head">
       <div>
         <p class="kick">Research Areas</p>
-        <h2 class="sec-title" id="h-research">연구 분야</h2>
+        <h2 class="sec-title" id="h-research" data-i18n="areasTitle">연구 분야</h2>
       </div>
-      <a class="more" href="G-research.html">연구실 전체 →</a>
+      <a class="more" href="G-research.html" data-i18n="moreLabs">연구실 전체 →</a>
     </div>
     <div class="area-grid" id="areaGrid"></div>
   </section>
@@ -285,9 +303,9 @@ img{display:block;max-width:100%}
     <div class="sec-head">
       <div>
         <p class="kick">People</p>
-        <h2 class="sec-title" id="h-people">교수진</h2>
+        <h2 class="sec-title" id="h-people" data-i18n="peopleTitle">교수진</h2>
       </div>
-      <a class="more" href="G-people.html">교수진 전체 →</a>
+      <a class="more" href="G-people.html" data-i18n="morePeople">교수진 전체 →</a>
     </div>
     <div class="pgrid" id="pGrid"></div>
   </section>
@@ -297,19 +315,19 @@ img{display:block;max-width:100%}
     <div class="wrap">
       <a class="q" href="G-admissions.html">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3 2 8l10 5 10-5-10-5zM5 10v6c0 1.5 3 3 7 3s7-1.5 7-3v-6"/></svg>
-        <b>입학 안내</b><span>학부·대학원 지원 경로</span>
+        <b data-i18n="qAdm">입학 안내</b><span data-i18n="qAdmS">학부·대학원 지원 경로</span>
       </a>
       <a class="q" href="G-academics.html">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h16v16H4zM4 9h16M9 4v16"/></svg>
-        <b>학사 · 교과</b><span>교과과정과 이수 체계</span>
+        <b data-i18n="qAcad">학사 · 교과</b><span data-i18n="qAcadS">교과과정과 이수 체계</span>
       </a>
       <a class="q" href="G-people.html">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-3.5 3.8-5 7-5s6 1.5 7 5"/></svg>
-        <b>교수진</b><span>33명의 전임 교수</span>
+        <b data-i18n="qFac">교수진</b><span data-i18n="qFacS">33명의 전임 교수</span>
       </a>
       <a class="q" href="G-about.html">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s-7-5.6-7-11a7 7 0 0 1 14 0c0 5.4-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
-        <b>오시는 길</b><span>서울 서대문구 연세로 50</span>
+        <b data-i18n="qDir">오시는 길</b><span data-i18n="qDirS">서울 서대문구 연세로 50</span>
       </a>
     </div>
   </section>
@@ -320,20 +338,21 @@ img{display:block;max-width:100%}
   <div class="wrap">
     <div class="fl">
       <b>연세대학교 기계공학부</b><br>
-      (03722) 서울특별시 서대문구 연세로 50 연세대학교 공과대학 기계공학부
+      <span data-i18n="fAddr">(03722) 서울특별시 서대문구 연세로 50 연세대학교 공과대학 기계공학부</span>
     </div>
     <div class="fl">
-      학부 02-2123-4426 · 대학원 02-2123-2810<br>
+      <span data-i18n="fTel">학부 02-2123-4426 · 대학원 02-2123-2810</span><br>
       <a href="mailto:mech@yonsei.ac.kr">mech@yonsei.ac.kr</a>
       &nbsp;·&nbsp; © 2026 Yonsei University School of Mechanical Engineering
-      &nbsp;·&nbsp; <a href="../admin/index.html">관리자</a>
+      &nbsp;·&nbsp; <a href="../admin/index.html" data-i18n="fAdmin">관리자</a><br>
+      <span style="opacity:.6;font-size:.72rem">Hero photo: Luka Slapnicar, Unsplash</span>
     </div>
   </div>
 </footer>
 
 <script src="assets/js/data.js?v=d11"></script>
 <script>
-/* 실데이터 렌더 — window.YSME (뉴스·공지·세미나·분야·교수) */
+/* 실데이터 렌더 + 한/영 전환 — window.YSME (뉴스·공지·세미나·분야·교수) */
 (function () {
   'use strict';
   var D = window.YSME;
@@ -341,9 +360,67 @@ img{display:block;max-width:100%}
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function byDate(a, b) { return String(b.date).localeCompare(String(a.date)); }
 
-  /* 연구 뉴스 — 썸네일 카드 3건 */
-  var ng = document.getElementById('newsGrid');
-  if (ng && D.newsList && D.newsList.length) {
+  /* ── 한/영 사전 (게시물 본문은 원문 유지 — 실데이터 원칙) ── */
+  var I18N = {
+    ko: {
+      tbYonsei: '연세대학교', tbEng: '공과대학', tbCur: '기계공학부 현행 홈',
+      navAbout: '학부소개', navPeople: '구성원', navResearch: '연구', navAcad: '학사', navNews: '소식', navAdm: '입학',
+      heroKick: 'School of Mechanical Engineering', heroTitle: '연세대학교 기계공학부',
+      heroSub: '1962년 이래 고체·열·유체·동역학의 원리를 설계와 기술로 옮겨 왔습니다. 33개 연구실 · 6개 연구 분야.',
+      btnResearch: '연구 분야 보기', btnAdm: '입학 안내',
+      stFaculty: '전임 교수', stLabs: '연구실', stAreas: '연구 분야', stFounded: '설립',
+      newsTitle: '연구 소식', moreAll: '전체 보기 →',
+      ntTitle: '공지사항', tabAll: '전체', tabUG: '학부', tabGrad: '대학원',
+      smTitle: '세미나', moreShort: '전체 →',
+      areasTitle: '연구 분야', moreLabs: '연구실 전체 →',
+      peopleTitle: '교수진', morePeople: '교수진 전체 →',
+      qAdm: '입학 안내', qAdmS: '학부·대학원 지원 경로', qAcad: '학사 · 교과', qAcadS: '교과과정과 이수 체계',
+      qFac: '교수진', qFacS: '33명의 전임 교수', qDir: '오시는 길', qDirS: '서울 서대문구 연세로 50',
+      fAddr: '(03722) 서울특별시 서대문구 연세로 50 연세대학교 공과대학 기계공학부',
+      fTel: '학부 02-2123-4426 · 대학원 02-2123-2810', fAdmin: '관리자',
+      catUG: '학부', catGrad: '대학원', labUnit: '개 연구실'
+    },
+    en: {
+      tbYonsei: 'Yonsei University', tbEng: 'College of Engineering', tbCur: 'Current ME site',
+      navAbout: 'About', navPeople: 'People', navResearch: 'Research', navAcad: 'Academics', navNews: 'News', navAdm: 'Admissions',
+      heroKick: '연세대학교 기계공학부', heroTitle: 'School of Mechanical Engineering',
+      heroSub: 'Since 1962, turning the principles of mechanics into design and technology — 33 laboratories across 6 research areas.',
+      btnResearch: 'Research Areas', btnAdm: 'Admissions',
+      stFaculty: 'Faculty', stLabs: 'Laboratories', stAreas: 'Research Areas', stFounded: 'Founded',
+      newsTitle: 'Research News', moreAll: 'View all →',
+      ntTitle: 'Notices', tabAll: 'All', tabUG: 'Undergrad', tabGrad: 'Graduate',
+      smTitle: 'Seminars', moreShort: 'All →',
+      areasTitle: 'Research Areas', moreLabs: 'All laboratories →',
+      peopleTitle: 'Faculty', morePeople: 'All faculty →',
+      qAdm: 'Admissions', qAdmS: 'Undergraduate & graduate', qAcad: 'Academics', qAcadS: 'Curriculum & requirements',
+      qFac: 'Faculty', qFacS: '33 full-time professors', qDir: 'Directions', qDirS: '50 Yonsei-ro, Seodaemun-gu, Seoul',
+      fAddr: '50 Yonsei-ro, Seodaemun-gu, Seoul 03722, Republic of Korea — College of Engineering',
+      fTel: 'Undergrad +82-2-2123-4426 · Graduate +82-2-2123-2810', fAdmin: 'Admin',
+      catUG: 'UG', catGrad: 'Grad', labUnit: 'Laboratories'
+    }
+  };
+  var RANK_EN = { '교수': 'Professor', '부교수': 'Associate Professor', '조교수': 'Assistant Professor' };
+  var LANG = 'ko';
+  try { LANG = localStorage.getItem('ysme-lang') === 'en' ? 'en' : 'ko'; } catch (e) {}
+  function T(k) { return (I18N[LANG] && I18N[LANG][k]) || I18N.ko[k] || ''; }
+
+  function applyI18n() {
+    document.documentElement.lang = LANG;
+    document.querySelectorAll('[data-i18n]').forEach(function (el) {
+      var v = T(el.dataset.i18n);
+      if (v) el.textContent = v;
+    });
+    var ko = document.getElementById('langKo'), en = document.getElementById('langEn');
+    if (ko && en) {
+      ko.classList.toggle('on', LANG === 'ko');
+      en.classList.toggle('on', LANG === 'en');
+    }
+  }
+
+  /* ── 연구 뉴스 — 썸네일 카드 3건 (제목은 원문) ── */
+  function renderNews() {
+    var ng = document.getElementById('newsGrid');
+    if (!ng || !D.newsList || !D.newsList.length) return;
     ng.innerHTML = D.newsList.slice().sort(byDate).slice(0, 3).map(function (n) {
       var img = n.thumb ? '<img src="' + esc(n.thumb) + '" alt="" loading="lazy" onerror="this.remove()">' : '';
       return '<a class="ncard" href="' + esc(n.url || 'G-news.html') + '" target="_blank" rel="noopener">' +
@@ -353,38 +430,40 @@ img{display:block;max-width:100%}
     }).join('');
   }
 
-  /* 공지 — 학부/대학원 탭 */
+  /* ── 공지 — 학부/대학원 탭 ── */
   var ntList = document.getElementById('ntList');
   var notices = [];
-  (D.noticesUG || []).forEach(function (n) { notices.push({ t: n.title, d: n.date, u: n.url, k: 'ug', c: '학부' }); });
-  (D.noticesGrad || []).forEach(function (n) { notices.push({ t: n.title, d: n.date, u: n.url, k: 'grad', c: '대학원' }); });
+  (D.noticesUG || []).forEach(function (n) { notices.push({ t: n.title, d: n.date, u: n.url, k: 'ug' }); });
+  (D.noticesGrad || []).forEach(function (n) { notices.push({ t: n.title, d: n.date, u: n.url, k: 'grad' }); });
   var seen = {};
   notices = notices.filter(function (n) {
     var key = n.t + '|' + n.d;
     if (seen[key]) return false; seen[key] = true; return true;
   }).sort(function (a, b) { return String(b.d).localeCompare(String(a.d)); });
-  function drawNt(k) {
+  var ntKey = 'all';
+  function drawNt() {
     if (!ntList) return;
-    var rows = (k === 'all' ? notices : notices.filter(function (n) { return n.k === k; })).slice(0, 6);
+    var rows = (ntKey === 'all' ? notices : notices.filter(function (n) { return n.k === ntKey; })).slice(0, 6);
     ntList.innerHTML = rows.map(function (n) {
       return '<a class="brow" href="' + esc(n.u || 'G-news.html') + '" target="_blank" rel="noopener">' +
-        '<span class="bcat">' + n.c + '</span><span class="bt">' + esc(n.t) + '</span>' +
+        '<span class="bcat">' + T(n.k === 'ug' ? 'catUG' : 'catGrad') + '</span><span class="bt">' + esc(n.t) + '</span>' +
         '<span class="bd">' + esc(String(n.d).slice(2)) + '</span></a>';
     }).join('');
   }
-  drawNt('all');
   var tabs = document.getElementById('ntTabs');
   if (tabs) tabs.addEventListener('click', function (e) {
     var b = e.target.closest('.tab');
     if (!b) return;
     tabs.querySelectorAll('.tab').forEach(function (t) { t.classList.remove('on'); });
     b.classList.add('on');
-    drawNt(b.dataset.k);
+    ntKey = b.dataset.k;
+    drawNt();
   });
 
-  /* 세미나 */
-  var sm = document.getElementById('smList');
-  if (sm && D.seminars && D.seminars.length) {
+  /* ── 세미나 ── */
+  function renderSm() {
+    var sm = document.getElementById('smList');
+    if (!sm || !D.seminars || !D.seminars.length) return;
     sm.innerHTML = D.seminars.slice().sort(byDate).slice(0, 6).map(function (n) {
       var t = String(n.title).replace(/^\[[^\]]*\]\s*/, '');
       return '<a class="brow" href="' + esc(n.url || 'G-news.html') + '" target="_blank" rel="noopener">' +
@@ -393,37 +472,59 @@ img{display:block;max-width:100%}
     }).join('');
   }
 
-  /* 연구 분야 6 카드 */
-  var ag = document.getElementById('areaGrid');
-  if (ag && D.clusters) {
+  /* ── 연구 분야 6 카드 — 언어에 따라 국·영문 자리 교대 ── */
+  function renderAreas() {
+    var ag = document.getElementById('areaGrid');
+    if (!ag || !D.clusters) return;
     ag.innerHTML = D.clusters.map(function (c, i) {
+      var big = LANG === 'en' ? c.en : c.ko;
+      var small = LANG === 'en' ? c.ko : c.en;
+      var desc = LANG === 'en' ? '' : '<span class="adesc" style="display:block">' + esc(c.desc) + '</span>';
       return '<a class="acard" href="G-research.html#' + esc(c.id) + '">' +
         '<span class="ano">0' + (i + 1) + '</span>' +
-        '<span class="ako" style="display:block">' + esc(c.ko) + '</span>' +
-        '<span class="aen" style="display:block">' + esc(c.en) + '</span>' +
-        '<span class="adesc" style="display:block">' + esc(c.desc) + '</span>' +
-        '<span class="alab" style="display:block"><b>' + c.count + '</b> 개 연구실</span></a>';
+        '<span class="ako" style="display:block">' + esc(big) + '</span>' +
+        '<span class="aen" style="display:block">' + esc(small) + '</span>' + desc +
+        '<span class="alab" style="display:block"><b>' + c.count + '</b> ' + T('labUnit') + '</span></a>';
     }).join('');
   }
 
-  /* 교수진 — 무작위 6명(공평 노출) */
-  var pg = document.getElementById('pGrid');
-  if (pg && D.professors) {
-    var cl = {}; (D.clusters || []).forEach(function (c) { cl[c.id] = c.ko; });
-    var pool = D.professors.slice();
-    for (var i = pool.length - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1)), t = pool[i]; pool[i] = pool[j]; pool[j] = t;
-    }
+  /* ── 교수진 — 무작위 6명(공평 노출), 언어 전환 시 같은 6명 유지 ── */
+  var pool = (D.professors || []).slice();
+  for (var i = pool.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1)), t = pool[i]; pool[i] = pool[j]; pool[j] = t;
+  }
+  function renderPeople() {
+    var pg = document.getElementById('pGrid');
+    if (!pg || !pool.length) return;
+    var cl = {}; (D.clusters || []).forEach(function (c) { cl[c.id] = LANG === 'en' ? c.en : c.ko; });
     pg.innerHTML = pool.slice(0, 6).map(function (p) {
+      var name = LANG === 'en' ? (p.en || p.ko) : p.ko;
+      var rank = LANG === 'en' ? (p.titleEn || RANK_EN[p.rank] || p.rank) : (p.rank + (p.role ? ' · ' + p.role : ''));
       return '<a class="pc" href="G-people.html#' + esc(p.id) + '">' +
         '<span class="pph" style="display:block"><span>' + esc(p.initial) + '</span>' +
         '<img src="assets/faculty/' + esc(p.id) + '.jpg" alt="" loading="lazy" onerror="this.remove()"></span>' +
         '<span class="pin" style="display:block">' +
         '<span class="pclu" style="display:block">' + esc(cl[p.cluster] || '') + '</span>' +
-        '<span class="pko" style="display:block">' + esc(p.ko) + '</span>' +
-        '<span class="prk" style="display:block">' + esc(p.rank + (p.role ? ' · ' + p.role : '')) + '</span></span></a>';
+        '<span class="pko" style="display:block">' + esc(name) + '</span>' +
+        '<span class="prk" style="display:block">' + esc(rank) + '</span></span></a>';
     }).join('');
   }
+
+  function renderAll() {
+    applyI18n(); renderNews(); drawNt(); renderSm(); renderAreas(); renderPeople();
+  }
+  renderAll();
+
+  /* 언어 토글 */
+  function setLang(l) {
+    if (l === LANG) return;
+    LANG = l;
+    try { localStorage.setItem('ysme-lang', l); } catch (e) {}
+    renderAll();
+  }
+  var bKo = document.getElementById('langKo'), bEn = document.getElementById('langEn');
+  if (bKo) bKo.addEventListener('click', function () { setLang('ko'); });
+  if (bEn) bEn.addEventListener('click', function () { setLang('en'); });
 })();
 </script>
 </body>

@@ -61,9 +61,10 @@ Admin.bus.on('site:opened', function (d) {
   renderPageList(d.pages);
   fillCodeFileSelect(d.pages, d.assets);
   Admin.audit.log('site-open', d.name, d.pages.length + '개 페이지');
-  // 첫 페이지 자동 로드 — index.html 은 G-console 로 넘기는 리다이렉트 스텁일 수
-  // 있으므로(design-candidates) 실제 홈인 G-console.html 을 우선한다
-  var first = d.pages.find(function (p) { return p.name === 'G-console.html'; }) ||
+  // 첫 페이지 자동 로드 — index.html 은 리다이렉트 스텁일 수 있으므로
+  // (design-candidates) 실제 홈인 H-academic.html > G-console.html 순으로 우선한다
+  var first = d.pages.find(function (p) { return p.name === 'H-academic.html'; }) ||
+    d.pages.find(function (p) { return p.name === 'G-console.html'; }) ||
     d.pages.find(function (p) { return p.name === 'index.html'; }) || d.pages[0];
   if (first) openPage(first.path);
 });
@@ -106,7 +107,7 @@ var PAGE_NAMES = {
   'admissions.html': '입학', 'contact.html': '연락처', 'engineering.html': '공학 이야기',
   'accessibility.html': '접근성', 'privacy.html': '개인정보처리방침', 'terms.html': '이용약관',
   /* 관제(G · design-candidates) 사이트 페이지 */
-  'G-console.html': '관제 · 홈', 'G-about.html': '관제 · 소개', 'G-academics.html': '관제 · 교육',
+  'H-academic.html': '홈 · 아카데믹', 'G-console.html': '관제 · 홈(구)', 'G-about.html': '관제 · 소개', 'G-academics.html': '관제 · 교육',
   'G-research.html': '관제 · 연구', 'G-people.html': '관제 · 구성원', 'G-news.html': '관제 · 소식',
   'G-admissions.html': '관제 · 입학', 'D-drafting.html': '도면 시안'
 };

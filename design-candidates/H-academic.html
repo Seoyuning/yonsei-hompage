@@ -176,6 +176,26 @@ img{display:block;max-width:100%}
 .q span{font-size:.78rem;color:#b9c7de}
 @media(max-width:840px){.quick .wrap{grid-template-columns:repeat(2,1fr)}}
 
+/* ── 페이드 애니메이션 ── */
+/* 히어로: 로드 시 순차 페이드 (배경은 아주 느린 줌아웃으로 깊이감) */
+.hero-bg{animation:heroZoom 9s cubic-bezier(.2,.6,.3,1) forwards}
+@keyframes heroZoom{from{transform:scale(1.07)}to{transform:scale(1)}}
+.hero-kick,.hero h1,.hero .sub,.hero-btns,.hero-scroll{opacity:0;animation:heroFade 1s ease forwards}
+.hero h1{animation-delay:.18s}
+.hero .sub{animation-delay:.4s}
+.hero-btns{animation-delay:.6s}
+.hero-scroll{animation-delay:1s}
+@keyframes heroFade{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.hero-scroll{animation-name:heroFadeSoft}
+@keyframes heroFadeSoft{from{opacity:0}to{opacity:1}}
+/* 스크롤 리빌: 처음 보일 때 한 번만 은은하게 */
+.fade{opacity:0;transform:translateY(22px);transition:opacity .75s ease,transform .8s cubic-bezier(.16,.8,.3,1)}
+.fade.vis{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  .hero-bg,.hero-kick,.hero h1,.hero .sub,.hero-btns,.hero-scroll{animation:none;opacity:1}
+  .fade{opacity:1;transform:none;transition:none}
+}
+
 /* ── 푸터 ── */
 .ftr{background:var(--navy-d);color:#a9b8d2;font-size:.8rem}
 .ftr .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem;
@@ -525,6 +545,43 @@ img{display:block;max-width:100%}
   var bKo = document.getElementById('langKo'), bEn = document.getElementById('langEn');
   if (bKo) bKo.addEventListener('click', function () { setLang('ko'); });
   if (bEn) bEn.addEventListener('click', function () { setLang('en'); });
+})();
+</script>
+<script>
+/* 스크롤 페이드 리빌 — 섹션 단위 컨테이너에만 부여(내부는 JS가 다시 그려도 유지).
+   한 번 보이면 고정(재애니메이션 없음) — 차분한 아카데믹 톤 */
+(function () {
+  'use strict';
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!('IntersectionObserver' in window)) return;
+  var targets = [];
+  document.querySelectorAll('.stats .st, .quick .q').forEach(function (el, i) {
+    el.classList.add('fade');
+    el.style.transitionDelay = (i % 4) * 90 + 'ms';
+    targets.push(el);
+  });
+  document.querySelectorAll('main .sec, .board-band .wrap > div').forEach(function (sec) {
+    [].slice.call(sec.children).forEach(function (el, i) {
+      el.classList.add('fade');
+      el.style.transitionDelay = Math.min(i, 3) * 110 + 'ms';
+      targets.push(el);
+    });
+  });
+  var fired = false;
+  var io = new IntersectionObserver(function (es) {
+    fired = true;
+    es.forEach(function (e) {
+      if (e.isIntersecting) {
+        e.target.classList.add('vis');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -6% 0px' });
+  targets.forEach(function (t) { io.observe(t); });
+  /* 안전망 — 옵저버가 안 도는 환경(백그라운드 탭 등)에서 콘텐츠가 숨지 않게 */
+  setTimeout(function () {
+    if (!fired) targets.forEach(function (t) { t.classList.add('vis'); });
+  }, 2000);
 })();
 </script>
 </body>

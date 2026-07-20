@@ -1,106 +1,158 @@
 /* ═══════════════════════════════════════════════════════════════
-   관제(G) 공용 상단 navbar — 전 페이지 고정/통일
-   레이아웃: [좌] 연세대 로고 + 연세대학교 기계공학부 · [중앙] 메뉴(호버 드롭다운) · [우] 현재 섹터
-   - 기존 페이지의 .hud-top 헤더를 제거하고 이 컴포넌트로 교체
-   - 홈(G-console): 우측 = 스크롤 섹션 스파이 / 내부 페이지: 우측 = 현재 페이지명
+   서브페이지(G) 공용 상단 헤더 — 메인(H-academic)과 동일한 바로 통일.
+   구성: [다크 유틸바] 외부 링크 + 한/영 토글  ·  [흰 헤더] 씰 브랜드 + 드롭다운 메뉴.
+   폰트는 Pretendard 단일(모노 제거). 고정 헤더, 스크롤 시 유틸바 접힘.
    ═══════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
 
-  /* ── 1. 스타일 주입(구 헤더 숨김 + 새 navbar) ── */
-  var css =
-    '.hud-top{display:none!important}' +
-    '.ynav{position:fixed;top:0;left:0;right:0;z-index:40;display:grid;grid-template-columns:1fr auto 1fr;' +
-      'align-items:center;gap:1rem;padding:.75rem clamp(1.2rem,.6rem + 2vw,2.6rem);' +
-      'background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-bottom:1px solid rgba(0,0,0,.08);' +
-      'font-family:var(--mono,ui-monospace,monospace)}' +
-    '.ynav-brand{justify-self:start;display:flex;align-items:center;gap:.6rem;pointer-events:auto}' +
-    '.ynav-logo{display:inline-block;width:34px;height:34px;flex:0 0 auto;' +
-      'background:url(assets/yonsei-logo.png) no-repeat left center;background-size:auto 34px}' +
-    '.ynav-brand .dept{font-family:var(--kr);font-weight:800;font-size:1.04rem;color:#1a3d75;letter-spacing:.01em;white-space:nowrap}' +
-    '.ynav-menu{justify-self:center;display:flex;gap:1.7rem;align-items:center;pointer-events:auto}' +
-    '.ynav-item{position:relative}' +
-    '.ynav-top{font-family:var(--kr);font-size:1rem;font-weight:600;color:#41506a;transition:color .15s;padding:.3rem 0;display:inline-block}' +
-    '.ynav-item:hover .ynav-top,.ynav-top.active{color:#1a3d75}' +
-    '.ynav-top.join{color:#41506a}' +
-    '.ynav-drop{position:absolute;top:calc(100% + .55rem);left:50%;transform:translateX(-50%) translateY(-6px);' +
-      'min-width:12rem;background:rgba(255,255,255,.98);backdrop-filter:blur(10px);border:1px solid rgba(0,0,0,.1);box-shadow:0 10px 28px rgba(10,26,51,.14);' +
-      'padding:.45rem 0;opacity:0;visibility:hidden;transition:opacity .16s,transform .16s,visibility .16s;' +
-      'display:flex;flex-direction:column;z-index:41}' +
-    '.ynav-drop::before{content:"";position:absolute;top:-.6rem;left:0;right:0;height:.6rem}' +
-    '.ynav-item:hover .ynav-drop,.ynav-item:focus-within .ynav-drop{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}' +
-    '.ynav-drop a{font-family:var(--kr);font-size:.86rem;color:#5c6b85;padding:.55rem 1.2rem;white-space:nowrap;transition:color .12s,background .12s}' +
-    '.ynav-drop a:hover{color:#1a3d75;background:rgba(26,61,117,.08)}' +
-    '.ynav-spy{justify-self:end;text-align:right;pointer-events:auto}' +
-    '.ynav-spy .lab{display:block;font-size:.58rem;letter-spacing:.24em;color:#9aa3b0;text-transform:uppercase}' +
-    '.ynav-spy .val{display:block;font-family:var(--kr);font-size:.96rem;font-weight:600;color:#1a3d75;margin-top:.15rem;transition:opacity .2s}' +
+  var NAVY = '#1a3d75', NAVYD = '#12294f', INK = '#0f1b30',
+      PAPER = '#f5f2ec', LINE = '#e2ddd2', DIM = '#8b96a9', MUTED = '#5e6b82';
+  var KR = '"Pretendard Variable","Pretendard",system-ui,sans-serif';
+  var E = 'cubic-bezier(.16,1,.3,1)';
+
+  /* ── 1. 스타일 주입 ── */
+  var css = [
+    '.hud-top{display:none!important}',
+    '.ynav-ph{display:none!important}',
+    '.ynv{position:fixed;top:0;left:0;right:0;z-index:50;font-family:' + KR + '}',
+    '.ynv-w{max-width:75rem;margin:0 auto;padding:0 clamp(1.1rem,4vw,2rem)}',
+    /* 유틸 바 */
+    '.ynv-top{background:' + INK + ';color:#c6d2e6;font-size:.74rem;overflow:hidden;max-height:2.3rem;' +
+      'transition:max-height .4s ' + E + ',opacity .3s ease}',
+    '.ynv-top .ynv-w{display:flex;align-items:center;justify-content:flex-end;gap:1.4rem;padding:.42rem clamp(1.1rem,4vw,2rem)}',
+    '.ynv-top a{color:#c6d2e6;text-decoration:none;transition:color .15s}',
+    '.ynv-top a:hover{color:#fff}',
+    '.ynv.min .ynv-top{max-height:0;opacity:0}',
+    '.ynv-lang{display:flex;gap:.1rem;margin-left:.5rem;border:1px solid rgba(255,255,255,.28);border-radius:99px;padding:.12rem}',
+    '.ynv-lang button{font-family:inherit;font-size:.66rem;font-weight:700;letter-spacing:.08em;color:#c6d2e6;' +
+      'background:none;border:0;border-radius:99px;padding:.16rem .62rem;cursor:pointer;transition:background .12s,color .12s}',
+    '.ynv-lang button.on{background:#fff;color:' + NAVYD + '}',
+    /* 흰 헤더 */
+    '.ynv-hdr{background:rgba(245,242,236,.94);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1px solid ' + LINE + '}',
+    '.ynv-hdr .ynv-w{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;padding-top:.62rem;padding-bottom:.62rem}',
+    '.ynv-brand{display:flex;align-items:center;gap:.7rem;min-width:0;text-decoration:none}',
+    '.ynv-brand img{height:2.3rem;width:auto;display:block}',
+    '.ynv-brand .bko{font-weight:800;font-size:1.04rem;letter-spacing:-.01em;color:' + NAVY + ';line-height:1.22}',
+    '.ynv-brand .ben{display:block;font-size:.6rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:' + DIM + '}',
+    '.ynv-menu{display:flex;gap:clamp(1.6rem,3.4vw,3.4rem);font-weight:600;font-size:.98rem;white-space:nowrap}',
+    '.ynv-i{position:relative}',
+    '.ynv-i>a{position:relative;display:inline-block;padding:.5rem 0;color:' + MUTED + ';text-decoration:none;transition:color .2s}',
+    '.ynv-i>a::after{content:"";position:absolute;left:0;right:0;bottom:.15rem;height:2px;background:' + NAVY + ';' +
+      'transform:scaleX(0);transform-origin:right;transition:transform .45s ' + E + '}',
+    '.ynv-i:hover>a,.ynv-i>a.cur{color:' + NAVY + '}',
+    '.ynv-i:hover>a::after,.ynv-i>a.cur::after{transform:scaleX(1);transform-origin:left}',
+    /* 드롭다운 */
+    '.ynv-d{position:absolute;top:calc(100% + .3rem);left:50%;min-width:12.5rem;background:#fff;' +
+      'border:1px solid ' + LINE + ';border-top:2px solid ' + NAVY + ';box-shadow:0 22px 48px rgba(15,27,48,.14);' +
+      'padding:.5rem 0;display:flex;flex-direction:column;opacity:0;visibility:hidden;transform:translate(-50%,14px);z-index:60;' +
+      'transition:opacity .35s ' + E + ',transform .5s ' + E + ',visibility .35s}',
+    '.ynv-d::before{content:"";position:absolute;top:-1rem;left:0;right:0;height:1rem}',
+    '.ynv-i:hover .ynv-d,.ynv-i:focus-within .ynv-d{opacity:1;visibility:visible;transform:translate(-50%,4px)}',
+    '.ynv-d a{padding:.5rem 1.25rem;font-size:.87rem;font-weight:500;color:' + MUTED + ';text-decoration:none;' +
+      'opacity:0;transform:translateY(7px);transition:opacity .4s ease,transform .5s ' + E + ',color .15s,background .15s,padding .3s ' + E + '}',
+    '.ynv-i:hover .ynv-d a,.ynv-i:focus-within .ynv-d a{opacity:1;transform:none}',
+    '.ynv-d a:nth-child(2){transition-delay:.04s}.ynv-d a:nth-child(3){transition-delay:.08s}',
+    '.ynv-d a:nth-child(4){transition-delay:.12s}.ynv-d a:nth-child(5){transition-delay:.16s}',
+    '.ynv-d a:hover{color:' + NAVY + ';background:' + PAPER + ';padding-left:1.6rem}',
+    '[id]{scroll-margin-top:5rem}',
+    /* 맨 위로 버튼 */
     '.ytop{position:fixed;right:1.4rem;bottom:1.4rem;z-index:45;width:2.9rem;height:2.9rem;border-radius:50%;' +
       'background:#fff;border:1px solid rgba(10,26,51,.15);box-shadow:0 6px 18px rgba(10,26,51,.15);' +
-      'color:#1a3d75;display:grid;place-items:center;cursor:pointer;opacity:0;visibility:hidden;transform:translateY(8px);' +
-      'transition:opacity .2s,transform .2s,visibility .2s}' +
-    '.ytop.show{opacity:1;visibility:visible;transform:none}' +
-    '.ytop:hover{color:#e2593c;border-color:#e2593c}' +
-    '[id]{scroll-margin-top:5.5rem}' +
-    '@media(max-width:920px){.ynav-menu,.ynav-spy{display:none}.ynav{grid-template-columns:1fr}}' +
-    /* ── 모바일 햄버거 + 풀스크린 오버레이(≤920px) ── */
-    '.ynav-burger{display:none;justify-self:end;width:44px;height:44px;align-items:center;justify-content:center;' +
-      'flex-direction:column;gap:5px;background:none;border:0;padding:0;cursor:pointer;pointer-events:auto}' +
-    '.ynav-burger span{display:block;width:22px;height:2px;background:#1a3d75;border-radius:1px}' +
-    '.ynav-ovl{position:fixed;inset:0;z-index:60;background:#fff;display:flex;flex-direction:column;' +
-      'overflow-y:auto;-webkit-overflow-scrolling:touch;font-family:var(--mono,ui-monospace,monospace);' +
-      'opacity:0;visibility:hidden;transition:opacity .18s,visibility 0s .18s}' +
-    '.ynav-ovl.open{opacity:1;visibility:visible;transition:opacity .18s,visibility 0s}' +
-    '.ynav-ovl-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex:0 0 auto;' +
-      'padding:.75rem clamp(1.2rem,.6rem + 2vw,2.6rem);border-bottom:1px solid rgba(0,0,0,.08)}' +
-    '.ynav-ovl-close{width:44px;height:44px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;' +
-      'background:none;border:0;padding:0;cursor:pointer;font-size:1.35rem;line-height:1;color:#1a3d75}' +
-    '.ynav-ovl-body{display:flex;flex-direction:column;padding:.6rem clamp(1.2rem,.6rem + 2vw,2.6rem) 3rem}' +
-    '.ynav-ovl-top{display:block;font-family:var(--kr);font-size:1.12rem;font-weight:800;color:#1a3d75;' +
-      'padding:.85rem 0 .4rem;margin-top:.5rem;border-bottom:1px solid rgba(0,0,0,.06)}' +
-    '.ynav-ovl-sub{display:block;font-family:var(--kr);font-size:.95rem;color:#5c6b85;padding:.55rem 0 .55rem 1.1rem}' +
-    '@media(max-width:920px){.ynav{grid-template-columns:1fr auto}.ynav-burger{display:inline-flex}}' +
-    '@media(min-width:921px){.ynav-ovl{display:none!important}}' +
-    '@media(prefers-reduced-motion:reduce){.ynav-ovl,.ynav-ovl.open{transition:none}}';
+      'color:' + NAVY + ';display:grid;place-items:center;cursor:pointer;opacity:0;visibility:hidden;transform:translateY(8px);' +
+      'transition:opacity .2s,transform .2s,visibility .2s}',
+    '.ytop.show{opacity:1;visibility:visible;transform:none}',
+    '.ytop:hover{border-color:' + NAVY + '}',
+    /* 모바일 햄버거 + 오버레이 */
+    '.ynv-burger{display:none;width:44px;height:44px;align-items:center;justify-content:center;flex-direction:column;gap:5px;' +
+      'background:none;border:0;padding:0;cursor:pointer}',
+    '.ynv-burger span{display:block;width:22px;height:2px;background:' + NAVY + ';border-radius:1px}',
+    '.ynv-ovl{position:fixed;inset:0;z-index:70;background:#fff;display:flex;flex-direction:column;overflow-y:auto;' +
+      '-webkit-overflow-scrolling:touch;font-family:' + KR + ';opacity:0;visibility:hidden;transition:opacity .18s,visibility 0s .18s}',
+    '.ynv-ovl.open{opacity:1;visibility:visible;transition:opacity .18s,visibility 0s}',
+    '.ynv-ovl-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex:0 0 auto;' +
+      'padding:.75rem clamp(1.2rem,.6rem + 2vw,2.6rem);border-bottom:1px solid ' + LINE + '}',
+    '.ynv-ovl-close{width:44px;height:44px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;' +
+      'background:none;border:0;padding:0;cursor:pointer;font-size:1.35rem;line-height:1;color:' + NAVY + '}',
+    '.ynv-ovl-body{display:flex;flex-direction:column;padding:.6rem clamp(1.2rem,.6rem + 2vw,2.6rem) 3rem}',
+    '.ynv-ovl-top{display:block;font-family:' + KR + ';font-size:1.12rem;font-weight:800;color:' + NAVY + ';' +
+      'padding:.85rem 0 .4rem;margin-top:.5rem;border-bottom:1px solid rgba(0,0,0,.06)}',
+    '.ynv-ovl-sub{display:block;font-family:' + KR + ';font-size:.95rem;color:' + MUTED + ';padding:.55rem 0 .55rem 1.1rem;text-decoration:none}',
+    '@media(max-width:920px){.ynv-menu{display:none}.ynv-burger{display:inline-flex}}',
+    '@media(min-width:921px){.ynv-ovl{display:none!important}}',
+    '@media(prefers-reduced-motion:reduce){.ynv-top,.ynv-d,.ynv-d a,.ynv-i>a::after{transition:none}}'
+  ].join('');
   var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
 
-  /* ── 2. 메뉴 정의 ── */
+  /* ── 2. 메뉴 정의 (메인 H-academic 순서·라벨과 동일) ── */
   var MENU = [
-    { t: '소개', h: 'G-about.html', key: 'about', sub: [['학과장 인사말', 'G-about.html#greeting'], ['비전 · 교육철학', 'G-about.html#vision'], ['조직 · 행정', 'G-about.html#organization'], ['주요 연혁', 'G-about.html#history'], ['연락처 · 오시는 길', 'G-about.html#location']] },
-    { t: '교육', h: 'G-academics.html', key: 'academics', sub: [['교육과정 개관', 'G-academics.html#curriculum'], ['이수 체계도', 'G-academics.html#roadmap'], ['전공 교과', 'G-academics.html#courses'], ['대학원 교과', 'G-academics.html#grad']] },
-    { t: '연구', h: 'G-research.html', key: 'research', sub: [['여섯 개 분야', 'G-research.html#clusters'], ['연구실 전체', 'G-research.html#clusterBlocks']] },
+    { t: '학부소개', h: 'G-about.html', key: 'about', sub: [['학과장 인사말', 'G-about.html#greeting'], ['비전 · 교육철학', 'G-about.html#vision'], ['조직 · 행정', 'G-about.html#organization'], ['주요 연혁', 'G-about.html#history'], ['연락처 · 오시는 길', 'G-about.html#location']] },
     { t: '구성원', h: 'G-people.html', key: 'people', sub: [['교수진 디렉토리', 'G-people.html']] },
+    { t: '연구', h: 'G-research.html', key: 'research', sub: [['여섯 개 분야', 'G-research.html#clusters'], ['연구실 전체', 'G-research.html#clusterBlocks']] },
+    { t: '학사', h: 'G-academics.html', key: 'academics', sub: [['교육과정 개관', 'G-academics.html#curriculum'], ['이수 체계도', 'G-academics.html#roadmap'], ['전공 교과', 'G-academics.html#courses'], ['대학원 교과', 'G-academics.html#grad']] },
     { t: '소식', h: 'G-news.html', key: 'news', sub: [['공지사항', 'G-news.html#feed'], ['뉴스 · 연구 성과', 'G-news.html#hi'], ['세미나 · 행사', 'G-news.html#sched']] },
-    { t: '입학', h: 'G-admissions.html', key: 'admissions', join: true, sub: [['학부 입학', 'G-admissions.html#undergraduate'], ['대학원 진학', 'G-admissions.html#graduate'], ['장학 안내', 'G-admissions.html#scholarships'], ['취업 정보', 'G-admissions.html#jobs'], ['진로 안내', 'G-admissions.html#careers']] }
+    { t: '입학', h: 'G-admissions.html', key: 'admissions', sub: [['학부 입학', 'G-admissions.html#undergraduate'], ['대학원 진학', 'G-admissions.html#graduate'], ['장학 안내', 'G-admissions.html#scholarships'], ['취업 정보', 'G-admissions.html#jobs'], ['진로 안내', 'G-admissions.html#careers']] }
   ];
   var path = (location.pathname.split('/').pop() || '').toLowerCase();
-  var pageName = { 'g-about.html': '소개', 'g-academics.html': '교육', 'g-research.html': '연구', 'g-people.html': '구성원', 'g-news.html': '소식', 'g-admissions.html': '입학' };
-  var isHome = (path === '' || path === 'g-console.html' || path === 'index.html');
   var curKey = null;
   MENU.forEach(function (m) { if (path === 'g-' + m.key + '.html') curKey = m.key; });
 
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
-  /* ── 3. navbar 마크업 ── */
+  /* ── 3. 마크업 ── */
   var menuHtml = MENU.map(function (m) {
     var subs = m.sub.map(function (s) { return '<a href="' + s[1] + '">' + esc(s[0]) + '</a>'; }).join('');
-    var active = (m.key === curKey) ? ' active' : '';
-    return '<div class="ynav-item"><a class="ynav-top' + (m.join ? ' join' : '') + active + '" href="' + m.h + '">' + esc(m.t) + '</a>' +
-      '<div class="ynav-drop">' + subs + '</div></div>';
+    var cur = (m.key === curKey) ? ' class="cur"' : '';
+    return '<div class="ynv-i"><a' + cur + ' href="' + m.h + '">' + esc(m.t) + '</a>' +
+      '<div class="ynv-d">' + subs + '</div></div>';
   }).join('');
-  var spyDefault = isHome ? '연세대학교 기계공학부' : (pageName[path] || '');
-  var nav = document.createElement('header');
-  nav.className = 'ynav';
+
+  var brand =
+    '<a class="ynv-brand" href="H-academic.html" aria-label="연세대학교 기계공학부 홈">' +
+      '<img src="assets/yonsei-seal-t.png" alt="" />' +
+      '<span class="bko">연세대학교 기계공학부<span class="ben">School of Mechanical Engineering</span></span></a>';
+
+  var nav = document.createElement('div');
+  nav.className = 'ynv';
   nav.innerHTML =
-    '<a class="ynav-brand" href="G-console.html" aria-label="연세대학교 기계공학부 홈">' +
-      '<span class="ynav-logo" role="img" aria-label="연세대학교"></span>' +
-      '<span class="dept">연세대학교 기계공학부</span></a>' +
-    '<nav class="ynav-menu" aria-label="주메뉴">' + menuHtml + '</nav>' +
-    '<div class="ynav-spy" aria-live="polite"><span class="lab">SECTION</span>' +
-      '<span class="val" id="ynavSpy">' + esc(spyDefault) + '</span></div>';
+    '<div class="ynv-top"><div class="ynv-w">' +
+      '<a href="https://www.yonsei.ac.kr" target="_blank" rel="noopener">연세대학교</a>' +
+      '<a href="https://engineering.yonsei.ac.kr" target="_blank" rel="noopener">공과대학</a>' +
+      '<a href="https://me.yonsei.ac.kr" target="_blank" rel="noopener">기계공학부 현행 홈</a>' +
+      '<div class="ynv-lang" role="group" aria-label="언어 선택">' +
+        '<button type="button" id="ynvKo" class="on">한국어</button>' +
+        '<button type="button" id="ynvEn">ENG</button></div>' +
+    '</div></div>' +
+    '<header class="ynv-hdr"><div class="ynv-w">' + brand +
+      '<nav class="ynv-menu" aria-label="주메뉴">' + menuHtml + '</nav>' +
+      '<button class="ynv-burger" type="button" aria-label="메뉴 열기" aria-expanded="false" aria-controls="ynvOvl"><span></span><span></span><span></span></button>' +
+    '</div></header>';
 
   function mount() {
     var old = document.querySelector('.hud-top'); if (old) old.remove();
     var ph = document.querySelector('.ynav-ph'); if (ph) ph.remove();
+    document.body.insertBefore(nav, document.body.firstChild);
+
+    /* 스크롤 시 유틸바 접힘 */
+    var min = false;
+    addEventListener('scroll', function () {
+      var m = (pageYOffset || 0) > 40;
+      if (m !== min) { min = m; nav.classList.toggle('min', m); }
+    }, { passive: true });
+
+    /* 한/영 토글 — 서브페이지는 선호도만 저장(홈에서 반영). 시각 상태 동기화 */
+    var ko = nav.querySelector('#ynvKo'), en = nav.querySelector('#ynvEn');
+    function setLang(l) {
+      try { localStorage.setItem('ysme-lang', l); } catch (e) {}
+      if (ko) ko.classList.toggle('on', l === 'ko');
+      if (en) en.classList.toggle('on', l === 'en');
+    }
+    var stored = 'ko';
+    try { stored = localStorage.getItem('ysme-lang') === 'en' ? 'en' : 'ko'; } catch (e) {}
+    setLang(stored);
+    if (ko) ko.addEventListener('click', function () { setLang('ko'); });
+    if (en) en.addEventListener('click', function () { setLang('en'); });
+
     /* 맨 위로 버튼 */
     var topBtn = document.createElement('button');
     topBtn.type = 'button'; topBtn.className = 'ytop'; topBtn.setAttribute('aria-label', '맨 위로');
@@ -108,93 +160,59 @@
     document.body.appendChild(topBtn);
     topBtn.addEventListener('click', function () {
       var smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
-      window.scrollTo({ top: 0, behavior: smooth ? 'smooth' : 'auto' });
+      scrollTo({ top: 0, behavior: smooth ? 'smooth' : 'auto' });
     });
     var topVis = false;
-    window.addEventListener('scroll', function () {
-      var s = (window.pageYOffset || 0) > 400;
+    addEventListener('scroll', function () {
+      var s = (pageYOffset || 0) > 400;
       if (s !== topVis) { topVis = s; topBtn.classList.toggle('show', s); }
     }, { passive: true });
-    document.body.insertBefore(nav, document.body.firstChild);
-    /* ── 모바일 햄버거 버튼 + 풀스크린 오버레이 메뉴(≤920px) ── */
-    var burger = document.createElement('button');
-    burger.className = 'ynav-burger'; burger.type = 'button';
-    burger.setAttribute('aria-label', '메뉴 열기');
-    burger.setAttribute('aria-expanded', 'false');
-    burger.setAttribute('aria-controls', 'ynavOvl');
-    burger.innerHTML = '<span></span><span></span><span></span>';
-    nav.appendChild(burger);
+
+    /* 모바일 오버레이 */
     var ovl = document.createElement('div');
-    ovl.className = 'ynav-ovl'; ovl.id = 'ynavOvl';
-    ovl.setAttribute('role', 'dialog');
-    ovl.setAttribute('aria-modal', 'true');
-    ovl.setAttribute('aria-label', '모바일 메뉴');
+    ovl.className = 'ynv-ovl'; ovl.id = 'ynvOvl';
+    ovl.setAttribute('role', 'dialog'); ovl.setAttribute('aria-modal', 'true'); ovl.setAttribute('aria-label', '모바일 메뉴');
     ovl.innerHTML =
-      '<div class="ynav-ovl-head">' +
-        '<a class="ynav-brand" href="G-console.html" aria-label="연세대학교 기계공학부 홈">' +
-          '<span class="ynav-logo" role="img" aria-label="연세대학교"></span>' +
-          '<span class="dept">연세대학교 기계공학부</span></a>' +
-        '<button class="ynav-ovl-close" type="button" aria-label="메뉴 닫기">✕</button></div>' +
-      '<nav class="ynav-ovl-body" aria-label="모바일 주메뉴">' +
+      '<div class="ynv-ovl-head">' + brand +
+        '<button class="ynv-ovl-close" type="button" aria-label="메뉴 닫기">✕</button></div>' +
+      '<nav class="ynv-ovl-body" aria-label="모바일 주메뉴">' +
         MENU.map(function (m) {
-          var subs = m.sub.map(function (s) { return '<a class="ynav-ovl-sub" href="' + s[1] + '">' + esc(s[0]) + '</a>'; }).join('');
-          return '<a class="ynav-ovl-top" href="' + m.h + '">' + esc(m.t) + '</a>' + subs;
+          var subs = m.sub.map(function (s) { return '<a class="ynv-ovl-sub" href="' + s[1] + '">' + esc(s[0]) + '</a>'; }).join('');
+          return '<a class="ynv-ovl-top" href="' + m.h + '">' + esc(m.t) + '</a>' + subs;
         }).join('') + '</nav>';
     document.body.appendChild(ovl);
-    var ovlClose = ovl.querySelector('.ynav-ovl-close');
+    var burger = nav.querySelector('.ynv-burger');
+    var ovlClose = ovl.querySelector('.ynv-ovl-close');
     var prevOverflow = '';
-    var openOvl = function () {
+    function openOvl() {
       if (ovl.classList.contains('open')) return;
-      ovl.classList.add('open');
-      burger.setAttribute('aria-expanded', 'true');
-      prevOverflow = document.body.style.overflow || '';
-      document.body.style.overflow = 'hidden';
-      var first = ovl.querySelector('.ynav-ovl-body a'); if (first) first.focus();
-    };
-    var closeOvl = function () {
-      if (!ovl.classList.contains('open')) return;
-      ovl.classList.remove('open');
-      burger.setAttribute('aria-expanded', 'false');
-      document.body.style.overflow = prevOverflow;
-      burger.focus();
-    };
-    burger.addEventListener('click', function () { if (ovl.classList.contains('open')) closeOvl(); else openOvl(); });
-    if (ovlClose) ovlClose.addEventListener('click', closeOvl);
-    ovl.addEventListener('click', function (e) {
-      var a = (e.target && e.target.closest) ? e.target.closest('a') : null;
-      if (a) closeOvl();
-    });
-    document.addEventListener('keydown', function (e) {
-      if ((e.key === 'Escape' || e.key === 'Esc') && ovl.classList.contains('open')) closeOvl();
-    });
-    window.addEventListener('resize', function () { if (window.innerWidth > 920) closeOvl(); });
-    if (isHome) {
-      var spy = document.getElementById('ynavSpy');
-      var secs = [].slice.call(document.querySelectorAll('.stage,.doc .sec,.cta'));
-      if (spy && secs.length && 'IntersectionObserver' in window) {
-        var labelOf = function (el) {
-          if (el.classList.contains('stage')) return '연세대학교 기계공학부';
-          if (el.classList.contains('cta')) return '입학';
-          var k = el.querySelector('.sec-kick'); return k ? k.textContent.trim() : '';
-        };
-        var io = new IntersectionObserver(function (es) {
-          es.forEach(function (e) { if (e.isIntersecting) { var l = labelOf(e.target); if (l) spy.textContent = l; } });
-        }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
-        secs.forEach(function (s) { io.observe(s); });
-      }
+      ovl.classList.add('open'); burger.setAttribute('aria-expanded', 'true');
+      prevOverflow = document.body.style.overflow || ''; document.body.style.overflow = 'hidden';
+      var first = ovl.querySelector('.ynv-ovl-body a'); if (first) first.focus();
     }
-    /* 앵커(#섹션)로 진입 시 — JS로 렌더되는 섹션 대응해 콘텐츠 렌더 후 재스크롤 */
+    function closeOvl() {
+      if (!ovl.classList.contains('open')) return;
+      ovl.classList.remove('open'); burger.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = prevOverflow; burger.focus();
+    }
+    if (burger) burger.addEventListener('click', function () { ovl.classList.contains('open') ? closeOvl() : openOvl(); });
+    if (ovlClose) ovlClose.addEventListener('click', closeOvl);
+    ovl.addEventListener('click', function (e) { var a = e.target && e.target.closest ? e.target.closest('a') : null; if (a) closeOvl(); });
+    addEventListener('keydown', function (e) { if ((e.key === 'Escape' || e.key === 'Esc') && ovl.classList.contains('open')) closeOvl(); });
+    addEventListener('resize', function () { if (innerWidth > 920) closeOvl(); });
+
+    /* 앵커(#섹션) 진입 — JS 렌더 섹션 대응 재스크롤 */
     if (location.hash && location.hash.length > 1) {
       var reScroll = function () {
         var t = null;
         try { t = document.getElementById(decodeURIComponent(location.hash.slice(1))); } catch (e) {}
         if (t) {
-          var y = t.getBoundingClientRect().top + (window.pageYOffset || document.documentElement.scrollTop) - 76;
-          try { window.scrollTo({ top: y, behavior: 'instant' }); } catch (e) { window.scrollTo(0, y); }
+          var y = t.getBoundingClientRect().top + (pageYOffset || document.documentElement.scrollTop) - 80;
+          try { scrollTo({ top: y, behavior: 'instant' }); } catch (e) { scrollTo(0, y); }
         }
       };
       [120, 350, 700].forEach(function (d) { setTimeout(reScroll, d); });
-      window.addEventListener('load', function () { setTimeout(reScroll, 100); });
+      addEventListener('load', function () { setTimeout(reScroll, 100); });
     }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount); else mount();

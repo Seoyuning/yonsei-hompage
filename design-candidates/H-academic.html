@@ -18,22 +18,22 @@
    ═══════════════════════════════════════════════════════════ */
 :root{
   --navy:#1a3d75; --navy-d:#12294f; --coral:#e2593c;
-  --ink:#1b2536; --muted:#5e6b82; --dim:#8b96a9;
-  --line:#e4e9f1; --soft:#f4f6fa; --bg:#fff;
+  --ink:#0f1b30; --muted:#5e6b82; --dim:#8b96a9;
+  --paper:#f5f2ec; --line:#e2ddd2; --soft:#ece7db; --bg:#f5f2ec;
   --kr:"Pretendard Variable","Pretendard",system-ui,sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
   --e:cubic-bezier(.16,1,.3,1);   /* expo-out — 모든 모션의 기준 이징 */
 }
 *,*::before,*::after{box-sizing:border-box;margin:0}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
-body{font-family:var(--kr);background:var(--bg);color:var(--ink);
+body{font-family:var(--kr);background:var(--paper);color:var(--ink);
   -webkit-font-smoothing:antialiased;word-break:keep-all;line-height:1.6}
 a{color:inherit;text-decoration:none}
 img{display:block;max-width:100%}
 .wrap{max-width:72rem;margin:0 auto;padding:0 clamp(1.1rem,4vw,2rem)}
 
 /* ── 상단 유틸리티 바 ── */
-.topbar{background:var(--navy-d);color:#c6d2e6;font-size:.74rem}
+.topbar{background:var(--ink);color:#c6d2e6;font-size:.74rem}
 .topbar .wrap{display:flex;align-items:center;justify-content:flex-end;gap:1.4rem;padding-top:.42rem;padding-bottom:.42rem}
 .topbar a:hover{color:#fff}
 .lang{display:flex;gap:.1rem;margin-left:.5rem;border:1px solid rgba(255,255,255,.28);border-radius:99px;padding:.12rem}
@@ -42,7 +42,7 @@ img{display:block;max-width:100%}
 .lang button.on{background:#fff;color:var(--navy-d)}
 
 /* ── 헤더 ── */
-.hdr{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.96);
+.hdr{position:sticky;top:0;z-index:40;background:rgba(245,242,236,.94);
   backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
 .hdr .wrap{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;
   padding-top:.85rem;padding-bottom:.85rem}
@@ -87,52 +87,62 @@ img{display:block;max-width:100%}
   font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.72)}
 .hero-scroll::after{content:"";display:block;width:1px;height:2rem;margin:.45rem auto 0;
   background:linear-gradient(rgba(255,255,255,.8),transparent)}
-/* 히어로 하단 지표 스트립 — 관제 텔레메트리 밴드 (히어로의 네이비를 이어받음) */
-.stats{background:var(--navy-d);border-top:2px solid var(--coral);color:#fff}
+/* 히어로 하단 지표 스트립 — 잉크 텔레메트리 밴드, 거대 숫자 */
+.stats{background:var(--ink);border-top:2px solid var(--coral);color:#fff}
 .stats .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;
-  padding-top:1.5rem;padding-bottom:1.5rem}
-.st{display:flex;flex-direction:column;gap:.3rem;border-left:1px solid rgba(255,255,255,.16);padding-left:1.1rem}
-.st b{font-family:var(--mono);font-weight:500;letter-spacing:.02em;
-  font-size:clamp(1.5rem,1.1rem + 1.5vw,2.3rem);color:#fff;font-variant-numeric:tabular-nums}
+  padding-top:2rem;padding-bottom:2rem}
+.st{display:flex;flex-direction:column;gap:.35rem;border-left:1px solid rgba(255,255,255,.16);padding-left:1.2rem}
+.st b{font-family:var(--mono);font-weight:500;letter-spacing:.02em;line-height:1;
+  font-size:clamp(2.1rem,1.4rem + 2.6vw,3.4rem);color:#fff;font-variant-numeric:tabular-nums}
 .st:last-child b{color:var(--coral)}
-.st span{font-family:var(--mono);font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:#8fa2c2}
-@media(max-width:640px){.stats .wrap{grid-template-columns:repeat(2,1fr);row-gap:1.3rem}}
+.st span{font-family:var(--mono);font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;color:#8fa2c2}
+@media(max-width:640px){.stats .wrap{grid-template-columns:repeat(2,1fr);row-gap:1.4rem}}
 
-/* ── 공통 섹션 ── */
-.sec{padding-top:clamp(2.8rem,6vh,4.4rem)}
-.sec:last-of-type{padding-bottom:clamp(2.8rem,6vh,4.4rem)}
-.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;margin-bottom:1.5rem}
+/* ── 공통 섹션 — 에디토리얼: 아웃라인 인덱스 + 거대 타이틀 ── */
+.sec{padding-top:clamp(3.6rem,8vh,6rem)}
+.sec:last-of-type{padding-bottom:clamp(3.2rem,7vh,5rem)}
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:1.2rem;margin-bottom:clamp(1.6rem,3vh,2.4rem)}
+.sidx{flex:none;font-family:var(--mono);font-weight:600;line-height:.85;
+  font-size:clamp(3rem,3rem + 4vw,6rem);color:transparent;
+  -webkit-text-stroke:1.5px rgba(26,61,117,.32);user-select:none}
+.sec-head>div{flex:1;min-width:0}
 .kick{font-family:var(--mono);font-size:.66rem;font-weight:500;letter-spacing:.3em;text-transform:uppercase;color:var(--coral)}
 .kick::before{content:"// "}
-.sec-title{margin-top:.35rem;font-size:clamp(1.35rem,1.1rem + 1vw,1.8rem);font-weight:800;
-  letter-spacing:-.015em;color:var(--navy)}
+.sec-title{margin-top:.3rem;font-size:clamp(1.7rem,1.2rem + 2.4vw,2.9rem);font-weight:800;
+  letter-spacing:-.02em;color:var(--ink);line-height:1.12}
 .more{display:inline-block;font-size:.85rem;font-weight:600;color:var(--muted);white-space:nowrap;padding-bottom:.2rem;
   transition:color .2s,transform .45s var(--e)}
 .more:hover{color:var(--coral);transform:translateX(5px)}
 
-/* ── 연구 뉴스 카드 ── */
-.news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3rem}
-.ncard{border:1px solid var(--line);border-radius:.3rem;overflow:hidden;background:#fff;
-  transition:transform .18s,box-shadow .18s,border-color .18s}
-.ncard:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(18,41,79,.1);border-color:#cdd8e8}
-.ncard .thumb{aspect-ratio:16/9.6;background:linear-gradient(135deg,#22467f,#12294f);position:relative;overflow:hidden}
-.ncard .thumb img{width:100%;height:100%;object-fit:cover;transition:transform .3s}
-.ncard:hover .thumb img{transform:scale(1.04)}
-.ncard .nbody{padding:1rem 1.1rem 1.15rem}
-.ncard .ntitle{font-weight:700;font-size:.95rem;line-height:1.45;color:var(--ink);
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.ncard time{display:block;margin-top:.6rem;font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;color:var(--dim)}
-@media(max-width:840px){.news-grid{grid-template-columns:1fr;gap:.9rem}
-  .ncard .thumb{aspect-ratio:16/7}}
+/* ── 연구 뉴스 — 에디토리얼 리스트 + 커서 추적 이미지 프리뷰 ── */
+.nlist{border-top:1px solid var(--ink)}
+.nrow{display:flex;align-items:baseline;gap:clamp(1rem,2.5vw,2.2rem);
+  padding:clamp(1.1rem,2.4vh,1.7rem) .2rem;border-bottom:1px solid var(--line);
+  transition:padding .45s var(--e)}
+.nrow time{flex:none;width:6.2rem;font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;color:var(--dim)}
+.nrow .nt2{flex:1;min-width:0;font-size:clamp(1.05rem,.85rem + 1.1vw,1.55rem);font-weight:700;
+  line-height:1.35;color:var(--ink);transition:color .2s,transform .5s var(--e)}
+.nrow i{flex:none;font-style:normal;font-family:var(--mono);color:var(--dim);
+  transition:transform .45s var(--e),color .2s}
+.nrow:hover .nt2{color:var(--coral);transform:translateX(10px)}
+.nrow:hover i{color:var(--coral);transform:translateX(6px)}
+#newsPrev{position:fixed;left:0;top:0;width:min(21rem,32vw);aspect-ratio:16/10;object-fit:cover;
+  border-radius:.35rem;box-shadow:0 24px 60px rgba(15,27,48,.35);z-index:55;pointer-events:none;
+  opacity:0;transition:opacity .3s ease}
+#newsPrev.on{opacity:1}
+@media(max-width:840px){.nrow{flex-wrap:wrap;gap:.4rem}.nrow time{width:auto}#newsPrev{display:none}}
 
-/* ── 공지 · 세미나 보드 — 관제 콘솔 패널 (G-console DNA) ── */
-.board-band{margin-top:clamp(2.8rem,6vh,4.4rem);background:var(--navy);color:#e2e6ec;
-  border-top:1px solid rgba(255,255,255,.14);border-bottom:1px solid rgba(255,255,255,.14)}
-.board-band .wrap{display:grid;grid-template-columns:1.15fr 1fr;gap:clamp(1.6rem,3.4vw,3rem);
-  padding-top:clamp(2.4rem,5vh,3.4rem);padding-bottom:clamp(2.4rem,5vh,3.4rem)}
+/* ── 공지 · 세미나 보드 — 잉크 콘솔 패널 + 고스트 타이포 ── */
+.board-band{position:relative;overflow:hidden;margin-top:clamp(3.2rem,7vh,5rem);
+  background:var(--ink);color:#e2e6ec}
+.board-band::before{content:"NOTICE";position:absolute;right:-.06em;top:-.14em;
+  font-family:var(--mono);font-weight:600;font-size:clamp(6rem,16vw,15rem);line-height:1;
+  color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.07);pointer-events:none}
+.board-band .wrap{position:relative;display:grid;grid-template-columns:1.15fr 1fr;gap:clamp(1.6rem,3.4vw,3rem);
+  padding-top:clamp(3rem,6vh,4.4rem);padding-bottom:clamp(3rem,6vh,4.4rem)}
 .board-band .wrap>div{min-width:0}
-.bhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
-.bhead h3{font-size:1.08rem;font-weight:800;color:#fff;letter-spacing:.01em}
+.bhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem}
+.bhead h3{font-size:clamp(1.2rem,1rem + 1vw,1.7rem);font-weight:800;color:#fff;letter-spacing:.01em}
 .bhead h3::before{content:"";display:inline-block;width:.5rem;height:.5rem;margin-right:.55rem;
   background:var(--coral);transform:translateY(-.05rem) rotate(45deg)}
 .board-band .more{color:#9db4d8}
@@ -154,56 +164,76 @@ img{display:block;max-width:100%}
 .bd{flex:none;font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;color:#7f8fad;font-variant-numeric:tabular-nums}
 @media(max-width:840px){.board-band .wrap{grid-template-columns:1fr}}
 
-/* ── 연구 분야 — 관제 번호 행 + 게이지 바 (G-console clist DNA) ── */
-.clist{border-top:1px solid var(--line)}
-.crow{display:flex;align-items:center;gap:clamp(.9rem,2vw,1.6rem);padding:1.05rem .5rem;
-  border-bottom:1px solid var(--line);transition:background .15s,transform .18s}
-.crow:hover{background:var(--soft);transform:translateX(4px)}
-.cno{flex:none;width:2.1rem;font-family:var(--mono);font-size:.78rem;color:var(--dim);transition:color .15s}
-.crow:hover .cno{color:var(--coral)}
+/* ── 연구 분야 — XL 행 + 코랄 와이프 ── */
+.clist{border-top:1px solid var(--ink)}
+.crow{position:relative;display:flex;align-items:center;gap:clamp(1rem,2.4vw,2rem);
+  padding:clamp(1.2rem,2.6vh,1.9rem) clamp(.4rem,1vw,1rem);border-bottom:1px solid var(--line);overflow:hidden}
+.crow::before{content:"";position:absolute;inset:0;background:var(--coral);
+  transform:scaleY(0);transform-origin:bottom;transition:transform .5s var(--e);z-index:0}
+.crow:hover::before{transform:scaleY(1)}
+.crow>*{position:relative;z-index:1}
+.cno{flex:none;width:clamp(3rem,6vw,5rem);font-family:var(--mono);font-weight:600;line-height:1;
+  font-size:clamp(1.7rem,1.2rem + 2.4vw,3rem);color:transparent;
+  -webkit-text-stroke:1px rgba(26,61,117,.4);transition:color .25s,-webkit-text-stroke-color .25s}
+.crow:hover .cno{color:#fff;-webkit-text-stroke-color:transparent}
 .cmain{flex:1;min-width:0}
-.cko{font-size:1.08rem;font-weight:800;color:var(--navy);letter-spacing:-.01em}
-.cen{margin-left:.7rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--dim)}
-.cdesc{display:block;margin-top:.22rem;font-size:.84rem;color:var(--muted);
+.cko{font-size:clamp(1.25rem,1rem + 1.6vw,2rem);font-weight:800;color:var(--ink);
+  letter-spacing:-.015em;transition:color .25s}
+.cen{margin-left:.8rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim);transition:color .25s}
+.cdesc{display:block;margin-top:.25rem;font-size:.86rem;color:var(--muted);transition:color .25s;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.cbar{display:block;height:2px;background:var(--line);margin-top:.6rem;overflow:hidden}
-.cbar span{display:block;height:100%;background:linear-gradient(90deg,var(--navy),var(--coral));
-  transform-origin:left;transform:scaleX(0);transition:transform 1s cubic-bezier(.2,.7,.2,1)}
-.vis .cbar span,.no-anim .cbar span{transform:scaleX(1)}
-.clabs{flex:none;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;
-  text-transform:uppercase;color:var(--muted);text-align:right}
-.clabs b{display:block;font-size:1.25rem;font-weight:600;color:var(--coral)}
+.crow:hover .cko{color:#fff}
+.crow:hover .cen{color:rgba(255,255,255,.75)}
+.crow:hover .cdesc{color:rgba(255,255,255,.85)}
+.clabs{flex:none;font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);text-align:right;transition:color .25s}
+.clabs b{display:block;font-size:clamp(1.3rem,1rem + 1vw,1.8rem);font-weight:600;color:var(--coral);
+  line-height:1.1;transition:color .25s}
+.crow:hover .clabs{color:rgba(255,255,255,.8)}
+.crow:hover .clabs b{color:#fff}
 @media(max-width:640px){.cdesc,.cen{display:none}}
 
-/* ── 교수진 ── */
-.pgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:1rem}
-.pc{border:1px solid var(--line);border-radius:.3rem;overflow:hidden;background:#fff;
-  transition:transform .18s,box-shadow .18s,border-color .18s}
-.pc:hover{transform:translateY(-4px);box-shadow:0 10px 24px rgba(18,41,79,.1);border-color:#cdd8e8}
-.pc .pph{aspect-ratio:1;background:linear-gradient(160deg,#e8eef7,#d4deed);position:relative;overflow:hidden}
+/* ── 교수진 — 드래그 가로 레일 ── */
+.prail{display:flex;gap:1.1rem;overflow-x:auto;scroll-snap-type:x proximity;
+  padding:0 0 1.2rem;cursor:grab;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.prail::-webkit-scrollbar{display:none}
+.prail.drag{cursor:grabbing;scroll-snap-type:none}
+.pc{flex:0 0 clamp(180px,22vw,232px);scroll-snap-align:start;border:1px solid var(--line);
+  border-radius:.35rem;overflow:hidden;background:#fff;
+  transition:transform .6s var(--e),box-shadow .6s var(--e)}
+.pc:hover{transform:translateY(-6px);box-shadow:0 16px 36px rgba(15,27,48,.14)}
+.pc .pph{aspect-ratio:1/1.06;background:linear-gradient(160deg,#e8e3d8,#d6d0c2);position:relative;overflow:hidden}
 .pc .pph span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  font-size:2rem;font-weight:800;color:#a9b8d0}
-.pc .pph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.pc .pin{padding:.7rem .8rem .8rem}
-.pc .pclu{font-size:.66rem;font-weight:700;color:var(--coral);letter-spacing:.02em}
-.pc .pko{margin-top:.15rem;font-size:1rem;font-weight:800;color:var(--navy)}
+  font-size:2rem;font-weight:800;color:#b3ab99}
+.pc .pph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  transition:transform .8s var(--e)}
+.pc:hover .pph img{transform:scale(1.06)}
+.pc .pin{padding:.75rem .85rem .85rem;pointer-events:none}
+.pc .pclu{font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;
+  font-weight:500;color:var(--coral)}
+.pc .pko{margin-top:.18rem;font-size:1.02rem;font-weight:800;color:var(--ink)}
 .pc .prk{margin-top:.05rem;font-size:.74rem;color:var(--muted)}
-@media(max-width:1020px){.pgrid{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:560px){.pgrid{grid-template-columns:repeat(2,1fr)}}
+.rail-hint{margin-top:.2rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--dim);user-select:none}
 
-/* ── 바로가기 ── */
-.quick{margin-top:clamp(2.8rem,6vh,4.4rem);background:var(--navy)}
-.quick .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.14)}
-.q{position:relative;display:flex;flex-direction:column;gap:.55rem;padding:1.7rem 1.4rem;background:var(--navy);
-  color:#fff;transition:background .15s}
-.q::after{content:"";position:absolute;left:0;top:0;bottom:0;width:0;background:var(--coral);transition:width .15s}
-.q:hover{background:#21498a}
-.q:hover::after{width:3px}
-.q svg{width:1.7rem;height:1.7rem;stroke:#fac9bc}
-.q b{font-size:1rem;font-weight:700}
-.q span{font-size:.78rem;color:#b9c7de}
-@media(max-width:840px){.quick .wrap{grid-template-columns:repeat(2,1fr)}}
+/* ── 바로가기 — 코랄 스테이트먼트 밴드, 거대 타이포 행 ── */
+.quick{margin-top:clamp(3.2rem,7vh,5rem);background:var(--coral);color:#fff}
+.quick .wrap{padding-top:clamp(2.4rem,5vh,3.6rem);padding-bottom:clamp(2.4rem,5vh,3.6rem)}
+.ql{position:relative;display:flex;align-items:baseline;gap:clamp(.9rem,2.4vw,2rem);
+  padding:clamp(1.1rem,2.4vh,1.6rem) .3rem;border-bottom:1px solid rgba(255,255,255,.38);overflow:hidden}
+.ql:first-child{border-top:1px solid rgba(255,255,255,.38)}
+.ql::before{content:"";position:absolute;inset:0;background:var(--ink);
+  transform:scaleX(0);transform-origin:left;transition:transform .5s var(--e)}
+.ql:hover::before{transform:scaleX(1)}
+.ql>*{position:relative}
+.ql b{font-size:clamp(1.5rem,1rem + 2.6vw,2.6rem);font-weight:800;letter-spacing:-.015em;line-height:1.1}
+.ql span{flex:1;min-width:0;font-size:.86rem;color:rgba(255,255,255,.85);white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.ql i{font-style:normal;font-size:clamp(1.3rem,2.4vw,2rem);line-height:1;
+  transition:transform .5s var(--e)}
+.ql:hover i{transform:translateX(10px)}
+@media(max-width:640px){.ql span{display:none}}
 
 /* ── 페이드 애니메이션 ── */
 /* 히어로: 로드 시 순차 페이드 (배경은 아주 느린 줌아웃으로 깊이감) */
@@ -219,21 +249,23 @@ img{display:block;max-width:100%}
 /* 스크롤 리빌: 처음 보일 때 한 번만 은은하게 */
 .fade{opacity:0;transform:translateY(26px);transition:opacity .9s ease,transform 1s var(--e)}
 .fade.vis{opacity:1;transform:none}
-/* 리빌 안 이미지: 살짝 확대돼 있다가 자리 잡음 */
-.news-grid .thumb img{transform:scale(1.14);transition:transform 1.5s var(--e)}
-.news-grid.vis .thumb img{transform:scale(1)}
-.ncard:hover .thumb img{transform:scale(1.05)}
-/* 보드 행·분야 행: 컨테이너 리빌 후 좌→우 스태거 */
-.blist .brow,.clist .crow{opacity:0;transform:translateX(-16px);
-  transition:opacity .7s ease,transform .8s var(--e),background .15s,color .12s}
-.fade.vis .brow,.clist.vis .crow{opacity:1;transform:none}
-.clist.vis .crow:hover{transform:translateX(4px)}
-.blist .brow:nth-child(1),.clist .crow:nth-child(1){transition-delay:.05s}
-.blist .brow:nth-child(2),.clist .crow:nth-child(2){transition-delay:.13s}
-.blist .brow:nth-child(3),.clist .crow:nth-child(3){transition-delay:.21s}
-.blist .brow:nth-child(4),.clist .crow:nth-child(4){transition-delay:.29s}
-.blist .brow:nth-child(5),.clist .crow:nth-child(5){transition-delay:.37s}
-.blist .brow:nth-child(6),.clist .crow:nth-child(6){transition-delay:.45s}
+/* 보드·뉴스·분야 행: 컨테이너 리빌 후 좌→우 스태거 */
+.blist .brow,.clist .crow,.nlist .nrow{opacity:0;transform:translateX(-16px);
+  transition:opacity .7s ease,transform .8s var(--e)}
+.fade.vis .brow,.clist.vis .crow,.nlist.vis .nrow{opacity:1;transform:none}
+.blist .brow:nth-child(1),.clist .crow:nth-child(1),.nlist .nrow:nth-child(1){transition-delay:.05s}
+.blist .brow:nth-child(2),.clist .crow:nth-child(2),.nlist .nrow:nth-child(2){transition-delay:.13s}
+.blist .brow:nth-child(3),.clist .crow:nth-child(3),.nlist .nrow:nth-child(3){transition-delay:.21s}
+.blist .brow:nth-child(4),.clist .crow:nth-child(4),.nlist .nrow:nth-child(4){transition-delay:.29s}
+.blist .brow:nth-child(5),.clist .crow:nth-child(5),.nlist .nrow:nth-child(5){transition-delay:.37s}
+.blist .brow:nth-child(6),.clist .crow:nth-child(6),.nlist .nrow:nth-child(6){transition-delay:.45s}
+/* 커스텀 커서 링 — difference 블렌드로 어디서나 보임 */
+.cur{position:fixed;left:0;top:0;width:34px;height:34px;border:1.5px solid #fff;border-radius:50%;
+  mix-blend-mode:difference;z-index:90;pointer-events:none;opacity:0;
+  transform:translate(-50%,-50%);transition:width .35s var(--e),height .35s var(--e),opacity .3s}
+.cur.on{opacity:1}
+.cur.big{width:64px;height:64px}
+@media(pointer:coarse){.cur{display:none}}
 /* 스크롤 진행 헤어라인 */
 .sprog{position:fixed;top:0;left:0;right:0;height:2px;background:var(--coral);z-index:60;
   transform:scaleX(0);transform-origin:left;pointer-events:none}
@@ -242,21 +274,20 @@ img{display:block;max-width:100%}
 .mq-track{display:flex;width:max-content;animation:mq 30s linear infinite}
 .mq-track span{display:flex;align-items:center;gap:2.4rem;padding-right:2.4rem;white-space:nowrap;
   font-weight:800;letter-spacing:.02em;font-size:clamp(2.4rem,5.5vw,4.4rem);
-  color:transparent;-webkit-text-stroke:1px rgba(26,61,117,.26)}
+  color:transparent;-webkit-text-stroke:1px rgba(15,27,48,.3)}
 .mq-track i{font-style:normal;font-size:.5em;color:var(--coral);-webkit-text-stroke:0}
 @keyframes mq{to{transform:translateX(-50%)}}
 @media(prefers-reduced-motion:reduce){
   .hero-bg,.hero-kick,.hero .sub,.hero-btns,.hero-scroll{animation:none;opacity:1}
   .fade{opacity:1;transform:none;transition:none}
-  .cbar span{transform:none!important;transition:none!important}
   .hero h1 .ti{transform:none;transition:none}
-  .blist .brow,.clist .crow{opacity:1;transform:none;transition:none}
-  .news-grid .thumb img{transform:none;transition:none}
+  .blist .brow,.clist .crow,.nlist .nrow{opacity:1;transform:none;transition:none}
   .mq-track{animation:none}
+  .cur,#newsPrev{display:none}
 }
 
 /* ── 푸터 ── */
-.ftr{background:var(--navy-d);color:#a9b8d2;font-size:.8rem}
+.ftr{background:var(--ink);color:#a9b8d2;font-size:.8rem}
 .ftr .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem;
   padding-top:2rem;padding-bottom:2.2rem}
 .ftr b{color:#fff;font-size:.9rem;letter-spacing:.01em}
@@ -267,6 +298,7 @@ img{display:block;max-width:100%}
 <body>
 
 <div class="sprog" aria-hidden="true"></div>
+<div class="cur" aria-hidden="true"></div>
 
 <div class="topbar">
   <div class="wrap">
@@ -327,20 +359,19 @@ img{display:block;max-width:100%}
 <main>
 
   <!-- ═══ 연구 뉴스 (KAIST 뉴스 하이라이트 스타일) ═══ -->
-  <section class="wrap sec" aria-labelledby="h-news">
+  <section class="wrap sec" aria-labelledby="h-news" id="secNews">
     <div class="sec-head">
+      <span class="sidx" aria-hidden="true">01</span>
       <div>
         <p class="kick">Research &amp; News</p>
         <h2 class="sec-title" id="h-news" data-i18n="newsTitle">연구 소식</h2>
       </div>
       <a class="more" href="G-news.html" data-i18n="moreAll">전체 보기 →</a>
     </div>
-    <div class="news-grid" id="newsGrid">
-      <a class="ncard" href="G-news.html">
-        <span class="thumb"></span>
-        <span class="nbody"><span class="ntitle">학부 뉴스 보기</span><time>G-news</time></span>
-      </a>
+    <div class="nlist" id="newsGrid">
+      <a class="nrow" href="G-news.html"><span class="nt2">학부 뉴스 보기</span><i>→</i></a>
     </div>
+    <img id="newsPrev" src="" alt="" aria-hidden="true" />
   </section>
 
   <!-- ═══ 공지 · 세미나 보드 ═══ -->
@@ -370,6 +401,7 @@ img{display:block;max-width:100%}
   <!-- ═══ 연구 분야 (SNU 6분야 그리드 스타일) ═══ -->
   <section class="wrap sec" id="research" aria-labelledby="h-research">
     <div class="sec-head">
+      <span class="sidx" aria-hidden="true">02</span>
       <div>
         <p class="kick">Research Areas</p>
         <h2 class="sec-title" id="h-research" data-i18n="areasTitle">연구 분야</h2>
@@ -382,13 +414,15 @@ img{display:block;max-width:100%}
   <!-- ═══ 교수진 ═══ -->
   <section class="wrap sec" aria-labelledby="h-people">
     <div class="sec-head">
+      <span class="sidx" aria-hidden="true">03</span>
       <div>
         <p class="kick">People</p>
         <h2 class="sec-title" id="h-people" data-i18n="peopleTitle">교수진</h2>
       </div>
       <a class="more" href="G-people.html" data-i18n="morePeople">교수진 전체 →</a>
     </div>
-    <div class="pgrid" id="pGrid"></div>
+    <div class="prail" id="pGrid"></div>
+    <p class="rail-hint" aria-hidden="true">← drag →</p>
   </section>
 
   <!-- ═══ 아웃라인 마퀴 ═══ -->
@@ -399,24 +433,20 @@ img{display:block;max-width:100%}
     </div>
   </div>
 
-  <!-- ═══ 바로가기 (SNU 인포메이션 스타일) ═══ -->
+  <!-- ═══ 바로가기 — 코랄 스테이트먼트 밴드 ═══ -->
   <section class="quick" aria-label="바로가기">
     <div class="wrap">
-      <a class="q" href="G-admissions.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3 2 8l10 5 10-5-10-5zM5 10v6c0 1.5 3 3 7 3s7-1.5 7-3v-6"/></svg>
-        <b data-i18n="qAdm">입학 안내</b><span data-i18n="qAdmS">학부·대학원 지원 경로</span>
+      <a class="ql" href="G-admissions.html">
+        <b data-i18n="qAdm">입학 안내</b><span data-i18n="qAdmS">학부·대학원 지원 경로</span><i aria-hidden="true">→</i>
       </a>
-      <a class="q" href="G-academics.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h16v16H4zM4 9h16M9 4v16"/></svg>
-        <b data-i18n="qAcad">학사 · 교과</b><span data-i18n="qAcadS">교과과정과 이수 체계</span>
+      <a class="ql" href="G-academics.html">
+        <b data-i18n="qAcad">학사 · 교과</b><span data-i18n="qAcadS">교과과정과 이수 체계</span><i aria-hidden="true">→</i>
       </a>
-      <a class="q" href="G-people.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-3.5 3.8-5 7-5s6 1.5 7 5"/></svg>
-        <b data-i18n="qFac">교수진</b><span data-i18n="qFacS">33명의 전임 교수</span>
+      <a class="ql" href="G-people.html">
+        <b data-i18n="qFac">교수진</b><span data-i18n="qFacS">33명의 전임 교수</span><i aria-hidden="true">→</i>
       </a>
-      <a class="q" href="G-about.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s-7-5.6-7-11a7 7 0 0 1 14 0c0 5.4-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
-        <b data-i18n="qDir">오시는 길</b><span data-i18n="qDirS">서울 서대문구 연세로 50</span>
+      <a class="ql" href="G-about.html">
+        <b data-i18n="qDir">오시는 길</b><span data-i18n="qDirS">서울 서대문구 연세로 50</span><i aria-hidden="true">→</i>
       </a>
     </div>
   </section>
@@ -506,16 +536,15 @@ img{display:block;max-width:100%}
     }
   }
 
-  /* ── 연구 뉴스 — 썸네일 카드 3건 (제목은 원문) ── */
+  /* ── 연구 뉴스 — 에디토리얼 리스트(호버 시 커서 추적 썸네일) ── */
   function renderNews() {
     var ng = document.getElementById('newsGrid');
     if (!ng || !D.newsList || !D.newsList.length) return;
-    ng.innerHTML = D.newsList.slice().sort(byDate).slice(0, 3).map(function (n) {
-      var img = n.thumb ? '<img src="' + esc(n.thumb) + '" alt="" loading="lazy" onerror="this.remove()">' : '';
-      return '<a class="ncard" href="' + esc(n.url || 'G-news.html') + '" target="_blank" rel="noopener">' +
-        '<span class="thumb">' + img + '</span>' +
-        '<span class="nbody"><span class="ntitle">' + esc(n.title) + '</span>' +
-        '<time>' + esc(n.date) + '</time></span></a>';
+    ng.innerHTML = D.newsList.slice().sort(byDate).slice(0, 4).map(function (n) {
+      return '<a class="nrow" href="' + esc(n.url || 'G-news.html') + '" target="_blank" rel="noopener"' +
+        (n.thumb ? ' data-thumb="' + esc(n.thumb) + '"' : '') + '>' +
+        '<time>' + esc(n.date) + '</time>' +
+        '<span class="nt2">' + esc(n.title) + '</span><i aria-hidden="true">→</i></a>';
     }).join('');
   }
 
@@ -580,7 +609,7 @@ img{display:block;max-width:100%}
     }).join('');
   }
 
-  /* ── 교수진 — 무작위 6명(공평 노출), 언어 전환 시 같은 6명 유지 ── */
+  /* ── 교수진 — 무작위 10명 가로 레일(공평 노출), 언어 전환 시 같은 구성 유지 ── */
   var pool = (D.professors || []).slice();
   for (var i = pool.length - 1; i > 0; i--) {
     var j = Math.floor(Math.random() * (i + 1)), t = pool[i]; pool[i] = pool[j]; pool[j] = t;
@@ -589,7 +618,7 @@ img{display:block;max-width:100%}
     var pg = document.getElementById('pGrid');
     if (!pg || !pool.length) return;
     var cl = {}; (D.clusters || []).forEach(function (c) { cl[c.id] = LANG === 'en' ? c.en : c.ko; });
-    pg.innerHTML = pool.slice(0, 6).map(function (p) {
+    pg.innerHTML = pool.slice(0, 10).map(function (p) {
       var name = LANG === 'en' ? (p.en || p.ko) : p.ko;
       var rank = LANG === 'en' ? (p.titleEn || RANK_EN[p.rank] || p.rank) : (p.rank + (p.role ? ' · ' + p.role : ''));
       return '<a class="pc" href="G-people.html#' + esc(p.id) + '">' +
@@ -627,7 +656,7 @@ img{display:block;max-width:100%}
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   if (!('IntersectionObserver' in window)) return;
   var targets = [];
-  document.querySelectorAll('.stats .st, .quick .q').forEach(function (el, i) {
+  document.querySelectorAll('.stats .st, .quick .ql').forEach(function (el, i) {
     el.classList.add('fade');
     el.style.transitionDelay = (i % 4) * 90 + 'ms';
     targets.push(el);
@@ -740,7 +769,8 @@ img{display:block;max-width:100%}
   update();
 
   /* ── 마그네틱 버튼 — 커서를 살짝 따라오는 히어로 CTA (파인 포인터 전용) ── */
-  if (!reduce && matchMedia('(pointer: fine)').matches) {
+  var fine = matchMedia('(pointer: fine)').matches;
+  if (!reduce && fine) {
     document.querySelectorAll('.hero .btn').forEach(function (b) {
       b.style.transition += ',transform .6s var(--e)';
       b.addEventListener('pointermove', function (e) {
@@ -751,6 +781,62 @@ img{display:block;max-width:100%}
       });
       b.addEventListener('pointerleave', function () { b.style.transform = ''; });
     });
+  }
+
+  /* ── 커서 링 + 뉴스 호버 프리뷰 — 하나의 rAF 루프에서 러프(lerp) 추적 ── */
+  if (!reduce && fine) {
+    var cur = document.querySelector('.cur');
+    var prev2 = document.getElementById('newsPrev');
+    var nsec = document.getElementById('secNews');
+    var mx = innerWidth / 2, my = innerHeight / 2;
+    var cx = mx, cy = my, px = mx, py = my, shown = false;
+    addEventListener('pointermove', function (e) {
+      mx = e.clientX; my = e.clientY;
+      if (cur && !shown) { shown = true; cur.classList.add('on'); }
+    }, { passive: true });
+    /* 링: 링크·버튼 위에서 커진다 */
+    document.addEventListener('mouseover', function (e) {
+      if (!cur) return;
+      cur.classList.toggle('big', !!(e.target.closest && e.target.closest('a,button')));
+    });
+    /* 프리뷰: 뉴스 행 위에서 썸네일 표시 */
+    if (nsec && prev2) {
+      nsec.addEventListener('mouseover', function (e) {
+        var row = e.target.closest && e.target.closest('.nrow');
+        if (row && row.dataset.thumb) {
+          if (prev2.getAttribute('src') !== row.dataset.thumb) prev2.src = row.dataset.thumb;
+          prev2.classList.add('on');
+        } else prev2.classList.remove('on');
+      });
+      nsec.addEventListener('mouseleave', function () { prev2.classList.remove('on'); });
+    }
+    (function loop() {
+      cx += (mx - cx) * 0.2; cy += (my - cy) * 0.2;
+      px += (mx - px) * 0.09; py += (my - py) * 0.09;
+      if (cur) { cur.style.left = cx + 'px'; cur.style.top = cy + 'px'; }
+      if (prev2) prev2.style.transform =
+        'translate(' + (px + 26) + 'px,' + (py - 120) + 'px) rotate(' + ((mx - px) * 0.015) + 'deg)';
+      requestAnimationFrame(loop);
+    })();
+  }
+
+  /* ── 교수진 레일 — 드래그 스크롤 ── */
+  var rail = document.getElementById('pGrid');
+  if (rail && fine) {
+    var down = false, sx0 = 0, sl0 = 0, moved = false;
+    rail.addEventListener('pointerdown', function (e) {
+      down = true; moved = false; sx0 = e.clientX; sl0 = rail.scrollLeft;
+      rail.classList.add('drag');
+    });
+    addEventListener('pointermove', function (e) {
+      if (!down) return;
+      var dx = e.clientX - sx0;
+      if (Math.abs(dx) > 6) moved = true;
+      rail.scrollLeft = sl0 - dx;
+    });
+    addEventListener('pointerup', function () { down = false; rail.classList.remove('drag'); });
+    /* 드래그 후 클릭 오발 방지 */
+    rail.addEventListener('click', function (e) { if (moved) e.preventDefault(); }, true);
   }
 })();
 </script>

@@ -6,10 +6,7 @@
 <title>[시안 H · 아카데믹] 연세대학교 기계공학부</title>
 <meta name="description" content="Design candidate H — Academic. KAIST ME·SNU ME 메인을 참고한 정갈한 화이트 아카데믹 레이아웃. 타이포 히어로 + 연구 뉴스 카드 + 공지/세미나 보드 + 분야 그리드." />
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    시안 H · 아카데믹 (Reference: me.kaist.ac.kr / me.snu.ac.kr)
@@ -21,7 +18,8 @@
   --ink:#0f1b30; --muted:#5e6b82; --dim:#8b96a9;
   --paper:#f5f2ec; --line:#e2ddd2; --soft:#ece7db; --bg:#f5f2ec;
   --kr:"Pretendard Variable","Pretendard",system-ui,sans-serif;
-  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  /* 라벨·숫자도 본문과 같은 Pretendard — 모노스페이스는 AI 티가 나서 배제 */
+  --mono:"Pretendard Variable","Pretendard",system-ui,sans-serif;
   --e:cubic-bezier(.16,1,.3,1);   /* expo-out — 모든 모션의 기준 이징 */
 }
 *,*::before,*::after{box-sizing:border-box;margin:0}
@@ -51,13 +49,31 @@ img{display:block;max-width:100%}
 .brand .bko{font-weight:800;font-size:1.06rem;letter-spacing:-.01em;color:var(--navy);line-height:1.25}
 .brand .ben{display:block;font-size:.62rem;font-weight:500;letter-spacing:.14em;
   text-transform:uppercase;color:var(--dim)}
-.gnb{display:flex;gap:clamp(1rem,2.4vw,2.1rem);font-weight:600;font-size:.96rem;white-space:nowrap}
-.gnb a{position:relative;padding:.4rem 0;transition:color .2s}
-.gnb a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--coral);
+.gnb{display:flex;gap:clamp(2rem,3.8vw,3.6rem);font-weight:600;font-size:.98rem;white-space:nowrap}
+.gi{position:relative}
+.gi>a{position:relative;display:inline-block;padding:.55rem 0;transition:color .2s}
+.gi>a::after{content:"";position:absolute;left:0;right:0;bottom:.2rem;height:2px;background:var(--coral);
   transform:scaleX(0);transform-origin:right;transition:transform .45s var(--e)}
-.gnb a:hover{color:var(--navy)}
-.gnb a:hover::after{transform:scaleX(1);transform-origin:left}
-@media(max-width:840px){.gnb{display:none}}
+.gi:hover>a{color:var(--navy)}
+.gi:hover>a::after{transform:scaleX(1);transform-origin:left}
+/* 드롭다운 — 살짝 떠오르며 항목이 순차 페이드 */
+.gd{position:absolute;top:calc(100% + .35rem);left:50%;min-width:12.5rem;
+  background:#fff;border:1px solid var(--line);border-top:2px solid var(--coral);
+  box-shadow:0 22px 48px rgba(15,27,48,.14);padding:.55rem 0;display:flex;flex-direction:column;
+  opacity:0;visibility:hidden;transform:translate(-50%,14px);z-index:50;
+  transition:opacity .35s var(--e),transform .5s var(--e),visibility .35s}
+.gd::before{content:"";position:absolute;top:-1rem;left:0;right:0;height:1rem}
+.gi:hover .gd,.gi:focus-within .gd{opacity:1;visibility:visible;transform:translate(-50%,4px)}
+.gd a{padding:.52rem 1.25rem;font-size:.87rem;font-weight:500;color:var(--muted);
+  opacity:0;transform:translateY(7px);
+  transition:opacity .4s ease,transform .5s var(--e),color .15s,background .15s,padding .3s var(--e)}
+.gi:hover .gd a,.gi:focus-within .gd a{opacity:1;transform:none}
+.gd a:nth-child(2){transition-delay:.04s}.gd a:nth-child(3){transition-delay:.08s}
+.gd a:nth-child(4){transition-delay:.12s}.gd a:nth-child(5){transition-delay:.16s}
+.gd a:hover{color:var(--coral);background:var(--paper);padding-left:1.6rem}
+@media(max-width:920px){.gnb{display:none}}
+@media(prefers-reduced-motion:reduce){.gd,.gd a{transition:none;opacity:1;transform:translate(-50%,4px)}
+  .gd a{transform:none}}
 
 /* ── 히어로 — 풀블리드 이미지 + 중앙 학부명 (SNU ME 참고) ── */
 .hero{position:relative;min-height:clamp(30rem,88vh,54rem);display:flex;align-items:center;justify-content:center;
@@ -92,17 +108,17 @@ img{display:block;max-width:100%}
 .stats .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;
   padding-top:clamp(2.4rem,5vh,3.6rem);padding-bottom:clamp(2.4rem,5vh,3.6rem)}
 .st{display:flex;flex-direction:column;gap:.35rem;border-left:1px solid rgba(255,255,255,.16);padding-left:1.2rem}
-.st b{font-family:var(--mono);font-weight:500;letter-spacing:.02em;line-height:1;
+.st b{font-family:var(--mono);font-weight:700;letter-spacing:.02em;line-height:1;
   font-size:clamp(2.1rem,1.4rem + 2.6vw,3.4rem);color:#fff;font-variant-numeric:tabular-nums}
 .st:last-child b{color:var(--coral)}
 .st span{font-family:var(--mono);font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;color:#8fa2c2}
 @media(max-width:640px){.stats .wrap{grid-template-columns:repeat(2,1fr);row-gap:1.4rem}}
 
 /* ── 공통 섹션 — 에디토리얼: 아웃라인 인덱스 + 거대 타이틀 ── */
-.sec{padding-top:clamp(5rem,11vh,8.5rem);padding-bottom:clamp(2.4rem,5vh,4rem)}
-.sec:last-of-type{padding-bottom:clamp(4.5rem,9vh,7rem)}
-.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:1.2rem;margin-bottom:clamp(2.2rem,4.5vh,3.6rem)}
-.sidx{flex:none;font-family:var(--mono);font-weight:600;line-height:.85;
+.sec{padding-top:clamp(6.5rem,14vh,11rem);padding-bottom:clamp(3.5rem,7vh,5.5rem)}
+.sec:last-of-type{padding-bottom:clamp(5.5rem,11vh,8.5rem)}
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:1.2rem;margin-bottom:clamp(2.8rem,5.5vh,4.4rem)}
+.sidx{flex:none;font-family:var(--mono);font-weight:800;line-height:.85;
   font-size:clamp(3rem,3rem + 4vw,6rem);color:transparent;
   -webkit-text-stroke:1.5px rgba(26,61,117,.32);user-select:none}
 .sec-head>div{flex:1;min-width:0}
@@ -132,13 +148,13 @@ img{display:block;max-width:100%}
 @media(max-width:840px){.nrow{flex-wrap:wrap;gap:.4rem}.nrow time{width:auto}#newsPrev{display:none}}
 
 /* ── 공지 · 세미나 보드 — 잉크 콘솔 패널 + 고스트 타이포 ── */
-.board-band{position:relative;overflow:hidden;margin-top:clamp(4.5rem,9vh,7rem);
+.board-band{position:relative;overflow:hidden;margin-top:clamp(6rem,12vh,9.5rem);
   background:var(--ink);color:#e2e6ec}
 .board-band::before{content:"NOTICE";position:absolute;right:-.06em;top:-.14em;
-  font-family:var(--mono);font-weight:600;font-size:clamp(6rem,16vw,15rem);line-height:1;
+  font-family:var(--mono);font-weight:800;font-size:clamp(6rem,16vw,15rem);line-height:1;
   color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.07);pointer-events:none}
 .board-band .wrap{position:relative;display:grid;grid-template-columns:1.15fr 1fr;gap:clamp(1.6rem,3.4vw,3rem);
-  padding-top:clamp(4rem,8vh,6rem);padding-bottom:clamp(4rem,8vh,6rem)}
+  padding-top:clamp(5.5rem,11vh,8.5rem);padding-bottom:clamp(5.5rem,11vh,8.5rem)}
 .board-band .wrap>div{min-width:0}
 .bhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem}
 .bhead h3{font-size:clamp(1.2rem,1rem + 1vw,1.7rem);font-weight:800;color:#fff;letter-spacing:.01em}
@@ -171,7 +187,7 @@ img{display:block;max-width:100%}
   transform:scaleY(0);transform-origin:bottom;transition:transform .5s var(--e);z-index:0}
 .crow:hover::before{transform:scaleY(1)}
 .crow>*{position:relative;z-index:1}
-.cno{flex:none;width:clamp(3rem,6vw,5rem);font-family:var(--mono);font-weight:600;line-height:1;
+.cno{flex:none;width:clamp(3rem,6vw,5rem);font-family:var(--mono);font-weight:800;line-height:1;
   font-size:clamp(1.7rem,1.2rem + 2.4vw,3rem);color:transparent;
   -webkit-text-stroke:1px rgba(26,61,117,.4);transition:color .25s,-webkit-text-stroke-color .25s}
 .crow:hover .cno{color:#fff;-webkit-text-stroke-color:transparent}
@@ -187,7 +203,7 @@ img{display:block;max-width:100%}
 .crow:hover .cdesc{color:rgba(255,255,255,.85)}
 .clabs{flex:none;font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;
   text-transform:uppercase;color:var(--muted);text-align:right;transition:color .25s}
-.clabs b{display:block;font-size:clamp(1.3rem,1rem + 1vw,1.8rem);font-weight:600;color:var(--coral);
+.clabs b{display:block;font-size:clamp(1.3rem,1rem + 1vw,1.8rem);font-weight:800;color:var(--coral);
   line-height:1.1;transition:color .25s}
 .crow:hover .clabs{color:rgba(255,255,255,.8)}
 .crow:hover .clabs b{color:#fff}
@@ -215,8 +231,8 @@ img{display:block;max-width:100%}
 .pc .prk{margin-top:.05rem;font-size:.74rem;color:var(--muted)}
 
 /* ── 바로가기 — 코랄 스테이트먼트 밴드, 거대 타이포 행 ── */
-.quick{margin-top:clamp(4.5rem,9vh,7rem);background:var(--coral);color:#fff}
-.quick .wrap{padding-top:clamp(3.4rem,7vh,5.2rem);padding-bottom:clamp(3.4rem,7vh,5.2rem)}
+.quick{margin-top:clamp(6rem,12vh,9.5rem);background:var(--coral);color:#fff}
+.quick .wrap{padding-top:clamp(4.5rem,9vh,7rem);padding-bottom:clamp(4.5rem,9vh,7rem)}
 .ql{position:relative;display:flex;align-items:baseline;gap:clamp(.9rem,2.4vw,2rem);
   padding:clamp(1.5rem,3.2vh,2.2rem) .3rem;border-bottom:1px solid rgba(255,255,255,.38);overflow:hidden}
 .ql:first-child{border-top:1px solid rgba(255,255,255,.38)}
@@ -259,8 +275,17 @@ img{display:block;max-width:100%}
 /* 스크롤 진행 헤어라인 */
 .sprog{position:fixed;top:0;left:0;right:0;height:2px;background:var(--coral);z-index:60;
   transform:scaleX(0);transform-origin:left;pointer-events:none}
+/* 인스타그램 릴스 — 자동 흐름 트랙(호버 시 정지) */
+.ig-wrap{overflow:hidden}
+.ig-track{display:flex;width:max-content;animation:igm 55s linear infinite}
+.ig-track:hover{animation-play-state:paused}
+.ig-set{display:flex;gap:1.2rem;padding-right:1.2rem}
+.ig-set blockquote{border-radius:.4rem;overflow:hidden;box-shadow:0 10px 28px rgba(15,27,48,.08)}
+@keyframes igm{to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.ig-track{animation:none}.ig-wrap{overflow-x:auto}}
+
 /* 아웃라인 마퀴 밴드 */
-.mq{overflow:hidden;padding:clamp(3.6rem,7.5vh,5.6rem) 0 clamp(1.2rem,2.5vh,2rem);user-select:none;pointer-events:none}
+.mq{overflow:hidden;padding:clamp(5rem,10vh,7.5rem) 0 clamp(1.6rem,3vh,2.6rem);user-select:none;pointer-events:none}
 .mq-track{display:flex;width:max-content;animation:mq 30s linear infinite}
 .mq-track span{display:flex;align-items:center;gap:2.4rem;padding-right:2.4rem;white-space:nowrap;
   font-weight:800;letter-spacing:.02em;font-size:clamp(2.4rem,5.5vw,4.4rem);
@@ -310,12 +335,56 @@ img{display:block;max-width:100%}
       </span>
     </a>
     <nav class="gnb">
-      <a href="G-about.html" data-i18n="navAbout">학부소개</a>
-      <a href="G-people.html" data-i18n="navPeople">구성원</a>
-      <a href="G-research.html" data-i18n="navResearch">연구</a>
-      <a href="G-academics.html" data-i18n="navAcad">학사</a>
-      <a href="G-news.html" data-i18n="navNews">소식</a>
-      <a href="G-admissions.html" data-i18n="navAdm">입학</a>
+      <div class="gi">
+        <a href="G-about.html" data-i18n="navAbout">학부소개</a>
+        <div class="gd">
+          <a href="G-about.html#greeting" data-i18n="smAbout1">학과장 인사말</a>
+          <a href="G-about.html#vision" data-i18n="smAbout2">비전 · 교육철학</a>
+          <a href="G-about.html#organization" data-i18n="smAbout3">조직 · 행정</a>
+          <a href="G-about.html#history" data-i18n="smAbout4">주요 연혁</a>
+          <a href="G-about.html#location" data-i18n="smAbout5">연락처 · 오시는 길</a>
+        </div>
+      </div>
+      <div class="gi">
+        <a href="G-people.html" data-i18n="navPeople">구성원</a>
+        <div class="gd">
+          <a href="G-people.html" data-i18n="smPeople1">교수진 디렉토리</a>
+        </div>
+      </div>
+      <div class="gi">
+        <a href="G-research.html" data-i18n="navResearch">연구</a>
+        <div class="gd">
+          <a href="G-research.html#clusters" data-i18n="smRes1">여섯 개 분야</a>
+          <a href="G-research.html#clusterBlocks" data-i18n="smRes2">연구실 전체</a>
+        </div>
+      </div>
+      <div class="gi">
+        <a href="G-academics.html" data-i18n="navAcad">학사</a>
+        <div class="gd">
+          <a href="G-academics.html#curriculum" data-i18n="smAcad1">교육과정 개관</a>
+          <a href="G-academics.html#roadmap" data-i18n="smAcad2">이수 체계도</a>
+          <a href="G-academics.html#courses" data-i18n="smAcad3">전공 교과</a>
+          <a href="G-academics.html#grad" data-i18n="smAcad4">대학원 교과</a>
+        </div>
+      </div>
+      <div class="gi">
+        <a href="G-news.html" data-i18n="navNews">소식</a>
+        <div class="gd">
+          <a href="G-news.html#feed" data-i18n="smNews1">공지사항</a>
+          <a href="G-news.html#hi" data-i18n="smNews2">뉴스 · 연구 성과</a>
+          <a href="G-news.html#sched" data-i18n="smNews3">세미나 · 행사</a>
+        </div>
+      </div>
+      <div class="gi">
+        <a href="G-admissions.html" data-i18n="navAdm">입학</a>
+        <div class="gd">
+          <a href="G-admissions.html#undergraduate" data-i18n="smAdm1">학부 입학</a>
+          <a href="G-admissions.html#graduate" data-i18n="smAdm2">대학원 진학</a>
+          <a href="G-admissions.html#scholarships" data-i18n="smAdm3">장학 안내</a>
+          <a href="G-admissions.html#jobs" data-i18n="smAdm4">취업 정보</a>
+          <a href="G-admissions.html#careers" data-i18n="smAdm5">진로 안내</a>
+        </div>
+      </div>
     </nav>
   </div>
 </header>
@@ -413,6 +482,37 @@ img{display:block;max-width:100%}
     <div class="prail" id="pGrid"></div>
   </section>
 
+  <!-- ═══ 인스타그램 릴스 ═══ -->
+  <section class="wrap sec" aria-labelledby="h-ig">
+    <div class="sec-head">
+      <span class="sidx" aria-hidden="true">04</span>
+      <div>
+        <p class="kick">Instagram</p>
+        <h2 class="sec-title" id="h-ig" data-i18n="igTitle">@yonsei_mech 릴스</h2>
+      </div>
+      <a class="more" href="https://www.instagram.com/yonsei_mech/" target="_blank" rel="noopener" data-i18n="moreIg">팔로우 →</a>
+    </div>
+    <div class="ig-wrap">
+      <div class="ig-track">
+        <div class="ig-set">
+          <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DYw5QYTBARf/" data-instgrm-version="14" style="background:#fff;border:0;margin:0;min-width:230px;max-width:280px;width:100%;padding:0"></blockquote>
+          <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DYkHGXiBpu0/" data-instgrm-version="14" style="background:#fff;border:0;margin:0;min-width:230px;max-width:280px;width:100%;padding:0"></blockquote>
+          <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DYheXVhBD5b/" data-instgrm-version="14" style="background:#fff;border:0;margin:0;min-width:230px;max-width:280px;width:100%;padding:0"></blockquote>
+          <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DW34mrHgfL0/" data-instgrm-version="14" style="background:#fff;border:0;margin:0;min-width:230px;max-width:280px;width:100%;padding:0"></blockquote>
+          <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DWRVdiaASYk/" data-instgrm-version="14" style="background:#fff;border:0;margin:0;min-width:230px;max-width:280px;width:100%;padding:0"></blockquote>
+        </div>
+        <div class="ig-set" aria-hidden="true">
+          <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DYw5QYTBARf/" data-instgrm-version="14" style="background:#fff;border:0;margin:0;min-width:230px;max-width:280px;width:100%;padding:0"></blockquote>
+          <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DYkHGXiBpu0/" data-instgrm-version="14" style="background:#fff;border:0;margin:0;min-width:230px;max-width:280px;width:100%;padding:0"></blockquote>
+          <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DYheXVhBD5b/" data-instgrm-version="14" style="background:#fff;border:0;margin:0;min-width:230px;max-width:280px;width:100%;padding:0"></blockquote>
+          <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DW34mrHgfL0/" data-instgrm-version="14" style="background:#fff;border:0;margin:0;min-width:230px;max-width:280px;width:100%;padding:0"></blockquote>
+          <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DWRVdiaASYk/" data-instgrm-version="14" style="background:#fff;border:0;margin:0;min-width:230px;max-width:280px;width:100%;padding:0"></blockquote>
+        </div>
+      </div>
+      <noscript><p><a href="https://www.instagram.com/yonsei_mech/" target="_blank" rel="noopener">@yonsei_mech 인스타그램 →</a></p></noscript>
+    </div>
+  </section>
+
   <!-- ═══ 아웃라인 마퀴 ═══ -->
   <div class="mq" aria-hidden="true">
     <div class="mq-track">
@@ -458,6 +558,8 @@ img{display:block;max-width:100%}
 </footer>
 
 <script src="assets/js/data.js?v=d11"></script>
+<script async src="https://www.instagram.com/embed.js"></script>
+<script>window.addEventListener("load",function(){if(window.instgrm)window.instgrm.Embeds.process();});</script>
 <script>
 /* 실데이터 렌더 + 한/영 전환 — window.YSME (뉴스·공지·세미나·분야·교수) */
 (function () {
@@ -485,7 +587,14 @@ img{display:block;max-width:100%}
       qFac: '교수진', qFacS: '33명의 전임 교수', qDir: '오시는 길', qDirS: '서울 서대문구 연세로 50',
       fAddr: '(03722) 서울특별시 서대문구 연세로 50 연세대학교 공과대학 기계공학부',
       fTel: '학부 02-2123-4426 · 대학원 02-2123-2810', fAdmin: '관리자',
-      catUG: '학부', catGrad: '대학원', labUnit: '개 연구실'
+      catUG: '학부', catGrad: '대학원', labUnit: '개 연구실',
+      igTitle: '@yonsei_mech 릴스', moreIg: '팔로우 →',
+      smAbout1: '학과장 인사말', smAbout2: '비전 · 교육철학', smAbout3: '조직 · 행정',
+      smAbout4: '주요 연혁', smAbout5: '연락처 · 오시는 길',
+      smPeople1: '교수진 디렉토리', smRes1: '여섯 개 분야', smRes2: '연구실 전체',
+      smAcad1: '교육과정 개관', smAcad2: '이수 체계도', smAcad3: '전공 교과', smAcad4: '대학원 교과',
+      smNews1: '공지사항', smNews2: '뉴스 · 연구 성과', smNews3: '세미나 · 행사',
+      smAdm1: '학부 입학', smAdm2: '대학원 진학', smAdm3: '장학 안내', smAdm4: '취업 정보', smAdm5: '진로 안내'
     },
     en: {
       tbYonsei: 'Yonsei University', tbEng: 'College of Engineering', tbCur: 'Current ME site',
@@ -503,7 +612,14 @@ img{display:block;max-width:100%}
       qFac: 'Faculty', qFacS: '33 full-time professors', qDir: 'Directions', qDirS: '50 Yonsei-ro, Seodaemun-gu, Seoul',
       fAddr: '50 Yonsei-ro, Seodaemun-gu, Seoul 03722, Republic of Korea — College of Engineering',
       fTel: 'Undergrad +82-2-2123-4426 · Graduate +82-2-2123-2810', fAdmin: 'Admin',
-      catUG: 'UG', catGrad: 'Grad', labUnit: 'Laboratories'
+      catUG: 'UG', catGrad: 'Grad', labUnit: 'Laboratories',
+      igTitle: '@yonsei_mech Reels', moreIg: 'Follow →',
+      smAbout1: 'Dean\'s Greeting', smAbout2: 'Vision & Philosophy', smAbout3: 'Organization',
+      smAbout4: 'History', smAbout5: 'Contact & Directions',
+      smPeople1: 'Faculty Directory', smRes1: 'Six Research Areas', smRes2: 'All Laboratories',
+      smAcad1: 'Curriculum Overview', smAcad2: 'Degree Roadmap', smAcad3: 'Undergraduate Courses', smAcad4: 'Graduate Courses',
+      smNews1: 'Notices', smNews2: 'News & Research', smNews3: 'Seminars & Events',
+      smAdm1: 'Undergraduate', smAdm2: 'Graduate', smAdm3: 'Scholarships', smAdm4: 'Employment', smAdm5: 'Career Paths'
     }
   };
   var RANK_EN = { '교수': 'Professor', '부교수': 'Associate Professor', '조교수': 'Assistant Professor' };

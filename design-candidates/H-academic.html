@@ -259,13 +259,6 @@ img{display:block;max-width:100%}
 .blist .brow:nth-child(4),.clist .crow:nth-child(4),.nlist .nrow:nth-child(4){transition-delay:.29s}
 .blist .brow:nth-child(5),.clist .crow:nth-child(5),.nlist .nrow:nth-child(5){transition-delay:.37s}
 .blist .brow:nth-child(6),.clist .crow:nth-child(6),.nlist .nrow:nth-child(6){transition-delay:.45s}
-/* 커스텀 커서 링 — difference 블렌드로 어디서나 보임 */
-.cur{position:fixed;left:0;top:0;width:34px;height:34px;border:1.5px solid #fff;border-radius:50%;
-  mix-blend-mode:difference;z-index:90;pointer-events:none;opacity:0;
-  transform:translate(-50%,-50%);transition:width .35s var(--e),height .35s var(--e),opacity .3s}
-.cur.on{opacity:1}
-.cur.big{width:64px;height:64px}
-@media(pointer:coarse){.cur{display:none}}
 /* 스크롤 진행 헤어라인 */
 .sprog{position:fixed;top:0;left:0;right:0;height:2px;background:var(--coral);z-index:60;
   transform:scaleX(0);transform-origin:left;pointer-events:none}
@@ -283,7 +276,7 @@ img{display:block;max-width:100%}
   .hero h1 .ti{transform:none;transition:none}
   .blist .brow,.clist .crow,.nlist .nrow{opacity:1;transform:none;transition:none}
   .mq-track{animation:none}
-  .cur,#newsPrev{display:none}
+  #newsPrev{display:none}
 }
 
 /* ── 푸터 ── */
@@ -298,7 +291,6 @@ img{display:block;max-width:100%}
 <body>
 
 <div class="sprog" aria-hidden="true"></div>
-<div class="cur" aria-hidden="true"></div>
 
 <div class="topbar">
   <div class="wrap">
@@ -783,22 +775,15 @@ img{display:block;max-width:100%}
     });
   }
 
-  /* ── 커서 링 + 뉴스 호버 프리뷰 — 하나의 rAF 루프에서 러프(lerp) 추적 ── */
+  /* ── 뉴스 호버 프리뷰 — rAF 루프에서 러프(lerp) 추적 ── */
   if (!reduce && fine) {
-    var cur = document.querySelector('.cur');
     var prev2 = document.getElementById('newsPrev');
     var nsec = document.getElementById('secNews');
     var mx = innerWidth / 2, my = innerHeight / 2;
-    var cx = mx, cy = my, px = mx, py = my, shown = false;
+    var px = mx, py = my;
     addEventListener('pointermove', function (e) {
       mx = e.clientX; my = e.clientY;
-      if (cur && !shown) { shown = true; cur.classList.add('on'); }
     }, { passive: true });
-    /* 링: 링크·버튼 위에서 커진다 */
-    document.addEventListener('mouseover', function (e) {
-      if (!cur) return;
-      cur.classList.toggle('big', !!(e.target.closest && e.target.closest('a,button')));
-    });
     /* 프리뷰: 뉴스 행 위에서 썸네일 표시 */
     if (nsec && prev2) {
       nsec.addEventListener('mouseover', function (e) {
@@ -809,15 +794,13 @@ img{display:block;max-width:100%}
         } else prev2.classList.remove('on');
       });
       nsec.addEventListener('mouseleave', function () { prev2.classList.remove('on'); });
+      (function loop() {
+        px += (mx - px) * 0.09; py += (my - py) * 0.09;
+        prev2.style.transform =
+          'translate(' + (px + 26) + 'px,' + (py - 120) + 'px) rotate(' + ((mx - px) * 0.015) + 'deg)';
+        requestAnimationFrame(loop);
+      })();
     }
-    (function loop() {
-      cx += (mx - cx) * 0.2; cy += (my - cy) * 0.2;
-      px += (mx - px) * 0.09; py += (my - py) * 0.09;
-      if (cur) { cur.style.left = cx + 'px'; cur.style.top = cy + 'px'; }
-      if (prev2) prev2.style.transform =
-        'translate(' + (px + 26) + 'px,' + (py - 120) + 'px) rotate(' + ((mx - px) * 0.015) + 'deg)';
-      requestAnimationFrame(loop);
-    })();
   }
 
   /* ── 교수진 레일 — 드래그 스크롤 ── */

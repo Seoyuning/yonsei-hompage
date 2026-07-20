@@ -119,8 +119,7 @@ img{display:block;max-width:100%}
 .sec:last-of-type{padding-bottom:clamp(5.5rem,11vh,8.5rem)}
 .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:1.2rem;margin-bottom:clamp(2.8rem,5.5vh,4.4rem)}
 .sidx{flex:none;font-family:var(--mono);font-weight:800;line-height:.85;
-  font-size:clamp(3rem,3rem + 4vw,6rem);color:transparent;
-  -webkit-text-stroke:1.5px rgba(26,61,117,.32);user-select:none}
+  font-size:clamp(3rem,3rem + 4vw,6rem);color:var(--navy);user-select:none}
 .sec-head>div{flex:1;min-width:0}
 .kick{font-family:var(--mono);font-size:.66rem;font-weight:500;letter-spacing:.3em;text-transform:uppercase;color:var(--coral)}
 .sec-title{margin-top:.3rem;font-size:clamp(1.7rem,1.2rem + 2.4vw,2.9rem);font-weight:800;
@@ -278,7 +277,6 @@ img{display:block;max-width:100%}
 /* 인스타그램 릴스 — 자동 흐름 트랙(호버 시 정지) */
 .ig-wrap{overflow:hidden}
 .ig-track{display:flex;width:max-content;animation:igm 55s linear infinite}
-.ig-track:hover{animation-play-state:paused}
 .ig-set{display:flex;gap:1.2rem;padding-right:1.2rem}
 .ig-set blockquote{border-radius:.4rem;overflow:hidden;box-shadow:0 10px 28px rgba(15,27,48,.08)}
 @keyframes igm{to{transform:translateX(-50%)}}

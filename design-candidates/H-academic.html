@@ -11,10 +11,11 @@
 /* ═══════════════════════════════════════════════════════════
    시안 H · 아카데믹 (Reference: me.kaist.ac.kr / me.snu.ac.kr)
    화이트 배경 · 정갈한 타이포 · 큰 히어로 문구 · 보드형 소식.
-   네이비 #1a3d75 + 코랄 #e2593c 표준 유지.
+   네이비 #1a3d75 단일 강조(코랄 제거). 다크 밴드 강조는 라이트 블루 --accent-d.
    ═══════════════════════════════════════════════════════════ */
 :root{
-  --navy:#1a3d75; --navy-d:#12294f; --coral:#e2593c;
+  /* 코랄 제거 — 밝은 배경 강조는 네이비. 기존 var(--coral) 참조는 네이비로 통합 */
+  --navy:#1a3d75; --navy-d:#12294f; --coral:#1a3d75; --accent-d:#8aa6d4;
   --ink:#0f1b30; --muted:#5e6b82; --dim:#8b96a9;
   --paper:#f5f2ec; --line:#e2ddd2; --soft:#ece7db; --bg:#f5f2ec;
   --kr:"Pretendard Variable","Pretendard",system-ui,sans-serif;
@@ -104,13 +105,13 @@ img{display:block;max-width:100%}
 .hero-scroll::after{content:"";display:block;width:1px;height:2rem;margin:.45rem auto 0;
   background:linear-gradient(rgba(255,255,255,.8),transparent)}
 /* 히어로 하단 지표 스트립 — 잉크 텔레메트리 밴드, 거대 숫자 */
-.stats{background:var(--ink);border-top:2px solid var(--coral);color:#fff}
+.stats{background:var(--ink);border-top:2px solid rgba(138,166,212,.5);color:#fff}
 .stats .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;
   padding-top:clamp(2.4rem,5vh,3.6rem);padding-bottom:clamp(2.4rem,5vh,3.6rem)}
 .st{display:flex;flex-direction:column;gap:.35rem;border-left:1px solid rgba(255,255,255,.16);padding-left:1.2rem}
 .st b{font-family:var(--mono);font-weight:700;letter-spacing:.02em;line-height:1;
   font-size:clamp(2.1rem,1.4rem + 2.6vw,3.4rem);color:#fff;font-variant-numeric:tabular-nums}
-.st:last-child b{color:var(--coral)}
+.st:last-child b{color:var(--accent-d)}
 .st span{font-family:var(--mono);font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;color:#8fa2c2}
 @media(max-width:640px){.stats .wrap{grid-template-columns:repeat(2,1fr);row-gap:1.4rem}}
 
@@ -151,14 +152,14 @@ img{display:block;max-width:100%}
   background:var(--ink);color:#e2e6ec}
 .board-band::before{content:"NOTICE";position:absolute;right:-.06em;top:-.14em;
   font-family:var(--mono);font-weight:800;font-size:clamp(6rem,16vw,15rem);line-height:1;
-  color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.07);pointer-events:none}
+  color:rgba(255,255,255,.09);pointer-events:none}
 .board-band .wrap{position:relative;display:grid;grid-template-columns:1.15fr 1fr;gap:clamp(1.6rem,3.4vw,3rem);
   padding-top:clamp(5.5rem,11vh,8.5rem);padding-bottom:clamp(5.5rem,11vh,8.5rem)}
 .board-band .wrap>div{min-width:0}
 .bhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem}
 .bhead h3{font-size:clamp(1.2rem,1rem + 1vw,1.7rem);font-weight:800;color:#fff;letter-spacing:.01em}
 .bhead h3::before{content:"";display:inline-block;width:.5rem;height:.5rem;margin-right:.55rem;
-  background:var(--coral);transform:translateY(-.05rem) rotate(45deg)}
+  background:var(--accent-d);transform:translateY(-.05rem) rotate(45deg)}
 .board-band .more{color:#9db4d8}
 .board-band .more:hover{color:#fff}
 .tabs{display:flex;gap:.35rem}
@@ -166,19 +167,19 @@ img{display:block;max-width:100%}
   color:#9db4d8;padding:.32rem .72rem;border-radius:99px;border:1px solid rgba(255,255,255,.24);
   background:none;cursor:pointer;transition:color .12s,border-color .12s,background .12s}
 .tab:hover{color:#fff}
-.tab.on{color:#fff;border-color:var(--coral);background:rgba(226,89,60,.16)}
+.tab.on{color:#fff;border-color:var(--accent-d);background:rgba(138,166,212,.18)}
 .blist{display:flex;flex-direction:column}
 .brow{display:flex;align-items:baseline;gap:.75rem;padding:.95rem 0;
   border-bottom:1px solid rgba(255,255,255,.12);transition:color .12s}
-.brow:hover .bt{color:var(--coral)}
+.brow:hover .bt{color:var(--accent-d)}
 .bcat{flex:none;font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--coral);border:1px solid rgba(226,89,60,.55);padding:.16rem .5rem;border-radius:.2rem}
+  color:var(--accent-d);border:1px solid rgba(138,166,212,.5);padding:.16rem .5rem;border-radius:.2rem}
 .bt{flex:1;min-width:0;font-size:.9rem;font-weight:500;color:#e2e6ec;white-space:nowrap;
   overflow:hidden;text-overflow:ellipsis;transition:color .12s}
 .bd{flex:none;font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;color:#7f8fad;font-variant-numeric:tabular-nums}
 @media(max-width:840px){.board-band .wrap{grid-template-columns:1fr}}
 
-/* ── 연구 분야 — XL 행 + 코랄 와이프 ── */
+/* ── 연구 분야 — XL 행 + 네이비 와이프 ── */
 .clist{border-top:1px solid var(--ink)}
 .crow{position:relative;display:flex;align-items:center;gap:clamp(1rem,2.4vw,2rem);
   padding:clamp(1.8rem,3.8vh,2.8rem) clamp(.4rem,1vw,1rem);border-bottom:1px solid var(--line);overflow:hidden}
@@ -187,9 +188,8 @@ img{display:block;max-width:100%}
 .crow:hover::before{transform:scaleY(1)}
 .crow>*{position:relative;z-index:1}
 .cno{flex:none;width:clamp(3rem,6vw,5rem);font-family:var(--mono);font-weight:800;line-height:1;
-  font-size:clamp(1.7rem,1.2rem + 2.4vw,3rem);color:transparent;
-  -webkit-text-stroke:1px rgba(26,61,117,.4);transition:color .25s,-webkit-text-stroke-color .25s}
-.crow:hover .cno{color:#fff;-webkit-text-stroke-color:transparent}
+  font-size:clamp(1.7rem,1.2rem + 2.4vw,3rem);color:var(--navy);transition:color .25s}
+.crow:hover .cno{color:#fff}
 .cmain{flex:1;min-width:0}
 .cko{font-size:clamp(1.25rem,1rem + 1.6vw,2rem);font-weight:800;color:var(--ink);
   letter-spacing:-.015em;transition:color .25s}
@@ -229,7 +229,7 @@ img{display:block;max-width:100%}
 .pc .pko{margin-top:.18rem;font-size:1.02rem;font-weight:800;color:var(--ink)}
 .pc .prk{margin-top:.05rem;font-size:.74rem;color:var(--muted)}
 
-/* ── 바로가기 — 코랄 스테이트먼트 밴드, 거대 타이포 행 ── */
+/* ── 바로가기 — 네이비 스테이트먼트 밴드, 거대 타이포 행 ── */
 .quick{margin-top:clamp(6rem,12vh,9.5rem);background:var(--coral);color:#fff}
 .quick .wrap{padding-top:clamp(4.5rem,9vh,7rem);padding-bottom:clamp(4.5rem,9vh,7rem)}
 .ql{position:relative;display:flex;align-items:baseline;gap:clamp(.9rem,2.4vw,2rem);
@@ -519,7 +519,7 @@ img{display:block;max-width:100%}
     </div>
   </div>
 
-  <!-- ═══ 바로가기 — 코랄 스테이트먼트 밴드 ═══ -->
+  <!-- ═══ 바로가기 — 네이비 스테이트먼트 밴드 ═══ -->
   <section class="quick" aria-label="바로가기">
     <div class="wrap">
       <a class="ql" href="G-admissions.html">
@@ -531,7 +531,7 @@ img{display:block;max-width:100%}
       <a class="ql" href="G-people.html">
         <b data-i18n="qFac">교수진</b><span data-i18n="qFacS">33명의 전임 교수</span><i aria-hidden="true">→</i>
       </a>
-      <a class="ql" href="G-about.html">
+      <a class="ql" href="G-about.html#location">
         <b data-i18n="qDir">오시는 길</b><span data-i18n="qDirS">서울 서대문구 연세로 50</span><i aria-hidden="true">→</i>
       </a>
     </div>

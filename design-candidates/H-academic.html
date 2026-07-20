@@ -90,7 +90,7 @@ img{display:block;max-width:100%}
 /* 히어로 하단 지표 스트립 — 잉크 텔레메트리 밴드, 거대 숫자 */
 .stats{background:var(--ink);border-top:2px solid var(--coral);color:#fff}
 .stats .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;
-  padding-top:2rem;padding-bottom:2rem}
+  padding-top:clamp(2.4rem,5vh,3.6rem);padding-bottom:clamp(2.4rem,5vh,3.6rem)}
 .st{display:flex;flex-direction:column;gap:.35rem;border-left:1px solid rgba(255,255,255,.16);padding-left:1.2rem}
 .st b{font-family:var(--mono);font-weight:500;letter-spacing:.02em;line-height:1;
   font-size:clamp(2.1rem,1.4rem + 2.6vw,3.4rem);color:#fff;font-variant-numeric:tabular-nums}
@@ -99,9 +99,9 @@ img{display:block;max-width:100%}
 @media(max-width:640px){.stats .wrap{grid-template-columns:repeat(2,1fr);row-gap:1.4rem}}
 
 /* ── 공통 섹션 — 에디토리얼: 아웃라인 인덱스 + 거대 타이틀 ── */
-.sec{padding-top:clamp(3.6rem,8vh,6rem)}
-.sec:last-of-type{padding-bottom:clamp(3.2rem,7vh,5rem)}
-.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:1.2rem;margin-bottom:clamp(1.6rem,3vh,2.4rem)}
+.sec{padding-top:clamp(5rem,11vh,8.5rem);padding-bottom:clamp(2.4rem,5vh,4rem)}
+.sec:last-of-type{padding-bottom:clamp(4.5rem,9vh,7rem)}
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:1.2rem;margin-bottom:clamp(2.2rem,4.5vh,3.6rem)}
 .sidx{flex:none;font-family:var(--mono);font-weight:600;line-height:.85;
   font-size:clamp(3rem,3rem + 4vw,6rem);color:transparent;
   -webkit-text-stroke:1.5px rgba(26,61,117,.32);user-select:none}
@@ -117,7 +117,7 @@ img{display:block;max-width:100%}
 /* ── 연구 뉴스 — 에디토리얼 리스트 + 커서 추적 이미지 프리뷰 ── */
 .nlist{border-top:1px solid var(--ink)}
 .nrow{display:flex;align-items:baseline;gap:clamp(1rem,2.5vw,2.2rem);
-  padding:clamp(1.1rem,2.4vh,1.7rem) .2rem;border-bottom:1px solid var(--line);
+  padding:clamp(1.6rem,3.4vh,2.4rem) .2rem;border-bottom:1px solid var(--line);
   transition:padding .45s var(--e)}
 .nrow time{flex:none;width:6.2rem;font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;color:var(--dim)}
 .nrow .nt2{flex:1;min-width:0;font-size:clamp(1.05rem,.85rem + 1.1vw,1.55rem);font-weight:700;
@@ -133,13 +133,13 @@ img{display:block;max-width:100%}
 @media(max-width:840px){.nrow{flex-wrap:wrap;gap:.4rem}.nrow time{width:auto}#newsPrev{display:none}}
 
 /* ── 공지 · 세미나 보드 — 잉크 콘솔 패널 + 고스트 타이포 ── */
-.board-band{position:relative;overflow:hidden;margin-top:clamp(3.2rem,7vh,5rem);
+.board-band{position:relative;overflow:hidden;margin-top:clamp(4.5rem,9vh,7rem);
   background:var(--ink);color:#e2e6ec}
 .board-band::before{content:"NOTICE";position:absolute;right:-.06em;top:-.14em;
   font-family:var(--mono);font-weight:600;font-size:clamp(6rem,16vw,15rem);line-height:1;
   color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.07);pointer-events:none}
 .board-band .wrap{position:relative;display:grid;grid-template-columns:1.15fr 1fr;gap:clamp(1.6rem,3.4vw,3rem);
-  padding-top:clamp(3rem,6vh,4.4rem);padding-bottom:clamp(3rem,6vh,4.4rem)}
+  padding-top:clamp(4rem,8vh,6rem);padding-bottom:clamp(4rem,8vh,6rem)}
 .board-band .wrap>div{min-width:0}
 .bhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem}
 .bhead h3{font-size:clamp(1.2rem,1rem + 1vw,1.7rem);font-weight:800;color:#fff;letter-spacing:.01em}
@@ -154,7 +154,7 @@ img{display:block;max-width:100%}
 .tab:hover{color:#fff}
 .tab.on{color:#fff;border-color:var(--coral);background:rgba(226,89,60,.16)}
 .blist{display:flex;flex-direction:column}
-.brow{display:flex;align-items:baseline;gap:.75rem;padding:.66rem 0;
+.brow{display:flex;align-items:baseline;gap:.75rem;padding:.95rem 0;
   border-bottom:1px solid rgba(255,255,255,.12);transition:color .12s}
 .brow:hover .bt{color:var(--coral)}
 .bcat{flex:none;font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
@@ -167,7 +167,7 @@ img{display:block;max-width:100%}
 /* ── 연구 분야 — XL 행 + 코랄 와이프 ── */
 .clist{border-top:1px solid var(--ink)}
 .crow{position:relative;display:flex;align-items:center;gap:clamp(1rem,2.4vw,2rem);
-  padding:clamp(1.2rem,2.6vh,1.9rem) clamp(.4rem,1vw,1rem);border-bottom:1px solid var(--line);overflow:hidden}
+  padding:clamp(1.8rem,3.8vh,2.8rem) clamp(.4rem,1vw,1rem);border-bottom:1px solid var(--line);overflow:hidden}
 .crow::before{content:"";position:absolute;inset:0;background:var(--coral);
   transform:scaleY(0);transform-origin:bottom;transition:transform .5s var(--e);z-index:0}
 .crow:hover::before{transform:scaleY(1)}
@@ -195,8 +195,8 @@ img{display:block;max-width:100%}
 @media(max-width:640px){.cdesc,.cen{display:none}}
 
 /* ── 교수진 — 드래그 가로 레일 ── */
-.prail{display:flex;gap:1.1rem;overflow-x:auto;scroll-snap-type:x proximity;
-  padding:0 0 1.2rem;cursor:grab;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.prail{display:flex;gap:1.3rem;overflow-x:auto;scroll-snap-type:x proximity;
+  padding:.5rem 0 1.6rem;cursor:grab;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .prail::-webkit-scrollbar{display:none}
 .prail.drag{cursor:grabbing;scroll-snap-type:none}
 .pc{flex:0 0 clamp(180px,22vw,232px);scroll-snap-align:start;border:1px solid var(--line);
@@ -214,14 +214,14 @@ img{display:block;max-width:100%}
   font-weight:500;color:var(--coral)}
 .pc .pko{margin-top:.18rem;font-size:1.02rem;font-weight:800;color:var(--ink)}
 .pc .prk{margin-top:.05rem;font-size:.74rem;color:var(--muted)}
-.rail-hint{margin-top:.2rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.22em;
+.rail-hint{margin-top:.7rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.22em;
   text-transform:uppercase;color:var(--dim);user-select:none}
 
 /* ── 바로가기 — 코랄 스테이트먼트 밴드, 거대 타이포 행 ── */
-.quick{margin-top:clamp(3.2rem,7vh,5rem);background:var(--coral);color:#fff}
-.quick .wrap{padding-top:clamp(2.4rem,5vh,3.6rem);padding-bottom:clamp(2.4rem,5vh,3.6rem)}
+.quick{margin-top:clamp(4.5rem,9vh,7rem);background:var(--coral);color:#fff}
+.quick .wrap{padding-top:clamp(3.4rem,7vh,5.2rem);padding-bottom:clamp(3.4rem,7vh,5.2rem)}
 .ql{position:relative;display:flex;align-items:baseline;gap:clamp(.9rem,2.4vw,2rem);
-  padding:clamp(1.1rem,2.4vh,1.6rem) .3rem;border-bottom:1px solid rgba(255,255,255,.38);overflow:hidden}
+  padding:clamp(1.5rem,3.2vh,2.2rem) .3rem;border-bottom:1px solid rgba(255,255,255,.38);overflow:hidden}
 .ql:first-child{border-top:1px solid rgba(255,255,255,.38)}
 .ql::before{content:"";position:absolute;inset:0;background:var(--ink);
   transform:scaleX(0);transform-origin:left;transition:transform .5s var(--e)}
@@ -270,7 +270,7 @@ img{display:block;max-width:100%}
 .sprog{position:fixed;top:0;left:0;right:0;height:2px;background:var(--coral);z-index:60;
   transform:scaleX(0);transform-origin:left;pointer-events:none}
 /* 아웃라인 마퀴 밴드 */
-.mq{overflow:hidden;padding:clamp(2.4rem,5vh,3.6rem) 0 0;user-select:none;pointer-events:none}
+.mq{overflow:hidden;padding:clamp(3.6rem,7.5vh,5.6rem) 0 clamp(1.2rem,2.5vh,2rem);user-select:none;pointer-events:none}
 .mq-track{display:flex;width:max-content;animation:mq 30s linear infinite}
 .mq-track span{display:flex;align-items:center;gap:2.4rem;padding-right:2.4rem;white-space:nowrap;
   font-weight:800;letter-spacing:.02em;font-size:clamp(2.4rem,5.5vw,4.4rem);

@@ -60,15 +60,12 @@ a{color:inherit;text-decoration:none}
   font-family:var(--kr);font-size:.8rem;padding:.5rem .9rem;transition:top .15s}
 .skip:focus{top:.6rem}
 
-/* ── 페이지 히어로 (네이비) ── */
-.hero{background:var(--navy);color:#fff;
-  padding:clamp(9.5rem,7rem + 4vw,11rem) clamp(1.2rem,.6rem + 2vw,2.6rem) clamp(2.8rem,2rem + 2vw,3.8rem)}
-.hero-in{max-width:1120px;margin:0 auto}
-.hero-kick{font-family:var(--mono);font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:#9db4d8}
-.hero h1{font-family:var(--kr);font-weight:800;letter-spacing:-.015em;
-  font-size:clamp(2rem,1.2rem + 3vw,3rem);line-height:1.14;color:#fff;margin-top:.9rem}
-.hero-lede{max-width:44rem;font-family:var(--kr);font-size:.98rem;color:#c6d2e4;line-height:1.75;margin-top:1.2rem}
-.hero-lede b{color:#fff;font-weight:600}
+/* ── 페이지 히어로 (이미지 배너 · 중앙 정렬 · 브레드크럼) ── */
+.phero{position:relative;min-height:clamp(14rem,30vh,20rem);display:flex;align-items:center;justify-content:center;text-align:center;background:#12294f url("assets/hero-me.jpg") center 42%/cover no-repeat;color:#fff;overflow:hidden}
+.phero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,19,38,.62),rgba(13,29,56,.82))}
+.phero-in{position:relative;z-index:1;padding:clamp(9.5rem,7rem + 4vw,11.5rem) 1.2rem clamp(2.6rem,5vh,4rem);max-width:60rem}
+.phero h1{font-size:clamp(1.9rem,1.2rem + 2.6vw,3rem);font-weight:800;letter-spacing:-.01em;line-height:1.16;color:#fff}
+.phero .bc{margin-top:.9rem;font-size:.82rem;letter-spacing:.02em;color:rgba(255,255,255,.82)}
 
 /* ── 페이지 내 이동 칩 ── */
 .jumpnav{max-width:1120px;margin:0 auto;
@@ -105,19 +102,19 @@ a.arrow:hover{gap:.7rem}
 .metric{display:flex;justify-content:space-between;align-items:baseline;
   padding:.85rem 0;border-bottom:1px solid var(--line-soft)}
 .metric .m-lab{font-family:var(--kr);font-size:.9rem;color:var(--muted)}
-.metric .m-val{font-family:var(--mono);font-weight:300;color:var(--ink);
-  font-size:1.9rem;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:.02em}
-.metric .m-val .u{font-family:var(--kr);font-size:.5em;color:var(--muted);margin-left:.15em}
-.metric .m-val.acc{color:var(--coral)}
+.metric .m-val{font-family:var(--mono);font-weight:500;color:var(--ink);
+  font-size:1.45rem;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.metric .m-val .u{font-family:var(--kr);font-size:.56em;color:var(--muted);margin-left:.15em}
+.metric .m-val.acc{color:var(--navy)}
 
 /* ── 졸업 요건 요약 (#requirements) ── */
 .req-grid{display:grid;grid-template-columns:minmax(13rem,1fr) 2.2fr;gap:1px;
   background:var(--line-soft);border:1px solid var(--line-soft)}
 .req-card{background:var(--card);padding:1.5rem 1.4rem 1.6rem}
 .req-lab{font-family:var(--kr);font-size:.8rem;font-weight:600;color:var(--muted)}
-.req-val{font-family:var(--mono);font-weight:300;font-size:2.2rem;line-height:1;color:var(--ink);
+.req-val{font-family:var(--mono);font-weight:500;font-size:1.7rem;line-height:1;color:var(--ink);
   font-variant-numeric:tabular-nums;margin-top:.7rem}
-.req-val .u{font-family:var(--kr);font-size:.44em;color:var(--muted);margin-left:.15em}
+.req-val .u{font-family:var(--kr);font-size:.5em;color:var(--muted);margin-left:.15em}
 .req-desc{font-family:var(--kr);font-size:.86rem;color:var(--sub);line-height:1.7;margin-top:.75rem;max-width:38rem}
 .req-desc b{color:var(--ink);font-weight:600}
 .req-list{list-style:none;display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.95rem;padding:0}
@@ -137,7 +134,7 @@ a.arrow:hover{gap:.7rem}
   background:var(--line-soft);border:1px solid var(--line-soft)}
 .mech{background:var(--card);padding:1.6rem 1.5rem;transition:background .15s}
 .mech:hover{background:var(--card-hover)}
-.mech-idx{font-family:var(--mono);font-weight:300;font-size:2.2rem;line-height:1;color:#c2cbdb;font-variant-numeric:tabular-nums}
+.mech-idx{font-family:var(--mono);font-weight:600;font-size:.82rem;line-height:1;color:var(--muted);font-variant-numeric:tabular-nums;letter-spacing:.04em}
 .mech-name{font-family:var(--kr);font-weight:700;font-size:1.25rem;color:var(--ink);margin-top:.9rem;line-height:1.25}
 .mech-code{display:inline-block;font-family:var(--kr);font-size:.72rem;color:var(--sub);
   background:#fff;border:1px solid var(--line);padding:.28rem .55rem;margin-top:.6rem;
@@ -202,13 +199,8 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
   background:var(--line-soft);border:1px solid var(--line-soft)}
 .ug-card{background:var(--card);padding:1.15rem 1.2rem 1.3rem;transition:background .15s;scroll-margin-top:5.5rem}
 .ug-card:hover{background:var(--card-hover)}
-/* 이수체계도에서 이동해 온 카드 — 코랄 테두리 1.5초 하이라이트 */
-.ug-card:target{animation:cardFlash 1.5s ease-out}
-@keyframes cardFlash{
-  0%,65%{box-shadow:inset 0 0 0 2px var(--coral)}
-  100%{box-shadow:inset 0 0 0 2px rgba(26, 61, 117,0)}
-}
-@media (prefers-reduced-motion:reduce){.ug-card:target{animation:none;box-shadow:inset 0 0 0 2px var(--coral)}}
+/* 이수체계도에서 이동해 온 카드 — 네이비 테두리로 위치 표시 */
+.ug-card:target{box-shadow:inset 0 0 0 2px var(--navy)}
 .ug-card-top{display:flex;justify-content:space-between;align-items:center;gap:.6rem}
 .ug-card-code{font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;color:var(--label);font-variant-numeric:tabular-nums}
 .ug-card-name{font-family:var(--kr);font-weight:700;font-size:1.02rem;color:var(--ink);margin-top:.6rem;line-height:1.3}
@@ -228,9 +220,9 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
 .grad-card{border:1px solid var(--line-soft);background:var(--card);
   display:grid;grid-template-columns:auto 1fr;gap:clamp(1.4rem,1rem + 2vw,2.4rem);align-items:center;
   padding:1.8rem clamp(1.2rem,.8rem + 1vw,2rem)}
-.grad-num{font-family:var(--mono);font-weight:300;font-size:clamp(2.6rem,1.6rem + 4vw,4rem);line-height:.9;
+.grad-num{font-family:var(--mono);font-weight:400;font-size:clamp(2rem,1.4rem + 2vw,2.6rem);line-height:1;
   color:var(--ink);font-variant-numeric:tabular-nums}
-.grad-num .u{color:var(--coral);font-family:var(--kr);font-size:.3em;margin-left:.2em;vertical-align:.4em}
+.grad-num .u{color:var(--muted);font-family:var(--kr);font-size:.34em;margin-left:.2em;vertical-align:.35em}
 .grad-body p{font-family:var(--kr);font-size:.92rem;color:var(--body);line-height:1.75;max-width:44rem}
 .grad-body p b{color:var(--ink);font-weight:600}
 
@@ -270,11 +262,10 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
 <a class="skip" href="#roadmap">본문(이수체계도) 바로가기</a>
 
 <!-- 페이지 히어로 -->
-<header class="hero">
-  <div class="hero-in">
-    <p class="hero-kick">교육 · Academics</p>
-    <h1>고체·열·유체·동역학,<br>네 개의 기둥</h1>
-    <p class="hero-lede">네 개의 역학이 창의제품설계로 맞물리고 연구논문으로 완성됩니다. 졸업 <b>130학점</b>의 이수 체계를 학년·학기별로 정리하고, 학부 전공 <b>40과목</b>과 대학원 <b>183과목</b>을 한 페이지에 담았습니다.</p>
+<header class="phero">
+  <div class="phero-in">
+    <h1>학사 · 교육과정</h1>
+    <p class="bc">홈 › 학사</p>
   </div>
 </header>
 
@@ -299,8 +290,8 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
     </div>
     <div class="overview">
       <div>
-        <p class="lede">기계공학은 세상의 거의 모든 움직임을 다룹니다. 교육과정은 그 움직임을 해석하는 <span class="cor">에너지·재료·설계·제어</span>의 언어를 단계적으로 익히도록 설계되어 있습니다.</p>
-        <p class="body">흐름은 단순합니다. 1·2학년에 수학·물리 등 기초 과목을 다지고, 2학년부터 <b>고체역학·열역학·유체역학·동역학</b>의 4대 역학을 세웁니다. 3·4학년에는 관심 분야의 전공 과목을 골라 쌓고, 4학년의 창의제품설계(캡스톤)에서 배운 역학을 하나의 제품으로 종합합니다. 마지막으로 연구논문이 학부 연구를 매듭짓습니다.</p>
+        <p class="lede">기계공학부 교육과정은 <b>에너지·재료·설계·제어</b>를 다루는 기초 역량을 학년별로 단계적으로 이수하도록 구성되어 있습니다.</p>
+        <p class="body">1·2학년에 수학·물리 등 기초 과목을 이수하고, 2학년부터 <b>고체역학·열역학·유체역학·동역학</b>의 4대 역학을 이수합니다. 3·4학년에는 전공 과목을 선택 이수하며, 4학년의 창의제품설계(캡스톤)에서 이를 종합합니다. 연구논문으로 학부 과정을 마무리합니다.</p>
         <a class="arrow" href="#mechanics">4대 역학 보기 <span aria-hidden="true">→</span></a>
       </div>
       <div class="metrics" aria-label="교육과정 주요 수치">
@@ -342,8 +333,8 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
     <div class="sec-head">
       <div>
         <p class="sec-kick">4대 역학</p>
-        <h2 id="mech-h" class="sec-title">네 개의 기둥</h2>
-        <p class="sec-sub">2학년에 세우는 네 역학은 각기 다른 세계를 다루지만, 4학년의 종합설계에서 하나로 맞물립니다.</p>
+        <h2 id="mech-h" class="sec-title">4대 역학</h2>
+        <p class="sec-sub">고체역학·열역학·유체역학·동역학은 2학년에 이수하는 전공 기초 과목으로, 이후 전공 심화와 종합설계의 토대가 됩니다.</p>
       </div>
     </div>
     <div class="mech-grid" id="mechGrid"></div>
@@ -435,8 +426,8 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
 <section class="cta" aria-labelledby="cta-h">
   <div class="cta-txt">
     <p class="cta-kick">입학 안내</p>
-    <h2 id="cta-h">이 교육과정에서<br>당신의 4년을 시작하세요.</h2>
-    <p>학부·대학원 전형과 장학 제도는 입학 안내 페이지에 정리되어 있습니다.</p>
+    <h2 id="cta-h">입학 및 진로 안내</h2>
+    <p>학부·대학원 전형과 장학 제도는 입학 안내 페이지에서 확인할 수 있습니다.</p>
   </div>
   <a class="cta-btn" href="G-admissions.html">입학·진로 안내 <span class="arr">→</span></a>
 </section>
@@ -465,10 +456,10 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
 
   /* ── §02 4대 역학 — 학부 전공(coursesUG)에서 4대 역학 pillar 추출 + 에디토리얼 서술 ── */
   var PILLARS = [
-    { code:'MEU2600', cluster:'solid',    desc:'힘을 받은 재료가 어떻게 버티고 언제 부러지는지를 배웁니다. 모든 구조 설계가 여기서 출발합니다.' },
-    { code:'MEU2610', cluster:'thermal',  desc:'에너지와 엔트로피의 법칙을 다룹니다. 엔진과 발전소, 냉난방까지 이 틀로 이해합니다.' },
-    { code:'MEU2640', cluster:'thermal',  desc:'물과 공기의 흐름을 수식으로 붙잡는 법을 익힙니다. 펌프에서 항공기 날개까지 이어집니다.' },
-    { code:'MEU2650', cluster:'dynamics', desc:'움직이는 기계의 언어입니다. 로봇 관절 하나에도 이 과목이 들어 있습니다.' }
+    { code:'MEU2600', cluster:'solid',    desc:'재료가 힘을 받을 때의 변형과 파괴를 해석합니다. 구조 설계의 기초가 됩니다.' },
+    { code:'MEU2610', cluster:'thermal',  desc:'에너지와 엔트로피의 법칙을 다룹니다. 엔진·발전·냉난방 시스템의 기반입니다.' },
+    { code:'MEU2640', cluster:'thermal',  desc:'유체의 흐름을 해석하는 법을 다룹니다. 펌프·터빈·항공기 설계에 활용됩니다.' },
+    { code:'MEU2650', cluster:'dynamics', desc:'운동하는 기계 요소의 거동을 해석합니다. 로봇·기구 설계의 기초가 됩니다.' }
   ];
   var mechGrid = document.getElementById('mechGrid');
   if (mechGrid) {

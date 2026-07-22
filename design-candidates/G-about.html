@@ -55,16 +55,12 @@ a{color:inherit;text-decoration:none}
   padding:.5rem .9rem;font-size:.8rem;transition:top .15s}
 .skip:focus{top:.6rem}
 
-/* ── 페이지 히어로 (네이비) ── */
-.pagehead{background:var(--navy);color:#fff;
-  padding:clamp(9.5rem,7rem + 4vw,11rem) clamp(1.2rem,.6rem + 2vw,2.6rem) clamp(2.6rem,1.8rem + 2.5vw,3.6rem)}
-.pagehead-inner{max-width:1120px;margin:0 auto}
-.pagehead .kick{font-family:var(--mono);font-size:.66rem;letter-spacing:.24em;
-  text-transform:uppercase;color:var(--sky)}
-.pagehead h1{font-weight:800;letter-spacing:-.015em;color:#fff;
-  font-size:clamp(2rem,1.2rem + 3vw,3rem);line-height:1.1;margin-top:.7rem}
-.pagehead .lede{max-width:44rem;font-size:1rem;color:#c6d2e4;line-height:1.85;margin-top:1.1rem}
-.pagehead .lede b{color:#fff;font-weight:600}
+/* ── 페이지 히어로 (이미지 배너 · 중앙 정렬) ── */
+.phero{position:relative;min-height:clamp(14rem,30vh,20rem);display:flex;align-items:center;justify-content:center;text-align:center;background:#12294f url("assets/hero-me.jpg") center 42%/cover no-repeat;color:#fff;overflow:hidden}
+.phero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,19,38,.62),rgba(13,29,56,.82))}
+.phero-in{position:relative;z-index:1;padding:clamp(9.5rem,7rem + 4vw,11.5rem) 1.2rem clamp(2.6rem,5vh,4rem);max-width:60rem}
+.phero h1{font-size:clamp(1.9rem,1.2rem + 2.6vw,3rem);font-weight:800;letter-spacing:-.01em;line-height:1.16;color:#fff}
+.phero .bc{margin-top:.9rem;font-size:.82rem;letter-spacing:.02em;color:rgba(255,255,255,.82)}
 
 /* ── 공통 섹션 골격 (흰 배경) ── */
 .section{max-width:1120px;margin:0 auto;scroll-margin-top:5.5rem;
@@ -112,9 +108,8 @@ a{color:inherit;text-decoration:none}
 /* ── §02 비전 — 대형 선언 + 교육목표 ── */
 .vision-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(1.8rem,1rem + 2.5vw,3rem);
   align-items:start;margin-bottom:2.4rem}
-.declare{font-weight:800;font-size:clamp(1.7rem,1rem + 3vw,2.9rem);
-  color:var(--navy);line-height:1.25;letter-spacing:-.02em}
-.declare em{color:var(--coral);font-style:normal}
+.declare{font-weight:700;font-size:clamp(1.35rem,1rem + 1.6vw,1.9rem);
+  color:var(--navy);line-height:1.4;letter-spacing:-.01em}
 .motto-note{font-size:.86rem;color:var(--muted);margin-top:1rem}
 .vision-desc{font-size:.96rem;color:var(--body);line-height:1.9}
 .vision-desc .overline{display:block;font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;
@@ -241,13 +236,12 @@ a{color:inherit;text-decoration:none}
 
 <main id="main">
   <!-- ═══ 페이지 히어로 ═══ -->
-  <section class="pagehead" aria-labelledby="ptitle">
-    <div class="pagehead-inner">
-      <p class="kick">About</p>
-      <h1 id="ptitle">학부 소개</h1>
-      <p class="lede">연세대학교 기계공학부는 1962년 기계공학과로 독립한 이래 <b>정밀과 신뢰</b>를 바탕으로 교육과 연구를 이어 왔습니다. 지금은 <b>33명의 교수진과 33개 연구실</b>이 여섯 개 분야에서 연구하며 학생을 가르칩니다.</p>
+  <header class="phero">
+    <div class="phero-in">
+      <h1>학부 소개</h1>
+      <p class="bc">홈 › 학부소개</p>
     </div>
-  </section>
+  </header>
 
   <!-- ═══ §01 학과장 인사말 ═══ -->
   <section class="section" id="greeting" aria-labelledby="greeting-h">
@@ -297,12 +291,12 @@ a{color:inherit;text-decoration:none}
     </div>
     <div class="vision-grid">
       <div>
-        <p class="declare">멈추지 않는 50년,<br>100년을 향한 <em>도전</em>.</p>
-        <p class="motto-note">연세대학교 기계공학부 연구 모토</p>
+        <p class="declare">기독교 정신에 기반한 창의적 공학 교육과 세계 수준의 연구.</p>
+        <p class="motto-note">연세대학교 기계공학부 교육·연구 방향</p>
       </div>
       <div class="vision-desc">
         <span class="overline">교육철학</span>
-        기계공학의 기초 원리를 깊이 있게 탐구하고, 이를 실제 문제 해결로 잇는 설계·제조·에너지·로보틱스·계측의 융합 역량을 길러 인류와 산업에 기여하는 공학 인재와 원천 기술을 배출합니다.
+        기계공학의 기초 원리를 깊이 있게 탐구하고, 이를 실제 문제 해결로 잇는 설계·제조·에너지·로보틱스·계측의 융합 역량을 길러 산업과 사회에 기여하는 공학 인재와 원천 기술을 배출합니다.
       </div>
     </div>
     <div>
@@ -375,7 +369,7 @@ a{color:inherit;text-decoration:none}
         <a class="sec-more" href="G-news.html">전체 연혁 <span class="arr" aria-hidden="true">→</span></a>
       </div>
       <h2 id="hist-h" class="sec-title">주요 연혁</h2>
-      <p class="sec-sub">1958년 건설공학과 신설부터 오늘의 기계공학부까지 60여 년의 걸음을 담았습니다.</p>
+      <p class="sec-sub">1958년 건설공학과 신설부터 오늘의 기계공학부까지 주요 연혁을 정리했습니다.</p>
     </div>
     <div class="timeline" role="list" aria-label="주요 연혁">
       <div class="tl-row" role="listitem"><span class="tl-year">1958</span><span class="tl-body">건설공학과 신설. 연세 공학 교육이 시작되었습니다.</span></div>
@@ -456,8 +450,8 @@ a{color:inherit;text-decoration:none}
   <section class="cta" aria-labelledby="cta-h">
     <div class="cta-txt">
       <p class="cta-kick">입학 안내</p>
-      <h2 id="cta-h">연세 기계공학의 다음 이야기를<br>함께 만들 사람을 기다립니다.</h2>
-      <p>학부 입학부터 대학원 진학까지, 지원 절차와 장학·진로 정보를 한곳에 모았습니다.</p>
+      <h2 id="cta-h">입학 및 진로 안내</h2>
+      <p>학부 입학부터 대학원 진학까지, 지원 절차와 장학·진로 정보를 안내합니다.</p>
     </div>
     <a class="cta-btn" href="G-admissions.html">입학 · 진로 안내 <span class="arr" aria-hidden="true">→</span></a>
   </section>

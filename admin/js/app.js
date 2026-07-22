@@ -33,7 +33,7 @@ Admin.bus.on('auth:login', function () {
   if (!Admin.fs.isReady()) {
     Admin.fs.reconnect(false).then(function (ok) {
       if (!ok) {
-        Admin.toast('「사이트 폴더 열기」로 편집할 사이트(design-candidates 또는 prototype-v3)를 선택하세요.', 'info');
+        Admin.toast('「사이트 폴더 열기」로 design-candidates 폴더를 선택하면 홈(H·아카데믹)과 서브페이지를 편집할 수 있습니다.', 'info');
       }
     });
   }
@@ -106,10 +106,11 @@ var PAGE_NAMES = {
   'people.html': '구성원', 'professor.html': '교수', 'news.html': '소식',
   'admissions.html': '입학', 'contact.html': '연락처', 'engineering.html': '공학 이야기',
   'accessibility.html': '접근성', 'privacy.html': '개인정보처리방침', 'terms.html': '이용약관',
-  /* 관제(G · design-candidates) 사이트 페이지 */
-  'H-academic.html': '홈 · 아카데믹', 'G-console.html': '관제 · 홈(구)', 'G-about.html': '관제 · 소개', 'G-academics.html': '관제 · 교육',
-  'G-research.html': '관제 · 연구', 'G-people.html': '관제 · 구성원', 'G-news.html': '관제 · 소식',
-  'G-admissions.html': '관제 · 입학', 'D-drafting.html': '도면 시안'
+  /* 현행 홈(H · 아카데믹) + 서브페이지 (design-candidates) */
+  'H-academic.html': '홈 (H · 아카데믹)',
+  'G-about.html': '학부소개', 'G-people.html': '구성원', 'G-research.html': '연구',
+  'G-academics.html': '학사', 'G-news.html': '소식', 'G-admissions.html': '입학',
+  'G-console.html': '홈(구 · 관제)', 'D-drafting.html': '도면 시안'
 };
 function pageTitle(name) {
   return PAGE_NAMES[name] || name.replace(/\.html?$/i, '');

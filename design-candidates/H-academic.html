@@ -297,6 +297,18 @@ img{display:block;max-width:100%}
   color:transparent;-webkit-text-stroke:1px rgba(15,27,48,.3)}
 .mq-track i{font-style:normal;font-size:.5em;color:var(--coral);-webkit-text-stroke:0}
 @keyframes mq{to{transform:translateX(-50%)}}
+
+/* ── 스택 커버: 각 섹션이 화면 높이 패널로 고정되고, 아래 섹션이 스크롤로 올라와 덮음 ── */
+.stk{position:sticky;top:0;min-height:100vh;min-height:100svh;
+  display:flex;flex-direction:column;justify-content:center}
+.stk.board-band,.stk.quick{display:flex}
+.stk-pp{isolation:isolate}
+.stk-pp::before{content:"";position:absolute;inset:0 calc(50% - 50vw);background:var(--paper);z-index:-1}
+/* 헤더(z-40)는 항상 위. 섹션은 DOM 순서로 뒤 섹션이 앞 섹션을 덮음 */
+@media(prefers-reduced-motion:reduce){
+  .stk{position:static;min-height:0}
+}
+
 @media(prefers-reduced-motion:reduce){
   .hero-bg,.hero-kick,.hero .sub,.hero-btns,.hero-scroll{animation:none;opacity:1}
   .fade{opacity:1;transform:none;transition:none}
@@ -422,7 +434,7 @@ img{display:block;max-width:100%}
 <main>
 
   <!-- ═══ 연구 뉴스 (KAIST 뉴스 하이라이트 스타일) ═══ -->
-  <section class="wrap sec" aria-labelledby="h-news" id="secNews">
+  <section class="wrap sec stk stk-pp" aria-labelledby="h-news" id="secNews">
     <div class="sec-head">
       <span class="sidx" aria-hidden="true">01</span>
       <div>
@@ -438,7 +450,7 @@ img{display:block;max-width:100%}
   </section>
 
   <!-- ═══ 공지 · 세미나 보드 ═══ -->
-  <section class="board-band" aria-label="공지 및 세미나">
+  <section class="board-band stk" aria-label="공지 및 세미나">
     <div class="wrap">
       <div>
         <div class="bhead">
@@ -462,7 +474,7 @@ img{display:block;max-width:100%}
   </section>
 
   <!-- ═══ 연구 분야 (SNU 6분야 그리드 스타일) ═══ -->
-  <section class="wrap sec" id="research" aria-labelledby="h-research">
+  <section class="wrap sec stk stk-pp" id="research" aria-labelledby="h-research">
     <div class="sec-head">
       <span class="sidx" aria-hidden="true">02</span>
       <div>
@@ -475,7 +487,7 @@ img{display:block;max-width:100%}
   </section>
 
   <!-- ═══ 교수진 ═══ -->
-  <section class="wrap sec sec-navy" aria-labelledby="h-people">
+  <section class="wrap sec sec-navy stk" aria-labelledby="h-people">
     <div class="sec-head">
       <span class="sidx" aria-hidden="true">03</span>
       <div>
@@ -488,7 +500,7 @@ img{display:block;max-width:100%}
   </section>
 
   <!-- ═══ 인스타그램 릴스 ═══ -->
-  <section class="wrap sec" aria-labelledby="h-ig">
+  <section class="wrap sec stk stk-pp" aria-labelledby="h-ig">
     <div class="sec-head">
       <span class="sidx" aria-hidden="true">04</span>
       <div>
@@ -527,7 +539,7 @@ img{display:block;max-width:100%}
   </div>
 
   <!-- ═══ 바로가기 — 네이비 스테이트먼트 밴드 ═══ -->
-  <section class="quick" aria-label="바로가기">
+  <section class="quick stk" aria-label="바로가기">
     <div class="wrap">
       <a class="ql" href="G-admissions.html">
         <b data-i18n="qAdm">입학 안내</b><span data-i18n="qAdmS">학부·대학원 지원 경로</span><i aria-hidden="true">→</i>

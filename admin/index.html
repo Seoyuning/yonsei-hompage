@@ -12,6 +12,22 @@
 <script>
 (function(){try{var t=localStorage.getItem('ysme-admin-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}})();
 </script>
+<script>
+/* ── 온라인 편집 게이트 ──
+   배포 환경(로컬 아님)에서 온라인 모드 활성화 → 공용 암호로 인터넷에서 H 사이트 편집·배포.
+   ENDPOINT = 팀원이 배포한 게시 서버(Vercel /api/publish). 편집 대상은 서버 환경변수로 결정:
+     GH_OWNER/GH_REPO = 배포 저장소,  GH_BASEPATH = design-candidates (H 디자인 폴더),  GH_BRANCH = main.
+   ⚠ 팀원 Vercel env 의 GH_BASEPATH 가 design-candidates 여야 이 홈(H)이 편집된다.
+   로컬(localhost)에서는 건너뛰어 「사이트 폴더 열기」 로컬 편집 그대로. 엔드포인트가 다르면 아래 한 줄만 교체. */
+(function () {
+  try {
+    var ONLINE_ENDPOINT = 'https://prototype-v3-nine.vercel.app/api/publish';
+    var h = location.hostname;
+    var isLocal = !h || h === 'localhost' || h === '127.0.0.1' || location.protocol === 'file:';
+    if (!isLocal) window.YSME_ONLINE = { endpoint: ONLINE_ENDPOINT, siteName: '연세대학교 기계공학부' };
+  } catch (e) {}
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />

@@ -502,12 +502,12 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
   var cById = {}; clusters.forEach(function(c){ cById[c.id]=c; });
   /* 부위↔분야 매핑 + 기하(클립·부위중심·리프트·라벨위치). 좌표 = 이미지 0~100% */
   var PARTS = [
-    { cid:'thermal',       clip:'polygon(1% 7%,47% 20%,45% 44%,26% 52%,1% 44%)',      cx:22, cy:26, lift:'translate(-5%,-6%)', lx:16, ly:9,  part:'왼쪽 날개' },
-    { cid:'micro',         clip:'polygon(67% 12%,99% 12%,99% 47%,75% 49%,69% 28%)',   cx:85, cy:30, lift:'translate(5%,-5%)',  lx:87, ly:9,  part:'오른쪽 날개' },
-    { cid:'dynamics',      clip:'polygon(70% 43%,100% 45%,100% 73%,75% 72%,72% 55%)', cx:87, cy:58, lift:'translate(7%,1%)',   lx:92, ly:52, part:'머리' },
-    { cid:'solid',         clip:'polygon(36% 45%,70% 45%,71% 74%,45% 79%,32% 62%)',   cx:52, cy:62, lift:'translate(-3%,-5%)', lx:8,  ly:52, part:'몸통' },
-    { cid:'manufacturing', clip:'polygon(6% 58%,40% 65%,45% 87%,12% 93%)',            cx:26, cy:77, lift:'translate(-5%,6%)',  lx:15, ly:91, part:'꼬리' },
-    { cid:'optics',        clip:'polygon(49% 73%,84% 73%,84% 98%,53% 98%)',           cx:66, cy:86, lift:'translate(3%,7%)',   lx:86, ly:92, part:'발톱' }
+    { cid:'thermal',       clip:'polygon(49% 24%,33% 13%,16% 15%,5% 24%,3% 41%,17% 49%,32% 53%,47% 44%)', cx:24, cy:32, lift:'translate(-6%,-7%)', lx:16, ly:9,  part:'왼쪽 날개' },
+    { cid:'micro',         clip:'polygon(80% 18%,99% 12%,99% 45%,77% 48%,73% 31%)',                       cx:87, cy:29, lift:'translate(6%,-6%)',  lx:87, ly:9,  part:'오른쪽 날개' },
+    { cid:'dynamics',      clip:'polygon(69% 43%,88% 47%,87% 60%,81% 69%,71% 67%,67% 54%)',               cx:78, cy:55, lift:'translate(8%,2%)',   lx:92, ly:52, part:'머리' },
+    { cid:'solid',         clip:'polygon(49% 23%,68% 42%,72% 56%,67% 72%,48% 73%,44% 61%,36% 50%,45% 38%)',cx:53, cy:58, lift:'translate(-4%,-6%)', lx:8,  ly:52, part:'몸통' },
+    { cid:'manufacturing', clip:'polygon(49% 60%,30% 62%,14% 67%,20% 79%,31% 86%,45% 74%,51% 66%)',       cx:29, cy:74, lift:'translate(-7%,7%)',  lx:15, ly:91, part:'꼬리' },
+    { cid:'optics',        clip:'polygon(55% 72%,72% 71%,83% 80%,80% 93%,65% 96%,55% 87%)',               cx:68, cy:84, lift:'translate(4%,8%)',   lx:86, ly:92, part:'발톱' }
   ];
   var stage = document.getElementById('eagleStage');
   var arrows = document.getElementById('eagleArrows');

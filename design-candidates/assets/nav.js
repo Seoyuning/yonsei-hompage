@@ -16,7 +16,7 @@
     '.hud-top{display:none!important}',
     '.ynav-ph{display:none!important}',
     '.ynv{position:fixed;top:0;left:0;right:0;z-index:50;font-family:' + KR + '}',
-    '.ynv-w{max-width:75rem;margin:0 auto;padding:0 clamp(1.1rem,4vw,2rem)}',
+    '.ynv-w{max-width:72rem;margin:0 auto;padding:0 clamp(1.1rem,4vw,2rem)}',
     /* 유틸 바 */
     '.ynv-top{background:' + INK + ';color:#c6d2e6;font-size:.74rem;overflow:hidden;max-height:2.3rem;' +
       'transition:max-height .4s ' + E + ',opacity .3s ease}',
@@ -30,26 +30,26 @@
     '.ynv-lang button.on{background:#fff;color:' + NAVYD + '}',
     /* 흰 헤더 */
     '.ynv-hdr{background:rgba(245,242,236,.94);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1px solid ' + LINE + '}',
-    '.ynv-hdr .ynv-w{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;padding-top:.62rem;padding-bottom:.62rem}',
+    '.ynv-hdr .ynv-w{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;padding-top:.85rem;padding-bottom:.85rem}',
     '.ynv-brand{display:flex;align-items:center;gap:.7rem;min-width:0;text-decoration:none}',
-    '.ynv-brand img{height:2.3rem;width:auto;display:block}',
-    '.ynv-brand .bko{font-weight:800;font-size:1.04rem;letter-spacing:-.01em;color:' + NAVY + ';line-height:1.22}',
-    '.ynv-brand .ben{display:block;font-size:.6rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:' + DIM + '}',
-    '.ynv-menu{display:flex;gap:clamp(1.6rem,3.4vw,3.4rem);font-weight:600;font-size:.98rem;white-space:nowrap}',
+    '.ynv-brand img{height:2.4rem;width:auto;display:block}',
+    '.ynv-brand .bko{font-weight:800;font-size:1.06rem;letter-spacing:-.01em;color:' + NAVY + ';line-height:1.25}',
+    '.ynv-brand .ben{display:block;font-size:.62rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:' + DIM + '}',
+    '.ynv-menu{display:flex;gap:clamp(2rem,3.8vw,3.6rem);font-weight:600;font-size:.98rem;white-space:nowrap}',
     '.ynv-i{position:relative}',
-    '.ynv-i>a{position:relative;display:inline-block;padding:.5rem 0;color:' + MUTED + ';text-decoration:none;transition:color .2s}',
-    '.ynv-i>a::after{content:"";position:absolute;left:0;right:0;bottom:.15rem;height:2px;background:' + NAVY + ';' +
+    '.ynv-i>a{position:relative;display:inline-block;padding:.55rem 0;color:' + INK + ';text-decoration:none;transition:color .2s}',
+    '.ynv-i>a::after{content:"";position:absolute;left:0;right:0;bottom:.2rem;height:2px;background:' + NAVY + ';' +
       'transform:scaleX(0);transform-origin:right;transition:transform .45s ' + E + '}',
     '.ynv-i:hover>a,.ynv-i>a.cur{color:' + NAVY + '}',
     '.ynv-i:hover>a::after,.ynv-i>a.cur::after{transform:scaleX(1);transform-origin:left}',
     /* 드롭다운 */
-    '.ynv-d{position:absolute;top:calc(100% + .3rem);left:50%;min-width:12.5rem;background:#fff;' +
+    '.ynv-d{position:absolute;top:calc(100% + .35rem);left:50%;min-width:12.5rem;background:#fff;' +
       'border:1px solid ' + LINE + ';border-top:2px solid ' + NAVY + ';box-shadow:0 22px 48px rgba(15,27,48,.14);' +
-      'padding:.5rem 0;display:flex;flex-direction:column;opacity:0;visibility:hidden;transform:translate(-50%,14px);z-index:60;' +
+      'padding:.55rem 0;display:flex;flex-direction:column;opacity:0;visibility:hidden;transform:translate(-50%,14px);z-index:60;' +
       'transition:opacity .35s ' + E + ',transform .5s ' + E + ',visibility .35s}',
     '.ynv-d::before{content:"";position:absolute;top:-1rem;left:0;right:0;height:1rem}',
     '.ynv-i:hover .ynv-d,.ynv-i:focus-within .ynv-d{opacity:1;visibility:visible;transform:translate(-50%,4px)}',
-    '.ynv-d a{padding:.5rem 1.25rem;font-size:.87rem;font-weight:500;color:' + MUTED + ';text-decoration:none;' +
+    '.ynv-d a{padding:.52rem 1.25rem;font-size:.87rem;font-weight:500;color:' + MUTED + ';text-decoration:none;' +
       'opacity:0;transform:translateY(7px);transition:opacity .4s ease,transform .5s ' + E + ',color .15s,background .15s,padding .3s ' + E + '}',
     '.ynv-i:hover .ynv-d a,.ynv-i:focus-within .ynv-d a{opacity:1;transform:none}',
     '.ynv-d a:nth-child(2){transition-delay:.04s}.ynv-d a:nth-child(3){transition-delay:.08s}',

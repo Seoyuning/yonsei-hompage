@@ -8,7 +8,7 @@
 
   var NAVY = '#1a3d75', NAVYD = '#12294f', INK = '#0f1b30',
       PAPER = '#f5f2ec', LINE = '#e2ddd2', DIM = '#8b96a9', MUTED = '#5e6b82';
-  var KR = '"Pretendard Variable","Pretendard",system-ui,sans-serif';
+  var KR = '"SUIT Variable","Pretendard Variable","Pretendard",system-ui,sans-serif';
   var E = 'cubic-bezier(.16,1,.3,1)';
 
   /* ── 1. 스타일 주입 ── */

@@ -523,7 +523,7 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
       dot.setAttribute('class','edot'); dot.setAttribute('data-cid',p.cid);
       arrows.appendChild(dot);
       /* 사전에 잘라낸 조각 이미지(투명 배경). 6개가 겹쳐 독수리 완성, 하나 들어올리면 그 자리는 빈다 */
-      var part=new Image(); part.src='assets/eagle-p-'+p.png+'.png'; part.alt=''; part.className='epart';
+      var part=new Image(); part.src='assets/eagle-p-'+p.png+'.png?v=6'; part.alt=''; part.className='epart';
       part.style.setProperty('--lift',p.lift);
       part.setAttribute('data-cid',p.cid);
       stage.appendChild(part);

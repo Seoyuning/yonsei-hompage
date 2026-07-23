@@ -56,6 +56,25 @@
     '.ynv-d a:nth-child(4){transition-delay:.12s}.ynv-d a:nth-child(5){transition-delay:.16s}',
     '.ynv-d a:hover{color:' + NAVY + ';background:' + PAPER + ';padding-left:1.6rem}',
     '[id]{scroll-margin-top:5rem}',
+    'body.has-ysub [id]{scroll-margin-top:7.6rem}',
+    /* breadcrumb 링크 */
+    '.bc a{color:inherit;text-decoration:none;transition:color .15s}',
+    '.bc a:hover{color:' + NAVY + '}',
+    '.bc a.bc-home{color:' + MUTED + '}',
+    '.bc a.bc-cur{color:' + NAVY + ';font-weight:600}',
+    /* 형제 하위페이지 서브내비(LNB형 → 가로 세련된 버튼) — 히어로 아래, 스크롤 시 상단 고정 */
+    '.ysub{position:sticky;top:4.35rem;z-index:38;background:rgba(245,242,236,.93);' +
+      '-webkit-backdrop-filter:blur(9px);backdrop-filter:blur(9px);border-bottom:1px solid ' + LINE + '}',
+    '.ysub-w{max-width:72rem;margin:0 auto;padding:.5rem clamp(1.1rem,4vw,2rem);' +
+      'display:flex;gap:.45rem;align-items:center;overflow-x:auto;scrollbar-width:none}',
+    '.ysub-w::-webkit-scrollbar{display:none}',
+    '.ysub a{flex:0 0 auto;font-family:' + KR + ';font-size:.86rem;font-weight:600;color:' + MUTED + ';' +
+      'text-decoration:none;padding:.46rem .98rem;border-radius:99px;border:1px solid ' + LINE + ';background:#fff;' +
+      'white-space:nowrap;transition:color .18s,background .2s ' + E + ',border-color .18s,box-shadow .2s,transform .2s ' + E + '}',
+    '.ysub a:hover{color:' + NAVY + ';border-color:' + NAVY + ';transform:translateY(-1px)}',
+    '.ysub a.cur{color:#fff;background:' + NAVY + ';border-color:' + NAVY + ';box-shadow:0 5px 14px rgba(26,61,117,.24)}',
+    '@media(max-width:920px){.ysub{top:3.7rem}}',
+    '@media(prefers-reduced-motion:reduce){.ysub a{transition:color .18s,background .18s,border-color .18s}}',
     /* 맨 위로 버튼 */
     '.ytop{position:fixed;right:1.4rem;bottom:1.4rem;z-index:45;width:2.9rem;height:2.9rem;border-radius:50%;' +
       'background:#fff;border:1px solid rgba(10,26,51,.15);box-shadow:0 6px 18px rgba(10,26,51,.15);' +
@@ -128,10 +147,71 @@
       '<button class="ynv-burger" type="button" aria-label="메뉴 열기" aria-expanded="false" aria-controls="ynvOvl"><span></span><span></span><span></span></button>' +
     '</div></header>';
 
+  /* ── 하위페이지 서브내비 + breadcrumb 링크화 (섹션 페이지 공용) ── */
+  function buildSubnav() {
+    if (!curKey) return;
+    var m = null; MENU.forEach(function (x) { if (x.key === curKey) m = x; });
+    if (!m) return;
+    /* breadcrumb: '홈 › 섹션' → 클릭 가능한 링크로 */
+    var bc = document.querySelector('.bc');
+    if (bc) {
+      bc.innerHTML = '<a class="bc-home" href="H-academic.html">홈</a> <span aria-hidden="true">›</span> ' +
+        '<a class="bc-cur" href="' + m.h + '" aria-current="page">' + esc(m.t) + '</a>';
+    }
+    /* 형제 하위페이지 버튼 바 — 하위 2개 이상일 때만(구성원=단일 제외) */
+    if (!m.sub || m.sub.length < 2) return;
+    var phero = document.querySelector('.phero');
+    if (!phero) return;
+    document.body.classList.add('has-ysub');
+    var bar = document.createElement('nav');
+    bar.className = 'ysub'; bar.setAttribute('aria-label', m.t + ' 하위 메뉴');
+    bar.innerHTML = '<div class="ysub-w">' + m.sub.map(function (s) {
+      return '<a href="' + s[1] + '">' + esc(s[0]) + '</a>';
+    }).join('') + '</div>';
+    phero.parentNode.insertBefore(bar, phero.nextSibling);
+
+    /* sticky top = 흰 헤더 높이(유틸바 접힘 후 nav 높이)에 맞춰 동적 고정 — 겹침/틈 방지 */
+    var hdr = nav.querySelector('.ynv-hdr');
+    function fitTop() { if (hdr) { var h = Math.round(hdr.getBoundingClientRect().height); if (h > 20) bar.style.top = h + 'px'; } }
+    fitTop(); addEventListener('resize', fitTop); addEventListener('load', fitTop);
+
+    var links = [].slice.call(bar.querySelectorAll('a'));
+    var targets = links.map(function (a) {
+      var id = (a.getAttribute('href').split('#')[1] || '');
+      return { a: a, el: id ? document.getElementById(id) : null };
+    });
+    function setCur(active) { links.forEach(function (a) { a.classList.toggle('cur', a === active); }); }
+    var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var OFFSET = 118; /* 고정 nav(약 62px) + 서브내비(약 44px) */
+    links.forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        var id = (a.getAttribute('href').split('#')[1] || '');
+        var el = id ? document.getElementById(id) : null;
+        if (!el) return; /* 앵커 없으면 기본 이동 */
+        e.preventDefault();
+        var top = el.getBoundingClientRect().top + (pageYOffset || 0) - OFFSET;
+        try { scrollTo({ top: top, behavior: reduce ? 'auto' : 'smooth' }); } catch (_) { scrollTo(0, top); }
+        try { history.replaceState(null, '', '#' + id); } catch (_) {}
+        setCur(a);
+      });
+    });
+    /* 스크롤 스파이 — 현재 보이는 섹션 버튼 강조 */
+    var ticking = false;
+    function spy() {
+      ticking = false;
+      var line = OFFSET + 14, cur = targets[0];
+      targets.forEach(function (t) { if (t.el && t.el.getBoundingClientRect().top <= line) cur = t; });
+      if (cur) setCur(cur.a);
+    }
+    addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(spy); } }, { passive: true });
+    spy();
+  }
+
   function mount() {
     var old = document.querySelector('.hud-top'); if (old) old.remove();
     var ph = document.querySelector('.ynav-ph'); if (ph) ph.remove();
     document.body.insertBefore(nav, document.body.firstChild);
+    buildSubnav();
 
     /* 스크롤 시 유틸바 접힘 */
     var min = false;
@@ -207,7 +287,7 @@
         var t = null;
         try { t = document.getElementById(decodeURIComponent(location.hash.slice(1))); } catch (e) {}
         if (t) {
-          var y = t.getBoundingClientRect().top + (pageYOffset || document.documentElement.scrollTop) - 80;
+          var y = t.getBoundingClientRect().top + (pageYOffset || document.documentElement.scrollTop) - (document.body.classList.contains('has-ysub') ? 118 : 80);
           try { scrollTo({ top: y, behavior: 'instant' }); } catch (e) { scrollTo(0, y); }
         }
       };

@@ -100,7 +100,29 @@
     '.ynv-ovl-sub{display:block;font-family:' + KR + ';font-size:.95rem;color:' + MUTED + ';padding:.55rem 0 .55rem 1.1rem;text-decoration:none}',
     '@media(max-width:920px){.ynv-menu{display:none}.ynv-burger{display:inline-flex}}',
     '@media(min-width:921px){.ynv-ovl{display:none!important}}',
-    '@media(prefers-reduced-motion:reduce){.ynv-top,.ynv-d,.ynv-d a,.ynv-i>a::after{transition:none}}'
+    '@media(prefers-reduced-motion:reduce){.ynv-top,.ynv-d,.ynv-d a,.ynv-i>a::after{transition:none}}',
+    /* ── 사이트맵 정보 푸터 (파란 CTA·간이 푸터 대체) ── */
+    '.yft{background:' + INK + ';color:#c6d2e6;font-family:' + KR + '}',
+    '.yft-w{max-width:80rem;margin:0 auto;padding:clamp(2.6rem,1.8rem + 2.5vw,4rem) clamp(1.2rem,4vw,2.4rem) 2.2rem;' +
+      'display:grid;grid-template-columns:minmax(0,16.5rem) 1fr;gap:clamp(2rem,1rem + 3vw,4.5rem)}',
+    '.yft-logo{display:block;font-weight:800;font-size:1.08rem;color:#fff;letter-spacing:-.01em;line-height:1.3;text-decoration:none}',
+    '.yft-logo span{display:block;font-size:.6rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:#7f90ad;margin-top:.3rem}',
+    '.yft-addr{font-size:.82rem;line-height:1.75;color:#a9b6cd;margin-top:1.25rem}',
+    '.yft-tel{font-size:.82rem;line-height:1.7;color:#a9b6cd;margin-top:.55rem}',
+    '.yft-ext{display:flex;flex-wrap:wrap;gap:.45rem .55rem;margin-top:1.3rem}',
+    '.yft-ext a{font-size:.78rem;color:#c6d2e6;text-decoration:none;border:1px solid rgba(255,255,255,.18);' +
+      'padding:.36rem .8rem;border-radius:99px;transition:background .15s,border-color .15s,color .15s}',
+    '.yft-ext a:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.42);color:#fff}',
+    '.yft-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(8.2rem,1fr));gap:1.7rem 1.1rem}',
+    '.yft-h{display:inline-block;font-weight:700;font-size:.92rem;color:#fff;text-decoration:none;margin-bottom:.95rem;transition:color .15s}',
+    '.yft-h:hover{color:#9db4d8}',
+    '.yft-col ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.52rem}',
+    '.yft-col li a{font-size:.82rem;color:#93a2bd;text-decoration:none;transition:color .15s}',
+    '.yft-col li a:hover{color:#fff;text-decoration:underline;text-underline-offset:3px}',
+    '.yft-base{border-top:1px solid rgba(255,255,255,.1);padding:1.25rem 1rem;font-size:.72rem;' +
+      'letter-spacing:.03em;color:#7f90ad;text-align:center}',
+    '.yft-base a{color:#93a2bd;text-decoration:none}.yft-base a:hover{color:#fff}',
+    '@media(max-width:720px){.yft-w{grid-template-columns:1fr;gap:2.4rem}}'
   ].join('');
   var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
 
@@ -207,11 +229,42 @@
     show(initial, false);
   }
 
+  /* ── 사이트맵 정보 푸터 주입(파란 CTA·간이 푸터 제거 후 교체) ── */
+  function buildFooter() {
+    [].forEach.call(document.querySelectorAll('.cta'), function (el) { el.parentNode && el.parentNode.removeChild(el); });
+    [].forEach.call(document.querySelectorAll('footer'), function (el) { if (!el.classList.contains('yft')) el.parentNode && el.parentNode.removeChild(el); });
+    if (document.querySelector('footer.yft')) return;
+    var cols = MENU.map(function (m) {
+      var items = m.sub.map(function (s) { return '<li><a href="' + s[1] + '">' + esc(s[0]) + '</a></li>'; }).join('');
+      return '<div class="yft-col"><a class="yft-h" href="' + m.h + '">' + esc(m.t) + '</a><ul>' + items + '</ul></div>';
+    }).join('');
+    var ft = document.createElement('footer');
+    ft.className = 'yft'; ft.setAttribute('role', 'contentinfo');
+    ft.innerHTML =
+      '<div class="yft-w">' +
+        '<div class="yft-brand">' +
+          '<a class="yft-logo" href="H-academic.html">연세대학교 기계공학부<span>School of Mechanical Engineering</span></a>' +
+          '<p class="yft-addr">(03722) 서울특별시 서대문구 연세로 50<br>연세대학교 공과대학 제3공학관</p>' +
+          '<p class="yft-tel">대표전화 02-2123-4426 (학부) · 02-2123-2810 (대학원)</p>' +
+          '<div class="yft-ext">' +
+            '<a href="https://www.yonsei.ac.kr" target="_blank" rel="noopener">연세대학교 ↗</a>' +
+            '<a href="https://engineering.yonsei.ac.kr" target="_blank" rel="noopener">공과대학 ↗</a>' +
+            '<a href="https://me.yonsei.ac.kr" target="_blank" rel="noopener">현행 홈 ↗</a>' +
+            '<a href="../admin/index.html">관리자</a>' +
+          '</div>' +
+        '</div>' +
+        '<nav class="yft-cols" aria-label="사이트맵">' + cols + '</nav>' +
+      '</div>' +
+      '<div class="yft-base">© 2026 Yonsei University · School of Mechanical Engineering &nbsp;·&nbsp; 공모전 출품 시안(비공식)</div>';
+    document.body.appendChild(ft);
+  }
+
   function mount() {
     var old = document.querySelector('.hud-top'); if (old) old.remove();
     var ph = document.querySelector('.ynav-ph'); if (ph) ph.remove();
     document.body.insertBefore(nav, document.body.firstChild);
     buildSubnav();
+    buildFooter();
 
     /* 스크롤 시 유틸바 접힘 */
     var min = false;

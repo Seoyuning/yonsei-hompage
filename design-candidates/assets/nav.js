@@ -7,7 +7,7 @@
   'use strict';
 
   var NAVY = '#1a3d75', NAVYD = '#12294f', INK = '#0f1b30',
-      PAPER = '#faf8f4', LINE = '#e2ddd2', DIM = '#8b96a9', MUTED = '#5e6b82';
+      PAPER = '#f1f2f5', LINE = '#e2ddd2', DIM = '#8b96a9', MUTED = '#5e6b82';
   var KR = '"Apple SD Gothic Neo","Noto Sans KR","Pretendard Variable","Pretendard",system-ui,sans-serif';
   var E = 'cubic-bezier(.16,1,.3,1)';
 
@@ -29,7 +29,7 @@
       'background:none;border:0;border-radius:99px;padding:.16rem .62rem;cursor:pointer;transition:background .12s,color .12s}',
     '.ynv-lang button.on{background:#fff;color:' + NAVYD + '}',
     /* 흰 헤더 */
-    '.ynv-hdr{background:rgba(245,242,236,.94);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1px solid ' + LINE + '}',
+    '.ynv-hdr{background:rgba(255,255,255,.9);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1px solid ' + LINE + '}',
     '.ynv-hdr .ynv-w{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;padding-top:.85rem;padding-bottom:.85rem}',
     '.ynv-brand{display:flex;align-items:center;gap:.7rem;min-width:0;text-decoration:none}',
     '.ynv-brand img{height:2.4rem;width:auto;display:block}',

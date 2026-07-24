@@ -257,15 +257,76 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
 .cta .cta-btn:hover{background:transparent;color:#fff;border-color:#fff}
 .cta .cta-btn .arr{color:var(--coral)}
 
+/* ── §03 이수체계도 — 학번(입학연도) 선택 UI ── */
+.rm-cohort{border-top:2px solid var(--navy);border-bottom:1px solid var(--line-soft);
+  padding:1.1rem 0 1.15rem;margin-bottom:1.4rem;
+  display:flex;justify-content:space-between;align-items:flex-end;gap:1.4rem 2rem;flex-wrap:wrap}
+.rm-cohort-l{min-width:0}
+.rm-cohort-lab{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.rm-tabs{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.7rem}
+.rm-tab{font-family:var(--kr);font-size:.9rem;font-weight:600;color:var(--sub);cursor:pointer;
+  background:#fff;border:1px solid var(--line);padding:.5rem 1.05rem;
+  font-variant-numeric:tabular-nums;transition:border-color .15s,color .15s,background .15s;white-space:nowrap}
+.rm-tab:hover{border-color:var(--muted);color:var(--ink)}
+.rm-tab[aria-selected="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
+.rm-tab .u{font-family:var(--kr);font-size:.82em;font-weight:500;margin-left:.15em;opacity:.8}
+.rm-cohort-note{flex:1 1 20rem;max-width:34rem;
+  font-family:var(--kr);font-size:.84rem;color:var(--sub);line-height:1.7}
+.rm-cohort-note b{color:var(--ink);font-weight:600}
+.rm-cohort-note .yr{font-family:var(--mono);color:var(--navy);font-weight:600;font-variant-numeric:tabular-nums}
+
+/* ── §04 학부 전공 교과 — 영역별 편집형(재디자인) ── */
+.crs-search{position:relative;max-width:24rem;margin:0 0 2rem}
+.crs-search input{width:100%;font-family:var(--kr);font-size:.86rem;color:#2a3a56;
+  background:#fff;border:0;border-bottom:1px solid var(--line);padding:.55rem .3rem .55rem 1.7rem;transition:border-color .15s}
+.crs-search input::placeholder{color:var(--label)}
+.crs-search input:focus{outline:none;border-bottom-color:var(--navy)}
+.crs-search::before{content:"⌕";position:absolute;left:.15rem;top:50%;transform:translateY(-50%);color:var(--label);font-size:1rem;pointer-events:none}
+.crs-status{font-family:var(--kr);font-size:.78rem;color:var(--label);margin:-1.4rem 0 1.6rem;font-variant-numeric:tabular-nums;min-height:1.1em}
+
+/* 영역 블록 — 넉넉한 여백·좌측 제목, 우측 과목 나열 */
+.crs-block{padding:2.2rem 0;border-top:1px solid var(--line-soft)}
+.crs-block:first-of-type{border-top:0;padding-top:.4rem}
+.crs-block.is-empty{display:none}
+.crs-block-grid{display:grid;grid-template-columns:minmax(11rem,15rem) 1fr;gap:clamp(1.4rem,1rem + 3vw,3.2rem);align-items:start}
+.crs-block-head{position:sticky;top:5rem}
+.crs-block-kick{font-family:var(--mono);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--crs-c,var(--muted))}
+.crs-block-title{font-family:var(--kr);font-weight:700;font-size:1.28rem;color:var(--ink);line-height:1.25;margin-top:.55rem}
+.crs-block-count{font-family:var(--mono);font-size:.76rem;color:var(--muted);margin-top:.6rem;font-variant-numeric:tabular-nums}
+.crs-block-desc{font-family:var(--kr);font-size:.82rem;color:var(--sub);line-height:1.65;margin-top:.85rem;max-width:16rem}
+.crs-block-rule{width:2rem;height:2px;background:var(--crs-c,var(--navy));margin-top:1rem;opacity:.55}
+
+/* 과목 행 — 표가 아닌 정돈된 리스트, 코드/이름/영문/개요 위계 */
+.crs-list{border-top:1px solid var(--line-soft)}
+.crs-row{display:grid;grid-template-columns:5.2rem 1fr;gap:0 1.3rem;align-items:baseline;
+  padding:1.1rem 0;border-bottom:1px solid var(--line-soft);scroll-margin-top:5.5rem}
+.crs-row.is-hidden{display:none}
+.crs-row:target{background:linear-gradient(90deg,rgba(26,61,117,.06),transparent 60%);
+  box-shadow:inset 3px 0 0 var(--navy);padding-left:.9rem;margin-left:-.9rem}
+.crs-code{font-family:var(--mono);font-size:.68rem;letter-spacing:.04em;color:var(--label);
+  font-variant-numeric:tabular-nums;padding-top:.15em}
+.crs-main{min-width:0}
+.crs-name-row{display:flex;align-items:baseline;gap:.55rem;flex-wrap:wrap}
+.crs-name{font-family:var(--kr);font-weight:700;font-size:1.02rem;color:var(--ink);line-height:1.3}
+.crs-en{font-family:var(--kr);font-size:.74rem;color:var(--label);margin-top:.28rem;line-height:1.45}
+.crs-desc{font-family:var(--kr);font-size:.84rem;color:var(--sub);line-height:1.72;margin-top:.55rem;max-width:44rem}
+.crs-empty{padding:2rem 0;font-family:var(--kr);font-size:.88rem;color:var(--muted)}
+
 /* ── 반응형 ── */
 @media (max-width:900px){
   .overview{grid-template-columns:1fr;gap:1.8rem}
   .req-grid{grid-template-columns:1fr}
+  .crs-block-grid{grid-template-columns:1fr;gap:1.2rem}
+  .crs-block-head{position:static}
+  .crs-block-desc{max-width:none}
 }
 @media (max-width:680px){
   .grad-card{grid-template-columns:1fr;gap:1rem}
   .ug-toolbar{flex-direction:column;align-items:stretch}
   .ug-status{align-self:flex-end}
+  .crs-row{grid-template-columns:1fr;gap:.35rem}
+  .crs-code{padding-top:0}
+  .rm-cohort{flex-direction:column;align-items:stretch;gap:1rem}
 }
 </style>
 <style>.ynav-ph{position:fixed;top:0;left:0;right:0;height:3.7rem;background:rgba(255,255,255,.96);border-bottom:1px solid rgba(0,0,0,.08);z-index:39}</style>
@@ -352,8 +413,22 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
       <div>
         <p class="sec-kick">이수체계도</p>
         <h2 id="rm-h" class="sec-title">교과목 이수체계도</h2>
-        <p class="sec-sub">학년·학기별 이수 교과를 한눈에 배치했습니다. 각 과목의 과목명·구분·학점·시수를 표기했으며, 과목명을 누르면 아래 학부 전공 교과의 상세 설명으로 이동합니다.</p>
+        <p class="sec-sub">학년·학기별 이수 교과를 한눈에 배치했습니다. 이수체계는 <b>입학연도(학번)</b>에 따라 적용 기준이 달라질 수 있어, 아래에서 입학 학번을 선택해 해당 기준으로 볼 수 있습니다. 과목명을 누르면 아래 학부 전공 교과의 상세 설명으로 이동합니다.</p>
       </div>
+    </div>
+    <div class="rm-cohort">
+      <div class="rm-cohort-l">
+        <p class="rm-cohort-lab">입학 학번 선택</p>
+        <div class="rm-tabs" id="rmTabs" role="tablist" aria-label="입학 학번(입학연도) 선택">
+          <button type="button" class="rm-tab" role="tab" data-year="2024" aria-selected="true" aria-controls="curriculumGrid">2024<span class="u">학번</span></button>
+          <button type="button" class="rm-tab" role="tab" data-year="2023" aria-selected="false" aria-controls="curriculumGrid">2023<span class="u">학번</span></button>
+          <button type="button" class="rm-tab" role="tab" data-year="2022" aria-selected="false" aria-controls="curriculumGrid">2022<span class="u">학번</span></button>
+          <button type="button" class="rm-tab" role="tab" data-year="2021" aria-selected="false" aria-controls="curriculumGrid">2021 이전<span class="u"></span></button>
+        </div>
+      </div>
+      <p class="rm-cohort-note" id="rmCohortNote" role="status" aria-live="polite">
+        아래 이수체계도는 <span class="yr">2024학번</span> 입학자 기준의 대표 이수 흐름입니다.
+      </p>
     </div>
     <div class="cur-legend">
       <span class="legend-item"><span class="cur-badge t-req">전필</span>전공필수 — 졸업하려면 반드시 이수</span>
@@ -372,27 +447,17 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
       <div>
         <p class="sec-kick">전공 교과</p>
         <h2 id="crs-h" class="sec-title">학부 전공 교과</h2>
-        <p class="sec-sub">학부 전공 교과목의 코드·국문·영문명과 교과 개요입니다. 구분(전공필수·전공선택)으로 걸러 보거나 코드·과목명으로 검색할 수 있습니다.</p>
+        <p class="sec-sub">전공필수는 이수 순서대로, 전공선택은 관련 연구 분야별로 묶어 정리했습니다. 각 과목의 코드·국문·영문명과 교과 개요를 담았으며, 코드·과목명으로 검색할 수 있습니다.</p>
       </div>
     </div>
-    <div class="ug-toolbar">
-      <label class="ug-search"><span class="visually-hidden">전공 교과 검색</span>
-        <input type="search" id="ugSearch" placeholder="코드 · 과목명 · 영문명 검색" autocomplete="off" />
-      </label>
-      <div class="ug-pills" id="ugPills" role="group" aria-label="구분 필터">
-        <button type="button" class="ug-pill" data-ug-type="" aria-pressed="true">전체 <span class="n" id="ugCountAll"></span></button>
-        <button type="button" class="ug-pill" data-ug-type="전공필수" aria-pressed="false">전공필수 <span class="n" id="ugCountReq"></span></button>
-        <button type="button" class="ug-pill" data-ug-type="전공선택" aria-pressed="false">전공선택 <span class="n" id="ugCountSel"></span></button>
-      </div>
-      <span class="ug-status" id="ugStatus" role="status" aria-live="polite"></span>
+    <label class="crs-search"><span class="visually-hidden">전공 교과 검색</span>
+      <input type="search" id="crsSearch" placeholder="코드 · 과목명 · 영문명 검색" autocomplete="off" />
+    </label>
+    <p class="crs-status" id="crsStatus" role="status" aria-live="polite"></p>
+    <div id="crsBlocks">
+      <noscript><p class="crs-empty">전공 교과 목록은 JavaScript 활성 시 표시됩니다.</p></noscript>
     </div>
-    <div class="ug-grid" id="ugCourseList">
-      <noscript><p class="ug-empty">전공 교과 목록은 JavaScript 활성 시 표시됩니다.</p></noscript>
-    </div>
-    <div class="ug-more" id="ugMore" hidden>
-      <button type="button" class="ug-toggle" id="ugToggle" aria-expanded="false" aria-controls="ugCourseList">전체 펼치기 <span aria-hidden="true">▾</span></button>
-    </div>
-    <p class="table-note">학점은 입학년도별로 달라 본 목록에서는 표기를 생략했습니다.</p>
+    <p class="table-note">전공필수는 이수 순서에 따라, 전공선택은 관련 연구 분야에 따라 묶어 정리했습니다 · 학점은 입학연도별로 달라 본 목록에서는 표기를 생략했습니다.</p>
   </section>
 
   <!-- §05 대학원 교과 요약 -->
@@ -571,123 +636,162 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
     curEl.innerHTML = '<div class="cur-groups">'+groupsHtml+'</div>';
   }
 
-  /* ── §04 학부 전공 교과 — coursesUG(40) 검색·구분 필터 카드 ── */
-  var ugList   = document.getElementById('ugCourseList');
-  var ugSearch = document.getElementById('ugSearch');
-  var ugStatus = document.getElementById('ugStatus');
-  var ugPills  = document.getElementById('ugPills');
-  if (ugList && coursesUG.length) {
+  /* ── §03 학번(입학연도) 선택 — 대표 이수 흐름은 공통, 안내 문구만 학번 기준으로 전환.
+     실제 학번별 상세 커리큘럼 차이는 학사요람을 따르므로 지어내지 않음(대표 시안). ── */
+  var rmTabs = document.getElementById('rmTabs');
+  var rmNote = document.getElementById('rmCohortNote');
+  if (rmTabs && rmNote) {
+    function rmLabel(y){ return (y==='2021') ? '2021학번 이전' : (y+'학번'); }
+    function setCohort(year){
+      var buttons = rmTabs.querySelectorAll('.rm-tab');
+      Array.prototype.forEach.call(buttons, function(b){
+        b.setAttribute('aria-selected', b.getAttribute('data-year')===year ? 'true':'false');
+      });
+      var extra = (year==='2021')
+        ? ' 2021학번 이전 입학자는 <b>본인 입학연도의 학사요람</b> 기준을 우선 확인하세요.'
+        : '';
+      rmNote.innerHTML = '아래 이수체계도는 <span class="yr">'+esc(rmLabel(year))
+        + '</span> 입학자 기준의 대표 이수 흐름입니다. 세부 이수학점·적용 기준은 '
+        + '<b>해당 학번 학사요람</b>을 따릅니다.' + extra;
+    }
+    rmTabs.addEventListener('click', function(e){
+      var btn = e.target.closest('.rm-tab'); if(!btn) return;
+      setCohort(btn.getAttribute('data-year'));
+    });
+    /* 키보드 좌우 이동 (탭 접근성) */
+    rmTabs.addEventListener('keydown', function(e){
+      if(e.key!=='ArrowRight' && e.key!=='ArrowLeft') return;
+      var tabs = Array.prototype.slice.call(rmTabs.querySelectorAll('.rm-tab'));
+      var i = tabs.indexOf(document.activeElement); if(i<0) return;
+      var ni = e.key==='ArrowRight' ? (i+1)%tabs.length : (i-1+tabs.length)%tabs.length;
+      tabs[ni].focus(); setCohort(tabs[ni].getAttribute('data-year')); e.preventDefault();
+    });
+    setCohort('2024');
+  }
+
+  /* ── §04 학부 전공 교과 — 영역별 편집형(재디자인).
+     전공필수는 이수 순서 그대로 한 블록, 전공선택은 6개 연구 분야로 묶어 정돈.
+     분야 배정은 과목 코드·성격 기반 오버레이(clusters.ko 재사용) — 데이터 지어내지 않음. ── */
+  var crsBlocks = document.getElementById('crsBlocks');
+  var crsSearch = document.getElementById('crsSearch');
+  var crsStatus = document.getElementById('crsStatus');
+  if (crsBlocks && coursesUG.length) {
     var ug = coursesUG;
     var ugTotal = ug.length;
-    var ugIdx = ug.map(function(c){
-      return (String(c.code)+' '+String(c.ko)+' '+String(c.en)).toLowerCase();
+
+    /* 전공선택 과목코드 → 6개 연구 분야(cluster id) 배정 */
+    var SEL_CLUSTER = {
+      MEU3600:'solid', MEU3301:'solid', MEU3660:'solid', MEU3670:'solid', MAT2013:'solid',
+      MEU3610:'thermal', MEU3640:'thermal', MEU3650:'thermal', MEU3011:'thermal', MEU3001:'thermal',
+      MEU3680:'dynamics', MEU3014:'dynamics', MEU3015:'dynamics',
+      MEU2620:'manufacturing', MEU3002:'manufacturing', MEU3620:'manufacturing', MEU3630:'manufacturing',
+      MEU3013:'manufacturing', MEU3801:'manufacturing', MEU3003:'manufacturing',
+      MEU3010:'micro', MEU3710:'micro',
+      MEU3004:'optics', MEU3012:'optics', MEU3700:'optics',
+      MEU3006:'other', MEU3007:'other', MEU3008:'other', MEU3009:'other',
+      MEU4001:'other', MEU4002:'other'
+    };
+    /* 분야 블록 정의 — 필수 먼저, 이후 6분야, 마지막 연구·세미나 묶음 */
+    var BLOCKS = [
+      { id:'req',   kick:'Required',   title:'전공필수',      cvar:'--navy',
+        desc:'졸업하려면 반드시 이수하는 과목입니다. 실험·설계·4대 역학·연구논문으로 이어지는 학부 이수의 골격입니다.' },
+      { id:'solid', kick:'Area 01', title:'역학·소재',    cvar:'--c-solid',
+        desc:'재료의 거동과 구조 해석을 다루는 심화 역학·재료 과목입니다.' },
+      { id:'thermal', kick:'Area 02', title:'에너지·열유체', cvar:'--c-thermal',
+        desc:'열·유체와 에너지 변환을 다루는 응용 과목입니다.' },
+      { id:'dynamics', kick:'Area 03', title:'로보틱스·제어', cvar:'--c-dyn',
+        desc:'기계 시스템의 운동·진동과 제어를 다룹니다.' },
+      { id:'manufacturing', kick:'Area 04', title:'설계·제조', cvar:'--c-manuf',
+        desc:'설계 방법론과 생산·해석 기반 설계를 다룹니다.' },
+      { id:'micro', kick:'Area 05', title:'마이크로·나노', cvar:'--c-nanobio',
+        desc:'미세 기계 시스템과 나노 스케일 공학을 다룹니다.' },
+      { id:'optics', kick:'Area 06', title:'바이오·포토닉스', cvar:'--c-optics',
+        desc:'생체역학·의료기계와 광공학 응용을 다룹니다.' },
+      { id:'other', kick:'Elective', title:'연구·세미나', cvar:'--muted',
+        desc:'학부연구·세미나 등 분야에 두루 걸치는 선택 과목입니다.' }
+    ];
+
+    function clusterIdOf(c){
+      if(c.type==='전공필수') return 'req';
+      return SEL_CLUSTER[c.code] || 'other';
+    }
+    /* 검색 인덱스 */
+    var crsIdx = {};
+    ug.forEach(function(c){
+      crsIdx[c.code] = (String(c.code)+' '+String(c.ko)+' '+String(c.en)).toLowerCase();
     });
-    /* 카드 HTML 1회 조합 (학점은 전 과목 공란 → 지어내지 않고 표기 생략) */
-    var ugCards = ug.map(function(c){
-      var typeCls = (c.type==='전공필수') ? 't-req' : 't-sel';
-      var descHtml = c.desc ? '<p class="ug-card-desc">'+esc(c.desc)+'</p>' : '';
-      var enHtml = c.en ? '<p class="ug-card-en">'+esc(c.en)+'</p>' : '';
-      return '<article class="ug-card" id="course-'+esc(c.code)+'">'
-        + '<div class="ug-card-top">'
-          + '<span class="ug-card-code mono">'+esc(c.code)+'</span>'
-          + '<span class="cur-badge '+typeCls+'">'+esc(c.type)+'</span>'
+
+    /* 블록별 과목 묶기 (데이터 순서 유지) */
+    var byBlock = {};
+    BLOCKS.forEach(function(b){ byBlock[b.id]=[]; });
+    ug.forEach(function(c){ (byBlock[clusterIdOf(c)] || byBlock.other).push(c); });
+
+    function rowHtml(c){
+      var enHtml = c.en ? '<p class="crs-en">'+esc(c.en)+'</p>' : '';
+      var descHtml = c.desc ? '<p class="crs-desc">'+esc(c.desc)+'</p>' : '';
+      return '<div class="crs-row" id="course-'+esc(c.code)+'" data-code="'+esc(c.code)+'">'
+        + '<span class="crs-code">'+esc(c.code)+'</span>'
+        + '<div class="crs-main">'
+          + '<div class="crs-name-row"><span class="crs-name">'+esc(c.ko)+'</span></div>'
+          + enHtml + descHtml
         + '</div>'
-        + '<h3 class="ug-card-name">'+esc(c.ko)+'</h3>'
-        + enHtml + descHtml
-      + '</article>';
-    });
-
-    var reqN = ug.filter(function(c){ return c.type==='전공필수'; }).length;
-    var selN = ug.filter(function(c){ return c.type==='전공선택'; }).length;
-    var cAll = document.getElementById('ugCountAll'); if(cAll) cAll.textContent = ugTotal;
-    var cReq = document.getElementById('ugCountReq'); if(cReq) cReq.textContent = reqN;
-    var cSel = document.getElementById('ugCountSel'); if(cSel) cSel.textContent = selN;
-
-    var ugType = '';
-
-    /* ── 접기/펼치기 — 기본 보기는 대표 8과목(데이터 순서상 전공필수 우선)만 표시.
-       DOM에는 40장 전부 렌더하고 접힘은 CSS(display:none)로만 처리. ── */
-    var UG_COLLAPSED_N = 8;
-    var ugExpanded = false;
-    var ugMore   = document.getElementById('ugMore');
-    var ugToggle = document.getElementById('ugToggle');
-    function setUgExpanded(v){
-      ugExpanded = v;
-      if(ugToggle){
-        ugToggle.setAttribute('aria-expanded', v ? 'true' : 'false');
-        ugToggle.innerHTML = v
-          ? '접기 <span aria-hidden="true">▴</span>'
-          : '전체 '+ugTotal+'과목 펼치기 <span aria-hidden="true">▾</span>';
-      }
+      + '</div>';
     }
+    /* 블록 HTML — 좌 제목(sticky) / 우 과목 리스트 */
+    var blocksHtml = BLOCKS.map(function(b){
+      var items = byBlock[b.id]; if(!items.length) return '';
+      var rows = items.map(rowHtml).join('');
+      return '<section class="crs-block" data-block="'+b.id+'" style="--crs-c:var('+b.cvar+')">'
+        + '<div class="crs-block-grid">'
+          + '<header class="crs-block-head">'
+            + '<p class="crs-block-kick">'+esc(b.kick)+'</p>'
+            + '<h3 class="crs-block-title">'+esc(b.title)+'</h3>'
+            + '<p class="crs-block-count">'+items.length+'과목</p>'
+            + '<p class="crs-block-desc">'+esc(b.desc)+'</p>'
+            + '<div class="crs-block-rule" aria-hidden="true"></div>'
+          + '</header>'
+          + '<div class="crs-list">'+rows+'</div>'
+        + '</div>'
+      + '</section>';
+    }).join('');
+    crsBlocks.innerHTML = blocksHtml;
 
-    function ugRender(){
-      var q = (ugSearch && ugSearch.value || '').trim().toLowerCase();
-      var out = [], n = 0;
-      for(var i=0;i<ug.length;i++){
-        if(ugType && ug[i].type!==ugType) continue;
-        if(q && ugIdx[i].indexOf(q)<0) continue;
-        out.push(ugCards[i]); n++;
-      }
-      if(!n){
-        ugList.innerHTML = '<div class="ug-empty">‘'+esc(q)+'’ 조건에 맞는 교과목이 없습니다 — 검색어 또는 구분을 바꿔 보세요.</div>';
-      } else {
-        ugList.innerHTML = out.join('');
-      }
-      if(ugStatus){
-        ugStatus.textContent = (n===ugTotal ? '총 '+ugTotal+'과목' : n+' / '+ugTotal+'과목');
-      }
-      /* 검색·구분 필터 중에는 결과가 잘리지 않도록 항상 전체 표시 — 접힘은 기본 보기에서만 */
-      var canCollapse = !q && !ugType && ugTotal > UG_COLLAPSED_N;
-      ugList.classList.toggle('is-collapsed', canCollapse && !ugExpanded);
-      if(ugMore) ugMore.hidden = !canCollapse;
-    }
-    if(ugSearch) ugSearch.addEventListener('input', ugRender);
-    if(ugPills){
-      ugPills.addEventListener('click', function(e){
-        var btn = e.target.closest('.ug-pill'); if(!btn) return;
-        ugType = btn.getAttribute('data-ug-type') || '';
-        Array.prototype.forEach.call(ugPills.querySelectorAll('.ug-pill'), function(b){
-          b.setAttribute('aria-pressed', b===btn ? 'true':'false');
-        });
-        ugRender();
+    /* 검색 — 행 단위 필터, 빈 블록 접기. 앵커(#course-<code>)는 항상 DOM에 유지. */
+    var crsRows = Array.prototype.slice.call(crsBlocks.querySelectorAll('.crs-row'));
+    var crsBlockEls = Array.prototype.slice.call(crsBlocks.querySelectorAll('.crs-block'));
+    function crsRender(){
+      var q = (crsSearch && crsSearch.value || '').trim().toLowerCase();
+      var n = 0;
+      crsRows.forEach(function(r){
+        var hit = !q || (crsIdx[r.getAttribute('data-code')]||'').indexOf(q) >= 0;
+        r.classList.toggle('is-hidden', !hit);
+        if(hit) n++;
       });
-    }
-    if(ugToggle){
-      ugToggle.addEventListener('click', function(){
-        setUgExpanded(!ugExpanded);
-        ugRender();
+      crsBlockEls.forEach(function(bl){
+        var any = bl.querySelector('.crs-row:not(.is-hidden)');
+        bl.classList.toggle('is-empty', !any);
       });
+      if(crsStatus){
+        crsStatus.textContent = q
+          ? (n ? n+' / '+ugTotal+'과목 표시' : '‘'+q+'’ 조건에 맞는 교과목이 없습니다')
+          : '전체 '+ugTotal+'과목 · 전공필수 '+byBlock.req.length+'과목';
+      }
     }
-    setUgExpanded(false);
-    ugRender();
+    if(crsSearch) crsSearch.addEventListener('input', crsRender);
+    crsRender();
 
-    /* ── #course-<code> 해시 이동 — 접힘·검색·필터로 숨겨진 카드면 펼치고 되돌린 뒤 스크롤 ── */
+    /* ── #course-<code> 해시 이동 — 검색으로 숨어 있으면 검색 해제 후 스크롤 ── */
     function revealCourseHash(initial){
       var h = location.hash || '';
       if(h.indexOf('#course-') !== 0) return;
       var id = h.slice(1);
-      /* 접힌 상태로 진입하면 먼저 펼친다 — 카드가 숨어 있어 스크롤이 안 되는 일이 없도록 */
-      var wasCollapsed = !ugExpanded;
-      if(wasCollapsed) setUgExpanded(true);
       var el = document.getElementById(id);
-      if(el && !wasCollapsed){
-        /* 카드가 이미 표시 중 — 해시 변경 시엔 브라우저가 스크롤, 최초 로드만 보정 */
-        if(initial) el.scrollIntoView();
-        return;
+      if(el && el.classList.contains('is-hidden')){
+        if(crsSearch) crsSearch.value = '';
+        crsRender();
       }
-      if(!el){
-        if(ugSearch) ugSearch.value = '';
-        ugType = '';
-        if(ugPills){
-          Array.prototype.forEach.call(ugPills.querySelectorAll('.ug-pill'), function(b){
-            b.setAttribute('aria-pressed', (b.getAttribute('data-ug-type')||'')==='' ? 'true':'false');
-          });
-        }
-      }
-      ugRender();
       el = document.getElementById(id);
-      if(el) el.scrollIntoView();
+      if(el && (initial || el.classList.contains('is-hidden'))) el.scrollIntoView();
     }
     window.addEventListener('hashchange', function(){ revealCourseHash(false); });
     revealCourseHash(true);

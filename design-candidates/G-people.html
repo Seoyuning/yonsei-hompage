@@ -29,13 +29,13 @@
   --row:#f7f9fc;
   --mono:"Apple SD Gothic Neo","Noto Sans KR","Pretendard Variable","Pretendard",system-ui,sans-serif;
   --kr:"Apple SD Gothic Neo","Noto Sans KR","Pretendard Variable","Pretendard",system-ui,sans-serif;
-  /* 연구분야 표식 — 단일 네이비로 통일 (장식용 무지개 색 제거) */
-  --c-solid:#1a3d75;
-  --c-thermal:#1a3d75;
-  --c-manufacturing:#1a3d75;
-  --c-micro:#1a3d75;
-  --c-optics:#1a3d75;
-  --c-dynamics:#1a3d75;
+  /* 연구분야 색상 — 6개 분야 액센트 (사진 그리드 인디케이터·오버레이) */
+  --c-solid:#2b4a7a;
+  --c-thermal:#b0742c;
+  --c-dynamics:#7a5aa0;
+  --c-manufacturing:#4a7c59;
+  --c-micro:#2d8a8a;
+  --c-optics:#3f6fb0;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
@@ -63,107 +63,103 @@ a{color:inherit;text-decoration:none}
 .phero h1{font-size:clamp(1.9rem,1.2rem + 2.6vw,3rem);font-weight:800;letter-spacing:-.01em;line-height:1.16;color:#fff}
 .phero .bc{margin-top:.9rem;font-size:.82rem;letter-spacing:.02em;color:rgba(255,255,255,.82)}
 
-/* ── 필터 바 (sticky) ── */
+/* ── 분야 서브내비 (sticky · 칩 필터) ── */
 .filterbar{position:sticky;top:3.6rem;z-index:20;
   background:#ffffff;
   border-bottom:1px solid var(--line-soft);
-  padding:1rem clamp(1.2rem,.6rem + 2vw,2.6rem);
+  padding:.9rem clamp(1.2rem,.6rem + 2vw,2.6rem);
   scroll-margin-top:4.5rem}
-.filter-wrap{max-width:1320px;margin:0 auto;display:flex;flex-direction:column;gap:.85rem}
-.filter-top{display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
-.filter-search{display:flex;align-items:center;gap:.55rem;flex:1;min-width:15rem;
-  border:1px solid var(--line);background:#fff;padding:.55rem .8rem;transition:border-color .15s}
-.filter-search:focus-within{border-color:var(--coral)}
-.filter-search svg{flex:none;color:var(--label)}
-.filter-search input{flex:1;background:none;border:0;outline:none;color:var(--navy);
-  font-family:var(--kr);font-size:.9rem;min-width:0}
-.filter-search input::placeholder{color:var(--label)}
-.filter-status{font-size:.8rem;color:var(--muted);white-space:nowrap;
-  font-variant-numeric:tabular-nums}
-.filter-status b{color:var(--coral);font-weight:600}
-
-.fchips{display:flex;align-items:center;gap:.45rem;flex-wrap:wrap}
-.fchips-label{font-size:.78rem;color:var(--label);margin-right:.4rem;flex:none}
-.fchip{display:inline-flex;align-items:center;gap:.45rem;cursor:pointer;
+.filter-wrap{max-width:1320px;margin:0 auto}
+.fchips{display:flex;align-items:center;gap:.35rem;flex-wrap:wrap}
+.fchips-label{font-size:.78rem;color:var(--label);margin-right:.55rem;flex:none;letter-spacing:.02em}
+.fchip{display:inline-flex;align-items:center;gap:.5rem;cursor:pointer;
   border:1px solid var(--line);background:#fff;color:var(--sub);
-  font-family:var(--kr);font-size:.8rem;
-  padding:.42rem .75rem;transition:border-color .15s,color .15s,background .15s;white-space:nowrap}
+  font-family:var(--kr);font-size:.86rem;font-weight:600;
+  padding:.5rem .95rem;transition:border-color .15s,color .15s,background .15s;white-space:nowrap}
 .fchip:hover{color:var(--navy);border-color:#b9c4d4}
-.fchip .cdot{width:7px;height:7px;border-radius:50%;background:var(--chip-c,var(--coral));flex:none}
-.fchip .cnt{color:var(--label);font-size:.9em}
-.fchip[aria-pressed="true"]{color:#fff;background:var(--coral);border-color:var(--coral)}
-.fchip[aria-pressed="true"] .cnt{color:rgba(255,255,255,.8)}
-/* 연구분야(주 축) = 언더라인 탭 — 직위 pill과 위계 분리 */
-#cChips{gap:1.15rem}
-#cChips .fchip{border:0;border-bottom:2px solid transparent;background:none;
-  padding:.42rem .1rem;font-weight:700;font-size:.88rem;color:var(--muted)}
-#cChips .fchip:hover{color:var(--navy)}
-#cChips .fchip[aria-pressed="true"]{background:none;border-bottom-color:var(--coral);color:var(--navy)}
-#cChips .fchip[aria-pressed="true"] .cnt{color:var(--coral)}
-.fchip[aria-pressed="true"] .cdot{background:#fff}
-.fchip-sep{width:1px;align-self:stretch;background:var(--line-soft);margin:0 .25rem}
-.filter-rows{display:flex;gap:1.6rem;flex-wrap:wrap;align-items:flex-start}
+.fchip .cdot{width:8px;height:8px;border-radius:50%;background:var(--chip-c,var(--navy));flex:none;
+  box-shadow:0 0 0 1px rgba(0,0,0,.05) inset}
+.fchip[aria-pressed="true"]{color:#fff;background:var(--navy);border-color:var(--navy)}
+.fchip[aria-pressed="true"] .cdot{background:#fff;box-shadow:none}
 
-/* ── 디렉토리 (데이터 행) ── */
-.dir{max-width:1320px;margin:0 auto;padding:2.2rem clamp(1.2rem,.6rem + 2vw,2.6rem) 2.6rem}
-.dir-legend{display:grid;
-  grid-template-columns:4.6rem 220px minmax(0,1fr) 250px;
-  gap:1.6rem;align-items:center;
-  padding:.8rem 1.1rem;border-bottom:1px solid var(--line);
-  font-size:.76rem;color:var(--label)}
+/* ── 교수진 사진 그리드 ── */
+.dir{max-width:1320px;margin:0 auto;padding:2.6rem clamp(1.2rem,.6rem + 2vw,2.6rem) 3rem}
+.dir-list{display:grid;grid-template-columns:repeat(3,1fr);gap:1.7rem}
+@media (max-width:920px){.dir-list{grid-template-columns:repeat(2,1fr);gap:1.3rem}}
+@media (max-width:600px){.dir-list{grid-template-columns:1fr;gap:1.2rem}}
 
-.dir-list{display:block}
-.row{display:grid;
-  grid-template-columns:4.6rem 220px minmax(0,1fr) 250px;
-  gap:1.6rem;align-items:start;
-  padding:1.5rem 1.1rem;border-bottom:1px solid var(--line-soft);
-  position:relative;transition:background .12s;
+/* 카드 = [좌측 분야 인디케이터] + [세로 인물 사진 + 그라데이션 오버레이] */
+.pcard{position:relative;display:flex;background:#fff;border:1px solid var(--line-soft);
+  box-shadow:0 1px 2px rgba(10,26,51,.04);
+  opacity:0;transform:translateY(22px);transition:opacity .55s ease,transform .55s ease,box-shadow .2s ease,border-color .2s ease;
   scroll-margin-top:6rem}
-.row:hover{background:var(--row)}
-.row:target{background:rgba(26, 61, 117,.06);box-shadow:inset 2px 0 0 var(--coral)}
+.pcard.in{opacity:1;transform:none}
+.pcard:hover{box-shadow:0 10px 28px rgba(10,26,51,.13);border-color:var(--card-c,var(--navy))}
+.pcard:target{outline:2px solid var(--card-c,var(--navy));outline-offset:2px}
 
-/* 아바타 — 사진(없으면 이니셜 폴백) */
-.r-ava{width:4.6rem;height:4.6rem;align-self:center;display:grid;place-items:center;position:relative;overflow:hidden;
-  background:#e8eef7;color:var(--navy);border:1px solid var(--line-soft);border-radius:3px;
-  font-family:var(--kr);font-weight:700;font-size:1.02rem;line-height:1}
-.r-ava img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+/* 좌측 세로 분야 인디케이터 열 (한양대 '사진 좌측' 차용) */
+.pind{flex:none;width:2rem;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:.55rem;padding:.9rem 0;background:#fafbfd;border-right:1px solid var(--line-soft)}
+.pind .idot{position:relative;width:9px;height:9px;border-radius:50%;
+  border:1.5px solid var(--dot-c);background:transparent;transition:transform .15s,background .15s}
+.pind .idot.on{background:var(--dot-c);box-shadow:0 0 0 3px color-mix(in srgb,var(--dot-c) 18%,transparent)}
+.pind .idot:not(.on){border-color:rgba(10,26,51,.2)}
+.pind .idot:hover{transform:scale(1.5)}
+/* 툴팁 (분야명) */
+.pind .idot .itip{position:absolute;left:calc(100% + .5rem);top:50%;transform:translateY(-50%) scale(.9);
+  transform-origin:left center;
+  background:var(--navy);color:#fff;font-family:var(--kr);font-size:.68rem;font-weight:500;letter-spacing:.01em;
+  padding:.25rem .5rem;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .13s,transform .13s;z-index:5}
+.pind .idot .itip::before{content:"";position:absolute;right:100%;top:50%;transform:translateY(-50%);
+  border:4px solid transparent;border-right-color:var(--navy)}
+.pind .idot:hover .itip,.pind .idot:focus-visible .itip{opacity:1;transform:translateY(-50%) scale(1)}
 
-/* ① 이름 블록 — 이름 · 직위 칩 · 영문명 */
-.r-name{min-width:0;align-self:center}
-.r-name .ko{font-family:var(--kr);font-weight:700;font-size:1.05rem;color:var(--navy);line-height:1.35;
-  display:flex;align-items:center;flex-wrap:wrap;min-height:1.5rem}
-.r-name .en{font-family:var(--kr);font-size:.78rem;color:var(--label);margin-top:.3rem;min-height:1.4rem;display:flex;align-items:center;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.r-badges{display:inline-flex;gap:.35rem;margin-left:.55rem;vertical-align:middle}
-.badge{display:inline-block;font-family:var(--kr);font-size:.68rem;font-weight:500;
-  padding:.14rem .45rem;border:1px solid var(--line);color:var(--muted);vertical-align:middle}
-.badge--role{border-color:var(--coral);color:var(--coral)}
+/* 사진 프레임 (세로 인물) */
+.pframe{position:relative;flex:1;min-width:0;aspect-ratio:3/4;overflow:hidden;
+  background:var(--card-c,var(--navy));display:block}
+.pframe img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 22%;
+  transition:transform .5s ease}
+.pcard:hover .pframe img{transform:scale(1.045)}
+/* 이니셜 폴백 (사진 없을 때) */
+.pfallback{position:absolute;inset:0;display:grid;place-items:center;
+  background:linear-gradient(150deg,var(--card-c,var(--navy)),color-mix(in srgb,var(--card-c,var(--navy)) 62%,#0a1a33));
+  color:#fff;font-family:var(--kr);font-weight:800;font-size:3.2rem;line-height:1;letter-spacing:.02em}
 
-/* ② 연구 블록 — 분야 배지 · 연구실명 · 위치 한 줄 */
-.r-research{min-width:0}
-.tag{display:inline-flex;align-items:center;gap:.45rem;font-size:.8rem;color:var(--body);min-height:1.5rem}
-.tag .dot{width:7px;height:7px;border-radius:50%;background:var(--tag-c,var(--coral));flex:none}
-.r-lab{min-width:0;margin-top:.3rem;min-height:1.4rem;display:flex;align-items:center}
-.r-lab .lk{font-size:.88rem;font-weight:600;color:var(--body);line-height:1.45;display:block;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.r-lab a.lk:hover{color:var(--navy);text-decoration:underline;text-underline-offset:2px}
-.r-loc{font-size:.78rem;color:var(--muted);margin-top:.3rem;min-height:1.4rem;display:flex;align-items:center;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.r-loc .loclab{color:var(--label);margin-right:.25rem}
-.r-loc .sep{color:var(--label);margin:0 .35rem}
+/* 하단 그라데이션 오버레이 (이름·직위·영문·분야) */
+.pmeta{position:absolute;left:0;right:0;bottom:0;z-index:2;
+  padding:2.6rem 1.1rem 1rem;color:#fff;
+  background:linear-gradient(180deg,rgba(10,19,38,0) 0%,rgba(10,19,38,.28) 34%,rgba(9,17,34,.82) 100%)}
+.pmeta .pfield{display:inline-flex;align-items:center;gap:.42rem;font-family:var(--kr);
+  font-size:.7rem;font-weight:600;letter-spacing:.02em;color:#fff;margin-bottom:.5rem;
+  padding:.2rem .5rem;background:var(--card-c,var(--navy));line-height:1.2}
+.pmeta .pname{display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap}
+.pmeta .pname .ko{font-family:var(--kr);font-weight:800;font-size:1.28rem;letter-spacing:-.01em;line-height:1.2}
+.pmeta .pname .rk{font-family:var(--kr);font-size:.76rem;font-weight:500;color:rgba(255,255,255,.85)}
+.pmeta .pen{font-family:var(--kr);font-size:.8rem;color:rgba(255,255,255,.78);margin-top:.18rem}
+/* 분야 색 액센트 바 (오버레이 하단) */
+.pcard::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;z-index:3;
+  background:var(--card-c,var(--navy))}
 
-/* ③ 연락 블록 — 라인 아이콘 + 텍스트 세로 스택 */
-.r-contact{min-width:0;display:flex;flex-direction:column;gap:.3rem}
-.r-contact .cline{display:flex;align-items:center;gap:.5rem;min-width:0;
-  font-size:.8rem;color:var(--sub);transition:color .15s}
-.r-contact .cline{min-height:1.4rem}
-.r-contact .cline:first-child{min-height:1.5rem}
-.r-contact .cline svg{flex:none;color:var(--label)}
-.r-contact a.cline:hover{color:var(--coral)}
-.r-contact .ct{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.r-contact .profile{font-size:.76rem;color:var(--muted);margin-top:.1rem;
-  padding-left:calc(16px + .5rem);transition:color .15s}
-.r-contact a.profile:hover{color:var(--coral)}
+/* 호버 정보 패널 (이메일·연구실·사무실) — 사진 위 슬라이드업 */
+.pinfo{position:absolute;left:0;right:0;bottom:0;z-index:4;
+  padding:1rem 1.1rem 1.15rem;
+  background:rgba(9,17,34,.94);color:#fff;
+  transform:translateY(101%);transition:transform .32s cubic-bezier(.22,.61,.36,1);
+  display:flex;flex-direction:column;gap:.5rem}
+.pcard:hover .pinfo,.pcard:focus-within .pinfo{transform:translateY(0)}
+.pinfo .il{display:flex;align-items:center;gap:.5rem;font-family:var(--kr);font-size:.78rem;color:rgba(255,255,255,.9);min-width:0}
+.pinfo .il svg{flex:none;color:rgba(255,255,255,.6)}
+.pinfo .il .it{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pinfo a.il:hover{color:#fff;text-decoration:underline;text-underline-offset:2px}
+.pinfo .plink{margin-top:.15rem;display:inline-flex;align-items:center;gap:.35rem;align-self:flex-start;
+  font-family:var(--kr);font-size:.76rem;font-weight:600;color:#fff;
+  border:1px solid rgba(255,255,255,.35);padding:.38rem .7rem;transition:background .15s,border-color .15s}
+.pinfo a.plink:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.6)}
+@media (prefers-reduced-motion:reduce){
+  .pcard{opacity:1;transform:none;transition:box-shadow .2s,border-color .2s}
+  .pframe img,.pcard:hover .pframe img{transition:none;transform:none}
+  .pinfo{transition:none}
+}
 
 /* 빈 상태 */
 .empty{padding:4rem 1rem;text-align:center;color:var(--muted)}
@@ -172,19 +168,6 @@ a{color:inherit;text-decoration:none}
 .empty button{cursor:pointer;background:#fff;border:1px solid var(--line);color:var(--sub);
   font-family:var(--kr);font-size:.82rem;padding:.55rem 1.1rem;transition:border-color .15s,color .15s}
 .empty button:hover{border-color:var(--coral);color:var(--coral)}
-
-/* ── 분야별 분포 ── */
-.breakdown{max-width:1320px;margin:0 auto;
-  padding:1rem clamp(1.2rem,.6rem + 2vw,2.6rem) 3.6rem}
-.breakdown h2{font-size:.85rem;font-weight:600;color:var(--muted);margin-bottom:1.1rem}
-.bd-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));gap:1rem 1.6rem}
-.bd-row{font-size:.78rem;color:var(--muted)}
-.bd-row .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.35rem}
-.bd-row .lab{color:var(--body)}
-.bd-row .val{font-family:var(--mono);font-size:.72rem;color:var(--navy);font-variant-numeric:tabular-nums}
-.bd-row .val .dim{color:var(--label)}
-.bd-row .bar{height:2px;background:var(--line-soft);position:relative}
-.bd-row .bar span{position:absolute;inset:0 auto 0 0;background:var(--bd-c,var(--coral))}
 
 /* ── 교직원 (행정팀) 섹션 ── */
 .staff{max-width:1320px;margin:0 auto;
@@ -207,17 +190,16 @@ a{color:inherit;text-decoration:none}
 .staff-contact .v{font-size:.88rem;color:var(--body);font-weight:600}
 .staff-contact .note{width:100%;font-size:.78rem;color:var(--muted);line-height:1.6}
 
-/* ── 반응형: 모바일 — 이니셜+이름 첫 줄, 나머지 블록 세로 스택 ── */
-@media (max-width:820px){
-  .dir-legend{display:none}
-  .row{grid-template-columns:2.7rem 1fr;gap:.6rem 1.1rem;
-    padding:1.4rem .3rem;align-items:start}
-  .r-ava{grid-column:1;grid-row:1}
-  .r-name{grid-column:2;grid-row:1;align-self:center}
-  .r-research{grid-column:2;grid-row:2;margin-top:.15rem}
-  .r-contact{grid-column:2;grid-row:3;margin-top:.35rem;padding-top:0}
-  .r-lab .lk{white-space:normal}
-  .r-loc{white-space:normal}
+/* ── 반응형: 좁은 화면 — 정보 패널 상시 노출(호버 불가 터치 대응) ── */
+@media (hover:none){
+  .pinfo{position:static;transform:none;background:rgba(9,17,34,.96)}
+  .pcard{flex-direction:column}
+  .pind{width:100%;flex-direction:row;justify-content:flex-start;gap:.6rem;
+    padding:.6rem .9rem;border-right:0;border-bottom:1px solid var(--line-soft)}
+  .pind .idot .itip{left:50%;top:calc(100% + .5rem);transform:translateX(-50%) scale(.9)}
+  .pind .idot .itip::before{right:auto;left:50%;top:auto;bottom:100%;transform:translateX(-50%);
+    border-right-color:transparent;border-bottom-color:var(--navy)}
+  .pind .idot:hover .itip,.pind .idot:focus-visible .itip{transform:translateX(-50%) scale(1)}
 }
 </style>
 <style>.ynav-ph{position:fixed;top:0;left:0;right:0;height:3.7rem;background:rgba(255,255,255,.96);border-bottom:1px solid rgba(0,0,0,.08);z-index:39}</style>
@@ -236,42 +218,21 @@ a{color:inherit;text-decoration:none}
     </div>
   </header>
 
-  <!-- 필터 바 (교수진 섹션 앵커) -->
-  <div class="filterbar" id="faculty" role="search" aria-label="교수진 필터">
+  <!-- 분야 서브내비 (교수진 섹션 앵커) -->
+  <div class="filterbar" id="faculty" aria-label="연구분야 필터">
     <div class="filter-wrap">
-      <div class="filter-top">
-        <label class="filter-search">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-          <span class="visually-hidden">이름 · 영문명 · 연구실 · 호실 검색</span>
-          <input type="search" id="pq" placeholder="이름 · 영문명 · 연구실 · 호실 검색" autocomplete="off" />
-        </label>
-        <span class="filter-status" id="fstatus" role="status" aria-live="polite"></span>
-      </div>
-      <div class="filter-rows">
-        <div class="fchips" role="group" aria-label="연구분야 필터" id="cChips"></div>
-        <span class="fchip-sep" aria-hidden="true"></span>
-        <div class="fchips" role="group" aria-label="직위 필터" id="rChips"></div>
-      </div>
+      <div class="fchips" role="group" aria-label="연구분야 필터" id="cChips"></div>
     </div>
   </div>
 
-  <!-- 디렉토리 (데이터 행) -->
+  <!-- 교수진 사진 그리드 -->
   <section class="dir" id="dir" aria-label="전임 교수 디렉토리">
-    <div class="dir-legend" aria-hidden="true">
-      <span></span><span>이름 · 직위</span><span>연구분야 · 연구실</span><span>연락처</span>
-    </div>
     <div class="dir-list" id="rows"></div>
     <div class="empty" id="empty" hidden>
-      <p class="code">조건에 맞는 교수가 없습니다</p>
-      <p>검색어나 필터를 바꿔 보세요.</p>
-      <button type="button" id="reset">필터 초기화</button>
+      <p class="code">해당 분야 교수가 없습니다</p>
+      <p>다른 연구분야를 선택해 보세요.</p>
+      <button type="button" id="reset">전체 보기</button>
     </div>
-  </section>
-
-  <!-- 분야별 분포 -->
-  <section class="breakdown" aria-label="분야별 교수 분포">
-    <h2>분야별 교수 분포</h2>
-    <div class="bd-grid" id="bd"></div>
   </section>
 
   <!-- 교직원 (행정팀) -->
@@ -348,9 +309,6 @@ a{color:inherit;text-decoration:none}
   var CVAR = { solid:'--c-solid', thermal:'--c-thermal', manufacturing:'--c-manufacturing',
                micro:'--c-micro', optics:'--c-optics', dynamics:'--c-dynamics' };
 
-  var RANKS = ['교수','부교수','조교수'];
-  var rankCount = {};
-  professors.forEach(function(p){ rankCount[p.rank] = (rankCount[p.rank]||0)+1; });
   var clusterOf = {}; clusters.forEach(function(c){ clusterOf[c.id]=c; });
 
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){
@@ -366,16 +324,15 @@ a{color:inherit;text-decoration:none}
   /* 연락 블록 16px 라인 아이콘 (stroke 1.5) */
   var ICON_MAIL = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="m3.5 6.5 8.5 6 8.5-6"/></svg>';
   var ICON_TEL = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>';
+  var ICON_PIN = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 5-8 12-8 12s-8-7-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>';
+  var ICON_LAB = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6M10 3v6.5L5.2 18a2 2 0 0 0 1.8 3h10a2 2 0 0 0 1.8-3L14 9.5V3"/><path d="M7.5 15h9"/></svg>';
 
   var rowsEl = document.getElementById('rows'),
       emptyEl = document.getElementById('empty'),
-      statusEl = document.getElementById('fstatus'),
-      pq = document.getElementById('pq'),
       cWrap = document.getElementById('cChips'),
-      rWrap = document.getElementById('rChips'),
       resetBtn = document.getElementById('reset');
 
-  var state = { c:'all', r:'all', q:'' };
+  var state = { c:'all' };
 
   /* ── URL → 초기 상태 ── */
   function parseParams(str){
@@ -389,14 +346,10 @@ a{color:inherit;text-decoration:none}
   var init = location.search ? parseParams(location.search) :
              (location.hash.indexOf('#!')===0 ? parseParams(location.hash.slice(2)) : {});
   if(init.c && clusterOf[init.c]) state.c = init.c;
-  if(init.r && RANKS.indexOf(init.r)>-1) state.r = init.r;
-  if(typeof init.q==='string') state.q = init.q;
 
   function syncUrl(){
     var parts = [];
     if(state.c!=='all') parts.push('c='+state.c);
-    if(state.r!=='all') parts.push('r='+encodeURIComponent(state.r));
-    if(state.q.trim()) parts.push('q='+encodeURIComponent(state.q.trim()));
     var qs = parts.length ? '?'+parts.join('&') : '';
     /* 행 딥링크 해시(#professor-id)는 보존 — :target 하이라이트·재스크롤용 */
     var keepHash = (location.hash && location.hash.indexOf('#!')!==0) ? location.hash : '';
@@ -404,142 +357,135 @@ a{color:inherit;text-decoration:none}
     catch(e){ if(parts.length) location.hash='!'+parts.join('&'); }
   }
 
-  /* ── 필터 칩 렌더 ── */
-  function chip(group,val,label,cvar,cnt,pressed){
-    return '<button type="button" class="fchip" data-'+group+'="'+val+'" aria-pressed="'+pressed+'">'+
+  /* ── 분야 필터 칩 렌더 (연구분야만 · 카운트 없음) ── */
+  function chip(val,label,cvar,pressed){
+    return '<button type="button" class="fchip" data-c="'+val+'" aria-pressed="'+pressed+'">'+
       (cvar ? '<span class="cdot" style="--chip-c:var('+cvar+')" aria-hidden="true"></span>' : '') +
-      esc(label) + (cnt!=null ? ' <span class="cnt">'+cnt+'</span>' : '') + '</button>';
+      esc(label) + '</button>';
   }
   cWrap.innerHTML = '<span class="fchips-label" aria-hidden="true">연구분야</span>' +
-    chip('c','all','전체',null,professors.length,state.c==='all') +
-    clusters.map(function(c){ return chip('c',c.id,c.ko,CVAR[c.id],c.count,state.c===c.id); }).join('');
-  rWrap.innerHTML = '<span class="fchips-label" aria-hidden="true">직위</span>' +
-    chip('r','all','전체',null,professors.length,state.r==='all') +
-    RANKS.map(function(r){ return chip('r',r,r,null,rankCount[r]||0,state.r===r); }).join('');
-  pq.value = state.q;
+    chip('all','전체',null,state.c==='all') +
+    clusters.map(function(c){ return chip(c.id,c.ko,CVAR[c.id],state.c===c.id); }).join('');
 
   function syncChips(){
     cWrap.querySelectorAll('.fchip').forEach(function(b){ b.setAttribute('aria-pressed',String(b.dataset.c===state.c)); });
-    rWrap.querySelectorAll('.fchip').forEach(function(b){ b.setAttribute('aria-pressed',String(b.dataset.r===state.r)); });
   }
 
-  /* ── 데이터 행: [이니셜] [① 이름] [② 연구] [③ 연락] ── */
-  function rowHtml(p){
+  /* ── 사진 카드: [좌측 분야 인디케이터] [세로 사진 + 오버레이 + 호버 정보] ── */
+  function cardHtml(p){
     var lab = labs[p.labId] || {};
     var cl = clusterOf[p.cluster] || {};
-    var labUrl = lab.site || lab.url;
-    var badges = '<span class="r-badges">'
-      + '<span class="badge">'+esc(p.rank)+'</span>'
-      + (p.role ? '<span class="badge badge--role">'+esc(p.role)+'</span>' : '')
-      + '</span>';
-    /* 연구실명 — site 있으면 외부 링크, 없으면 링크 없이 표기 */
-    var labLine = labUrl
-      ? '<a class="lk" href="'+esc(labUrl)+'" target="_blank" rel="noopener">'+esc(lab.ko)+' <span aria-hidden="true">↗</span><span class="visually-hidden"> (새 창)</span></a>'
-      : (lab.ko ? '<span class="lk">'+esc(lab.ko)+'</span>' : '');
-    /* 위치 한 줄 통합 — 연구실 위치 · 사무실(국문 축약) */
-    var locBits = [];
-    if(lab.loc) locBits.push('<span class="loclab">연구실</span>'+esc(lab.loc));
-    if(p.office) locBits.push('<span class="loclab">사무실</span>'+esc(officeKo(p.office)));
-    var locLine = locBits.length
-      ? '<div class="r-loc">'+locBits.join('<span class="sep" aria-hidden="true">·</span>')+'</div>' : '';
-    /* ③ 연락 블록 — 이메일 · 전화 · 프로필 */
-    var contact = '';
-    if(p.email) contact += '<a class="cline" href="mailto:'+esc(p.email)+'">'+ICON_MAIL
-      + '<span class="ct">'+esc(p.email)+'</span></a>';
-    if(p.phone){
-      String(p.phone).split(',').forEach(function(t){
-        t = t.trim(); if(!t) return;
-        var disp = t.replace(/\)/g,'-'); /* "02)2123-…" → "02-2123-…" */
-        contact += '<a class="cline" href="tel:'+esc(disp.replace(/[^0-9+]/g,''))+'">'+ICON_TEL
-          + '<span class="ct">'+esc(disp)+'</span></a>';
-      });
-    }
-    if(p.detail) contact += '<a class="profile" href="'+esc(p.detail)+'" target="_blank" rel="noopener">'
-      + '프로필 <span aria-hidden="true">↗</span><span class="visually-hidden"> (새 창)</span></a>';
-    return '<div class="row" id="'+esc(p.id)+'" role="group" aria-label="'+esc(p.ko+' '+p.rank)+'">'
-      + '<div class="r-ava" aria-hidden="true">'+esc(p.initial)
-      + '<img src="assets/faculty/'+esc(p.id)+'.jpg" alt="" loading="lazy" onerror="this.remove()"></div>'
-      + '<div class="r-name">'
-        + '<div class="ko">'+esc(p.ko)+badges+'</div>'
-        + '<div class="en">'+esc(p.en)+'</div>'
-      + '</div>'
-      + '<div class="r-research">'
-        + '<span class="tag"><span class="dot" style="--tag-c:var('+CVAR[p.cluster]+')" aria-hidden="true"></span>'+esc(cl.ko||'')+'</span>'
-        + '<div class="r-lab">'+labLine+'</div>'
-        + locLine
-      + '</div>'
-      + '<div class="r-contact">'+contact+'</div>'
+    var cvar = CVAR[p.cluster];
+    var accent = 'var('+cvar+')';
+
+    /* 좌측 6개 분야 인디케이터 — 이 교수 cluster만 채움, 나머지 흐린 아웃라인 */
+    var ind = clusters.map(function(c){
+      var on = c.id===p.cluster;
+      return '<span class="idot'+(on?' on':'')+'" tabindex="0" role="img"'
+        + ' aria-label="'+esc(c.ko)+(on?' (해당 분야)':'')+'"'
+        + ' style="--dot-c:var('+CVAR[c.id]+')">'
+        + '<span class="itip">'+esc(c.ko)+'</span></span>';
+    }).join('');
+
+    /* 사진(없으면 onerror로 이니셜 폴백 표시) */
+    var photo = '<img src="assets/faculty/'+esc(p.id)+'.jpg" alt="'+esc(p.ko)+' '+esc(p.rank)+'"'
+      + ' loading="lazy" onerror="this.style.display=\'none\';var f=this.parentNode.querySelector(\'.pfallback\');if(f)f.style.display=\'grid\';">'
+      + '<span class="pfallback" aria-hidden="true" style="display:none">'+esc(p.initial)+'</span>';
+
+    /* 하단 오버레이 — 분야 · 이름 · 직위 · 영문명 */
+    var meta = '<div class="pmeta">'
+      + '<span class="pfield">'+esc(cl.ko||'')+'</span>'
+      + '<div class="pname"><span class="ko">'+esc(p.ko)+'</span><span class="rk">'+esc(p.rank)+'</span></div>'
+      + '<div class="pen">'+esc(p.en)+'</div>'
       + '</div>';
+
+    /* 호버 정보 패널 — 이메일 · 사무실 · 프로필 링크 */
+    var info = '<div class="pinfo">';
+    if(p.email) info += '<a class="il" href="mailto:'+esc(p.email)+'">'+ICON_MAIL
+      + '<span class="it">'+esc(p.email)+'</span></a>';
+    if(p.office) info += '<span class="il">'+ICON_PIN
+      + '<span class="it">'+esc(officeKo(p.office))+'</span></span>';
+    if(lab.ko) info += '<span class="il">'+ICON_LAB
+      + '<span class="it">'+esc(lab.ko)+'</span></span>';
+    if(p.detail) info += '<a class="plink" href="'+esc(p.detail)+'" target="_blank" rel="noopener">'
+      + '교수 프로필 <span aria-hidden="true">↗</span><span class="visually-hidden"> (새 창)</span></a>';
+    info += '</div>';
+
+    /* 카드: 사진 프레임을 detail 링크로 감싸 클릭 시 외부 프로필로 이동 */
+    var frameOpen = p.detail
+      ? '<a class="pframe" href="'+esc(p.detail)+'" target="_blank" rel="noopener" aria-label="'+esc(p.ko)+' 교수 프로필 (새 창)">'
+      : '<div class="pframe">';
+    var frameClose = p.detail ? '</a>' : '</div>';
+
+    return '<article class="pcard" id="'+esc(p.id)+'" style="--card-c:'+accent+'">'
+      + '<div class="pind" aria-label="연구분야 표식">'+ind+'</div>'
+      + frameOpen + photo + meta + frameClose
+      + info
+      + '</article>';
   }
 
   function apply(){
-    var ql = state.q.trim().toLowerCase();
     var hits = professors.filter(function(p){
       if(state.c!=='all' && p.cluster!==state.c) return false;
-      if(state.r!=='all' && p.rank!==state.r) return false;
-      if(ql){
-        var lab = labs[p.labId] || {};
-        var hay = (p.ko+' '+p.en+' '+p.rank+' '+(p.role||'')+' '+(p.email||'')+' '+(p.office||'')+' '+
-          (p.office?officeKo(p.office):'')+' '+
-          (p.phone||'')+' '+String(p.phone||'').replace(/\)/g,'-')+' '+
-          (lab.ko||'')+' '+(lab.en||'')+' '+(lab.loc||'')).toLowerCase();
-        if(hay.indexOf(ql)<0) return false;
-      }
       return true;
     });
-    rowsEl.innerHTML = hits.map(rowHtml).join('');
+    rowsEl.innerHTML = hits.map(cardHtml).join('');
     emptyEl.hidden = hits.length>0;
-    statusEl.innerHTML = '전체 '+professors.length+'명 중 <b>'+hits.length+'</b>명';
     syncChips();
     syncUrl();
+    observeCards();
   }
 
   cWrap.addEventListener('click', function(e){
     var b = e.target.closest('.fchip'); if(!b) return;
     state.c = b.dataset.c; apply();
   });
-  rWrap.addEventListener('click', function(e){
-    var b = e.target.closest('.fchip'); if(!b) return;
-    state.r = b.dataset.r; apply();
-  });
-  var deb = null;
-  pq.addEventListener('input', function(){
-    clearTimeout(deb);
-    deb = setTimeout(function(){ state.q = pq.value; apply(); }, 120);
-  });
   resetBtn.addEventListener('click', function(){
-    state = { c:'all', r:'all', q:'' };
-    pq.value = '';
+    state = { c:'all' };
     apply();
-    pq.focus();
+    cWrap.querySelector('.fchip').focus();
   });
+
+  /* ── 스크롤 진입 애니메이션 (fade+up · stagger · reduced-motion 존중) ── */
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var io = (!reduce && 'IntersectionObserver' in window)
+    ? new IntersectionObserver(function(entries){
+        entries.forEach(function(en){
+          if(en.isIntersecting){
+            var el = en.target;
+            var idx = +el.dataset.i || 0;
+            el.style.transitionDelay = Math.min(idx,5)*70 + 'ms';
+            el.classList.add('in');
+            io.unobserve(el);
+          }
+        });
+      }, { rootMargin:'0px 0px -8% 0px', threshold:.08 })
+    : null;
+  function observeCards(){
+    var cards = rowsEl.querySelectorAll('.pcard');
+    cards.forEach(function(el,i){
+      el.dataset.i = i % 3; /* 열 위치 기준 stagger */
+      if(io){ io.observe(el); } else { el.classList.add('in'); }
+    });
+  }
 
   apply();
 
   /* ── 해시 딥링크(G-research 교수명 링크 등) 진입 보정 ──
-     행은 JS 렌더 후 존재하므로 setTimeout으로 재스크롤(instant) */
+     카드는 JS 렌더 후 존재하므로 setTimeout으로 재스크롤(instant) */
   if(location.hash && location.hash.indexOf('#!')!==0){
     (function(){
       var tid = location.hash.slice(1);
       try{ tid = decodeURIComponent(tid); }catch(e){}
       setTimeout(function(){
         var t = document.getElementById(tid);
-        if(t && t.classList.contains('row')) t.scrollIntoView({behavior:'instant',block:'center'});
+        if(t && t.classList.contains('pcard')){
+          t.classList.add('in');
+          t.scrollIntoView({behavior:'instant',block:'center'});
+        }
       }, 0);
     })();
   }
-
-  /* ── 분야별 분포 데이터바 ── */
-  var bd = document.getElementById('bd');
-  var maxC = Math.max.apply(null, clusters.map(function(c){ return c.count; }));
-  bd.innerHTML = clusters.map(function(c){
-    var pct = Math.round(c.count/professors.length*100);
-    return '<div class="bd-row">'
-      + '<div class="top"><span class="lab">'+esc(c.ko)+'</span>'
-        + '<span class="val">'+c.count+' <span class="dim">· '+pct+'%</span></span></div>'
-      + '<div class="bar"><span style="width:'+(c.count/maxC*100).toFixed(1)+'%;background:var('+CVAR[c.id]+')"></span></div>'
-      + '</div>';
-  }).join('');
 })();
 </script>
 <script src="assets/nav.js?v=34"></script>

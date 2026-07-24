@@ -173,6 +173,77 @@ a{color:inherit;text-decoration:none}
 .side-note a{color:var(--navy);text-decoration:underline;text-underline-offset:2px;transition:color .15s}
 .side-note a:hover{color:var(--coral)}
 
+/* ── §03 조직 · 행정 — 위계 조직도 (기관형 IR 톤) ── */
+.org{max-width:none}
+.org-chart{margin-bottom:clamp(2.6rem,1.6rem + 3vw,4rem)}
+/* 최상위: 학과장 — 넓은 밴드 */
+.org-lead{position:relative;border:1px solid var(--line);
+  border-left:3px solid var(--navy);background:#fff;
+  padding:clamp(1.3rem,1rem + 1.4vw,1.9rem) clamp(1.4rem,1rem + 1.6vw,2.2rem);
+  display:flex;align-items:flex-end;justify-content:space-between;gap:1.4rem;flex-wrap:wrap}
+.org-lead .role{font-family:var(--mono);font-size:.66rem;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--navy);display:block;margin-bottom:.55rem}
+.org-lead .who{display:flex;align-items:baseline;gap:.7rem;flex-wrap:wrap}
+.org-lead .who b{font-weight:700;font-size:clamp(1.4rem,1.1rem + 1vw,1.75rem);color:var(--navy);letter-spacing:-.01em}
+.org-lead .who .en{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.org-lead .field{font-size:.86rem;color:var(--sub);margin-top:.5rem}
+.org-lead .links{display:flex;gap:1.3rem;flex:none}
+.org-lead .links a{font-size:.85rem;color:var(--muted);transition:color .15s;white-space:nowrap}
+.org-lead .links a:hover{color:var(--navy)}
+.org-lead .links a .arr{color:var(--navy)}
+/* 연결선: 상위 → 하위 */
+.org-stem{height:clamp(1.2rem,2.2vw,2rem);width:1px;background:var(--line);margin-left:2.2rem}
+/* 2단: 지원 보직 — 절제된 수평 밴드 (동일 카드 격자 아님) */
+.org-band{border:1px solid var(--line-soft);border-top:2px solid var(--navy);background:var(--card)}
+.org-band-head{padding:.85rem clamp(1.2rem,1rem + 1vw,1.6rem);border-bottom:1px solid var(--line-soft);
+  display:flex;align-items:baseline;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.org-band-head .t{font-weight:600;font-size:.98rem;color:var(--navy)}
+.org-band-head .k{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.org-post{display:grid;grid-template-columns:11rem 1fr auto;gap:1.2rem;align-items:center;
+  padding:1.05rem clamp(1.2rem,1rem + 1vw,1.6rem);transition:background .15s}
+.org-post + .org-post{border-top:1px solid var(--line-soft)}
+.org-post:hover{background:#fff}
+.org-post .post-role{display:flex;align-items:center;gap:.55rem}
+.org-post .post-role .role-t{font-weight:600;font-size:.92rem;color:var(--navy)}
+.org-post .marker{width:8px;height:8px;background:var(--navy);flex:none;transform:rotate(45deg)}
+.org-post .post-who{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap}
+.org-post .post-who b{font-weight:700;font-size:1.05rem;color:var(--ink)}
+.org-post .post-who .en{font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.org-post .post-who .field{font-size:.82rem;color:var(--sub)}
+.org-post .post-links{display:flex;gap:1.1rem;justify-self:end}
+.org-post .post-links a{font-size:.82rem;color:var(--muted);transition:color .15s;white-space:nowrap}
+.org-post .post-links a:hover{color:var(--navy)}
+.org-post .post-links a .arr{color:var(--navy)}
+/* 행정 안내: 정돈된 별도 블록 (사무 지원 라인) */
+.org-admin{border-top:1px solid var(--line);padding-top:clamp(1.6rem,1rem + 1.6vw,2.4rem)}
+.org-admin-head{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.2rem}
+.org-admin-head .t{font-weight:600;font-size:1.05rem;color:var(--navy)}
+.org-admin-head .d{font-size:.86rem;color:var(--muted)}
+.admin-lines{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));
+  gap:0;border-left:1px solid var(--line-soft)}
+.admin-line{padding:.15rem 1.3rem 1.15rem;border-bottom:1px solid var(--line-soft)}
+.admin-line .fn{font-size:.92rem;color:var(--ink);font-weight:600}
+.admin-line .fn .note{display:block;font-weight:400;font-size:.78rem;color:var(--muted);margin-top:.2rem}
+.admin-line .tel{font-family:var(--mono);font-size:.9rem;color:var(--navy);
+  font-variant-numeric:tabular-nums;margin-top:.55rem;display:inline-block}
+.admin-line .tel a{color:inherit;transition:color .15s}
+.admin-line .tel a:hover{color:var(--coral)}
+.admin-foot{margin-top:1.4rem;display:flex;align-items:baseline;gap:.6rem 1.4rem;flex-wrap:wrap;
+  font-size:.86rem;color:var(--muted);line-height:1.7}
+.admin-foot .loc-line{color:var(--sub)}
+.admin-foot .loc-line a{color:var(--navy);text-decoration:underline;text-underline-offset:2px;transition:color .15s}
+.admin-foot .loc-line a:hover{color:var(--coral)}
+.admin-foot .bk{color:var(--muted)}
+.admin-foot .bk a{color:var(--navy);text-decoration:underline;text-underline-offset:2px;transition:color .15s}
+.admin-foot .bk a:hover{color:var(--coral)}
+@media (max-width:640px){
+  .org-lead{flex-direction:column;align-items:flex-start;gap:1rem}
+  .org-post{grid-template-columns:1fr;gap:.5rem}
+  .org-post .post-links{justify-self:start}
+  .admin-lines{grid-template-columns:1fr;border-left:0}
+  .admin-line{padding-inline:0}
+}
+
 /* ── §04 주요 연혁 — 타임라인 ── */
 .timeline{border-top:1px solid var(--line)}
 .tl-row{display:grid;grid-template-columns:6.5rem 1fr;gap:1.4rem;align-items:baseline;
@@ -327,41 +398,65 @@ a{color:inherit;text-decoration:none}
       <h2 id="org-h" class="sec-title">조직 · 행정</h2>
       <p class="sec-sub">학과장·학부지도교수와 행정실 연락처를 안내합니다.</p>
     </div>
-    <div class="org-grid">
-      <div>
-        <p class="overline">보직 교수</p>
-        <div class="officers">
-          <article class="officer" id="kim-woochul">
-            <div class="officer-top"><span class="badge badge--role">학과장</span><span class="badge">교수</span></div>
-            <div class="officer-name"><b>김우철</b><span class="en">Woochul Kim</span></div>
-            <span class="tag"><span class="dot" style="--tag-c:var(--c-thermal)" aria-hidden="true"></span><span>에너지·열유체</span></span>
-            <p class="officer-lab">어드밴스드 열공학 <span class="loc">· 공학관 A310</span></p>
-            <div class="officer-foot">
-              <a href="G-people.html#kim-woochul">프로필 <span class="arr" aria-hidden="true">→</span></a>
-              <a href="G-research.html#atel">연구실 <span class="arr" aria-hidden="true">→</span></a>
-            </div>
-          </article>
-          <article class="officer" id="kim-wonjung">
-            <div class="officer-top"><span class="badge badge--role">학부지도교수</span><span class="badge">부교수</span></div>
-            <div class="officer-name"><b>김원정</b><span class="en">Wonjung Kim</span></div>
-            <span class="tag"><span class="dot" style="--tag-c:var(--c-thermal)" aria-hidden="true"></span><span>에너지·열유체</span></span>
-            <p class="officer-lab">미소유체 <span class="loc">· 공학관 A386</span></p>
-            <div class="officer-foot">
+    <div class="org">
+      <!-- ── 위계 조직도: 학과장 → 학부지도교수 → 행정 ── -->
+      <div class="org-chart" role="group" aria-label="학부 조직 체계">
+        <!-- 최상위: 학과장 -->
+        <div class="org-lead" id="kim-woochul">
+          <div class="org-lead-who">
+            <span class="role">학과장 · Chair</span>
+            <span class="who"><b>김우철</b><span class="en">Woochul Kim</span></span>
+            <p class="field">교수 · 에너지·열유체 (어드밴스드 열공학, 공학관 A310)</p>
+          </div>
+          <div class="links">
+            <a href="G-people.html#kim-woochul">프로필 <span class="arr" aria-hidden="true">→</span></a>
+            <a href="G-research.html#atel">연구실 <span class="arr" aria-hidden="true">→</span></a>
+          </div>
+        </div>
+
+        <div class="org-stem" aria-hidden="true"></div>
+
+        <!-- 2단: 지원 보직 -->
+        <div class="org-band">
+          <div class="org-band-head">
+            <span class="t">학사 지원 보직</span>
+            <span class="k">Faculty Officers</span>
+          </div>
+          <div class="org-post" id="kim-wonjung">
+            <span class="post-role"><span class="marker" aria-hidden="true"></span><span class="role-t">학부지도교수</span></span>
+            <span class="post-who"><b>김원정</b><span class="en">Wonjung Kim</span><span class="field">부교수 · 에너지·열유체 (미소유체, 공학관 A386)</span></span>
+            <span class="post-links">
               <a href="G-people.html#kim-wonjung">프로필 <span class="arr" aria-hidden="true">→</span></a>
               <a href="G-research.html#ssfl">연구실 <span class="arr" aria-hidden="true">→</span></a>
-            </div>
-          </article>
+            </span>
+          </div>
         </div>
       </div>
-      <div>
-        <p class="overline">행정 연락처</p>
-        <div class="contact-rows">
-          <div class="c-row"><span class="lab">학부 행정<span class="note">학사 · 수업 문의</span></span><span class="val">02-2123-4426</span></div>
-          <div class="c-row"><span class="lab">대학원 행정<span class="note">대학원 학사 문의</span></span><span class="val">02-2123-2810</span></div>
-          <div class="c-row"><span class="lab">BK21 사업단<span class="note">BK21 FOUR 문의</span></span><span class="val">02-2123-7817</span></div>
-          <div class="c-row addr"><span class="val">(03722) 서울특별시 서대문구 연세로 50 · 연세대학교 공과대학 · <a href="#location">오시는 길</a></span></div>
+
+      <!-- ── 행정 지원 라인 ── -->
+      <div class="org-admin">
+        <div class="org-admin-head">
+          <span class="t">행정실</span>
+          <span class="d">학사·수업·대학원·연구 관련 문의를 담당합니다.</span>
         </div>
-        <p class="side-note">4단계 BK21(BK21 FOUR) 사업에 선정되어, <a href="G-research.html">대학원 연구</a>를 중심으로 다음 세대 연구자를 양성하고 있습니다.</p>
+        <div class="admin-lines">
+          <div class="admin-line">
+            <span class="fn">학부 행정<span class="note">학사 · 수업 문의</span></span>
+            <span class="tel"><a href="tel:0221234426">02-2123-4426</a></span>
+          </div>
+          <div class="admin-line">
+            <span class="fn">대학원 행정<span class="note">대학원 학사 문의</span></span>
+            <span class="tel"><a href="tel:0221232810">02-2123-2810</a></span>
+          </div>
+          <div class="admin-line">
+            <span class="fn">BK21 사업단<span class="note">BK21 FOUR 문의</span></span>
+            <span class="tel"><a href="tel:0221237817">02-2123-7817</a></span>
+          </div>
+        </div>
+        <div class="admin-foot">
+          <span class="loc-line">(03722) 서울특별시 서대문구 연세로 50 · 연세대학교 공과대학 · <a href="#location">오시는 길</a></span>
+          <span class="bk">4단계 BK21(BK21 FOUR) 사업에 선정되어, <a href="G-research.html">대학원 연구</a>를 중심으로 다음 세대 연구자를 양성하고 있습니다.</span>
+        </div>
       </div>
     </div>
   </section>

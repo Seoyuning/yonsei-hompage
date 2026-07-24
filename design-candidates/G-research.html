@@ -81,24 +81,40 @@ a{color:inherit;text-decoration:none}
   font-size:clamp(1.5rem,1rem + 2vw,2.1rem);line-height:1.24;letter-spacing:-.01em;margin-top:.5rem}
 .sec-sub{font-family:var(--kr);font-size:.92rem;color:var(--sub);margin-top:.7rem;max-width:52rem;line-height:1.7}
 
-/* ── 연구 비전 (리드 문단 + 3개 축 카드) ── */
-.vision{max-width:1120px;margin:0 auto;
-  padding:clamp(2.8rem,2rem + 3vw,4.2rem) clamp(1.2rem,.6rem + 2vw,2.6rem);
+/* ── 연구 비전 (웅장한 리드 + 3개 축 · 편집형 절제) ── */
+.vision{background:#ffffff;max-width:1120px;margin:0 auto;
+  padding:clamp(4rem,3rem + 5vw,7rem) clamp(1.2rem,.6rem + 2vw,2.6rem);
   border-bottom:1px solid var(--line-soft);scroll-margin-top:6.6rem}
-.vision-lead{font-family:var(--kr);font-size:clamp(1rem,.92rem + .3vw,1.12rem);
-  color:var(--body);line-height:1.85;max-width:52rem;margin-top:.4rem}
-.vision-lead b{color:var(--ink);font-weight:700}
-.vision-axes{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;
-  margin-top:clamp(1.8rem,1.2rem + 1.5vw,2.6rem)}
-.vaxis{background:var(--card);border:1px solid var(--line-soft);border-left:3px solid var(--navy);
-  padding:1.4rem clamp(1.1rem,.8rem + 1vw,1.5rem) 1.5rem;transition:background .12s}
-.vaxis:hover{background:var(--card-hover)}
-.vaxis .vnum{font-family:var(--mono);font-weight:300;font-size:1.4rem;line-height:1;
-  color:var(--navy);font-variant-numeric:tabular-nums}
-.vaxis .vt{font-family:var(--kr);font-weight:700;font-size:1.08rem;color:var(--ink);
-  line-height:1.3;letter-spacing:-.01em;margin-top:.7rem}
-.vaxis .vd{font-family:var(--kr);font-size:.88rem;color:var(--sub);line-height:1.7;margin-top:.6rem}
-@media (max-width:760px){.vision-axes{grid-template-columns:1fr}}
+/* 비전 헤더 — 킥커만 얇게, 큰 위계는 리드 문장이 담당 */
+.vision .sec-head{margin-bottom:clamp(2.2rem,1.4rem + 2.5vw,3.4rem)}
+/* 웅장한 리드 — 크고 절제된 편집 타이포, 넉넉한 행간 */
+.vision-lead{font-family:var(--kr);font-weight:400;
+  font-size:clamp(1.3rem,1.05rem + 1.3vw,1.95rem);
+  color:var(--ink);line-height:1.62;letter-spacing:-.01em;
+  max-width:44rem;margin-top:0;text-wrap:balance}
+.vision-lead b{color:var(--navy);font-weight:700}
+/* 3개 축 — 균일 카드 상자 제거, 상단 헤어라인 + 큰 번호의 편집형 컬럼 */
+.vision-axes{display:grid;grid-template-columns:repeat(3,1fr);
+  gap:clamp(2rem,1rem + 3vw,4rem) clamp(2rem,1rem + 2.5vw,3.4rem);
+  margin-top:clamp(3rem,2rem + 3vw,5rem);
+  padding-top:clamp(2.4rem,1.6rem + 2vw,3.4rem);
+  border-top:1px solid var(--line)}
+.vaxis{background:none;border:0;padding:0;position:relative}
+.vaxis .vnum{font-family:var(--mono);font-weight:300;
+  font-size:clamp(2.4rem,1.8rem + 2vw,3.4rem);line-height:1;
+  color:var(--navy);font-variant-numeric:tabular-nums;opacity:.55;
+  display:block}
+.vaxis .vt{font-family:var(--kr);font-weight:700;
+  font-size:clamp(1.14rem,1rem + .5vw,1.32rem);color:var(--ink);
+  line-height:1.32;letter-spacing:-.01em;margin-top:1.1rem;
+  padding-top:1.1rem;border-top:1px solid var(--line)}
+.vaxis .vd{font-family:var(--kr);font-size:.94rem;color:var(--sub);
+  line-height:1.85;margin-top:.75rem;max-width:22rem}
+@media (max-width:760px){
+  .vision-axes{grid-template-columns:1fr;
+    gap:clamp(1.8rem,1.2rem + 2vw,2.6rem);padding-top:2rem}
+  .vaxis .vnum{font-size:2.4rem}
+}
 
 /* ── 요약: 6개 분야 · 33개 연구실 (단정한 스탯 행) ── */
 .summary{max-width:1120px;margin:0 auto;
@@ -578,7 +594,6 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
 
   var blocks = document.getElementById('clusterBlocks');
   blocks.innerHTML = clusters.map(function(c){
-    var pct = Math.round(c.count/TOTAL*100);
     var rows = byCluster[c.id].map(function(l){ return labRow(l,c); }).join('');
     return '<section class="cluster" id="'+esc(c.id)+'" style="--cl-c:var('+CVAR[c.id]+')" aria-labelledby="h-'+esc(c.id)+'">'
       + '<div class="cl-head" role="button" tabindex="0" aria-expanded="false">'
@@ -589,7 +604,7 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
         + '</div>'
         + '<div class="cl-metric">'
           + '<div class="num tnum">'+String(c.count)+'<span class="u">개</span></div>'
-          + '<div class="share">전체의 '+pct+'%</div>'
+          + '<div class="share">연구실</div>'
         + '</div>'
         + '<svg class="cl-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>'
       + '</div>'

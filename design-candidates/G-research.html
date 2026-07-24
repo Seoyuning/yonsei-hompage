@@ -672,7 +672,7 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
       dot.style.setProperty('--cl-c',col);
       arrows.appendChild(dot);
       /* 사전에 잘라낸 조각 이미지(투명 배경). 6개가 겹쳐 독수리 완성, 하나 들어올리면 그 자리는 빈다 */
-      var part=new Image(); part.src='assets/eagle-p-'+p.png+'.png?v=8'; part.alt=''; part.className='epart';
+      var part=new Image(); part.src='assets/eagle-p-'+p.png+'.png?v=9'; part.alt=''; part.className='epart';
       part.style.setProperty('--lift',p.lift);
       part.setAttribute('data-cid',p.cid);
       stage.appendChild(part);
@@ -732,8 +732,8 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
         + '<p class="fd-c-intro">'+esc(c.intro)+'</p>'
         + '<div class="fd-c-foot">'
           + '<a class="fd-c-link" href="#'+esc(c.id)+'" data-golabs="'+esc(c.id)+'">'
-            + esc(c.ko)+' 연구실 '+c.count+'개 보기<span class="arr" aria-hidden="true">→</span></a>'
-          + '<span class="fd-c-hint">아래 목록에서 담당 교수·위치·홈페이지를 확인하세요</span>'
+            + '더보기<span class="arr" aria-hidden="true">→</span></a>'
+          + '<span class="fd-c-hint">'+esc(c.ko)+' 연구실 '+c.count+'개 · 담당 교수·위치·홈페이지 보기</span>'
         + '</div>'
         + '<span class="fd-c-toggle" aria-hidden="true">'
           + '<span class="lbl-open">자세히</span><span class="lbl-close">접기</span>'+chevSvg()

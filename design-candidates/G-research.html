@@ -78,6 +78,25 @@ a{color:inherit;text-decoration:none}
   font-size:clamp(1.5rem,1rem + 2vw,2.1rem);line-height:1.24;letter-spacing:-.01em;margin-top:.5rem}
 .sec-sub{font-family:var(--kr);font-size:.92rem;color:var(--sub);margin-top:.7rem;max-width:52rem;line-height:1.7}
 
+/* ── 연구 비전 (리드 문단 + 3개 축 카드) ── */
+.vision{max-width:1120px;margin:0 auto;
+  padding:clamp(2.8rem,2rem + 3vw,4.2rem) clamp(1.2rem,.6rem + 2vw,2.6rem);
+  border-bottom:1px solid var(--line-soft);scroll-margin-top:6.6rem}
+.vision-lead{font-family:var(--kr);font-size:clamp(1rem,.92rem + .3vw,1.12rem);
+  color:var(--body);line-height:1.85;max-width:52rem;margin-top:.4rem}
+.vision-lead b{color:var(--ink);font-weight:700}
+.vision-axes{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;
+  margin-top:clamp(1.8rem,1.2rem + 1.5vw,2.6rem)}
+.vaxis{background:var(--card);border:1px solid var(--line-soft);border-left:3px solid var(--navy);
+  padding:1.4rem clamp(1.1rem,.8rem + 1vw,1.5rem) 1.5rem;transition:background .12s}
+.vaxis:hover{background:var(--card-hover)}
+.vaxis .vnum{font-family:var(--mono);font-weight:300;font-size:1.4rem;line-height:1;
+  color:var(--navy);font-variant-numeric:tabular-nums}
+.vaxis .vt{font-family:var(--kr);font-weight:700;font-size:1.08rem;color:var(--ink);
+  line-height:1.3;letter-spacing:-.01em;margin-top:.7rem}
+.vaxis .vd{font-family:var(--kr);font-size:.88rem;color:var(--sub);line-height:1.7;margin-top:.6rem}
+@media (max-width:760px){.vision-axes{grid-template-columns:1fr}}
+
 /* ── 요약: 6개 분야 · 33개 연구실 (단정한 스탯 행) ── */
 .summary{max-width:1120px;margin:0 auto;
   padding:clamp(2.8rem,2rem + 3vw,4.2rem) clamp(1.2rem,.6rem + 2vw,2.6rem);
@@ -306,6 +325,42 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
       <svg class="eagle-arrows" id="eagleArrows" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
     </div>
     <div class="eagle-list" id="eagleList" aria-label="연구 분야 목록"></div>
+  </section>
+
+  <!-- 연구 비전 -->
+  <section class="vision" id="vision" aria-labelledby="vision-h">
+    <div class="sec-head">
+      <div>
+        <p class="sec-kick">Research Vision</p>
+        <h2 class="sec-title" id="vision-h">연구 비전</h2>
+        <p class="sec-sub">기초 역학 원리에서 출발해 에너지·로봇·제조·바이오까지, 학문적 수월성과 사회 문제 해결을 함께 추구합니다.</p>
+      </div>
+    </div>
+    <p class="vision-lead">
+      연세대학교 기계공학부는 <b>힘·열·유동·운동이라는 기초 역학 원리</b>에서 출발해
+      에너지, 로봇, 첨단 제조, 바이오·나노에 이르는 폭넓은 영역으로 연구를 확장합니다.
+      우리는 원리에 대한 깊은 이해가 곧 새로운 기술의 토대가 된다고 믿으며,
+      <b>학문적 수월성</b>과 <b>사회 문제 해결</b>을 하나의 목표로 함께 추구합니다.
+      나아가 학문 분야의 경계를 넘어선 융합과 협력을 통해,
+      다음 세대의 산업과 사회를 지탱할 지식과 인재를 길러내고자 합니다.
+    </p>
+    <div class="vision-axes">
+      <div class="vaxis">
+        <div class="vnum">01</div>
+        <div class="vt">기초 원천기술</div>
+        <div class="vd">역학·열·유동·재료의 근본 원리를 탐구해 미래 기술의 토대를 마련합니다.</div>
+      </div>
+      <div class="vaxis">
+        <div class="vnum">02</div>
+        <div class="vt">융합과 협력</div>
+        <div class="vd">분야와 학문의 경계를 넘어, 함께 풀어야 할 문제를 함께 연구합니다.</div>
+      </div>
+      <div class="vaxis">
+        <div class="vnum">03</div>
+        <div class="vt">사회적 임팩트</div>
+        <div class="vd">연구의 성과가 산업과 사회의 실제 난제 해결로 이어지도록 합니다.</div>
+      </div>
+    </div>
   </section>
 
   <!-- 분야별 연구실 (블록 × 6) -->
@@ -570,7 +625,7 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
   }
 })();
 </script>
-<script src="assets/nav.js?v=26"></script>
+<script src="assets/nav.js?v=27"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:#7b8595">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

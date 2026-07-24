@@ -130,6 +130,15 @@ a.arrow:hover{gap:.7rem}
 .abeek-card p b{color:var(--ink);font-weight:600}
 .abeek-card .abeek-note{font-size:.84rem;color:var(--muted);margin-top:.9rem}
 
+/* ── 동아리·학생활동 (#clubs) — 4대 역학 카드 그리드 언어 재사용 ── */
+.club-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:1px;
+  background:var(--line-soft);border:1px solid var(--line-soft)}
+.club{background:var(--card);padding:1.6rem 1.5rem;transition:background .15s}
+.club:hover{background:var(--card-hover)}
+.club-idx{font-family:var(--mono);font-weight:600;font-size:.82rem;line-height:1;color:var(--muted);font-variant-numeric:tabular-nums;letter-spacing:.04em}
+.club-name{font-family:var(--kr);font-weight:700;font-size:1.15rem;color:var(--ink);margin-top:.9rem;line-height:1.3}
+.club-desc{font-family:var(--kr);font-size:.88rem;color:var(--sub);line-height:1.7;margin-top:.85rem}
+
 /* ── §02 4대 역학 ── */
 .mech-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:1px;
   background:var(--line-soft);border:1px solid var(--line-soft)}
@@ -413,6 +422,40 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
       <p class="abeek-note">인증 이수 요건과 적용 기준은 입학년도별로 다를 수 있습니다 · 자세한 내용은 학과 행정팀(02-2123-4426)에 문의하세요.</p>
     </div>
   </section>
+
+  <!-- 동아리·학생활동 (#clubs) -->
+  <section class="sec" id="clubs" aria-labelledby="clubs-h">
+    <div class="sec-head">
+      <div>
+        <p class="sec-kick">학생 활동</p>
+        <h2 id="clubs-h" class="sec-title">동아리 · 학생활동</h2>
+        <p class="sec-sub">학생들은 교과 이수를 넘어 다양한 학술·설계 활동에 참여하며 전공 지식을 실제 문제에 적용합니다. 대표적인 활동 범주는 다음과 같습니다.</p>
+      </div>
+    </div>
+    <div class="club-grid">
+      <article class="club">
+        <span class="club-idx" aria-hidden="true">01</span>
+        <h3 class="club-name">학술·설계 프로젝트팀</h3>
+        <p class="club-desc">자작자동차 · 로봇 · 무인항공기 등 기계공학 전반의 제작 프로젝트팀에서 학생들이 직접 설계·가공·조립을 수행하며 4대 역학과 종합설계 지식을 실물로 구현합니다.</p>
+      </article>
+      <article class="club">
+        <span class="club-idx" aria-hidden="true">02</span>
+        <h3 class="club-name">학회·세미나 활동</h3>
+        <p class="club-desc">관심 분야별 학술 학회와 정기 세미나를 통해 전공 심화 주제를 함께 학습하고, 최신 연구 동향과 산업 기술을 공유하며 발표·토론 역량을 기릅니다.</p>
+      </article>
+      <article class="club">
+        <span class="club-idx" aria-hidden="true">03</span>
+        <h3 class="club-name">공모전·경진대회 참여</h3>
+        <p class="club-desc">설계·창의 경진대회와 각종 공모전에 팀 단위로 참가해, 주어진 문제를 정의하고 해결안을 설계·검증하는 실전 프로젝트 경험을 쌓습니다.</p>
+      </article>
+      <article class="club">
+        <span class="club-idx" aria-hidden="true">04</span>
+        <h3 class="club-name">산학·현장 연계 활동</h3>
+        <p class="club-desc">현장 견학, 인턴십, 산학 연계 프로젝트를 통해 강의실에서 배운 이론을 산업 현장과 연구실의 실제 과제에 적용하며 진로 방향을 구체화합니다.</p>
+      </article>
+    </div>
+    <p class="table-note">위 내용은 학생 활동의 일반적 범주를 소개한 것으로, 운영되는 동아리·프로그램은 학기별로 달라질 수 있습니다.</p>
+  </section>
 </main>
 
 <!-- 입학 CTA -->
@@ -676,7 +719,7 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
   });
 })();
 </script>
-<script src="assets/nav.js?v=26"></script>
+<script src="assets/nav.js?v=27"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--kr);font-size:.74rem;color:#7b8595">
   © 2026 연세대학교 기계공학부 &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

@@ -62,19 +62,21 @@
     '.bc a:hover{color:' + NAVY + '}',
     '.bc a.bc-home{color:' + MUTED + '}',
     '.bc a.bc-cur{color:' + NAVY + ';font-weight:600}',
-    /* 형제 하위페이지 서브내비(LNB형 → 가로 세련된 버튼) — 히어로 아래, 스크롤 시 상단 고정 */
-    '.ysub{position:sticky;top:4.35rem;z-index:38;background:rgba(245,242,236,.93);' +
-      '-webkit-backdrop-filter:blur(9px);backdrop-filter:blur(9px);border-bottom:1px solid ' + LINE + '}',
-    '.ysub-w{max-width:72rem;margin:0 auto;padding:.5rem clamp(1.1rem,4vw,2rem);' +
-      'display:flex;gap:.45rem;align-items:center;overflow-x:auto;scrollbar-width:none}',
+    '.bc .bc-tab{color:' + NAVY + ';font-weight:700}',
+    /* 하위페이지 탭 바 — 유일한 형제 내비(뷰 전환), 히어로 아래 sticky, 크고 잘 보이게 */
+    '.ysub{position:sticky;top:4.35rem;z-index:38;background:#fff;border-bottom:1px solid ' + LINE + ';' +
+      'box-shadow:0 6px 18px rgba(15,27,48,.06)}',
+    '.ysub-w{max-width:72rem;margin:0 auto;padding:0 clamp(1.1rem,4vw,2rem);' +
+      'display:flex;gap:.15rem;align-items:stretch;overflow-x:auto;scrollbar-width:none}',
     '.ysub-w::-webkit-scrollbar{display:none}',
-    '.ysub a{flex:0 0 auto;font-family:' + KR + ';font-size:.86rem;font-weight:600;color:' + MUTED + ';' +
-      'text-decoration:none;padding:.46rem .98rem;border-radius:99px;border:1px solid ' + LINE + ';background:#fff;' +
-      'white-space:nowrap;transition:color .18s,background .2s ' + E + ',border-color .18s,box-shadow .2s,transform .2s ' + E + '}',
-    '.ysub a:hover{color:' + NAVY + ';border-color:' + NAVY + ';transform:translateY(-1px)}',
-    '.ysub a.cur{color:#fff;background:' + NAVY + ';border-color:' + NAVY + ';box-shadow:0 5px 14px rgba(26,61,117,.24)}',
-    '@media(max-width:920px){.ysub{top:3.7rem}}',
-    '@media(prefers-reduced-motion:reduce){.ysub a{transition:color .18s,background .18s,border-color .18s}}',
+    '.ysub-tab{flex:0 0 auto;font-family:' + KR + ';font-size:1rem;font-weight:700;color:' + MUTED + ';' +
+      'background:none;border:0;border-bottom:3px solid transparent;cursor:pointer;padding:1rem 1.15rem .85rem;' +
+      'white-space:nowrap;letter-spacing:-.01em;transition:color .18s,border-color .2s ' + E + ',background .18s}',
+    '.ysub-tab:hover{color:' + NAVY + ';background:' + PAPER + '}',
+    '.ysub-tab.cur{color:' + NAVY + ';border-bottom-color:' + NAVY + '}',
+    '.ysub-hide{display:none!important}',
+    '@media(max-width:920px){.ysub{top:3.7rem}.ysub-tab{font-size:.92rem;padding:.85rem .9rem .7rem}}',
+    '@media(prefers-reduced-motion:reduce){.ysub-tab{transition:color .18s,border-color .18s,background .18s}}',
     /* 맨 위로 버튼 */
     '.ytop{position:fixed;right:1.4rem;bottom:1.4rem;z-index:45;width:2.9rem;height:2.9rem;border-radius:50%;' +
       'background:#fff;border:1px solid rgba(10,26,51,.15);box-shadow:0 6px 18px rgba(10,26,51,.15);' +
@@ -105,12 +107,12 @@
 
   /* ── 2. 메뉴 정의 (메인 H-academic 순서·라벨과 동일) ── */
   var MENU = [
-    { t: '학부소개', h: 'G-about.html', key: 'about', sub: [['학과장 인사말', 'G-about.html#greeting'], ['비전 · 교육철학', 'G-about.html#vision'], ['조직 · 행정', 'G-about.html#organization'], ['주요 연혁', 'G-about.html#history'], ['연락처 · 오시는 길', 'G-about.html#location']] },
-    { t: '구성원', h: 'G-people.html', key: 'people', sub: [['교수진', 'G-people.html#faculty'], ['교직원', 'G-people.html#staff']] },
-    { t: '연구', h: 'G-research.html', key: 'research', sub: [['연구 비전', 'G-research.html#vision'], ['여섯 개 분야', 'G-research.html#clusters'], ['연구실 전체', 'G-research.html#clusterBlocks']] },
-    { t: '학사', h: 'G-academics.html', key: 'academics', sub: [['교육과정 개관', 'G-academics.html#curriculum'], ['이수 체계도', 'G-academics.html#roadmap'], ['전공 교과', 'G-academics.html#courses'], ['대학원 교과', 'G-academics.html#grad'], ['동아리·학생활동', 'G-academics.html#clubs']] },
-    { t: '소식', h: 'G-news.html', key: 'news', sub: [['공지사항', 'G-news.html#feed'], ['뉴스 · 연구 성과', 'G-news.html#hi'], ['세미나 · 행사', 'G-news.html#sched']] },
-    { t: '입학', h: 'G-admissions.html', key: 'admissions', sub: [['학부 입학', 'G-admissions.html#undergraduate'], ['대학원 진학', 'G-admissions.html#graduate'], ['장학 안내', 'G-admissions.html#scholarships'], ['취업 정보', 'G-admissions.html#jobs'], ['진로 안내', 'G-admissions.html#careers']] }
+    { t: '학부소개', h: 'G-about.html', key: 'about', sub: [['학과장 인사말', 'G-about.html#greeting', ['greeting']], ['비전 · 교육철학', 'G-about.html#vision', ['vision']], ['조직 · 행정', 'G-about.html#organization', ['organization']], ['주요 연혁', 'G-about.html#history', ['history']], ['연락처 · 오시는 길', 'G-about.html#location', ['location']]] },
+    { t: '구성원', h: 'G-people.html', key: 'people', sub: [['교수진', 'G-people.html#faculty', ['faculty', 'dir']], ['교직원', 'G-people.html#staff', ['staff']]] },
+    { t: '연구', h: 'G-research.html', key: 'research', sub: [['연구 비전', 'G-research.html#vision', ['vision']], ['여섯 개 분야', 'G-research.html#fields', ['fields', 'clusters']], ['연구실 전체', 'G-research.html#clusterBlocks', ['clusterBlocks']]] },
+    { t: '학사', h: 'G-academics.html', key: 'academics', sub: [['교육과정 개관', 'G-academics.html#curriculum', ['curriculum', 'requirements', 'abeek']], ['이수 체계도', 'G-academics.html#roadmap', ['roadmap']], ['전공 교과', 'G-academics.html#courses', ['mechanics', 'courses']], ['대학원 교과', 'G-academics.html#grad', ['grad']], ['동아리·학생활동', 'G-academics.html#clubs', ['clubs']]] },
+    { t: '소식', h: 'G-news.html', key: 'news', sub: [['공지사항', 'G-news.html#feed', ['feed']], ['뉴스 · 연구 성과', 'G-news.html#hi', ['hi']], ['세미나 · 행사', 'G-news.html#sched', ['sched']]] },
+    { t: '입학', h: 'G-admissions.html', key: 'admissions', sub: [['학부 입학', 'G-admissions.html#undergraduate', ['undergraduate']], ['대학원 진학', 'G-admissions.html#graduate', ['graduate']], ['장학 안내', 'G-admissions.html#scholarships', ['scholarships']], ['취업 정보', 'G-admissions.html#jobs', ['jobs']], ['진로 안내', 'G-admissions.html#careers', ['careers', 'alumni', 'faq']]] }
   ];
   var path = (location.pathname.split('/').pop() || '').toLowerCase();
   var curKey = null;
@@ -152,59 +154,57 @@
     if (!curKey) return;
     var m = null; MENU.forEach(function (x) { if (x.key === curKey) m = x; });
     if (!m) return;
-    /* breadcrumb: '홈 › 섹션' → 클릭 가능한 링크로 */
     var bc = document.querySelector('.bc');
-    if (bc) {
-      bc.innerHTML = '<a class="bc-home" href="H-academic.html">홈</a> <span aria-hidden="true">›</span> ' +
-        '<a class="bc-cur" href="' + m.h + '" aria-current="page">' + esc(m.t) + '</a>';
+    function setBreadcrumb(tabLabel) {
+      if (!bc) return;
+      var html = '<a class="bc-home" href="H-academic.html">홈</a> <span aria-hidden="true">›</span> ' +
+        '<a class="bc-cur" href="' + m.h + '">' + esc(m.t) + '</a>';
+      if (tabLabel) html += ' <span aria-hidden="true">›</span> <span class="bc-tab">' + esc(tabLabel) + '</span>';
+      bc.innerHTML = html;
     }
-    /* 형제 하위페이지 버튼 바 — 하위 2개 이상일 때만(구성원=단일 제외) */
+    setBreadcrumb(null);
+    /* 탭 바 — 하위 2개 이상일 때만(구성원 포함, 이제 2개라 표시) */
     if (!m.sub || m.sub.length < 2) return;
     var phero = document.querySelector('.phero');
     if (!phero) return;
     document.body.classList.add('has-ysub');
     var bar = document.createElement('nav');
-    bar.className = 'ysub'; bar.setAttribute('aria-label', m.t + ' 하위 메뉴');
-    bar.innerHTML = '<div class="ysub-w">' + m.sub.map(function (s) {
-      return '<a href="' + s[1] + '">' + esc(s[0]) + '</a>';
+    bar.className = 'ysub'; bar.setAttribute('role', 'tablist'); bar.setAttribute('aria-label', m.t + ' 하위 메뉴');
+    bar.innerHTML = '<div class="ysub-w">' + m.sub.map(function (s, i) {
+      return '<button type="button" role="tab" class="ysub-tab" data-i="' + i + '">' + esc(s[0]) + '</button>';
     }).join('') + '</div>';
     phero.parentNode.insertBefore(bar, phero.nextSibling);
 
-    /* sticky top = 흰 헤더 높이(유틸바 접힘 후 nav 높이)에 맞춰 동적 고정 — 겹침/틈 방지 */
+    /* sticky top = 흰 헤더 높이(유틸바 접힘 후 nav 높이) 동적 */
     var hdr = nav.querySelector('.ynv-hdr');
     function fitTop() { if (hdr) { var h = Math.round(hdr.getBoundingClientRect().height); if (h > 20) bar.style.top = h + 'px'; } }
     fitTop(); addEventListener('resize', fitTop); addEventListener('load', fitTop);
 
-    var links = [].slice.call(bar.querySelectorAll('a'));
-    var targets = links.map(function (a) {
-      var id = (a.getAttribute('href').split('#')[1] || '');
-      return { a: a, el: id ? document.getElementById(id) : null };
-    });
-    function setCur(active) { links.forEach(function (a) { a.classList.toggle('cur', a === active); }); }
+    /* 각 탭이 제어하는 섹션(managed = 어느 탭이든 제어하는 모든 섹션). 비관리 콘텐츠(히어로·CTA)는 항상 표시 */
+    var tabs = [].slice.call(bar.querySelectorAll('.ysub-tab'));
+    var managed = [];
+    m.sub.forEach(function (s) { (s[2] || []).forEach(function (id) { var el = document.getElementById(id); if (el && managed.indexOf(el) < 0) managed.push(el); }); });
     var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var OFFSET = 118; /* 고정 nav(약 62px) + 서브내비(약 44px) */
-    links.forEach(function (a) {
-      a.addEventListener('click', function (e) {
-        var id = (a.getAttribute('href').split('#')[1] || '');
-        var el = id ? document.getElementById(id) : null;
-        if (!el) return; /* 앵커 없으면 기본 이동 */
-        e.preventDefault();
-        var top = el.getBoundingClientRect().top + (pageYOffset || 0) - OFFSET;
-        try { scrollTo({ top: top, behavior: reduce ? 'auto' : 'smooth' }); } catch (_) { scrollTo(0, top); }
-        try { history.replaceState(null, '', '#' + id); } catch (_) {}
-        setCur(a);
-      });
-    });
-    /* 스크롤 스파이 — 현재 보이는 섹션 버튼 강조 */
-    var ticking = false;
-    function spy() {
-      ticking = false;
-      var line = OFFSET + 14, cur = targets[0];
-      targets.forEach(function (t) { if (t.el && t.el.getBoundingClientRect().top <= line) cur = t; });
-      if (cur) setCur(cur.a);
+
+    function show(idx, doScroll) {
+      var s = m.sub[idx]; if (!s) return;
+      var ids = s[2] || [];
+      /* 활성 탭 섹션만 노출, 다른 탭 섹션 숨김 — '각 하위 메뉴 = 각 탭' 뷰 분리 */
+      managed.forEach(function (el) { el.classList.toggle('ysub-hide', ids.indexOf(el.id) < 0); });
+      tabs.forEach(function (t, i) { t.classList.toggle('cur', i === idx); t.setAttribute('aria-selected', i === idx ? 'true' : 'false'); });
+      setBreadcrumb(s[0]);
+      try { history.replaceState(null, '', '#' + (s[1].split('#')[1] || '')); } catch (_) {}
+      if (doScroll) {
+        var y = bar.getBoundingClientRect().top + (pageYOffset || 0) - Math.round(hdr ? hdr.getBoundingClientRect().height : 62);
+        if ((pageYOffset || 0) > y + 4) { try { scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' }); } catch (_) { scrollTo(0, y); } }
+      }
     }
-    addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(spy); } }, { passive: true });
-    spy();
+    tabs.forEach(function (t, i) { t.addEventListener('click', function () { show(i, true); }); });
+
+    /* 초기 탭 = 해시 매칭 or 첫 탭 */
+    var initial = 0, hash = (location.hash || '').slice(1);
+    if (hash) m.sub.forEach(function (s, i) { if ((s[2] || []).indexOf(hash) >= 0 || s[1].split('#')[1] === hash) initial = i; });
+    show(initial, false);
   }
 
   function mount() {
@@ -282,7 +282,7 @@
     addEventListener('resize', function () { if (innerWidth > 920) closeOvl(); });
 
     /* 앵커(#섹션) 진입 — JS 렌더 섹션 대응 재스크롤 */
-    if (location.hash && location.hash.length > 1) {
+    if (location.hash && location.hash.length > 1 && !document.body.classList.contains('has-ysub')) {
       var reScroll = function () {
         var t = null;
         try { t = document.getElementById(decodeURIComponent(location.hash.slice(1))); } catch (e) {}

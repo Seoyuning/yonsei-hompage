@@ -7,7 +7,7 @@
   'use strict';
 
   var NAVY = '#1a3d75', NAVYD = '#12294f', INK = '#0f1b30',
-      PAPER = '#f5f2ec', LINE = '#e2ddd2', DIM = '#8b96a9', MUTED = '#5e6b82';
+      PAPER = '#f8f6f1', LINE = '#e2ddd2', DIM = '#8b96a9', MUTED = '#5e6b82';
   var KR = '"Apple SD Gothic Neo","Noto Sans KR","Pretendard Variable","Pretendard",system-ui,sans-serif';
   var E = 'cubic-bezier(.16,1,.3,1)';
 
@@ -58,11 +58,10 @@
     '[id]{scroll-margin-top:5rem}',
     'body.has-ysub [id]{scroll-margin-top:7.6rem}',
     /* breadcrumb 링크 */
-    '.bc a{color:inherit;text-decoration:none;transition:color .15s}',
-    '.bc a:hover{color:' + NAVY + '}',
-    '.bc a.bc-home{color:' + MUTED + '}',
-    '.bc a.bc-cur{color:' + NAVY + ';font-weight:600}',
-    '.bc .bc-tab{color:' + NAVY + ';font-weight:700}',
+    '.bc a{color:rgba(255,255,255,.82);text-decoration:none;transition:color .15s}',
+    '.bc a:hover{color:#fff}',
+    '.bc a.bc-cur,.bc .bc-tab{color:#fff;font-weight:600}',
+    '.bc span{color:rgba(255,255,255,.5)}',
     /* 하위페이지 탭 바 — 유일한 형제 내비(뷰 전환), 히어로 아래 sticky, 크고 잘 보이게 */
     '.ysub{position:sticky;top:4.35rem;z-index:38;background:#fff;border-bottom:1px solid ' + LINE + ';' +
       'box-shadow:0 6px 18px rgba(15,27,48,.06)}',
@@ -109,7 +108,7 @@
   var MENU = [
     { t: '학부소개', h: 'G-about.html', key: 'about', sub: [['학과장 인사말', 'G-about.html#greeting', ['greeting']], ['비전 · 교육철학', 'G-about.html#vision', ['vision']], ['조직 · 행정', 'G-about.html#organization', ['organization']], ['주요 연혁', 'G-about.html#history', ['history']], ['연락처 · 오시는 길', 'G-about.html#location', ['location']]] },
     { t: '구성원', h: 'G-people.html', key: 'people', sub: [['교수진', 'G-people.html#faculty', ['faculty', 'dir']], ['교직원', 'G-people.html#staff', ['staff']]] },
-    { t: '연구', h: 'G-research.html', key: 'research', sub: [['연구 비전', 'G-research.html#vision', ['vision']], ['여섯 개 분야', 'G-research.html#fields', ['fields', 'clusters']], ['연구실 전체', 'G-research.html#clusterBlocks', ['clusterBlocks']]] },
+    { t: '연구', h: 'G-research.html', key: 'research', sub: [['연구 비전', 'G-research.html#vision', ['vision']], ['연구 분야', 'G-research.html#fields', ['fields', 'clusters']], ['연구실 전체', 'G-research.html#clusterBlocks', ['clusterBlocks']]] },
     { t: '학사', h: 'G-academics.html', key: 'academics', sub: [['교육과정 개관', 'G-academics.html#curriculum', ['curriculum', 'requirements', 'abeek']], ['이수 체계도', 'G-academics.html#roadmap', ['roadmap']], ['전공 교과', 'G-academics.html#courses', ['mechanics', 'courses']], ['대학원 교과', 'G-academics.html#grad', ['grad']], ['동아리·학생활동', 'G-academics.html#clubs', ['clubs']]] },
     { t: '소식', h: 'G-news.html', key: 'news', sub: [['공지사항', 'G-news.html#feed', ['feed']], ['뉴스 · 연구 성과', 'G-news.html#hi', ['hi']], ['세미나 · 행사', 'G-news.html#sched', ['sched']]] },
     { t: '입학', h: 'G-admissions.html', key: 'admissions', sub: [['학부 입학', 'G-admissions.html#undergraduate', ['undergraduate']], ['대학원 진학', 'G-admissions.html#graduate', ['graduate']], ['장학 안내', 'G-admissions.html#scholarships', ['scholarships']], ['취업 정보', 'G-admissions.html#jobs', ['jobs']], ['진로 안내', 'G-admissions.html#careers', ['careers', 'alumni', 'faq']]] }

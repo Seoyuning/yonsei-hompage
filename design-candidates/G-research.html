@@ -389,6 +389,71 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
   .fd-card,.fd-c-intro,.fd-c-foot,.fd-c-toggle svg{transition:none}
 }
 </style>
+<style>
+/* ═══ 연구실 홍보영상 갤러리 (분야 액센트 카드 · 16:9 썸네일 + 재생 버튼) ═══ */
+.labvideos{max-width:1120px;margin:0 auto;
+  padding:clamp(2.8rem,2rem + 3vw,4.6rem) clamp(1.2rem,.6rem + 2vw,2.6rem);
+  border-bottom:1px solid var(--line-soft);scroll-margin-top:6.6rem}
+/* 분야 그룹 헤더 — 얇은 헤어라인 + 분야색 점, 편집형 위계 */
+.lv-group{margin-top:clamp(2.2rem,1.6rem + 1.5vw,3.2rem)}
+.lv-group:first-of-type{margin-top:clamp(1.4rem,1rem + 1vw,2rem)}
+.lv-group-head{display:flex;align-items:baseline;gap:.7rem;flex-wrap:wrap;
+  padding-bottom:.9rem;margin-bottom:1.4rem;border-bottom:1px solid var(--line)}
+.lv-group-head .gdot{width:8px;height:8px;border-radius:50%;background:var(--lvc,var(--navy));flex:none;align-self:center}
+.lv-group-head .gko{font-family:var(--kr);font-weight:700;font-size:clamp(1.05rem,.9rem + .6vw,1.25rem);
+  color:var(--ink);line-height:1.2;letter-spacing:-.01em}
+.lv-group-head .gen{font-family:var(--mono);font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.lv-group-head .gn{font-family:var(--kr);font-size:.76rem;color:var(--label);margin-left:auto}
+/* 반응형 그리드 — 넉넉한 간격, 죽은 균일 그리드 회피 */
+.lv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:clamp(1.1rem,.7rem + 1.2vw,1.7rem)}
+/* 카드 = 링크. 분야색 border-top + 썸네일 위 재생버튼 */
+.lv-card{display:flex;flex-direction:column;background:var(--card);
+  border:1px solid var(--line-soft);border-top:3px solid var(--lvc,var(--navy));
+  overflow:hidden;font-family:var(--kr);
+  transition:box-shadow .3s var(--e,ease),border-color .25s,transform .3s var(--e,ease)}
+.lv-card:hover{box-shadow:0 14px 34px rgba(15,27,48,.1);transform:translateY(-2px)}
+.lv-card:focus-visible{outline:2px solid var(--lvc,var(--navy));outline-offset:3px}
+/* 16:9 썸네일 — 분야색 서브틀 그라데이션 틴트 */
+.lv-thumb{position:relative;aspect-ratio:16/9;overflow:hidden;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--lvc,var(--navy)) 22%,#fff) 0%,color-mix(in srgb,var(--lvc,var(--navy)) 8%,#fff) 100%)}
+.lv-thumb::before{content:"";position:absolute;inset:0;
+  background:radial-gradient(120% 120% at 78% 18%,color-mix(in srgb,var(--lvc,var(--navy)) 14%,transparent),transparent 60%);
+  transition:transform .5s var(--e,ease)}
+.lv-card:hover .lv-thumb::before{transform:scale(1.12)}
+/* 분야 태그 오버레이 */
+.lv-tag{position:absolute;left:.7rem;top:.7rem;z-index:2;
+  font-family:var(--kr);font-size:.62rem;font-weight:700;letter-spacing:.02em;
+  color:#fff;background:var(--lvc,var(--navy));padding:.2rem .5rem;border-radius:2px;
+  box-shadow:0 1px 4px rgba(15,27,48,.18)}
+/* 중앙 재생 버튼 (원형 + 삼각형 SVG) */
+.lv-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;
+  width:clamp(2.9rem,2.4rem + 1.4vw,3.5rem);height:clamp(2.9rem,2.4rem + 1.4vw,3.5rem);
+  border-radius:50%;background:rgba(255,255,255,.94);color:var(--lvc,var(--navy));
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 14px rgba(15,27,48,.16);
+  transition:transform .3s var(--e,ease),background .25s,box-shadow .3s}
+.lv-play svg{margin-left:2px}
+.lv-card:hover .lv-play{transform:translate(-50%,-50%) scale(1.1);
+  background:var(--lvc,var(--navy));color:#fff;box-shadow:0 8px 22px rgba(15,27,48,.24)}
+/* "영상 준비 중" 배지 (우하단) */
+.lv-soon{position:absolute;right:.7rem;bottom:.7rem;z-index:2;
+  font-family:var(--kr);font-size:.6rem;font-weight:600;letter-spacing:.02em;
+  color:var(--sub);background:rgba(255,255,255,.9);padding:.16rem .45rem;border-radius:2px}
+/* 카드 본문 — 연구실명 + PI */
+.lv-body{padding:.95rem 1.05rem 1.1rem}
+.lv-body .lvname{font-family:var(--kr);font-weight:700;font-size:1rem;color:var(--ink);
+  line-height:1.32;letter-spacing:-.01em;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.lv-body .lvpi{font-family:var(--kr);font-size:.82rem;color:var(--body);margin-top:.42rem;
+  display:inline-flex;align-items:center;gap:.45rem}
+.lv-body .lvpi .cdot{width:6px;height:6px;border-radius:50%;background:var(--lvc,var(--navy));flex:none}
+.lv-body .lven{font-family:var(--kr);font-size:.72rem;color:var(--muted);margin-top:.32rem;line-height:1.5;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:1;overflow:hidden}
+@media (prefers-reduced-motion:reduce){
+  .lv-card,.lv-thumb::before,.lv-play{transition:none}
+}
+</style>
 <style>h1,h2,.sec-title,.phero h1,.hero h1,.hero-title,.club-name,.vt,.staff-head h2,.brand .bko,.ynv-brand .bko{font-family:"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;letter-spacing:-.01em}</style>
 </head>
 <body>
@@ -471,6 +536,18 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
     </div>
     <div id="clusterBlocks"></div>
     <p class="lab-note">분야 구분은 연구실 명칭을 기반으로 한 자체 분류입니다.</p>
+  </section>
+
+  <!-- 연구실 홍보영상 갤러리 -->
+  <section class="labvideos" id="labvideos" aria-labelledby="lv-title">
+    <div class="sec-head">
+      <div>
+        <p class="sec-kick">Lab Videos</p>
+        <h2 class="sec-title" id="lv-title">연구실 홍보영상</h2>
+        <p class="sec-sub">각 연구실이 직접 소개하는 연구 주제·성과 영상입니다. 카드를 누르면 해당 분야 연구실 목록으로 이동합니다.</p>
+      </div>
+    </div>
+    <div id="lvGroups"></div>
   </section>
 </main>
 
@@ -780,9 +857,50 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
       if(card) toggleCard(card);
     });
   }
+
+  /* ══ 연구실 홍보영상 갤러리 — 분야별 그룹 · 카드(썸네일+재생버튼) ══ */
+  function playSvg(){ return '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>'; }
+  var lvWrap = document.getElementById('lvGroups');
+  if(lvWrap){
+    lvWrap.innerHTML = clusters.map(function(c){
+      var col = clColor(c.id);
+      var groupLabs = byCluster[c.id] || [];
+      if(!groupLabs.length) return '';
+      var cards = groupLabs.map(function(l){
+        var prof = profByLab[l.id];
+        /* 담당 교수 프로필이 있으면 그 행 딥링크, 없으면 분야 앵커로 */
+        var href = prof ? 'G-people.html#'+esc(prof.id) : '#'+esc(l.cluster);
+        var pi = l.pi
+          ? '<div class="lvpi"><span class="cdot" aria-hidden="true"></span>'+esc(l.pi)+' 교수</div>'
+          : '';
+        var en = l.en ? '<div class="lven">'+esc(l.en)+'</div>' : '';
+        return '<a class="lv-card" href="'+href+'" '
+            + 'aria-label="'+esc(l.ko+(l.pi?' · '+l.pi+' 교수':'')+' 연구실 홍보영상 (준비 중) — '+c.ko+' 분야로 이동')+'">'
+          + '<div class="lv-thumb">'
+            + '<span class="lv-tag">'+esc(c.ko)+'</span>'
+            + '<span class="lv-play" aria-hidden="true">'+playSvg()+'</span>'
+            + '<span class="lv-soon">영상 준비 중</span>'
+          + '</div>'
+          + '<div class="lv-body">'
+            + '<div class="lvname">'+esc(l.ko)+'</div>'
+            + pi + en
+          + '</div>'
+          + '</a>';
+      }).join('');
+      return '<div class="lv-group" style="--lvc:'+col+'">'
+        + '<div class="lv-group-head">'
+          + '<span class="gdot" aria-hidden="true"></span>'
+          + '<span class="gko">'+esc(c.ko)+'</span>'
+          + '<span class="gen">'+esc(c.en)+'</span>'
+          + '<span class="gn">'+groupLabs.length+'개 연구실</span>'
+        + '</div>'
+        + '<div class="lv-grid">'+cards+'</div>'
+        + '</div>';
+    }).join('');
+  }
 })();
 </script>
-<script src="assets/nav.js?v=36"></script>
+<script src="assets/nav.js?v=37"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:#7b8595">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

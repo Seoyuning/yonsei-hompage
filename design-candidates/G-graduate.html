@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>[시안 G · 관제] 대학원 — 연세대학교 기계공학부</title>
+<meta name="description" content="연세대학교 기계공학부 대학원 안내. 석·박사 입학 안내, 졸업 요건, 대학원 교과목 소개, 6개 분야 연구실, BK21 FOUR 교육연구단 개요." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/variable/woff2/SUIT-Variable.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonts-archive/GmarketSans/GmarketSans.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy.css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" />
+<style>
+/* ═══════════════════════════════════════════════════════════
+   시안 G — 대학원 (라이트)
+   G-academics.html의 구조·디자인 토큰 계승:
+   네이비 히어로 · 흰 본문 · 제목 #1a3d75 · 킥커 코랄(=네이비) ·
+   카드 #f7f9fc · 헤어라인 rgba(10,26,51,.08~.14) · 배경 #f8f6f1.
+   콘텐츠는 자체 완결(외부 data.js 의존 없음) — 시안용 대표 문구.
+   ═══════════════════════════════════════════════════════════ */
+:root{
+  --navy:#1a3d75;
+  --coral:#1a3d75;--warm:#1a3d75;
+  --ink:#1a3d75;
+  --body:#4a5a74;
+  --sub:#5c6b85;
+  --muted:#7b8595;
+  --label:#9aa3b0;
+  --line:rgba(10,26,51,.12);
+  --line-soft:rgba(10,26,51,.08);
+  --card:#f7f9fc;
+  --card-hover:#eef3fa;
+  --mono:"Apple SD Gothic Neo","Noto Sans KR","Pretendard Variable","Pretendard",system-ui,sans-serif;
+  --kr:"Apple SD Gothic Neo","Noto Sans KR","Pretendard Variable","Pretendard",system-ui,sans-serif;
+  /* 6개 연구 분야 색 토큰 (라이트 톤) */
+  --c-solid:#1a3d75;
+  --c-thermal:#c97a2c;
+  --c-manuf:#a48a3e;
+  --c-nanobio:#3e948a;
+  --c-optics:#4a7fc1;
+  --c-dyn:#8f68bd;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{
+  font-family:var(--mono);
+  background:#f8f6f1; color:var(--body);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden; word-break:keep-all;
+  line-height:1.5;
+}
+:lang(ko),.kr{font-family:var(--kr)}
+a{color:inherit;text-decoration:none}
+.mono{font-family:var(--mono)}
+.dim{color:var(--label)}
+.tnum{font-variant-numeric:tabular-nums}
+.visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
+.skip{position:absolute;left:.6rem;top:-3rem;z-index:60;background:var(--coral);color:#fff;
+  font-family:var(--kr);font-size:.8rem;padding:.5rem .9rem;transition:top .15s}
+.skip:focus{top:.6rem}
+
+/* ── 페이지 히어로 (이미지 배너 · 중앙 정렬 · 브레드크럼) ── */
+.phero{position:relative;min-height:clamp(14rem,30vh,20rem);display:flex;align-items:center;justify-content:center;text-align:center;background:#12294f url("assets/hero-academics.jpg") center 42%/cover no-repeat;color:#fff;overflow:hidden}
+.phero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,19,38,.62),rgba(13,29,56,.82))}
+.phero-in{position:relative;z-index:1;padding:clamp(9.5rem,7rem + 4vw,11.5rem) 1.2rem clamp(2.6rem,5vh,4rem);max-width:60rem}
+.phero h1{font-size:clamp(1.9rem,1.2rem + 2.6vw,3rem);font-weight:800;letter-spacing:-.01em;line-height:1.16;color:#fff}
+.phero .bc{margin-top:.9rem;font-size:.82rem;letter-spacing:.02em;color:rgba(255,255,255,.82)}
+
+/* ── 페이지 내 이동 칩 ── */
+.jumpnav{max-width:1120px;margin:0 auto;
+  padding:1.4rem clamp(1.2rem,.6rem + 2vw,2.6rem) 0;
+  display:flex;gap:.5rem;flex-wrap:wrap}
+.jumpnav a{font-family:var(--kr);font-size:.8rem;color:var(--sub);
+  border:1px solid var(--line);padding:.4rem .85rem;transition:border-color .15s,color .15s;white-space:nowrap}
+.jumpnav a:hover{border-color:var(--coral);color:var(--coral)}
+
+/* ── 섹션 공통 (G-academics .sec 계승) ── */
+.sec{max-width:1120px;margin:0 auto;
+  padding:clamp(2.8rem,2rem + 3vw,4.5rem) clamp(1.2rem,.6rem + 2vw,2.6rem);
+  border-bottom:1px solid var(--line-soft)}
+/* 표준 헤더 — 킥커 · 제목 · 부제 세로 스택 */
+.sec-head{display:flex;justify-content:space-between;align-items:baseline;
+  gap:1.5rem;flex-wrap:wrap;margin-bottom:clamp(1.6rem,1rem + 2vw,2.4rem)}
+.sec-kick{font-family:var(--mono);font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--coral)}
+.sec-title{font-family:var(--kr);font-weight:700;color:var(--ink);
+  font-size:clamp(1.5rem,1rem + 2vw,2.1rem);line-height:1.24;letter-spacing:-.01em;margin-top:.5rem}
+.sec-sub{font-family:var(--kr);font-size:.92rem;color:var(--sub);margin-top:.7rem;max-width:52rem;line-height:1.7}
+
+/* ── 리드 + 본문 서술 (G-academics .overview 언어 재사용) ── */
+.lede{font-family:var(--kr);font-size:clamp(1.05rem,.9rem + .7vw,1.3rem);color:#2a3a56;line-height:1.7}
+.lede b{color:var(--ink);font-weight:600}
+p.body{font-family:var(--kr);font-size:.95rem;color:var(--body);line-height:1.85;margin-top:1.2rem;max-width:52rem}
+p.body b{color:var(--ink);font-weight:600}
+a.arrow{display:inline-flex;align-items:center;gap:.4rem;margin-top:1.4rem;
+  font-family:var(--kr);font-size:.88rem;font-weight:600;color:var(--coral);transition:gap .15s}
+a.arrow:hover{gap:.7rem}
+
+/* ── 범용 카드 그리드 (G-academics .club/.mech 그리드 언어 재사용) ── */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(15.5rem,1fr));gap:1px;
+  background:var(--line-soft);border:1px solid var(--line-soft)}
+.card{background:var(--card);padding:1.6rem 1.5rem;transition:background .15s}
+.card:hover{background:var(--card-hover)}
+.card-idx{font-family:var(--mono);font-weight:600;font-size:.82rem;line-height:1;color:var(--muted);font-variant-numeric:tabular-nums;letter-spacing:.04em}
+.card-name{font-family:var(--kr);font-weight:700;font-size:1.15rem;color:var(--ink);margin-top:.9rem;line-height:1.3}
+.card-desc{font-family:var(--kr);font-size:.88rem;color:var(--sub);line-height:1.7;margin-top:.85rem}
+
+/* ── 요건 그리드 (G-academics .req-grid 계승) ── */
+.req-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:1px;
+  background:var(--line-soft);border:1px solid var(--line-soft)}
+.req-card{background:var(--card);padding:1.5rem 1.4rem 1.6rem}
+.req-lab{font-family:var(--kr);font-size:.8rem;font-weight:600;color:var(--muted)}
+.req-val{font-family:var(--kr);font-weight:700;font-size:1.25rem;line-height:1.25;color:var(--ink);margin-top:.7rem}
+.req-desc{font-family:var(--kr);font-size:.86rem;color:var(--sub);line-height:1.7;margin-top:.75rem;max-width:38rem}
+.req-desc b{color:var(--ink);font-weight:600}
+
+/* ── 프로세스 스텝 (입학 전형 흐름) ── */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr));gap:1px;
+  background:var(--line-soft);border:1px solid var(--line-soft)}
+.step{background:var(--card);padding:1.5rem 1.4rem;transition:background .15s}
+.step:hover{background:var(--card-hover)}
+.step-idx{font-family:var(--mono);font-weight:600;font-size:.82rem;line-height:1;color:var(--coral);font-variant-numeric:tabular-nums;letter-spacing:.04em}
+.step-name{font-family:var(--kr);font-weight:700;font-size:1.02rem;color:var(--ink);margin-top:.8rem;line-height:1.3}
+.step-desc{font-family:var(--kr);font-size:.85rem;color:var(--sub);line-height:1.65;margin-top:.65rem}
+
+/* ── 정보 카드 (안내 박스, G-academics .abeek-card 계승) ── */
+.info-card{border:1px solid var(--line-soft);background:var(--card);
+  padding:1.7rem clamp(1.2rem,.8rem + 1vw,2rem)}
+.info-card p{font-family:var(--kr);font-size:.94rem;color:var(--body);line-height:1.8;max-width:48rem}
+.info-card p + p{margin-top:.9rem}
+.info-card p b{color:var(--ink);font-weight:600}
+.info-card .note{font-size:.84rem;color:var(--muted);margin-top:.9rem}
+
+/* ── 태그 칩 (연구실 분야 표시) ── */
+.card-tag{display:inline-flex;align-items:center;gap:.45rem;margin-top:1.05rem;
+  font-family:var(--kr);font-size:.78rem;color:var(--body)}
+.card-tag .dot{width:7px;height:7px;border-radius:50%;background:var(--tag-c,var(--coral));flex:none}
+
+/* ── 링크 목록 (연구실 → 연구/구성원 페이지) ── */
+.link-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1.4rem}
+.link-row a{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--kr);font-size:.85rem;font-weight:600;
+  color:#2a3a56;background:#fff;border:1px solid var(--line);padding:.55rem 1.1rem;transition:border-color .15s,color .15s}
+.link-row a:hover{border-color:var(--coral);color:var(--coral)}
+
+.table-note{font-family:var(--kr);font-size:.8rem;color:var(--muted);margin-top:1.1rem;line-height:1.65;max-width:52rem}
+
+/* ── 입학 CTA — 네이비 밴드 (G-academics 계승) ── */
+.cta{background:var(--navy);color:#fff;
+  padding:clamp(2.6rem,1.6rem + 3.5vw,4.2rem) clamp(1.4rem,.6rem + 2vw,3rem);
+  display:flex;justify-content:space-between;align-items:center;gap:2rem;flex-wrap:wrap;
+  max-width:1120px;margin:clamp(3rem,2rem + 3vw,4.5rem) auto;
+  margin-inline:clamp(1.2rem,.6rem + 2vw,2.6rem)}
+@media(min-width:1180px){.cta{margin-inline:auto}}
+.cta .cta-txt{max-width:34rem}
+.cta .cta-kick{font-family:var(--mono);font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:#9db4d8}
+.cta h2{font-family:var(--kr);font-weight:700;color:#fff;
+  font-size:clamp(1.4rem,1rem + 2vw,2.1rem);line-height:1.25;letter-spacing:-.01em;margin-top:.6rem}
+.cta p{font-family:var(--kr);color:#c6d2e4;margin-top:.8rem;line-height:1.6;font-size:.98rem}
+.cta .cta-btn{font-family:var(--kr);font-weight:600;font-size:1rem;
+  background:#fff;color:var(--navy);padding:.9rem 1.6rem;white-space:nowrap;
+  border:1px solid #fff;transition:background .15s,color .15s}
+.cta .cta-btn:hover{background:transparent;color:#fff;border-color:#fff}
+.cta .cta-btn .arr{color:var(--coral)}
+
+/* ── 반응형 ── */
+@media (max-width:900px){
+  .req-grid{grid-template-columns:1fr}
+}
+</style>
+<style>.ynav-ph{position:fixed;top:0;left:0;right:0;height:3.7rem;background:rgba(255,255,255,.96);border-bottom:1px solid rgba(0,0,0,.08);z-index:39}</style>
+<style>h1,h2,.sec-title,.phero h1,.hero h1,.hero-title,.card-name,.vt,.staff-head h2,.brand .bko,.ynv-brand .bko{font-family:"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;letter-spacing:-.01em}</style>
+</head>
+<body>
+<div class="ynav-ph" aria-hidden="true"></div>
+<a class="skip" href="#grad-admission">본문(입학 안내) 바로가기</a>
+
+<!-- 페이지 히어로 -->
+<header class="phero">
+  <div class="phero-in">
+    <h1>대학원</h1>
+    <p class="bc">홈 › 대학원</p>
+  </div>
+</header>
+
+<main>
+  <!-- §01 입학 안내 -->
+  <section class="sec" id="grad-admission" aria-labelledby="adm-h">
+    <div class="sec-head">
+      <div>
+        <p class="sec-kick">Admission</p>
+        <h2 id="adm-h" class="sec-title">입학 안내</h2>
+        <p class="sec-sub">기계공학부 대학원은 석사·박사·석박사통합 과정으로 우수한 연구 인력을 선발합니다. 전형 방법과 일정은 매 학기 <b>연세대학교 대학원 모집요강</b>을 따릅니다.</p>
+      </div>
+    </div>
+    <p class="lede">깊이 있는 연구를 함께할 <b>대학원 신입생</b>을 매 학기 모집합니다.</p>
+    <p class="body">지원 자격, 제출 서류, 전형 일정, 장학 제도 등 세부 사항은 학기별로 공고되는 <b>연세대학교 대학원 모집요강</b>을 기준으로 안내됩니다. 아래는 일반적인 지원 절차의 개요이며, 실제 접수 기간·전형료·구비 서류는 매 모집 시 발표되는 공식 요강을 반드시 확인하시기 바랍니다.</p>
+    <div class="steps" style="margin-top:1.8rem">
+      <article class="step">
+        <span class="step-idx" aria-hidden="true">01</span>
+        <h3 class="step-name">모집요강 확인</h3>
+        <p class="step-desc">해당 학기 연세대학교 대학원 모집요강에서 모집 과정(석사·박사·석박사통합)과 전형 일정을 확인합니다.</p>
+      </article>
+      <article class="step">
+        <span class="step-idx" aria-hidden="true">02</span>
+        <h3 class="step-name">지원서 접수</h3>
+        <p class="step-desc">온라인 원서 접수 기간에 지원서와 요구 서류(학업 이수 증빙, 연구계획서 등)를 제출합니다.</p>
+      </article>
+      <article class="step">
+        <span class="step-idx" aria-hidden="true">03</span>
+        <h3 class="step-name">서류·면접 전형</h3>
+        <p class="step-desc">제출 서류 평가와 면접(구술·전공 평가 포함)을 통해 연구 역량과 학업 계획을 종합적으로 평가합니다.</p>
+      </article>
+      <article class="step">
+        <span class="step-idx" aria-hidden="true">04</span>
+        <h3 class="step-name">합격자 발표·등록</h3>
+        <p class="step-desc">전형 결과 발표 후 정해진 기간에 등록 절차를 진행하며, 지도교수·연구실 배정을 통해 연구 과정을 시작합니다.</p>
+      </article>
+    </div>
+    <p class="table-note">위 절차는 일반적 흐름을 소개한 것으로, 정확한 지원 자격·접수 기간·전형료·제출 서류는 학기별 <b style="color:#2a3a56;font-weight:600">연세대학교 대학원 모집요강</b>을 기준으로 확인하시기 바랍니다.</p>
+  </section>
+
+  <!-- §02 졸업 요건 -->
+  <section class="sec" id="grad-req" aria-labelledby="req-h">
+    <div class="sec-head">
+      <div>
+        <p class="sec-kick">Degree Requirements</p>
+        <h2 id="req-h" class="sec-title">졸업 요건</h2>
+        <p class="sec-sub">학위 취득에 필요한 큰 틀만 간추렸습니다. 이수학점·논문·자격시험 등 세부 기준은 입학년도별 <b>대학원 학사요람</b>을 따릅니다.</p>
+      </div>
+    </div>
+    <div class="req-grid">
+      <div class="req-card">
+        <p class="req-lab">석사 과정</p>
+        <p class="req-val">이수학점 · 학위논문</p>
+        <p class="req-desc">규정 학점 이상의 전공 교과를 이수하고 <b>학위논문 심사</b>를 통과해야 합니다. 지도교수의 지도 아래 연구를 수행하며 논문을 완성합니다.</p>
+      </div>
+      <div class="req-card">
+        <p class="req-lab">박사 과정</p>
+        <p class="req-val">종합시험 · 학위논문</p>
+        <p class="req-desc">규정 학점 이수와 함께 <b>종합시험(자격시험)</b>에 합격하고, 독창적 연구 성과를 담은 <b>박사학위논문 심사</b>를 통과해야 합니다.</p>
+      </div>
+      <div class="req-card">
+        <p class="req-lab">공통 요건</p>
+        <p class="req-val">연구윤리 · 논문 심사</p>
+        <p class="req-desc">연구윤리 교육 이수, 논문 제출 자격 요건 충족, 논문 공개 발표·심사 등 대학원 공통 요건을 충족해야 학위가 수여됩니다.</p>
+      </div>
+    </div>
+    <p class="table-note">구체적인 이수학점, 외국어·종합시험 기준, 논문 제출 자격 및 심사 절차는 <b style="color:#2a3a56;font-weight:600">연세대학교 대학원 학사요람</b> 및 학부 내규 기준을 따르며, 입학년도별로 다를 수 있습니다.</p>
+  </section>
+
+  <!-- §03 교과목 소개 -->
+  <section class="sec" id="grad-courses" aria-labelledby="crs-h">
+    <div class="sec-head">
+      <div>
+        <p class="sec-kick">Courses</p>
+        <h2 id="crs-h" class="sec-title">교과목 소개</h2>
+        <p class="sec-sub">대학원 전공 교과는 학부에서 다진 4대 역학의 기초를 심화하고, 각 연구 분야의 최신 이론과 방법론으로 확장합니다. 아래는 대표적인 교과 트랙 예시입니다.</p>
+      </div>
+    </div>
+    <div class="card-grid">
+      <article class="card">
+        <span class="card-idx" aria-hidden="true">01</span>
+        <h3 class="card-name">고체·구조 역학</h3>
+        <p class="card-desc">탄성·소성, 파괴역학, 유한요소해석, 복합재료 등 재료와 구조의 거동을 심화 해석하는 교과 트랙입니다.</p>
+      </article>
+      <article class="card">
+        <span class="card-idx" aria-hidden="true">02</span>
+        <h3 class="card-name">열·유체 공학</h3>
+        <p class="card-desc">고급 열역학, 대류·복사 열전달, 전산유체역학(CFD), 연소·에너지 시스템을 다루는 교과 트랙입니다.</p>
+      </article>
+      <article class="card">
+        <span class="card-idx" aria-hidden="true">03</span>
+        <h3 class="card-name">동역학·제어</h3>
+        <p class="card-desc">진동·다물체 동역학, 시스템 제어, 로보틱스, 메카트로닉스 등 운동과 제어를 다루는 교과 트랙입니다.</p>
+      </article>
+      <article class="card">
+        <span class="card-idx" aria-hidden="true">04</span>
+        <h3 class="card-name">생산·설계 공학</h3>
+        <p class="card-desc">정밀가공, 적층제조, 설계 최적화, 디지털 제조 등 제품을 만들어 내는 방법론을 다루는 교과 트랙입니다.</p>
+      </article>
+      <article class="card">
+        <span class="card-idx" aria-hidden="true">05</span>
+        <h3 class="card-name">마이크로·나노·바이오</h3>
+        <p class="card-desc">MEMS/NEMS, 나노소재, 바이오 융합 등 미소 스케일과 생체 응용을 다루는 교과 트랙입니다.</p>
+      </article>
+      <article class="card">
+        <span class="card-idx" aria-hidden="true">06</span>
+        <h3 class="card-name">광학·포토닉스</h3>
+        <p class="card-desc">광학 계측, 포토닉스, 이미징 등 빛을 이용한 계측·응용 기술을 다루는 교과 트랙입니다.</p>
+      </article>
+    </div>
+    <p class="table-note">위 트랙은 대학원 전공 교과의 대표 분야를 정리한 예시입니다. 개설 교과목의 코드·국문·영문명과 학점 등 전체 목록은 <b style="color:#2a3a56;font-weight:600">대학원 학사요람 및 연세포털</b>에서 확인할 수 있습니다.</p>
+    <a class="arrow" href="G-academics.html#grad">학부·대학원 교과 개요 보기 <span aria-hidden="true">→</span></a>
+  </section>
+
+  <!-- §04 대학원 연구실 -->
+  <section class="sec" id="grad-labs" aria-labelledby="labs-h">
+    <div class="sec-head">
+      <div>
+        <p class="sec-kick">Research Labs</p>
+        <h2 id="labs-h" class="sec-title">대학원 연구실</h2>
+        <p class="sec-sub">대학원 연구는 학부의 <b>6개 연구 분야</b>에 속한 각 연구실에서 이뤄집니다. 대학원생은 지도교수 연구실에 소속되어 세부 주제의 연구를 수행하며 학위를 취득합니다.</p>
+      </div>
+    </div>
+    <div class="card-grid">
+      <article class="card">
+        <span class="card-idx" aria-hidden="true">01</span>
+        <h3 class="card-name">고체·구조</h3>
+        <p class="card-desc">재료와 구조의 역학, 파괴·피로, 계산역학을 연구합니다.</p>
+        <span class="card-tag"><span class="dot" style="--tag-c:var(--c-solid)" aria-hidden="true"></span>Solid &amp; Structures</span>
+      </article>
+      <article class="card">
+        <span class="card-idx" aria-hidden="true">02</span>
+        <h3 class="card-name">열·유체</h3>
+        <p class="card-desc">열전달, 유동, 에너지 시스템과 전산유체를 연구합니다.</p>
+        <span class="card-tag"><span class="dot" style="--tag-c:var(--c-thermal)" aria-hidden="true"></span>Thermal &amp; Fluids</span>
+      </article>
+      <article class="card">
+        <span class="card-idx" aria-hidden="true">03</span>
+        <h3 class="card-name">동역학·제어</h3>
+        <p class="card-desc">진동, 로보틱스, 시스템 제어와 메카트로닉스를 연구합니다.</p>
+        <span class="card-tag"><span class="dot" style="--tag-c:var(--c-dyn)" aria-hidden="true"></span>Dynamics &amp; Control</span>
+      </article>
+      <article class="card">
+        <span class="card-idx" aria-hidden="true">04</span>
+        <h3 class="card-name">생산·제조</h3>
+        <p class="card-desc">정밀가공, 적층제조, 설계 최적화와 디지털 제조를 연구합니다.</p>
+        <span class="card-tag"><span class="dot" style="--tag-c:var(--c-manuf)" aria-hidden="true"></span>Manufacturing</span>
+      </article>
+      <article class="card">
+        <span class="card-idx" aria-hidden="true">05</span>
+        <h3 class="card-name">마이크로·나노·바이오</h3>
+        <p class="card-desc">MEMS/NEMS, 나노소재, 바이오 융합 기술을 연구합니다.</p>
+        <span class="card-tag"><span class="dot" style="--tag-c:var(--c-nanobio)" aria-hidden="true"></span>Micro / Nano / Bio</span>
+      </article>
+      <article class="card">
+        <span class="card-idx" aria-hidden="true">06</span>
+        <h3 class="card-name">광학·포토닉스</h3>
+        <p class="card-desc">광학 계측, 포토닉스, 이미징 기반 응용을 연구합니다.</p>
+        <span class="card-tag"><span class="dot" style="--tag-c:var(--c-optics)" aria-hidden="true"></span>Optics &amp; Photonics</span>
+      </article>
+    </div>
+    <div class="link-row">
+      <a href="G-research.html">연구 분야 자세히 보기 <span aria-hidden="true">→</span></a>
+      <a href="G-people.html">교수·연구 구성원 보기 <span aria-hidden="true">→</span></a>
+    </div>
+    <p class="table-note">각 분야의 세부 연구 주제와 소속 교수진, 대학원 구성원 정보는 <b style="color:#2a3a56;font-weight:600">연구</b> 및 <b style="color:#2a3a56;font-weight:600">구성원</b> 페이지에서 확인할 수 있습니다.</p>
+  </section>
+
+  <!-- §05 BK21 FOUR -->
+  <section class="sec" id="bk21" aria-labelledby="bk-h">
+    <div class="sec-head">
+      <div>
+        <p class="sec-kick">BK21 FOUR</p>
+        <h2 id="bk-h" class="sec-title">BK21 FOUR</h2>
+        <p class="sec-sub">BK21 FOUR(4단계 두뇌한국 21)는 대학원 교육·연구 역량 강화를 위한 국가 지원 사업으로, 우수 석·박사급 연구 인력 양성과 세계 수준의 연구를 지향합니다.</p>
+      </div>
+    </div>
+    <div class="info-card">
+      <p><b>비전</b> — 미래 산업과 학문을 선도할 창의적 기계공학 연구 인력을 양성하고, 세계적 수준의 연구 성과를 창출하는 교육연구단을 지향합니다.</p>
+      <p><b>인력 양성</b> — 대학원생·신진 연구인력의 연구 몰입을 지원하고, 국제 공동연구·학술 교류·산학 협력 기회를 제공하여 차세대 연구자를 길러냅니다.</p>
+      <p><b>연구</b> — 6개 연구 분야에 걸친 융합 연구를 통해 학문적 우수성과 사회적 기여를 함께 추구하며, 대학원 교육과 연구의 선순환을 만들어 갑니다.</p>
+      <p class="note">BK21 FOUR 사업은 국가 정책과 사업 단계에 따라 운영되며, 참여 자격·지원 내용 등 세부 사항은 사업단 공지 및 대학원 안내를 따릅니다.</p>
+    </div>
+    <div class="link-row">
+      <a href="G-research.html">연구 분야 보기 <span aria-hidden="true">→</span></a>
+      <a href="G-people.html">참여 교수진 보기 <span aria-hidden="true">→</span></a>
+    </div>
+  </section>
+</main>
+
+<!-- 입학 CTA -->
+<section class="cta" aria-labelledby="cta-h">
+  <div class="cta-txt">
+    <p class="cta-kick">Admission</p>
+    <h2 id="cta-h">대학원 진학을 준비하시나요?</h2>
+    <p>석·박사 전형 일정과 세부 안내는 학기별 연세대학교 대학원 모집요강에서 확인할 수 있습니다.</p>
+  </div>
+  <a class="cta-btn" href="#grad-admission">입학 안내 다시 보기 <span class="arr">→</span></a>
+</section>
+
+<script src="assets/nav.js?v=32"></script>
+<footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--kr);font-size:.74rem;color:#7b8595">
+  © 2026 연세대학교 기계공학부 &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
+</footer>
+</body>
+</html>

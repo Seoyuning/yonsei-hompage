@@ -115,6 +115,21 @@ a{color:inherit;text-decoration:none}
     gap:clamp(1.8rem,1.2rem + 2vw,2.6rem);padding-top:2rem}
   .vaxis .vnum{font-size:2.4rem}
 }
+/* 연구 비전 — 원문(대학원 기계공학과) 인용 요소 */
+.vision-tag{font-family:var(--kr);font-weight:800;color:var(--navy);
+  font-size:clamp(1.2rem,.95rem + 1.1vw,1.7rem);letter-spacing:-.01em;line-height:1.4;
+  margin:0 0 1.5rem}
+.vision-axes-label{font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--muted);margin-top:clamp(2.6rem,1.6rem + 2.5vw,4rem)}
+.vision-axes-label + .vision-axes{margin-top:1.1rem;padding-top:1.5rem}
+.vision-goals{display:flex;flex-wrap:wrap;align-items:baseline;gap:.7rem 1.6rem;
+  margin-top:clamp(2.4rem,1.6rem + 2vw,3.4rem);padding-top:1.8rem;border-top:1px solid var(--line)}
+.vision-goals .vg-label{font-family:var(--kr);font-weight:800;color:var(--navy);font-size:1.04rem;flex:none}
+.vision-goals ul{list-style:none;display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;padding:0;margin:0}
+.vision-goals li{position:relative;padding-left:.95rem;font-family:var(--kr);font-size:.95rem;
+  color:var(--sub);line-height:1.6}
+.vision-goals li::before{content:"";position:absolute;left:0;top:.62em;width:5px;height:5px;
+  border-radius:50%;background:var(--cl-c,var(--navy));background:var(--navy)}
 
 /* ── 요약: 6개 분야 · 33개 연구실 (단정한 스탯 행) ── */
 .summary{max-width:1120px;margin:0 auto;
@@ -388,6 +403,48 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
 @media (prefers-reduced-motion:reduce){
   .fd-card,.fd-c-intro,.fd-c-foot,.fd-c-toggle svg{transition:none}
 }
+/* 카드 하단 '자세히 보기' 큐(+ 원형 버튼) — 클릭 시 확장 모달 */
+.fd-c-more{margin-top:auto;padding-top:1.2rem;display:flex;align-items:center;justify-content:space-between;gap:.6rem}
+.fd-c-more .lbl{font-family:var(--kr);font-size:.82rem;font-weight:700;color:var(--fc,var(--navy))}
+.fd-c-more .plus{width:2rem;height:2rem;border-radius:50%;display:grid;place-items:center;flex:none;
+  background:var(--fc,var(--navy));color:#fff;transition:transform .3s var(--e,ease)}
+.fd-card:hover .fd-c-more .plus{transform:rotate(90deg)}
+.fd-c-more .plus svg{width:14px;height:14px;display:block}
+
+/* ═══ 분야 카드 확장 모달 (motion/react ExpandableCard 느낌 · FLIP 공유 레이아웃) ═══ */
+.fx-overlay{position:fixed;inset:0;z-index:120;display:flex;align-items:center;justify-content:center;
+  padding:clamp(1rem,3vw,2.5rem)}
+.fx-overlay[hidden]{display:none}
+.fx-backdrop{position:absolute;inset:0;background:rgba(9,17,34,.5);
+  -webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);opacity:0;transition:opacity .32s ease}
+.fx-overlay.show .fx-backdrop{opacity:1}
+.fx-panel{position:relative;z-index:1;width:min(680px,100%);max-height:86vh;overflow:auto;
+  background:#fff;border:1px solid var(--line);box-shadow:0 34px 90px rgba(9,17,34,.34);
+  border-top:4px solid var(--fc,var(--navy));transform-origin:top left;will-change:transform}
+.fx-close{position:absolute;top:1rem;right:1rem;z-index:3;width:2.3rem;height:2.3rem;display:grid;place-items:center;
+  background:#fff;border:1px solid var(--line);border-radius:50%;cursor:pointer;color:var(--sub);
+  transition:background .15s,color .15s,border-color .15s}
+.fx-close:hover{background:#f1f2f5;color:var(--navy);border-color:#b9c4d4}
+.fx-close svg{width:16px;height:16px;display:block}
+.fx-head{padding:clamp(2rem,1.4rem + 2vw,2.8rem) clamp(1.7rem,1.1rem + 2vw,2.8rem) 1.1rem}
+.fx-en{font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--fc,var(--navy))}
+.fx-ko{font-family:var(--kr);font-weight:800;font-size:clamp(1.55rem,1.2rem + 1.5vw,2.25rem);
+  color:var(--ink);line-height:1.18;margin-top:.55rem;letter-spacing:-.01em}
+.fx-count{font-family:var(--kr);font-size:.92rem;color:var(--muted);margin-top:.7rem}
+.fx-count b{color:var(--fc,var(--navy));font-weight:700}
+.fx-body{padding:0 clamp(1.7rem,1.1rem + 2vw,2.8rem) clamp(2rem,1.4rem + 2vw,2.8rem)}
+.fx-desc{font-family:var(--kr);font-size:1.04rem;color:var(--ink);line-height:1.7;font-weight:600}
+.fx-intro{font-family:var(--kr);font-size:.97rem;color:var(--body);line-height:1.92;margin-top:1rem}
+.fx-link{display:inline-flex;align-items:center;gap:.45rem;margin-top:1.7rem;
+  font-family:var(--kr);font-weight:700;font-size:.95rem;color:#fff;background:var(--fc,var(--navy));
+  padding:.75rem 1.35rem;cursor:pointer;transition:filter .15s}
+.fx-link:hover{filter:brightness(1.09)}
+.fx-morph{opacity:0}
+.fx-overlay.content-in .fx-morph{opacity:1;transition:opacity .3s ease}
+@media (prefers-reduced-motion:reduce){
+  .fx-backdrop,.fx-morph{transition:none}
+}
 </style>
 <style>
 /* ═══ 연구실 홍보영상 갤러리 (분야 액센트 카드 · 16:9 썸네일 + 재생 버튼) ═══ */
@@ -494,33 +551,37 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
       <div>
         <p class="sec-kick">Research Vision</p>
         <h2 class="sec-title" id="vision-h">연구 비전</h2>
-        <p class="sec-sub">기초 역학 원리에서 출발해 에너지·로봇·제조·바이오까지, 학문적 수월성과 사회 문제 해결을 함께 추구합니다.</p>
+        <p class="sec-sub">연세대학교 대학원 기계공학과 · Graduate School of Mechanical Enginnering, Yonsei University</p>
       </div>
     </div>
+    <p class="vision-tag">“멈추지 않는 50년, 100년을 향한 도전!”</p>
     <p class="vision-lead">
-      연세대학교 기계공학부는 <b>힘·열·유동·운동이라는 기초 역학 원리</b>에서 출발해
-      에너지, 로봇, 첨단 제조, 바이오·나노에 이르는 폭넓은 영역으로 연구를 확장합니다.
-      우리는 원리에 대한 깊은 이해가 곧 새로운 기술의 토대가 된다고 믿으며,
-      <b>학문적 수월성</b>과 <b>사회 문제 해결</b>을 하나의 목표로 함께 추구합니다.
-      나아가 학문 분야의 경계를 넘어선 융합과 협력을 통해,
-      다음 세대의 산업과 사회를 지탱할 지식과 인재를 길러내고자 합니다.
+      1960년 창설된 연세대학교 기계공학과는 수많은 인재를 배출함은 물론
+      우수한 교수진과 연구원들의 열정적인 연구활동을 통해 국가와 사회에 공헌해왔습니다.
+      이제 여러분이 연세대학교 기계공학과에서 새로운 도전을 하십시오!
     </p>
+    <p class="vision-axes-label">공과대학 비전과 교육목표</p>
     <div class="vision-axes">
       <div class="vaxis">
         <div class="vnum">01</div>
-        <div class="vt">기초 원천기술</div>
-        <div class="vd">역학·열·유동·재료의 근본 원리를 탐구해 미래 기술의 토대를 마련합니다.</div>
+        <div class="vt">미래를 선도하는 최고의 공학인 양성</div>
       </div>
       <div class="vaxis">
         <div class="vnum">02</div>
-        <div class="vt">융합과 협력</div>
-        <div class="vd">분야와 학문의 경계를 넘어, 함께 풀어야 할 문제를 함께 연구합니다.</div>
+        <div class="vt">세계 융합 연구를 주도하는 연구 대학</div>
       </div>
       <div class="vaxis">
         <div class="vnum">03</div>
-        <div class="vt">사회적 임팩트</div>
-        <div class="vd">연구의 성과가 산업과 사회의 실제 난제 해결로 이어지도록 합니다.</div>
+        <div class="vt">섬기고 봉사하는 지도자 양성</div>
       </div>
+    </div>
+    <div class="vision-goals">
+      <span class="vg-label">교육목적</span>
+      <ul>
+        <li>세계를 무대로 도전하는 국제적 공학인</li>
+        <li>경영능력을 갖춘 지도자적 공학인</li>
+        <li>문제해결 능력을 갖춘 창의적 공학인</li>
+      </ul>
     </div>
   </section>
 
@@ -817,8 +878,8 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
     fieldGrid.innerHTML = clusters.map(function(c){
       var col = clColor(c.id);
       return '<button type="button" class="fd-card" data-cid="'+esc(c.id)+'" '
-          + 'style="--fc:'+col+'" aria-expanded="false" '
-          + 'aria-label="'+esc(c.ko)+' 분야 · '+c.count+'개 연구실 · 자세한 설명 열기">'
+          + 'style="--fc:'+col+'" '
+          + 'aria-label="'+esc(c.ko)+' 분야 · '+c.count+'개 연구실 · 자세히 보기">'
         + '<div class="fd-c-top">'
           + '<div>'
             + '<div class="fd-c-en">'+esc(c.en)+'</div>'
@@ -827,35 +888,90 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
           + '<div class="fd-c-count tnum">'+c.count+'<span class="u">개 연구실</span></div>'
         + '</div>'
         + '<p class="fd-c-desc">'+esc(c.desc)+'</p>'
-        + '<p class="fd-c-intro">'+esc(c.intro)+'</p>'
-        + '<div class="fd-c-foot">'
-          + '<a class="fd-c-link" href="#'+esc(c.id)+'" data-golabs="'+esc(c.id)+'">'
-            + '더보기<span class="arr" aria-hidden="true">→</span></a>'
-          + '<span class="fd-c-hint">'+esc(c.ko)+' 연구실 '+c.count+'개 · 담당 교수·위치·홈페이지 보기</span>'
-        + '</div>'
-        + '<span class="fd-c-toggle" aria-hidden="true">'
-          + '<span class="lbl-open">자세히</span><span class="lbl-close">접기</span>'+chevSvg()
-        + '</span>'
+        + '<span class="fd-c-more"><span class="lbl">자세히 보기</span>'
+          + '<span class="plus" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></span>'
         + '</button>';
     }).join('');
 
-    function collapseAllCards(except){
-      [].forEach.call(fieldGrid.querySelectorAll('.fd-card'), function(card){
-        if(card!==except) card.setAttribute('aria-expanded','false');
-      });
+    /* ── 분야 카드 확장 모달 (motion/react ExpandableCard 느낌 · FLIP 공유 레이아웃 morph) ── */
+    var clById = {}; clusters.forEach(function(c){ clById[c.id] = c; });
+    var reduceMo = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    var fx = document.createElement('div');
+    fx.className = 'fx-overlay'; fx.hidden = true;
+    fx.innerHTML = '<div class="fx-backdrop"></div>'
+      + '<div class="fx-panel" role="dialog" aria-modal="true" aria-labelledby="fxKo">'
+        + '<button type="button" class="fx-close" aria-label="닫기">'
+          + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>'
+        + '<div class="fx-head fx-morph"><div class="fx-en" id="fxEn"></div>'
+          + '<h3 class="fx-ko" id="fxKo"></h3><div class="fx-count" id="fxCount"></div></div>'
+        + '<div class="fx-body fx-morph"><p class="fx-desc" id="fxDesc"></p>'
+          + '<p class="fx-intro" id="fxIntro"></p>'
+          + '<button type="button" class="fx-link" id="fxLink">해당 분야 연구실 보기 <span aria-hidden="true">→</span></button></div>'
+      + '</div>';
+    document.body.appendChild(fx);
+    var fxPanel = fx.querySelector('.fx-panel');
+    var fxOpenCard = null, fxAnimating = false;
+
+    function fxFill(c){
+      fx.querySelector('#fxEn').textContent = c.en || '';
+      fx.querySelector('#fxKo').textContent = c.ko || '';
+      fx.querySelector('#fxCount').innerHTML = '소속 연구실 <b>'+c.count+'개</b>';
+      fx.querySelector('#fxDesc').textContent = c.desc || '';
+      fx.querySelector('#fxIntro').textContent = c.intro || '';
+      fx.querySelector('#fxLink').setAttribute('data-golabs', c.id);
+      fxPanel.style.setProperty('--fc', clColor(c.id));
     }
-    function toggleCard(card){
-      var open = card.getAttribute('aria-expanded')==='true';
-      if(open){ card.setAttribute('aria-expanded','false'); }
-      else{ collapseAllCards(card); card.setAttribute('aria-expanded','true'); }
+    function lockScroll(on){
+      var el = document.documentElement;
+      if(on){ var sbw = window.innerWidth - el.clientWidth;
+        el.style.overflow='hidden'; if(sbw>0) el.style.paddingRight = sbw+'px'; }
+      else { el.style.overflow=''; el.style.paddingRight=''; }
+    }
+    function openFieldModal(card){
+      if(fxAnimating) return;
+      var c = clById[card.getAttribute('data-cid')]; if(!c) return;
+      fxOpenCard = card; fxFill(c);
+      var first = card.getBoundingClientRect();
+      fx.hidden = false; fx.classList.add('show'); lockScroll(true);
+      var last = fxPanel.getBoundingClientRect();
+      if(reduceMo){ fx.classList.add('content-in'); fx.querySelector('.fx-close').focus(); return; }
+      var dx = first.left-last.left, dy = first.top-last.top,
+          sx = first.width/last.width, sy = first.height/last.height;
+      fxAnimating = true;
+      var a = fxPanel.animate(
+        [{ transform:'translate('+dx+'px,'+dy+'px) scale('+sx+','+sy+')' }, { transform:'none' }],
+        { duration:440, easing:'cubic-bezier(.22,1,.36,1)' });
+      requestAnimationFrame(function(){ fx.classList.add('content-in'); });
+      a.onfinish = function(){ fxAnimating=false; fxPanel.style.transform=''; fx.querySelector('.fx-close').focus(); };
+    }
+    function closeFieldModal(){
+      if(fxAnimating || fx.hidden) return;
+      var card = fxOpenCard;
+      function done(){ fx.hidden=true; fx.classList.remove('show','content-in');
+        fxPanel.style.transform=''; lockScroll(false);
+        if(card){ try{ card.focus(); }catch(e){} } }
+      if(reduceMo || !card){ done(); return; }
+      var last = fxPanel.getBoundingClientRect(), first = card.getBoundingClientRect();
+      var dx = first.left-last.left, dy = first.top-last.top,
+          sx = first.width/last.width, sy = first.height/last.height;
+      fxAnimating = true; fx.classList.remove('content-in','show');
+      var a = fxPanel.animate(
+        [{ transform:'none' }, { transform:'translate('+dx+'px,'+dy+'px) scale('+sx+','+sy+')' }],
+        { duration:340, easing:'cubic-bezier(.4,0,.2,1)' });
+      a.onfinish = function(){ fxAnimating=false; done(); };
     }
     fieldGrid.addEventListener('click', function(e){
-      /* 연구실 링크 클릭 → 그 분야 아코디언 열고 스크롤 (카드 토글은 하지 않음) */
-      var link = e.target.closest('.fd-c-link');
-      if(link){ e.preventDefault(); openCluster(link.getAttribute('data-golabs'), true); return; }
       var card = e.target.closest('.fd-card');
-      if(card) toggleCard(card);
+      if(card){ e.preventDefault(); openFieldModal(card); }
     });
+    fx.querySelector('.fx-close').addEventListener('click', closeFieldModal);
+    fx.querySelector('.fx-backdrop').addEventListener('click', closeFieldModal);
+    fx.querySelector('#fxLink').addEventListener('click', function(){
+      var cid = this.getAttribute('data-golabs');
+      closeFieldModal();
+      setTimeout(function(){ openCluster(cid, true); }, 360);
+    });
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape' && !fx.hidden) closeFieldModal(); });
   }
 
   /* ══ 연구실 홍보영상 갤러리 — 분야별 그룹 · 카드(썸네일+재생버튼) ══ */

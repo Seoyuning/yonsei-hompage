@@ -36,20 +36,20 @@
   --card-hover:#eef3fa;
   --mono:"Apple SD Gothic Neo","Noto Sans KR","Pretendard Variable","Pretendard",system-ui,sans-serif;
   --kr:"Apple SD Gothic Neo","Noto Sans KR","Pretendard Variable","Pretendard",system-ui,sans-serif;
-  /* 6개 연구 분야 액센트 — 단일 네이비로 통일 (레인보우 제거) */
-  --c-solid:#1a3d75;
-  --c-thermal:#1a3d75;
-  --c-manuf:#1a3d75;
-  --c-nanobio:#1a3d75;
-  --c-optics:#1a3d75;
-  --c-dyn:#1a3d75;
+  /* 6개 연구 분야 액센트 — 분야별 프로 톤 팔레트 (무채도 낮은, 코랄 금지) */
+  --c-solid:#2b4a7a;
+  --c-thermal:#b0742c;
+  --c-manuf:#4a7c59;
+  --c-nanobio:#2d8a8a;
+  --c-optics:#3f6fb0;
+  --c-dyn:#7a5aa0;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 body{
   font-family:var(--mono);
-  background:#f8f6f1; color:var(--body);
+  background:#faf8f4; color:var(--body);
   -webkit-font-smoothing:antialiased;
   overflow-x:hidden; word-break:keep-all;
   line-height:1.5;
@@ -257,25 +257,25 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
 /* 리더선 — 기술 도면풍 얇은 실선 + 속 빈 링 노드(점선 제거로 AI티 탈피) */
 .earrow{stroke:#bcc8de;stroke-width:.3;fill:none;transition:stroke .3s,stroke-width .3s;stroke-dasharray:none}
 .edot{fill:#fff;stroke:#bcc8de;stroke-width:.5;transition:fill .3s,stroke .3s}
-.earrow.on{stroke:var(--navy);stroke-width:.55}
-.edot.on{fill:var(--navy);stroke:var(--navy)}
+.earrow.on{stroke:var(--cl-c,var(--navy));stroke-width:.55}
+.edot.on{fill:var(--cl-c,var(--navy));stroke:var(--cl-c,var(--navy))}
 /* 라벨 — 각진(직각) 편집형 카드, 얇은 헤어라인 + 호버 시 네이비 룰 슬라이드(그림자 최소화) */
 .elabel{position:absolute;z-index:4;transform:translate(-50%,-50%);
   min-width:8.4rem;max-width:12.5rem;background:#fff;border:1px solid var(--line);
   border-radius:0;padding:.6rem .82rem .58rem;text-align:left;cursor:pointer;overflow:hidden;
   box-shadow:0 2px 10px rgba(15,27,48,.05);transition:box-shadow .3s var(--e,ease),transform .3s var(--e,ease),border-color .25s,opacity .35s ease}
-.elabel::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--navy);
+.elabel::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--cl-c,var(--navy));
   transform:scaleY(0);transform-origin:top;transition:transform .4s var(--e,ease)}
-.elabel:hover,.elabel.on{box-shadow:0 12px 30px rgba(15,27,48,.13);border-color:var(--navy)}
+.elabel:hover,.elabel.on{box-shadow:0 12px 30px rgba(15,27,48,.13);border-color:var(--cl-c,var(--navy))}
 .elabel:hover::before,.elabel.on::before{transform:scaleY(1)}
 .elabel>*{padding-left:.15rem}
 .elabel .en{font-family:var(--kr);font-size:.58rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--label,#8b96a9)}
-.elabel .ko{font-family:var(--kr);font-weight:800;font-size:1rem;color:var(--navy);line-height:1.16;margin-top:.16rem;letter-spacing:-.01em}
+.elabel .ko{font-family:var(--kr);font-weight:800;font-size:1rem;color:var(--cl-c,var(--navy));line-height:1.16;margin-top:.16rem;letter-spacing:-.01em}
 .elabel .ko .n{font-family:var(--kr);font-weight:600;font-size:.7rem;color:var(--muted);margin-left:.35rem;letter-spacing:0}
 .elabel .edesc{font-family:var(--kr);font-size:.78rem;color:var(--sub);line-height:1.55;
   max-height:0;opacity:0;overflow:hidden;transition:max-height .45s var(--e,ease),opacity .35s ease,margin .3s}
 .elabel.on .edesc{max-height:7rem;opacity:1;margin-top:.4rem}
-.elabel .more{display:block;font-family:var(--kr);font-size:.7rem;font-weight:700;color:var(--navy);margin-top:.35rem;opacity:0;max-height:0;overflow:hidden;transition:opacity .3s,max-height .3s}
+.elabel .more{display:block;font-family:var(--kr);font-size:.7rem;font-weight:700;color:var(--cl-c,var(--navy));margin-top:.35rem;opacity:0;max-height:0;overflow:hidden;transition:opacity .3s,max-height .3s}
 .elabel.on .more{opacity:1;max-height:1.4rem}
 /* 모바일 대체 — 다이어그램 숨기고 6개 버튼 리스트 */
 .eagle-list{display:none;max-width:34rem;margin:1.4rem auto 0;gap:.5rem;flex-direction:column}
@@ -306,6 +306,73 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
 .cluster.cl-flash{animation:clFlash 1.4s ease}
 @keyframes clFlash{0%,100%{box-shadow:0 0 0 0 rgba(26,61,117,0)}20%{box-shadow:0 0 0 3px rgba(26,61,117,.35)}}
 </style>
+<style>
+/* ═══ 6개 연구 분야 — 자세한 설명 카드 그리드 (독수리 아래, 클릭 시 확장) ═══ */
+.fields-detail{max-width:1120px;margin:0 auto;
+  padding:clamp(2.8rem,2rem + 3vw,4.6rem) clamp(1.2rem,.6rem + 2vw,2.6rem);
+  border-bottom:1px solid var(--line-soft);scroll-margin-top:6.6rem}
+/* 웅장한 헤더 — 큰 제목·넉넉한 여백 */
+.fd-head{text-align:center;max-width:46rem;margin:0 auto clamp(2.2rem,1.4rem + 2.5vw,3.4rem)}
+.fd-kick{font-family:var(--mono);font-size:.7rem;letter-spacing:.28em;text-transform:uppercase;color:var(--muted)}
+.fd-title{font-family:var(--kr);font-weight:800;color:var(--ink);
+  font-size:clamp(1.9rem,1.3rem + 3vw,3rem);line-height:1.14;letter-spacing:-.02em;margin-top:.7rem}
+.fd-sub{font-family:var(--kr);font-size:clamp(.98rem,.9rem + .35vw,1.12rem);color:var(--sub);
+  line-height:1.8;margin-top:1rem}
+.fd-sub b{color:var(--ink);font-weight:700}
+/* 6개 큰 카드 그리드 (3열 → 2열 → 1열) */
+.fd-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1rem,.6rem + 1.2vw,1.6rem)}
+@media (max-width:920px){.fd-grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:600px){.fd-grid{grid-template-columns:1fr}}
+/* 카드 = 접근성 버튼(details 없이 aria-expanded 토글). 색 액센트는 --fc */
+.fd-card{position:relative;display:flex;flex-direction:column;text-align:left;width:100%;
+  background:var(--card);border:1px solid var(--line-soft);border-top:4px solid var(--fc,var(--navy));
+  border-radius:0;padding:clamp(1.5rem,1.1rem + 1.2vw,2.1rem) clamp(1.3rem,1rem + 1vw,1.8rem) clamp(1.5rem,1.1rem + 1vw,1.9rem);
+  cursor:pointer;font-family:var(--kr);
+  transition:box-shadow .3s var(--e,ease),border-color .25s,background .2s,transform .3s var(--e,ease)}
+.fd-card:hover{box-shadow:0 14px 34px rgba(15,27,48,.1);background:#fff}
+.fd-card[aria-expanded="true"]{background:#fff;box-shadow:0 16px 40px rgba(15,27,48,.12)}
+.fd-card:focus-visible{outline:2px solid var(--fc,var(--navy));outline-offset:3px}
+/* 확장 카드는 그리드 전체 폭 차지(더 큰 박스) */
+.fd-card[aria-expanded="true"]{grid-column:1 / -1}
+.fd-c-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem}
+.fd-c-en{font-family:var(--kr);font-size:.66rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--fc,var(--navy));opacity:.85}
+.fd-c-ko{font-family:var(--kr);font-weight:800;color:var(--ink);
+  font-size:clamp(1.35rem,1.05rem + 1.1vw,1.75rem);line-height:1.18;letter-spacing:-.01em;margin-top:.5rem}
+.fd-c-count{font-family:var(--mono);font-weight:300;font-size:clamp(1.7rem,1.2rem + 1.4vw,2.2rem);
+  line-height:.9;color:var(--fc,var(--navy));font-variant-numeric:tabular-nums;white-space:nowrap;flex:none}
+.fd-c-count .u{font-family:var(--kr);font-size:.36em;font-weight:600;color:var(--muted);margin-left:.12em;letter-spacing:0}
+/* 요약(desc) — 접힘 상태에서 보이는 짧은 소개 */
+.fd-c-desc{font-family:var(--kr);font-size:.92rem;color:var(--sub);line-height:1.7;margin-top:.9rem}
+/* 자세한 설명(intro) — 확장 시 열리는 큰 박스 */
+.fd-c-intro{font-family:var(--kr);font-size:clamp(.95rem,.9rem + .3vw,1.06rem);color:var(--body);line-height:1.9;
+  max-height:0;opacity:0;overflow:hidden;
+  transition:max-height .5s var(--e,ease),opacity .4s ease,margin .4s var(--e,ease)}
+.fd-card[aria-expanded="true"] .fd-c-intro{max-height:26rem;opacity:1;margin-top:1.1rem;
+  padding-top:1.1rem;border-top:1px solid var(--line-soft)}
+/* 확장 시 그 분야 연구실로 가는 링크 + 힌트 화살표 */
+.fd-c-foot{display:flex;align-items:center;gap:.9rem;flex-wrap:wrap;
+  max-height:0;opacity:0;overflow:hidden;transition:max-height .45s var(--e,ease),opacity .35s ease,margin .35s}
+.fd-card[aria-expanded="true"] .fd-c-foot{max-height:5rem;opacity:1;margin-top:1.2rem}
+.fd-c-link{font-family:var(--kr);font-weight:700;font-size:.92rem;color:#fff;background:var(--fc,var(--navy));
+  padding:.62rem 1.2rem;white-space:nowrap;transition:filter .15s}
+.fd-c-link:hover{filter:brightness(1.08)}
+.fd-c-link .arr{margin-left:.35rem}
+.fd-c-hint{font-family:var(--kr);font-size:.82rem;color:var(--muted)}
+/* 접힘/펼침 안내 셰브런 */
+.fd-c-toggle{position:absolute;right:clamp(1.3rem,1rem + 1vw,1.8rem);bottom:clamp(1.2rem,1rem + .8vw,1.6rem);
+  font-family:var(--kr);font-size:.76rem;font-weight:700;color:var(--fc,var(--navy));
+  display:inline-flex;align-items:center;gap:.35rem;pointer-events:none}
+.fd-c-toggle svg{transition:transform .35s var(--e,ease)}
+.fd-card[aria-expanded="true"] .fd-c-toggle svg{transform:rotate(180deg)}
+.fd-card[aria-expanded="true"] .fd-c-toggle .lbl-open{display:none}
+.fd-card:not([aria-expanded="true"]) .fd-c-toggle .lbl-close{display:none}
+/* 확장 시 하단 여백 확보(토글이 링크와 겹치지 않게) */
+.fd-card[aria-expanded="true"]{padding-bottom:clamp(2.6rem,2rem + 1.5vw,3.4rem)}
+@media (prefers-reduced-motion:reduce){
+  .fd-card,.fd-c-intro,.fd-c-foot,.fd-c-toggle svg{transition:none}
+}
+</style>
 <style>h1,h2,.sec-title,.phero h1,.hero h1,.hero-title,.club-name,.vt,.staff-head h2,.brand .bko,.ynv-brand .bko{font-family:"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;letter-spacing:-.01em}</style>
 </head>
 <body>
@@ -329,6 +396,17 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
       <svg class="eagle-arrows" id="eagleArrows" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
     </div>
     <div class="eagle-list" id="eagleList" aria-label="연구 분야 목록"></div>
+  </section>
+
+  <!-- 6개 연구 분야 · 자세한 설명 카드 그리드 (독수리 아래) -->
+  <section class="fields-detail" id="fieldsDetail" aria-labelledby="fd-title">
+    <div class="fd-head">
+      <p class="fd-kick">Six Research Fields</p>
+      <h2 class="fd-title" id="fd-title">여섯 개의 연구 분야</h2>
+      <p class="fd-sub">기초 역학에서 에너지·로봇·제조·바이오까지, <b>6개 분야</b>가 기계공학부 연구의 큰 줄기입니다.
+        각 분야를 누르면 <b>자세한 설명</b>과 해당 분야 연구실 목록으로 이어집니다.</p>
+    </div>
+    <div class="fd-grid" id="fieldGrid"></div>
   </section>
 
   <!-- 연구 비전 -->
@@ -576,20 +654,25 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
   var stage = document.getElementById('eagleStage');
   var arrows = document.getElementById('eagleArrows');
   var SVGNS = 'http://www.w3.org/2000/svg';
+  /* 분야 id → 색 토큰 (CSS var). 라벨/화살표/카드 액센트에 --cl-c·--fc로 주입 */
+  function clColor(cid){ return 'var(' + (CVAR[cid] || '--navy') + ')'; }
   if(stage && arrows){
     PARTS.forEach(function(p){
       var c=cById[p.cid]; if(!c) return;
+      var col=clColor(p.cid);
       var line=document.createElementNS(SVGNS,'line');
       line.setAttribute('x1',p.cx); line.setAttribute('y1',p.cy);
       line.setAttribute('x2',p.lx); line.setAttribute('y2',p.ly);
       line.setAttribute('class','earrow'); line.setAttribute('data-cid',p.cid);
+      line.style.setProperty('--cl-c',col);
       arrows.appendChild(line);
       var dot=document.createElementNS(SVGNS,'circle');
       dot.setAttribute('cx',p.cx); dot.setAttribute('cy',p.cy); dot.setAttribute('r','1.1');
       dot.setAttribute('class','edot'); dot.setAttribute('data-cid',p.cid);
+      dot.style.setProperty('--cl-c',col);
       arrows.appendChild(dot);
       /* 사전에 잘라낸 조각 이미지(투명 배경). 6개가 겹쳐 독수리 완성, 하나 들어올리면 그 자리는 빈다 */
-      var part=new Image(); part.src='assets/eagle-p-'+p.png+'.png?v=7'; part.alt=''; part.className='epart';
+      var part=new Image(); part.src='assets/eagle-p-'+p.png+'.png?v=8'; part.alt=''; part.className='epart';
       part.style.setProperty('--lift',p.lift);
       part.setAttribute('data-cid',p.cid);
       stage.appendChild(part);
@@ -601,6 +684,7 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
       stage.appendChild(hot);
       var lab=document.createElement('button'); lab.type='button'; lab.className='elabel';
       lab.setAttribute('data-cid',p.cid); lab.style.left=p.lx+'%'; lab.style.top=p.ly+'%';
+      lab.style.setProperty('--cl-c',col);
       lab.setAttribute('aria-label', c.ko+' 분야 · '+c.count+'개 연구실 · 목록 열기');
       lab.innerHTML = '<div class="en">'+esc(p.part)+'</div>'
         + '<div class="ko">'+esc(c.ko)+'<span class="n">'+c.count+'개</span></div>'
@@ -627,9 +711,57 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
     }).join('');
     elist.addEventListener('click', function(e){ var b=e.target.closest('button'); if(b) openCluster(b.getAttribute('data-cid'), true); });
   }
+
+  /* ══ 6개 분야 · 자세한 설명 카드 그리드 (클릭 시 확장 → intro 전문 + 연구실 링크) ══ */
+  function chevSvg(){ return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>'; }
+  var fieldGrid = document.getElementById('fieldGrid');
+  if(fieldGrid){
+    fieldGrid.innerHTML = clusters.map(function(c){
+      var col = clColor(c.id);
+      return '<button type="button" class="fd-card" data-cid="'+esc(c.id)+'" '
+          + 'style="--fc:'+col+'" aria-expanded="false" '
+          + 'aria-label="'+esc(c.ko)+' 분야 · '+c.count+'개 연구실 · 자세한 설명 열기">'
+        + '<div class="fd-c-top">'
+          + '<div>'
+            + '<div class="fd-c-en">'+esc(c.en)+'</div>'
+            + '<div class="fd-c-ko">'+esc(c.ko)+'</div>'
+          + '</div>'
+          + '<div class="fd-c-count tnum">'+c.count+'<span class="u">개 연구실</span></div>'
+        + '</div>'
+        + '<p class="fd-c-desc">'+esc(c.desc)+'</p>'
+        + '<p class="fd-c-intro">'+esc(c.intro)+'</p>'
+        + '<div class="fd-c-foot">'
+          + '<a class="fd-c-link" href="#'+esc(c.id)+'" data-golabs="'+esc(c.id)+'">'
+            + esc(c.ko)+' 연구실 '+c.count+'개 보기<span class="arr" aria-hidden="true">→</span></a>'
+          + '<span class="fd-c-hint">아래 목록에서 담당 교수·위치·홈페이지를 확인하세요</span>'
+        + '</div>'
+        + '<span class="fd-c-toggle" aria-hidden="true">'
+          + '<span class="lbl-open">자세히</span><span class="lbl-close">접기</span>'+chevSvg()
+        + '</span>'
+        + '</button>';
+    }).join('');
+
+    function collapseAllCards(except){
+      [].forEach.call(fieldGrid.querySelectorAll('.fd-card'), function(card){
+        if(card!==except) card.setAttribute('aria-expanded','false');
+      });
+    }
+    function toggleCard(card){
+      var open = card.getAttribute('aria-expanded')==='true';
+      if(open){ card.setAttribute('aria-expanded','false'); }
+      else{ collapseAllCards(card); card.setAttribute('aria-expanded','true'); }
+    }
+    fieldGrid.addEventListener('click', function(e){
+      /* 연구실 링크 클릭 → 그 분야 아코디언 열고 스크롤 (카드 토글은 하지 않음) */
+      var link = e.target.closest('.fd-c-link');
+      if(link){ e.preventDefault(); openCluster(link.getAttribute('data-golabs'), true); return; }
+      var card = e.target.closest('.fd-card');
+      if(card) toggleCard(card);
+    });
+  }
 })();
 </script>
-<script src="assets/nav.js?v=32"></script>
+<script src="assets/nav.js?v=33"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:#7b8595">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

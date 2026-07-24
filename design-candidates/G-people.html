@@ -61,7 +61,9 @@ a{color:inherit;text-decoration:none}
 .phero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,19,38,.62),rgba(13,29,56,.82))}
 .phero-in{position:relative;z-index:1;padding:clamp(9.5rem,7rem + 4vw,11.5rem) 1.2rem clamp(2.6rem,5vh,4rem);max-width:60rem}
 .phero h1{font-size:clamp(1.9rem,1.2rem + 2.6vw,3rem);font-weight:800;letter-spacing:-.01em;line-height:1.16;color:#fff}
-.phero .bc{margin-top:.9rem;font-size:.82rem;letter-spacing:.02em;color:rgba(255,255,255,.82)}
+.phero-kick{font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.72);margin-bottom:.6rem}
+.phero-lead{margin:1.05rem auto 0;max-width:41rem;font-size:.98rem;line-height:1.75;color:rgba(255,255,255,.9)}
+.phero .bc{margin:0 0 1.05rem;font-size:.82rem;letter-spacing:.02em;color:rgba(255,255,255,.82)}
 
 /* ── 분야 서브내비 (sticky · 칩 필터) ── */
 .filterbar{position:sticky;top:3.6rem;z-index:20;
@@ -82,83 +84,68 @@ a{color:inherit;text-decoration:none}
 .fchip[aria-pressed="true"]{color:#fff;background:var(--navy);border-color:var(--navy)}
 .fchip[aria-pressed="true"] .cdot{background:#fff;box-shadow:none}
 
-/* ── 교수진 사진 그리드 ── */
+/* ── 교수진 사진 그리드 (한양대 member_01 레이아웃: 사진 위 · 정보 패널 아래) ── */
 .dir{max-width:1320px;margin:0 auto;padding:2.6rem clamp(1.2rem,.6rem + 2vw,2.6rem) 3rem}
 .dir-list{display:grid;grid-template-columns:repeat(3,1fr);gap:1.7rem}
 @media (max-width:920px){.dir-list{grid-template-columns:repeat(2,1fr);gap:1.3rem}}
 @media (max-width:600px){.dir-list{grid-template-columns:1fr;gap:1.2rem}}
 
-/* 카드 = [좌측 분야 인디케이터] + [세로 인물 사진 + 그라데이션 오버레이] */
-.pcard{position:relative;display:flex;background:#fff;border:1px solid var(--line-soft);
+/* 카드 = [세로 인물 사진(위)] + [네이비 정보 패널(아래)] */
+.pcard{position:relative;display:flex;flex-direction:column;background:#fff;border:1px solid var(--line-soft);
   box-shadow:0 1px 2px rgba(10,26,51,.04);
-  opacity:0;transform:translateY(22px);transition:opacity .55s ease,transform .55s ease,box-shadow .2s ease,border-color .2s ease;
+  opacity:0;transform:translateY(22px);transition:opacity .55s ease,transform .55s ease,box-shadow .25s ease;
   scroll-margin-top:6rem}
 .pcard.in{opacity:1;transform:none}
-.pcard:hover{box-shadow:0 10px 28px rgba(10,26,51,.13);border-color:var(--card-c,var(--navy))}
+.pcard:hover{box-shadow:0 12px 30px rgba(10,26,51,.16)}
 .pcard:target{outline:2px solid var(--card-c,var(--navy));outline-offset:2px}
 
-/* 좌측 세로 분야 인디케이터 열 (한양대 '사진 좌측' 차용) */
-.pind{flex:none;width:2rem;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:.55rem;padding:.9rem 0;background:#fafbfd;border-right:1px solid var(--line-soft)}
-.pind .idot{position:relative;width:9px;height:9px;border-radius:50%;
-  border:1.5px solid var(--dot-c);background:transparent;transition:transform .15s,background .15s}
-.pind .idot.on{background:var(--dot-c);box-shadow:0 0 0 3px color-mix(in srgb,var(--dot-c) 18%,transparent)}
-.pind .idot:not(.on){border-color:rgba(10,26,51,.2)}
-.pind .idot:hover{transform:scale(1.5)}
-/* 툴팁 (분야명) */
-.pind .idot .itip{position:absolute;left:calc(100% + .5rem);top:50%;transform:translateY(-50%) scale(.9);
-  transform-origin:left center;
-  background:var(--navy);color:#fff;font-family:var(--kr);font-size:.68rem;font-weight:500;letter-spacing:.01em;
-  padding:.25rem .5rem;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .13s,transform .13s;z-index:5}
-.pind .idot .itip::before{content:"";position:absolute;right:100%;top:50%;transform:translateY(-50%);
-  border:4px solid transparent;border-right-color:var(--navy)}
-.pind .idot:hover .itip,.pind .idot:focus-visible .itip{opacity:1;transform:translateY(-50%) scale(1)}
-
-/* 사진 프레임 (세로 인물) */
-.pframe{position:relative;flex:1;min-width:0;aspect-ratio:3/4;overflow:hidden;
-  background:var(--card-c,var(--navy));display:block}
-.pframe img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 22%;
+/* 사진 (세로 인물, 카드 위) */
+.pphoto{position:relative;display:block;aspect-ratio:4/5;overflow:hidden;background:#eef1f6}
+.pphoto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 20%;
   transition:transform .5s ease}
-.pcard:hover .pframe img{transform:scale(1.045)}
+.pcard:hover .pphoto img{transform:scale(1.05)}
 /* 이니셜 폴백 (사진 없을 때) */
 .pfallback{position:absolute;inset:0;display:grid;place-items:center;
   background:linear-gradient(150deg,var(--card-c,var(--navy)),color-mix(in srgb,var(--card-c,var(--navy)) 62%,#0a1a33));
   color:#fff;font-family:var(--kr);font-weight:800;font-size:3.2rem;line-height:1;letter-spacing:.02em}
 
-/* 하단 그라데이션 오버레이 (이름·직위·영문·분야) */
-.pmeta{position:absolute;left:0;right:0;bottom:0;z-index:2;
-  padding:2.6rem 1.1rem 1rem;color:#fff;
-  background:linear-gradient(180deg,rgba(10,19,38,0) 0%,rgba(10,19,38,.28) 34%,rgba(9,17,34,.82) 100%)}
-.pmeta .pfield{display:inline-flex;align-items:center;gap:.42rem;font-family:var(--kr);
-  font-size:.7rem;font-weight:600;letter-spacing:.02em;color:#fff;margin-bottom:.5rem;
-  padding:.2rem .5rem;background:var(--card-c,var(--navy));line-height:1.2}
-.pmeta .pname{display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap}
-.pmeta .pname .ko{font-family:var(--kr);font-weight:800;font-size:1.28rem;letter-spacing:-.01em;line-height:1.2}
-.pmeta .pname .rk{font-family:var(--kr);font-size:.76rem;font-weight:500;color:rgba(255,255,255,.85)}
-.pmeta .pen{font-family:var(--kr);font-size:.8rem;color:rgba(255,255,255,.78);margin-top:.18rem}
-/* 분야 색 액센트 바 (오버레이 하단) */
-.pcard::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;z-index:3;
-  background:var(--card-c,var(--navy))}
-
-/* 호버 정보 패널 (이메일·연구실·사무실) — 사진 위 슬라이드업 */
-.pinfo{position:absolute;left:0;right:0;bottom:0;z-index:4;
-  padding:1rem 1.1rem 1.15rem;
-  background:rgba(9,17,34,.94);color:#fff;
-  transform:translateY(101%);transition:transform .32s cubic-bezier(.22,.61,.36,1);
-  display:flex;flex-direction:column;gap:.5rem}
-.pcard:hover .pinfo,.pcard:focus-within .pinfo{transform:translateY(0)}
-.pinfo .il{display:flex;align-items:center;gap:.5rem;font-family:var(--kr);font-size:.78rem;color:rgba(255,255,255,.9);min-width:0}
-.pinfo .il svg{flex:none;color:rgba(255,255,255,.6)}
-.pinfo .il .it{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.pinfo a.il:hover{color:#fff;text-decoration:underline;text-underline-offset:2px}
-.pinfo .plink{margin-top:.15rem;display:inline-flex;align-items:center;gap:.35rem;align-self:flex-start;
-  font-family:var(--kr);font-size:.76rem;font-weight:600;color:#fff;
-  border:1px solid rgba(255,255,255,.35);padding:.38rem .7rem;transition:background .15s,border-color .15s}
-.pinfo a.plink:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.6)}
+/* 정보 패널 (네이비/분야색 · 사진 아래) */
+.pbody{position:relative;background:var(--card-c,var(--navy));color:#fff;
+  padding:1rem 1.15rem 1.1rem;display:flex;flex-direction:column;gap:.55rem}
+.pbody-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.6rem}
+.pnamebx{min-width:0}
+.pname{display:flex;align-items:baseline;gap:.45rem;flex-wrap:wrap}
+.pname .ko{font-family:var(--kr);font-weight:800;font-size:1.18rem;letter-spacing:-.01em;line-height:1.25}
+.pname .rk{font-family:var(--kr);font-size:.78rem;font-weight:500;color:rgba(255,255,255,.82)}
+.ppos{font-family:var(--kr);font-size:.8rem;color:rgba(255,255,255,.8);margin-top:.24rem;line-height:1.42;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* 우측 아이콘 버튼(홈페이지·상세) */
+.pbtns{flex:none;display:flex;gap:.4rem}
+.pbtn{display:grid;place-items:center;width:2rem;height:2rem;border-radius:50%;
+  background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.28);color:#fff;cursor:pointer;
+  transition:background .15s,border-color .15s}
+.pbtn:hover{background:rgba(255,255,255,.26);border-color:rgba(255,255,255,.6)}
+.pbtn svg{width:15px;height:15px;display:block}
+.pbtn.more .ic-plus{display:grid;transition:transform .3s}
+.pcard.open .pbtn.more .ic-plus{transform:rotate(45deg)}
+/* 연구분야 라인 (패널 하단) */
+.pfieldline{padding-top:.6rem;border-top:1px solid rgba(255,255,255,.16);
+  font-family:var(--kr);font-size:.82rem;color:#fff;letter-spacing:-.005em}
+.pfieldline .lb{color:rgba(255,255,255,.6)}
+/* 상세 (+ 토글로 펼침) — 이메일·사무실·연락처·프로필 */
+.pdetail{display:grid;grid-template-rows:0fr;transition:grid-template-rows .34s cubic-bezier(.22,.61,.36,1)}
+.pcard.open .pdetail{grid-template-rows:1fr}
+.pdetail-in{overflow:hidden;min-height:0}
+.pdetail .rows{display:flex;flex-direction:column;gap:.42rem;padding-top:.7rem;margin-top:.1rem;
+  border-top:1px solid rgba(255,255,255,.16)}
+.pdetail .il{display:flex;align-items:center;gap:.5rem;font-family:var(--kr);font-size:.78rem;color:rgba(255,255,255,.9);min-width:0}
+.pdetail .il svg{flex:none;color:rgba(255,255,255,.55);width:15px;height:15px}
+.pdetail .il .it{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pdetail a.il:hover{text-decoration:underline;text-underline-offset:2px}
 @media (prefers-reduced-motion:reduce){
-  .pcard{opacity:1;transform:none;transition:box-shadow .2s,border-color .2s}
-  .pframe img,.pcard:hover .pframe img{transition:none;transform:none}
-  .pinfo{transition:none}
+  .pcard{opacity:1;transform:none;transition:box-shadow .2s}
+  .pphoto img,.pcard:hover .pphoto img{transition:none;transform:none}
+  .pdetail{transition:none}
 }
 
 /* 빈 상태 */
@@ -190,17 +177,6 @@ a{color:inherit;text-decoration:none}
 .staff-contact .v{font-size:.88rem;color:var(--body);font-weight:600}
 .staff-contact .note{width:100%;font-size:.78rem;color:var(--muted);line-height:1.6}
 
-/* ── 반응형: 좁은 화면 — 정보 패널 상시 노출(호버 불가 터치 대응) ── */
-@media (hover:none){
-  .pinfo{position:static;transform:none;background:rgba(9,17,34,.96)}
-  .pcard{flex-direction:column}
-  .pind{width:100%;flex-direction:row;justify-content:flex-start;gap:.6rem;
-    padding:.6rem .9rem;border-right:0;border-bottom:1px solid var(--line-soft)}
-  .pind .idot .itip{left:50%;top:calc(100% + .5rem);transform:translateX(-50%) scale(.9)}
-  .pind .idot .itip::before{right:auto;left:50%;top:auto;bottom:100%;transform:translateX(-50%);
-    border-right-color:transparent;border-bottom-color:var(--navy)}
-  .pind .idot:hover .itip,.pind .idot:focus-visible .itip{transform:translateX(-50%) scale(1)}
-}
 </style>
 <style>.ynav-ph{position:fixed;top:0;left:0;right:0;height:3.7rem;background:rgba(255,255,255,.96);border-bottom:1px solid rgba(0,0,0,.08);z-index:39}</style>
 <style>h1,h2,.sec-title,.phero h1,.hero h1,.hero-title,.club-name,.vt,.staff-head h2,.brand .bko,.ynv-brand .bko{font-family:"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;letter-spacing:-.01em}</style>
@@ -213,8 +189,11 @@ a{color:inherit;text-decoration:none}
   <!-- 페이지 히어로 -->
   <header class="phero">
     <div class="phero-in">
-      <h1>교수진 디렉토리</h1>
       <p class="bc">홈 › 구성원</p>
+      <p class="phero-kick">Faculty</p>
+      <h1>교수진</h1>
+      <p class="phero-lead">기계공학부는 교수진·연구진·학생이 함께 만들어가는 공동체입니다.
+        여섯 개 연구 분야에서 전임 교수진이 교육과 연구를 이끌어 갑니다.</p>
     </div>
   </header>
 
@@ -326,6 +305,9 @@ a{color:inherit;text-decoration:none}
   var ICON_TEL = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>';
   var ICON_PIN = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 5-8 12-8 12s-8-7-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>';
   var ICON_LAB = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6M10 3v6.5L5.2 18a2 2 0 0 0 1.8 3h10a2 2 0 0 0 1.8-3L14 9.5V3"/><path d="M7.5 15h9"/></svg>';
+  /* 패널 우측 원형 버튼 아이콘 (홈페이지·상세 펼침) */
+  var ICON_HOME = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v9h14v-9"/><path d="M10 19v-5h4v5"/></svg>';
+  var ICON_PLUS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
 
   var rowsEl = document.getElementById('rows'),
       emptyEl = document.getElementById('empty'),
@@ -371,56 +353,53 @@ a{color:inherit;text-decoration:none}
     cWrap.querySelectorAll('.fchip').forEach(function(b){ b.setAttribute('aria-pressed',String(b.dataset.c===state.c)); });
   }
 
-  /* ── 사진 카드: [좌측 분야 인디케이터] [세로 사진 + 오버레이 + 호버 정보] ── */
+  /* ── 사진 카드 (한양대 member_01): [세로 사진(위)] [네이비 정보 패널(아래)] ── */
   function cardHtml(p){
     var lab = labs[p.labId] || {};
     var cl = clusterOf[p.cluster] || {};
     var cvar = CVAR[p.cluster];
     var accent = 'var('+cvar+')';
 
-    /* 좌측 6개 분야 인디케이터 — 이 교수 cluster만 채움, 나머지 흐린 아웃라인 */
-    var ind = clusters.map(function(c){
-      var on = c.id===p.cluster;
-      return '<span class="idot'+(on?' on':'')+'" tabindex="0" role="img"'
-        + ' aria-label="'+esc(c.ko)+(on?' (해당 분야)':'')+'"'
-        + ' style="--dot-c:var('+CVAR[c.id]+')">'
-        + '<span class="itip">'+esc(c.ko)+'</span></span>';
-    }).join('');
-
     /* 사진(없으면 onerror로 이니셜 폴백 표시) */
     var photo = '<img src="assets/faculty/'+esc(p.id)+'.jpg" alt="'+esc(p.ko)+' '+esc(p.rank)+'"'
       + ' loading="lazy" onerror="this.style.display=\'none\';var f=this.parentNode.querySelector(\'.pfallback\');if(f)f.style.display=\'grid\';">'
       + '<span class="pfallback" aria-hidden="true" style="display:none">'+esc(p.initial)+'</span>';
 
-    /* 하단 오버레이 — 분야 · 이름 · 직위 · 영문명 */
-    var meta = '<div class="pmeta">'
-      + '<span class="pfield">'+esc(cl.ko||'')+'</span>'
-      + '<div class="pname"><span class="ko">'+esc(p.ko)+'</span><span class="rk">'+esc(p.rank)+'</span></div>'
-      + '<div class="pen">'+esc(p.en)+'</div>'
-      + '</div>';
+    /* 사진을 프로필 링크로 감싸기(있으면) */
+    var photoOpen = p.detail
+      ? '<a class="pphoto" href="'+esc(p.detail)+'" target="_blank" rel="noopener" aria-label="'+esc(p.ko)+' '+esc(p.rank)+' 프로필 (새 창)">'
+      : '<a class="pphoto" href="#'+esc(p.id)+'" aria-label="'+esc(p.ko)+' '+esc(p.rank)+'">';
 
-    /* 호버 정보 패널 — 이메일 · 사무실 · 프로필 링크 */
-    var info = '<div class="pinfo">';
-    if(p.email) info += '<a class="il" href="mailto:'+esc(p.email)+'">'+ICON_MAIL
-      + '<span class="it">'+esc(p.email)+'</span></a>';
-    if(p.office) info += '<span class="il">'+ICON_PIN
-      + '<span class="it">'+esc(officeKo(p.office))+'</span></span>';
-    if(lab.ko) info += '<span class="il">'+ICON_LAB
-      + '<span class="it">'+esc(lab.ko)+'</span></span>';
-    if(p.detail) info += '<a class="plink" href="'+esc(p.detail)+'" target="_blank" rel="noopener">'
-      + '교수 프로필 <span aria-hidden="true">↗</span><span class="visually-hidden"> (새 창)</span></a>';
-    info += '</div>';
+    /* 이름 아래 보조 라인 = 영문명(항상 일관 · 연구분야와 상충 없음) */
+    var pos = p.en ? '<p class="ppos">'+esc(p.en)+'</p>' : '';
 
-    /* 카드: 사진 프레임을 detail 링크로 감싸 클릭 시 외부 프로필로 이동 */
-    var frameOpen = p.detail
-      ? '<a class="pframe" href="'+esc(p.detail)+'" target="_blank" rel="noopener" aria-label="'+esc(p.ko)+' 교수 프로필 (새 창)">'
-      : '<div class="pframe">';
-    var frameClose = p.detail ? '</a>' : '</div>';
+    /* 우측 원형 버튼: 홈(프로필/메일) · 상세 펼침(+) */
+    var homeHref = p.detail || (p.email ? 'mailto:'+p.email : '');
+    var homeBtn = homeHref
+      ? '<a class="pbtn home" href="'+esc(homeHref)+'"'+(p.detail?' target="_blank" rel="noopener"':'')
+        + ' aria-label="'+esc(p.ko)+' '+(p.detail?'프로필':'이메일')+'" title="'+(p.detail?'프로필 · 홈페이지':'이메일')+'">'+ICON_HOME+'</a>'
+      : '';
+    var moreBtn = '<button type="button" class="pbtn more" aria-expanded="false"'
+      + ' aria-label="'+esc(p.ko)+' 상세 정보 펼치기" title="상세 정보"><span class="ic-plus">'+ICON_PLUS+'</span></button>';
+
+    /* 상세(+ 토글) 행 — 이메일 · 사무실 · 연락처 · 프로필 */
+    var det = '';
+    if(p.email) det += '<a class="il" href="mailto:'+esc(p.email)+'">'+ICON_MAIL+'<span class="it">'+esc(p.email)+'</span></a>';
+    if(p.office) det += '<span class="il">'+ICON_PIN+'<span class="it">'+esc(officeKo(p.office))+'</span></span>';
+    if(p.phone) det += '<span class="il">'+ICON_TEL+'<span class="it">'+esc(p.phone)+'</span></span>';
+    if(lab.ko) det += '<span class="il">'+ICON_LAB+'<span class="it">'+esc(lab.ko)+'</span></span>';
+    if(p.detail) det += '<a class="il" href="'+esc(p.detail)+'" target="_blank" rel="noopener"><span class="it" style="text-decoration:underline;text-underline-offset:2px">교수 프로필 새 창에서 열기 ↗</span></a>';
 
     return '<article class="pcard" id="'+esc(p.id)+'" style="--card-c:'+accent+'">'
-      + '<div class="pind" aria-label="연구분야 표식">'+ind+'</div>'
-      + frameOpen + photo + meta + frameClose
-      + info
+      + photoOpen + photo + '</a>'
+      + '<div class="pbody">'
+        + '<div class="pbody-top">'
+          + '<div class="pnamebx"><p class="pname"><span class="ko">'+esc(p.ko)+'</span><span class="rk">'+esc(p.rank)+'</span></p>'+pos+'</div>'
+          + '<div class="pbtns">'+homeBtn+moreBtn+'</div>'
+        + '</div>'
+        + '<div class="pfieldline"><span class="lb">연구분야 :</span> '+esc(cl.ko||'')+'</div>'
+        + '<div class="pdetail"><div class="pdetail-in"><div class="rows">'+det+'</div></div></div>'
+      + '</div>'
       + '</article>';
   }
 
@@ -439,6 +418,15 @@ a{color:inherit;text-decoration:none}
   cWrap.addEventListener('click', function(e){
     var b = e.target.closest('.fchip'); if(!b) return;
     state.c = b.dataset.c; apply();
+  });
+
+  /* 카드 '+' 버튼 → 상세 정보 패널 펼침/접힘 */
+  rowsEl.addEventListener('click', function(e){
+    var mb = e.target.closest('.pbtn.more'); if(!mb) return;
+    e.preventDefault();
+    var card = mb.closest('.pcard'); if(!card) return;
+    var open = card.classList.toggle('open');
+    mb.setAttribute('aria-expanded', open ? 'true' : 'false');
   });
   resetBtn.addEventListener('click', function(){
     state = { c:'all' };
@@ -488,7 +476,7 @@ a{color:inherit;text-decoration:none}
   }
 })();
 </script>
-<script src="assets/nav.js?v=34"></script>
+<script src="assets/nav.js?v=35"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--dimmer)">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

@@ -85,10 +85,20 @@ a{color:inherit;text-decoration:none}
 .fchip[aria-pressed="true"] .cdot{background:#fff;box-shadow:none}
 
 /* ── 교수진 사진 그리드 (한양대 member_01 레이아웃: 사진 위 · 정보 패널 아래) ── */
-.dir{max-width:1320px;margin:0 auto;padding:2.6rem clamp(1.2rem,.6rem + 2vw,2.6rem) 3rem}
-.dir-list{display:grid;grid-template-columns:repeat(3,1fr);gap:1.7rem}
-@media (max-width:920px){.dir-list{grid-template-columns:repeat(2,1fr);gap:1.3rem}}
-@media (max-width:600px){.dir-list{grid-template-columns:1fr;gap:1.2rem}}
+.dir{max-width:1320px;margin:0 auto;padding:1.4rem clamp(1.2rem,.6rem + 2vw,2.6rem) 3rem}
+/* 분야별 그룹 — 각 분야 헤더 + 그 분야 카드 그리드, 그룹 간 상하 여백 */
+.fgroup{padding:2.4rem 0}
+.fgroup + .fgroup{border-top:1px solid var(--line-soft)}
+.fg-head{display:flex;align-items:baseline;gap:.65rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.fg-head .fg-dot{width:11px;height:11px;border-radius:50%;background:var(--fg-c,var(--navy));flex:none;align-self:center}
+.fg-head h2{font-size:clamp(1.2rem,1rem + .7vw,1.5rem);font-weight:800;color:var(--navy);letter-spacing:-.01em;line-height:1.2}
+.fg-head .fg-en{font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--label)}
+.fg-head .fg-cnt{margin-left:auto;font-size:.82rem;font-weight:600;color:var(--muted);letter-spacing:.01em}
+/* 사진 소스가 240×240라 4열(≈290px)·정사각 비율로 과확대(픽셀 깨짐) 최소화 */
+.dir-list{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4rem}
+@media (max-width:1100px){.dir-list{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:760px){.dir-list{grid-template-columns:repeat(2,1fr);gap:1.1rem}}
+@media (max-width:460px){.dir-list{grid-template-columns:1fr}}
 
 /* 카드 = [세로 인물 사진(위)] + [네이비 정보 패널(아래)] */
 .pcard{position:relative;display:flex;flex-direction:column;background:#fff;border:1px solid var(--line-soft);
@@ -99,11 +109,11 @@ a{color:inherit;text-decoration:none}
 .pcard:hover{box-shadow:0 12px 30px rgba(10,26,51,.16)}
 .pcard:target{outline:2px solid var(--card-c,var(--navy));outline-offset:2px}
 
-/* 사진 (세로 인물, 카드 위) */
-.pphoto{position:relative;display:block;aspect-ratio:4/5;overflow:hidden;background:#eef1f6}
-.pphoto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 20%;
-  transition:transform .5s ease}
-.pcard:hover .pphoto img{transform:scale(1.05)}
+/* 사진 (카드 위) — 원본이 240×240 정사각이라 1/1 비율로 과확대 최소화 */
+.pphoto{position:relative;display:block;aspect-ratio:1/1;overflow:hidden;background:#eef1f6}
+.pphoto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 18%;
+  transition:transform .45s ease}
+.pcard:hover .pphoto img{transform:scale(1.03)}
 /* 이니셜 폴백 (사진 없을 때) */
 .pfallback{position:absolute;inset:0;display:grid;place-items:center;
   background:linear-gradient(150deg,var(--card-c,var(--navy)),color-mix(in srgb,var(--card-c,var(--navy)) 62%,#0a1a33));
@@ -206,7 +216,7 @@ a{color:inherit;text-decoration:none}
 
   <!-- 교수진 사진 그리드 -->
   <section class="dir" id="dir" aria-label="전임 교수 디렉토리">
-    <div class="dir-list" id="rows"></div>
+    <div id="rows"></div>
     <div class="empty" id="empty" hidden>
       <p class="code">해당 분야 교수가 없습니다</p>
       <p>다른 연구분야를 선택해 보세요.</p>
@@ -408,7 +418,21 @@ a{color:inherit;text-decoration:none}
       if(state.c!=='all' && p.cluster!==state.c) return false;
       return true;
     });
-    rowsEl.innerHTML = hits.map(cardHtml).join('');
+    /* 분야별 그룹 렌더 — 6개 분야 순서대로, 해당 분야 교수만 카드 그리드로 */
+    var html = clusters.map(function(c){
+      var members = hits.filter(function(p){ return p.cluster===c.id; });
+      if(!members.length) return '';
+      return '<section class="fgroup" id="fg-'+esc(c.id)+'" style="--fg-c:var('+CVAR[c.id]+')" aria-label="'+esc(c.ko)+' 분야 교수진">'
+        + '<div class="fg-head">'
+          + '<span class="fg-dot" aria-hidden="true"></span>'
+          + '<h2>'+esc(c.ko)+'</h2>'
+          + (c.en ? '<span class="fg-en">'+esc(c.en)+'</span>' : '')
+          + '<span class="fg-cnt">'+members.length+'명</span>'
+        + '</div>'
+        + '<div class="dir-list">'+members.map(cardHtml).join('')+'</div>'
+      + '</section>';
+    }).join('');
+    rowsEl.innerHTML = html;
     emptyEl.hidden = hits.length>0;
     syncChips();
     syncUrl();
@@ -452,7 +476,7 @@ a{color:inherit;text-decoration:none}
   function observeCards(){
     var cards = rowsEl.querySelectorAll('.pcard');
     cards.forEach(function(el,i){
-      el.dataset.i = i % 3; /* 열 위치 기준 stagger */
+      el.dataset.i = i % 4; /* 열 위치 기준 stagger */
       if(io){ io.observe(el); } else { el.classList.add('in'); }
     });
   }

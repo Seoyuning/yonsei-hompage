@@ -242,6 +242,83 @@
       log(Y.engine.src() === original || Y.engine.src() === srcBeforeLang, '모바일 모드가 원문을 바꾸지 않음');
     } else warn('Y.mobile 없음');
 
+    /* ── 8b. 패널 등록·버튼 연결 (계약검사 T1 회귀) ── */
+    head('패널 등록 · 버튼 연결');
+    for (const pid of ['inspect', 'versions', 'ai', 'lang']) {
+      Y.hud.openPanel(pid);
+      await sleep(120);
+      log(Y.hud.isOpen(pid) === true, "패널 '" + pid + "' 열림");
+    }
+    const btns = Array.prototype.slice.call(d.querySelectorAll('[data-ys-ui] button'));
+    const langBtn = btns.filter(b => /한/.test(b.textContent) && /영/.test(b.textContent))[0];
+    log(!!langBtn, '한·영 버튼 존재');
+    if (langBtn) {
+      log(!/is-off/.test(langBtn.className), '한·영 버튼이 활성 상태(준비 중 아님)');
+      Y.hud.closePanel();
+      await sleep(120);
+      langBtn.click();
+      await sleep(250);
+      log(Y.hud.isOpen('lang') === true, '한·영 버튼 클릭 → 사전 패널 열림');
+    }
+
+    /* ── 8c. 이름 붙인 시점 저장 (서버 경로 검증 회귀 — 계약검사 T2) ── */
+    head('시점 저장 (체크포인트)');
+    if (Y.versions && Y.versions.save) {
+      await Y.store.clear('drafts');
+      await Y.engine.open(PAGE);
+      Y.engine.setText(target.idx, '시점검사문구ZW');
+      await Y.engine.flush();
+      Y.hud.openPanel('versions');
+      await sleep(350);
+      const nameEl = d.querySelector('[data-ys-ui] .ys-vs-name');
+      log(!!nameEl, '시점 이름 입력칸 표시');
+      if (nameEl) {
+        nameEl.value = '통합검사 시점';
+        nameEl.dispatchEvent(new w.Event('input', { bubbles: true }));
+        window.__commits.length = 0;
+        await Y.versions.save();
+        await sleep(300);
+        const cc = window.__commits[0];
+        log(!!cc, '시점 저장이 커밋을 호출');
+        if (cc) {
+          const paths = (cc.files || []).map(x => x.path);
+          log(paths.indexOf(Y.versions.CP_PATH) >= 0, '매니페스트(' + Y.versions.CP_PATH + ')가 같은 커밋에 포함 — ' + paths.join(', '));
+          const manifest = (cc.files || []).filter(x => x.path === Y.versions.CP_PATH)[0];
+          let entry = null;
+          try { const parsed = JSON.parse(manifest.content); entry = (parsed.items || parsed)[0]; } catch (e) {}
+          log(!!entry && entry.name === '통합검사 시점' && !!entry.ts && !!entry.author,
+            '매니페스트에 이름·시각·작성자 기록' + (entry ? ' — ' + entry.name + ' / ' + new Date(entry.ts).toISOString().slice(0, 16) + ' / ' + entry.author : ''));
+          /* 이 경로가 서버 검증을 통과하는지는 api-smoke 에서 별도로 확인한다 */
+        }
+      }
+      await Y.store.clear('drafts');
+      await Y.engine.open(PAGE);
+    } else warn('Y.versions.save 없음');
+
+    /* ── 8d. 모바일 프레임 클릭 1회 = 선택 1회 (계약검사 I2 회귀) ── */
+    head('모바일 프레임 클릭 중복 처리');
+    if (Y.mobile && Y.mobile.open) {
+      Y.hud.setEditing(true);
+      Y.mobile.open();
+      await sleep(1800);
+      const fr2 = d.querySelector('[data-ys-ui] iframe');
+      const fd2 = fr2 && fr2.contentDocument;
+      if (fd2) {
+        let hits = 0;
+        const onSel = () => { hits++; };
+        Y.bus.on('hud:select', onSel);
+        const clickable = fd2.querySelector('main h2, main p, .stats .st b, h1');
+        if (clickable) {
+          clickable.dispatchEvent(new fr2.contentWindow.MouseEvent('click', { bubbles: true, cancelable: true }));
+        }
+        await sleep(300);
+        Y.bus.off('hud:select', onSel);
+        log(hits === 1, '프레임 안 클릭 1회 → 선택 처리 ' + hits + '회');
+      } else warn('프레임 문서 접근 불가');
+      Y.mobile.close();
+      await sleep(250);
+    }
+
     /* ── 9. 오류 없음 ── */
     head('런타임 오류');
     log(errs.length === 0, '스크립트 오류 ' + errs.length + '건');

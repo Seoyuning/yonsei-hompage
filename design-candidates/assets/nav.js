@@ -377,6 +377,7 @@
     if (document.querySelector('script[' + mark + ']')) return;
     var el = document.createElement('script');
     el.setAttribute(mark, '');
+    el.setAttribute('data-ys-ui', '');   // 편집 도구가 이 노드를 편집 대상으로 오인하지 않게
     el.src = H.dir + file + H.ver;
     el.defer = true;
     el.async = false;                 // 삽입 순서대로 실행

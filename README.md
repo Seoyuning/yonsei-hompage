@@ -10,8 +10,18 @@ OT 청취 결과 "수정·보수 관리가 용이한가"가 핵심 심사 기준
 
 | 축 | 내용 | 상태 |
 |---|---|---|
-| 1축 | 웹사이트 디자인 & 사이트 설계 (`prototype-v3/`) | v3 완성, 추가 개선 예정 |
-| 2축 | Admin 계정의 사이트 수정·관리 도구 (`admin/`) | 4기능 완료, 이후 게시·보드·편집 UX 추가 |
+| 1축 | 웹사이트 디자인 & 사이트 설계 | `design-candidates/`(관제 시안, 현재 본선) · `prototype-v3/`(v3 완성본) |
+| 2축 | 사이트 수정·관리 도구 | ① `admin/` 콘솔(별도 창) ② **`design-candidates/assets/studio/` 인플레이스 스튜디오** — 사이트 화면 위에서 바로 편집 |
+
+## 배포 (Vercel)
+
+| 프로젝트 | 서빙 폴더 | 주소 | 소유 |
+|---|---|---|---|
+| `yonsei-me-homepage` | `design-candidates/` | https://yonsei-me-homepage.vercel.app | 우리 계정(`kwonchanghans-projects`) — **편집 스튜디오가 여기 있다** |
+| `prototype-v3` | `prototype-v3/` | https://prototype-v3-nine.vercel.app | 우리 계정 — 구 온라인 콘솔 `/studio` |
+| (팀원 계정) | 저장소 루트 | https://yonsei-hompage.vercel.app | 우리 Vercel 계정에 없음 — 설정 변경 불가 |
+
+두 프로젝트 모두 같은 GitHub 저장소를 보므로, 푸시하면 양쪽이 함께 갱신된다.
 
 ## 폴더 구조
 
@@ -51,6 +61,8 @@ OT 청취 결과 "수정·보수 관리가 용이한가"가 핵심 심사 기준
 
 ## 개발 규칙 (반드시 읽을 문서 2개)
 
+0. **`design-candidates/STUDIO_SPEC.md`** — 인플레이스 편집 스튜디오 계약(파일 배치, 서버 API,
+   진실 모델, 정렬 규칙, 저장 경계, i18n·모바일·AI 스키마, 합격 기준 10개). 스튜디오를 고칠 때 기준.
 1. **`prototype-v3/TEMPLATE.md`** — 사이트 본체 제약. 요지:
    - 순수 HTML + CSS + Vanilla JS. ES 모듈·빌드 도구 금지, `file://`로 직접 열려야 함.
    - 콘텐츠 데이터는 `assets/js/data.js`(`window.YSME`)가 단일 원천(SSOT).
@@ -78,8 +90,37 @@ OT 청취 결과 "수정·보수 관리가 용이한가"가 핵심 심사 기준
 - 모듈(로드 순서): core → store → auth → audit → fs → versions → editor → ai → board →
   github → app → layout. 전부 classic `<script defer>`, 전역 네임스페이스 `Admin.*`.
 
+## 인플레이스 스튜디오 사용법 (2축 핵심)
+
+배포된 사이트를 방문자처럼 돌아다니면서 그 화면 위에서 고친다. 별도 콘솔을 열지 않는다.
+
+1. https://yonsei-me-homepage.vercel.app/H-academic.html**?studio=1** 로 접속
+2. 공용 암호 + 편집자 이름 입력 → 우하단에 버튼 6개가 뜬다
+   (편집 · 버전 · AI · 모바일 · 한·영 · 게시)
+3. 「편집」을 켜고 글자를 클릭해 고친다. **초안은 브라우저에 쌓이고, 「게시」를 눌러야 파일에 반영된다**
+   (여러 페이지·여러 파일이 GitHub 커밋 **1개**로 묶인다).
+4. 페이지를 옮겨도 편집 세션과 초안이 유지된다. 「편집」을 끄면 방문자와 완전히 동일하게 동작한다.
+5. 단축키: `E` 편집 토글 · `Ctrl+S` 초안 저장 · `Ctrl+Shift+P` 게시 · `Ctrl+Z/Y` 되돌리기 · `Esc` 선택 해제
+
+- **세션이 없으면 스튜디오 파일을 요청조차 하지 않는다** — 방문자 경험에 영향 0.
+- 서버 함수 env(`GH_TOKEN`·`PUBLISH_PASSCODE` 등)는 Vercel 프로젝트 설정에만 있다. 저장소에 넣지 않는다.
+- 화면의 카드·공지·교수 목록처럼 `assets/js/data.js` 가 그리는 영역은 HTML 이 아니라 **데이터 필드 편집**으로 안내된다.
+- 영어 전환 중에 고친 글은 HTML 이 아니라 `assets/i18n/en.json` 사전에 들어간다.
+
 ## 검증 방법 (수정 후 회귀 확인)
 
+- 스튜디오 자동 검증 2종 — `design-candidates/` 에서 로컬 서버를 띄우고 헤드리스 Chrome 으로 돌린다:
+  ```
+  cd design-candidates
+  python _studio/tools/testserver.py .                 # 127.0.0.1:8124, /hang 으로 load 를 붙잡는다
+  chrome --headless --disable-gpu --dump-dom http://127.0.0.1:8124/_studio/selftest.html
+  chrome --headless --disable-gpu --dump-dom http://127.0.0.1:8124/_studio/inttest.html
+  ```
+  덤프 끝의 `PASSED` / `FAILED` 와 각 항목의 `ok` / `FAIL` 을 확인한다.
+  - `selftest` — 8페이지 전부에서 원문 스캔·DOM 대응·오프셋 정합성·편집 후 **바이트 동일 복귀**·
+    라이브 정렬(88~97%)·nav.js 주입물 제외·JS 생성 영역 판별.
+  - `inttest` — 실제 페이지에 스튜디오를 부팅해 저장본 오염 0·원자 게시(커밋 1개)·이동 후 초안 지속·
+    체크포인트 매니페스트·모바일 프레임·한영 편집 분리·패널 연결·런타임 오류 0.
 - 문법: `node --check admin/js/*.js`
 - E2E: headless Chrome `--dump-dom`은 load 직후 덤프되므로, 테스트 페이지에
   `<img src="/hang">`(30초 지연 응답 엔드포인트) 블로커를 두고 테스트 완료 시
@@ -94,8 +135,17 @@ OT 청취 결과 "수정·보수 관리가 용이한가"가 핵심 심사 기준
       패널 폭 조절·접기.
 - [x] 2축 확장: 보드 모드(전 페이지 캔버스 개요)와 편집 UX 개선(요소 태그 칩,
       클릭 가능한 요소 경로 브레드크럼, 단축키 세트 + 도움말 모달, 페이지 검색).
-- [ ] 2축 확장분 회귀 검증 — 위 4기능 E2E(23/23) 이후 추가된 기능들은 아직 같은 수준의
-      E2E 회귀를 돌리지 않았다. 저장본 무결성(data-eid·런타임 클래스 스크럽) 회귀부터 확인할 것.
-- [ ] 1축: prototype-v3 디자인·설계 추가 개선.
-- [ ] 심사용 데모 시나리오(Admin Studio 시연 동선) 정리.
+- [x] **2축 재설계: 인플레이스 편집 스튜디오** (2026-07-25) — 사이트 화면 위에서 바로 편집, 페이지를
+      옮겨도 유지, 이름+시각 시점 저장(GitHub 커밋 기반), AI 다건 변경안 개별 승인, 한/영·모바일 전환.
+      `design-candidates/STUDIO_SPEC.md` 가 계약, `design-candidates/api/` 가 서버 함수.
+      검증: selftest 8페이지 통과 + inttest 56항목 통과(저장본 오염 0·런타임 오류 0).
+      핵심 결정은 **DOM 재직렬화를 버리고 원문 오프셋 치환**을 쓴 것 — 무편집 저장이 바이트 동일하고
+      텍스트 한 줄 수정이 diff 한 줄이 된다.
+- [ ] 실제 환경 잔여 검증: 체크포인트 **복원** 왕복(실제 GitHub 커밋), AI 실키 호출, 여러 사람 동시 편집 충돌(409).
+- [ ] 2축 구 콘솔(`admin/`) 확장분 회귀 — 보드·게시·찾기바꾸기는 아직 E2E 회귀를 돌리지 않았다.
+- [ ] 1축: 디자인·설계 추가 개선.
+- [ ] 심사용 데모 시나리오(인플레이스 스튜디오 시연 동선) 정리.
 - [ ] 최종 제출물 패키징.
+
+> 기기 간 주의: 스튜디오의 **초안 버퍼·AI 키는 브라우저 IndexedDB** 에만 있다(게시 전에는 다른 PC 에서 안 보인다).
+> 반면 **버전 시점은 GitHub 커밋 + `_studio/checkpoints.json`** 이므로 어느 PC 에서든 같은 이력을 본다.

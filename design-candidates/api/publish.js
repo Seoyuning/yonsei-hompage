@@ -85,7 +85,8 @@ module.exports = async (req, res) => {
     if (!p) return { error: 'path가 필요합니다.' };
     if (p.length > 240) return { error: '경로가 너무 깁니다.' };
     if (/(^|\/)\.\.(\/|$)/.test(p) || /\/\//.test(p) || /\/$/.test(p)) return { error: '경로가 올바르지 않습니다.' };
-    if (!/^[A-Za-z0-9][A-Za-z0-9._/-]*$/.test(p)) return { error: '경로에 허용되지 않는 문자가 있습니다: ' + p };
+    // 선행 '_' 를 허용한다 — 체크포인트 매니페스트가 _studio/checkpoints.json 이다.
+    if (!/^[A-Za-z0-9_][A-Za-z0-9._/-]*$/.test(p)) return { error: '경로에 허용되지 않는 문자가 있습니다: ' + p };
     if (needExt) {
       var ext = (p.split('.').pop() || '').toLowerCase();
       if (WRITE_EXT.indexOf(ext) < 0) return { error: '쓰기가 허용되지 않는 확장자입니다: .' + ext };

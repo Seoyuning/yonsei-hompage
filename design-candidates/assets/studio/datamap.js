@@ -568,4 +568,14 @@
   Y.store.get('drafts', DATA_PATH).then(function (d) {
     if (d && typeof d.src === 'string' && d.src !== d.origSrc) { draftFlag = true; emitDirty(); }
   }, function () {});
+
+  /* 게시가 끝나면 지금 내용이 새 기준선이다. 이걸 갱신하지 않으면 다음 data.js 편집 때
+     이미 게시된 변경까지 초안에 다시 실려 diff 가 부풀고 되돌리기 기준이 어긋난다. */
+  Y.bus.on('publish:done', function (info) {
+    if (!state) { draftFlag = false; return; }
+    state.origSrc = state.src;
+    if (info && info.sha) state.baseSha = info.sha;
+    draftFlag = false;
+    emitDirty();
+  });
 })();

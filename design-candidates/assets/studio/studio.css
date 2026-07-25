@@ -600,3 +600,290 @@
 @media print {
   .ys-root, .ys-layer, .ys-toasts { display: none !important; }
 }
+
+/* ══ 13. 버전 관리 패널 (.ys-vs-*, STUDIO_SPEC 2·4·10-6절) ══
+   versions.js 가 그리는 "버전" 패널. 톤·간격은 §4-5(사이드 패널·부품)와 맞춘다. */
+.ys-vs { display: flex; flex-direction: column; }
+
+.ys-vs-sec {
+  padding-bottom: .9rem;
+  margin-bottom: .9rem;
+  border-bottom: 1px solid var(--ys-line-2);
+}
+.ys-vs-sec:last-child { border-bottom: 0; margin-bottom: 0; padding-bottom: 0; }
+.ys-vs-h { font-size: .84rem; font-weight: 800; color: var(--ys-navy); margin-bottom: .5rem; }
+.ys-vs-note { font-size: .74rem; line-height: 1.55; color: var(--ys-muted); margin: 0 0 .6rem; }
+.ys-vs-dim { font-size: .74rem; line-height: 1.55; color: var(--ys-dim); margin: .3rem 0; }
+.ys-vs-err {
+  font-size: .74rem;
+  line-height: 1.55;
+  color: #7a2a17;
+  background: #fdf1ee;
+  border: 1px solid #f3d8d1;
+  border-left: 3px solid #d08a76;
+  border-radius: 8px;
+  padding: .5rem .6rem;
+  margin: 0 0 .5rem;
+}
+
+.ys-vs-f { display: flex; flex-direction: column; gap: .3rem; margin-bottom: .55rem; }
+.ys-vs-lb { font-size: .72rem; font-weight: 700; color: var(--ys-muted); }
+.ys-vs-in {
+  width: 100%;
+  box-sizing: border-box;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid var(--ys-line);
+  border-radius: 8px;
+  background: #fff;
+  padding: .4rem .55rem;
+  font: inherit;
+  font-size: .8rem;
+  color: var(--ys-ink);
+}
+.ys-vs-in:focus {
+  outline: none;
+  border-color: var(--ys-navy-2);
+  box-shadow: 0 0 0 3px rgba(26, 61, 117, .12);
+}
+textarea.ys-vs-in { resize: vertical; min-height: 3.4rem; line-height: 1.55; }
+
+.ys-vs-act { display: flex; justify-content: flex-end; margin-top: .5rem; }
+
+/* ys-btn 기본형은 아이콘+세로 스택 버튼(폭 3.6rem)이다 — 이 패널의 글자 버튼은
+   가로형으로 되돌린다. */
+.ys-vs-do-save,
+.ys-vs-reload {
+  width: auto;
+  flex-direction: row;
+  padding: .42rem .8rem;
+  font-size: .76rem;
+}
+.ys-vs-do-save { background: var(--ys-navy); border-color: var(--ys-navy); color: #fff; }
+.ys-vs-do-save:hover { background: var(--ys-navy-2); border-color: var(--ys-navy-2); }
+
+.ys-vs-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .5rem; }
+.ys-vs-item {
+  border: 1px solid var(--ys-line);
+  border-radius: 9px;
+  background: #fff;
+  padding: .6rem .65rem;
+}
+.ys-vs-item-h { display: flex; align-items: baseline; gap: .5rem; }
+.ys-vs-item-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: .84rem;
+  font-weight: 800;
+  color: var(--ys-navy);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ys-vs-item-meta { margin-top: .2rem; font-size: .7rem; color: var(--ys-muted); font-variant-numeric: tabular-nums; }
+.ys-vs-item-note {
+  margin-top: .35rem;
+  font-size: .76rem;
+  line-height: 1.5;
+  color: var(--ys-ink);
+  background: var(--ys-tint);
+  border-radius: 6px;
+  padding: .4rem .5rem;
+}
+.ys-vs-item-act { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .55rem; }
+
+.ys-vs-sha {
+  flex: 0 0 auto;
+  font: 700 .68rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--ys-navy-2);
+  background: #eef3fb;
+  border-radius: 5px;
+  padding: .2rem .4rem;
+}
+/* ys-vs-warn 은 span(항목 줄의 짧은 배지)과 div(경고 문단) 두 모습으로 쓰인다 */
+span.ys-vs-warn {
+  flex: 0 0 auto;
+  font-size: .66rem;
+  font-weight: 700;
+  color: var(--ys-warn);
+  background: #fbf4e2;
+  border-radius: 5px;
+  padding: .2rem .4rem;
+}
+div.ys-vs-warn {
+  margin-top: .35rem;
+  font-size: .72rem;
+  line-height: 1.5;
+  color: var(--ys-warn);
+  background: #fbf4e2;
+  border-radius: 6px;
+  padding: .4rem .5rem;
+}
+
+.ys-vs-cms { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .45rem; }
+.ys-vs-cm { border-bottom: 1px solid var(--ys-line-2); padding-bottom: .45rem; }
+.ys-vs-cm:last-child { border-bottom: 0; padding-bottom: 0; }
+.ys-vs-cm-msg { font-size: .78rem; line-height: 1.45; color: var(--ys-ink); }
+.ys-vs-cm-meta { margin-top: .18rem; font-size: .68rem; color: var(--ys-dim); }
+.ys-vs-link { color: var(--ys-navy-2); font-weight: 700; text-decoration: underline; }
+.ys-vs-link:hover { color: var(--ys-navy); }
+
+.ys-vs-cmp-head { font-size: .8rem; font-weight: 700; color: var(--ys-navy); margin-bottom: .3rem; }
+.ys-vs-cmp-sum { font-size: .74rem; color: var(--ys-muted); margin-bottom: .6rem; }
+
+/* ══ 14. 라인 디프 (.ys-diff-*, STUDIO_SPEC 10-6절) ══
+   diff.js 의 render() 가 만드는 줄 단위 비교 블록(버전 비교·AI 변경안 양쪽에서 재사용된다).
+   추가/삭제 전용 색만 새 토큰으로 보탠다 — 삭제 글자색은 기존 --ys-danger 를 그대로 쓴다.
+   글꼴·줄바꿈(pre-wrap)은 diff.js 가 .ys-diff 에 인라인으로 고정하므로 여기서 건드리지
+   않는다; 셀 단위(.ys-diff-txt)에서 pre 로 재지정해 가로 스크롤이 실제로 동작하게 한다. */
+.ys-root {
+  --ys-add-bg: #eaf3ea;
+  --ys-add-fg: #1e6b3e;
+  --ys-del-bg: #fbeceb;
+}
+
+.ys-diff {
+  border: 1px solid var(--ys-line);
+  border-radius: 9px;
+  overflow-x: auto;
+  background: #fff;
+  font-size: .74rem;
+  line-height: 1.65;
+}
+.ys-diff-none {
+  margin: 0;
+  padding: .9rem 1rem;
+  font-family: var(--ys-kr);
+  font-size: .78rem;
+  color: var(--ys-muted);
+  text-align: center;
+}
+.ys-diff-row { display: flex; }
+.ys-diff-no {
+  flex: 0 0 2.7rem;
+  box-sizing: border-box;
+  padding: .1rem .5rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--ys-dim);
+  user-select: none;
+}
+.ys-diff-no--new { border-right: 1px solid var(--ys-line-2); }
+.ys-diff-sign {
+  flex: 0 0 1.5rem;
+  box-sizing: border-box;
+  padding: .1rem 0;
+  text-align: center;
+  font-weight: 700;
+  color: var(--ys-dim);
+  user-select: none;
+}
+.ys-diff-txt {
+  flex: 1 1 auto;
+  padding: .1rem .7rem .1rem .15rem;
+  white-space: pre;
+}
+.ys-diff--same { color: var(--ys-ink); }
+.ys-diff--add { background: var(--ys-add-bg); color: var(--ys-add-fg); }
+.ys-diff--add .ys-diff-sign { color: var(--ys-add-fg); }
+.ys-diff--del { background: var(--ys-del-bg); color: var(--ys-danger); }
+.ys-diff--del .ys-diff-sign { color: var(--ys-danger); }
+.ys-diff-skip {
+  padding: .3rem 0;
+  font-family: var(--ys-kr);
+  font-size: .7rem;
+  text-align: center;
+  color: var(--ys-dim);
+  background: var(--ys-tint);
+  border-top: 1px dashed var(--ys-line);
+  border-bottom: 1px dashed var(--ys-line);
+}
+.ys-diff-sum { font-size: .74rem; color: var(--ys-muted); margin-bottom: .5rem; }
+
+/* ══ 15. 한/영 편집 패널 (.ys-i18n-*, STUDIO_SPEC 5절) ══
+   i18n-edit.js 의 baseCss() 는 studio.css 가 아직 없을 때 쓰는 최소 레이아웃 폴백이며,
+   head 맨 앞에 넣어 이 파일이 항상 이기게 되어 있다(그 파일 주석 참조). 같은 선택자를
+   여기서 정식으로 정의해 폴백을 덮어쓴다. */
+.ys-i18n { display: flex; flex-direction: column; gap: .6rem; min-height: 0; }
+.ys-i18n-top { display: flex; align-items: center; gap: .4rem; flex-wrap: wrap; }
+.ys-i18n-tools { display: flex; align-items: center; gap: .4rem; flex-wrap: wrap; }
+
+.ys-i18n-lang,
+.ys-i18n-save,
+.ys-i18n-find {
+  width: auto;
+  flex-direction: row;
+}
+.ys-i18n-lang { padding: .34rem .7rem; }
+.ys-i18n-save { padding: .34rem .7rem; margin-left: auto; }
+.ys-i18n-find { flex: 0 0 auto; padding: .26rem .5rem; font-size: .68rem; }
+
+.ys-i18n-stat { font-size: .68rem; color: var(--ys-muted); margin-left: auto; }
+.ys-i18n-q { flex: 1 1 8rem; min-width: 6rem; }
+.ys-i18n-only {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  font-size: .74rem;
+  color: var(--ys-muted);
+  white-space: nowrap;
+}
+
+.ys-i18n-note p { margin: 0 0 .3rem; font-size: .7rem; line-height: 1.5; color: var(--ys-dim); }
+.ys-i18n-note p:last-child { margin-bottom: 0; }
+
+.ys-i18n-list {
+  overflow-y: auto;
+  max-height: 52vh;
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+  padding-right: .1rem;
+}
+.ys-i18n-row {
+  display: flex;
+  flex-direction: column;
+  gap: .3rem;
+  border: 1px solid var(--ys-line);
+  border-radius: 8px;
+  background: #fff;
+  padding: .5rem .55rem;
+}
+.ys-i18n-row.is-todo { border-color: #f0dcae; background: #fffaf0; }
+.ys-i18n-ko { margin: 0; font-size: .78rem; line-height: 1.5; color: var(--ys-ink); word-break: break-word; }
+.ys-i18n-en {
+  width: 100%;
+  box-sizing: border-box;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid var(--ys-line);
+  border-radius: 7px;
+  background: #fff;
+  padding: .34rem .5rem;
+  font: inherit;
+  font-size: .78rem;
+  line-height: 1.5;
+  color: var(--ys-ink);
+  resize: vertical;
+}
+.ys-i18n-en:focus {
+  outline: none;
+  border-color: var(--ys-navy-2);
+  box-shadow: 0 0 0 3px rgba(26, 61, 117, .12);
+}
+.ys-i18n-meta { display: flex; align-items: center; gap: .4rem; font-size: .68rem; color: var(--ys-dim); }
+.ys-i18n-meta span { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ys-i18n-empty { font-size: .76rem; color: var(--ys-dim); padding: .8rem 0; text-align: center; }
+
+/* ══ 16. 작은 버튼 · 비활성 상태 보강 (hud.js — ys-btn 계열) ══
+   ys-btn-sm 은 versions.js 의 「현재와 비교」·「복원」처럼 세로 스택이 아닌 곳에 쓰는
+   가로형 축소 버튼이다. disabled 모습은 ys-btn 계열 전체에 공통으로 빠져 있었다. */
+.ys-btn-sm {
+  width: auto;
+  flex-direction: row;
+  padding: .32rem .58rem;
+  font-size: .7rem;
+  border-radius: 7px;
+}
+.ys-btn:disabled { opacity: .42; cursor: default; }
+.ys-btn:disabled:hover { background: #fff; border-color: var(--ys-line); }

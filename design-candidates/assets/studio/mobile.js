@@ -155,7 +155,9 @@
     if (!d) return;
     fdoc = d;
     d.addEventListener('keydown', onFrameKey, true);
-    d.addEventListener('click', onFrameClick, true);
+    /* 클릭 선택 리스너는 여기서 붙이지 않는다 — Y.engine.bindLive(frameDoc, frameWin) 이
+       'align:change' 를 내보내면 HUD 가 호버·클릭·하이라이트를 이 문서로 옮겨 붙인다.
+       여기서 또 붙이면 클릭 한 번에 선택이 두 번 처리된다(그래서 onFrameClick 은 미사용). */
   }
   function detachFrameDoc() {
     if (!fdoc) return;

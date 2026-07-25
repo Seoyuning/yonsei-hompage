@@ -139,7 +139,7 @@
     { key: 'versions', label: '버전', icon: 'hist', kind: 'panel', panel: 'versions', name: '버전 관리' },
     { key: 'ai', label: 'AI', icon: 'ai', kind: 'panel', panel: 'ai', name: 'AI 수정' },
     { key: 'mobile', label: '모바일', icon: 'mob', kind: 'mobile', name: '모바일 모드' },
-    { key: 'i18n', label: '한·영', icon: 'lang', kind: 'panel', panel: 'i18n', name: '한/영 편집' },
+    { key: 'i18n', label: '한·영', icon: 'lang', kind: 'panel', panel: 'lang', name: '한/영 편집' },
     { key: 'publish', label: '게시', icon: 'pub', kind: 'publish', name: '게시' }
   ];
 
@@ -251,7 +251,8 @@
         b.classList.toggle('is-on', curPanel === def.panel);
       } else if (def.kind === 'mobile') {
         var on = false, m = Y.mobile;
-        if (m) on = typeof m.active === 'function' ? !!m.active() : !!m.active;
+        if (m) on = typeof m.isOpen === 'function' ? !!m.isOpen()
+          : (typeof m.active === 'function' ? !!m.active() : !!m.active);
         b.classList.toggle('is-off', !m);
         b.classList.toggle('is-on', on);
       }

@@ -33,7 +33,7 @@ design-candidates/
 │     ├─ core.js              네임스페이스 · 버스 · IndexedDB(초안/세션/계획)
 │     ├─ net.js               api 클라이언트
 │     ├─ align.js             원본 DOM ↔ 라이브 DOM 정렬
-│     ├─ scrub.js             저장 경계 오염 제거
+│     ├─ source.js            HTML 원문 스캔 · 오프셋 편집 원시연산 (= 저장 경계)
 │     ├─ engine.js            원본 진실 모델 · eid · 편집 적용 · undo/redo
 │     ├─ datamap.js           data.js 소유 판별 + JSON 소스 오프셋 편집
 │     ├─ diff.js              LCS 라인 디프
@@ -61,7 +61,7 @@ env: `GH_TOKEN` `GH_OWNER` `GH_REPO` `GH_BRANCH`(기본 main) `GH_BASEPATH`(= `d
 | `auth` | – | `{ ok:true, branch, headSha }` |
 | `list` | – | `{ pages:[{path,name}], assets:[{path,name}], headSha }` — 서버에서 basePrefix 필터 |
 | `read` | `{path, ref?}` | `{ content, blobSha, ref }` — `ref` 미지정 시 브랜치 HEAD |
-| `commit` | `{message, files:[{path,content,encoding?}], deletions?, author, baseSha?}` | `{ commit:{sha,url}, headSha }` · `baseSha`≠HEAD → **409** `{conflict:true, headSha}` |
+| `commit` | `{message, files:[{path,content,encoding?}], deletions?, author, baseSha?}` | `{ ok:true, commit:{sha,html_url}, headSha, files:[path] }` · `baseSha`≠HEAD → **409** `{conflict:true, headSha}` |
 | `history` | `{path?, limit?}` | `{ commits:[{sha,message,author,date,url}] }` |
 | `checkpoints` | – | `{ items:[Checkpoint] }` (없으면 `[]`) |
 
@@ -93,7 +93,7 @@ env: `GH_TOKEN` `GH_OWNER` `GH_REPO` `GH_BRANCH`(기본 main) `GH_BASEPATH`(= `d
 - **eid 는 파일에서 파싱한 pristine 에서만 발급**한다. 라이브 DOM 을 태깅하지 않는다
   (라이브에는 사이트 JS 가 만든 노드가 섞여 있어 1:1 대응이 깨진다).
 - 편집은 pristine 에 기록하고, 화면에는 같은 편집을 **개별 반영**한다(라이브→pristine 미러링 금지).
-- 저장(초안) = `scrub(pristine).documentElement.outerHTML` + `<!DOCTYPE html>` + **줄바꿈 LF 유지**.
+- 저장(초안) = **편집이 누적된 원문 문자열 그대로**. DOM 을 다시 직렬화하지 않는다(§4.2).
 - undo/redo = pristine 전체 HTML 문자열 스냅샷(경로별 최대 60개). 복원 시 페이지를 다시 그리지 않고
   **바뀐 eid 만 라이브에 재적용**한다(전체 재렌더는 인플레이스에서 곧 세션 파괴다).
 
@@ -107,16 +107,32 @@ pristine 에만 있는 **유령** 노드(nav.js 가 DOM 에서 제거함): `.cta
 런타임 클래스(정렬·저장 양쪽에서 무시): `in vis fade ttl-on ysub-hide on cur open min show dim-others`.
 자식 목록은 이 키로 LCS 정렬하고, 짝지어진 쌍만 재귀한다. 결과:
 
-- `map.live→pristine`, `map.eid→live`
-- `owner(eid) = 'html' | 'js'` — 라이브 자식 구성이 pristine 과 어긋난 컨테이너 이하는 `'js'`.
-  `'js'` 영역의 텍스트는 **화면에서 직접 고칠 수 없다**(고쳐도 다음 로드에 사라짐) → datamap 으로 라우팅.
+반환 API: `indexOf(liveEl)` → 원본 인덱스 또는 `null` · `nearest(liveEl)` → `{index, live, self}`
+(가장 가까운 "파일 소유" 조상. `self:false` 면 클릭한 요소 자신은 파일에 없다) · `liveOf(idx)` · `i2l` · `l2i` · `stats`.
 
-### 4.2 저장 경계 (scrub.js)
+**소유 판정은 짝의 유무 하나로 정한다.** 짝이 있으면 파일 소유(편집 가능), 없으면 사이트 JS 생성물이다.
+JS 생성물의 텍스트는 화면에서 직접 고칠 수 없다(고쳐도 다음 로드에 사라짐) → `datamap` 으로 라우팅한다.
+단, 파일에 자리표시자 마크업이 있는 컨테이너(예: 홈 `#newsGrid` 의 대체 링크 1개)는 그 자리표시자와
+짝이 맺어지는 것이 정상이다 — 그래서 HUD 는 편집 전에 항상 `datamap.ownerOf()` 를 먼저 확인한다.
 
-pristine 은 사이트 JS 가 건드리지 않으므로 원칙적으로 깨끗하다. 그럼에도 저장 직전에 다음을 제거·복원한다.
-`data-eid`, `data-ys-*`, `contenteditable`, `spellcheck`, 런타임 클래스, `--reveal-delay`,
-`aria-expanded/pressed/selected`(원본 값 복원), 스튜디오 UI 노드, `style=""` 껍데기.
-**`[data-count]` 요소의 textContent 는 절대 라이브에서 가져오지 않는다**(카운트업 결과가 굳는다).
+### 4.2 저장 경계 (source.js)
+
+**별도의 스크럽(오염 제거) 단계가 없다.** 라이브 DOM 이 저장 경로에 아예 닿지 않기 때문이다.
+저장되는 것은 파일 원문 문자열이고, 편집은 그 문자열의 해당 구간만 치환한다(`source.js`).
+따라서 사이트 JS 가 화면에 붙인 클래스(`in`·`fade`·`sfade`·`ysub-hide`), 카운트업이 덮어쓴 숫자,
+`applyLang` 이 바꾼 텍스트, 인라인 `opacity`, 스튜디오 자신의 UI 노드는 **원문에 들어갈 통로가 없다.**
+
+지켜야 할 규칙은 두 가지다.
+
+1. **라이브 → 원문 방향으로 값을 읽어 오지 않는다.** 인스펙터가 보여 주는 값은 항상 원문에서 읽는다
+   (`source.getAttr`·`source.text`). 라이브 `textContent`/`getComputedStyle` 은 참고 표시용으로만 쓴다.
+   특히 `[data-count]`·`[data-i18n]` 요소는 라이브 텍스트가 이미 다른 값이므로 편집을 막거나 사전으로 돌린다
+   (`engine.runtimeManaged(idx)`).
+2. **스튜디오가 만든 노드는 최상위 컨테이너에 `data-ys-ui` 를 붙인다.** `align.js` 가 이 속성으로 걸러 내므로
+   짝이 생기지 않고, 따라서 편집·저장 대상이 될 수 없다.
+
+이 두 규칙이 지켜지는지는 `_studio/selftest.html`(8페이지 라운드트립)과 `_studio/inttest.html`
+(부팅·편집 후 저장본에 `data-ys-ui`·`ys-`·`contenteditable`·`sfade` 0건)이 자동으로 검증한다.
 
 ### 4.3 data.js 소유 영역 (datamap.js)
 
@@ -190,6 +206,7 @@ pristine 은 사이트 JS 가 건드리지 않으므로 원칙적으로 깨끗�
     "lang": "ko|en",
     "target": { "kind": "eid|dataPath|i18nKey", "value": "e123" },
     "op": "setText|setAttr|setStyle|replaceOuter|insertAfter|remove",
+    "attr": "setAttr 이면 속성 이름, setStyle 이면 CSS 속성 이름 (그 외 생략)",
     "before": "기존 값(표시용)",
     "after": "새 값",
     "why": "한 줄 근거"

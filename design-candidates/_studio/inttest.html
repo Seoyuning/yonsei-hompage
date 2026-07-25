@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>YSME Studio 통합검사</title>
+<style>
+  body { font: 13px/1.65 ui-monospace, Consolas, monospace; padding: 1rem 1.2rem; }
+  pre { white-space: pre-wrap; margin: 0; }
+  .fail { color: #b3261e; font-weight: 700; }
+  #verdict { margin-top: 1rem; padding: .6rem .9rem; border-radius: .5rem; font-weight: 700; }
+  #verdict.pass { background: #e6f4ea; color: #0a6b39; }
+  #verdict.fail { background: #fce8e6; color: #b3261e; }
+  iframe { position: fixed; left: -20000px; top: 0; width: 1280px; height: 900px; border: 0; }
+</style>
+</head>
+<body>
+<h1 style="font-size:1.05rem;margin:0 0 .8rem">YSME In-Place Studio — 통합검사 (실제 페이지에 부팅 후 불변식 확인)</h1>
+<div id="out"><pre>실행 중…</pre></div>
+<img id="ysBlocker" src="/hang" alt="" style="display:none" />
+
+<script>
+/* 이 파일은 배포되지 않는다(.vercelignore). 서버 없이 Y.net 을 스텁으로 갈아끼워
+   실제 사이트 페이지 위에 스튜디오를 부팅시키고, ../STUDIO_SPEC.md 10절의 합격 기준을 확인한다.
+   테스트 전용이므로 사이트 코드 규약(ES5)을 따르지 않고 async/await 를 쓴다. */
+(async function () {
+  const PAGE = 'H-academic.html';
+  const MODULES = ['core', 'net', 'source', 'align', 'engine', 'diff', 'hud', 'versions', 'ai', 'i18n-edit', 'mobile', 'datamap'];
+  const out = document.getElementById('out');
+  let lines = [], fails = 0, warns = 0;
+
+  const log = (ok, m) => { lines.push((ok ? '  ok   ' : ' FAIL  ') + m); if (!ok) fails++; paint(); };
+  const warn = (m) => { lines.push(' warn  ' + m); warns++; paint(); };
+  const info = (m) => { lines.push('       ' + m); paint(); };
+  const head = (m) => { lines.push(''); lines.push('── ' + m); paint(); };
+  function paint(done) {
+    const esc = lines.join('\n').replace(/&/g, '&amp;').replace(/</g, '&lt;');
+    let html = '<pre>' + esc.replace(/^ FAIL .*$/gm, m => '<span class="fail">' + m + '</span>') + '</pre>';
+    if (done) html += '<div id="verdict" class="' + (fails ? 'fail' : 'pass') + '">' +
+      (fails ? 'FAILED — 실패 ' + fails + '건 / 경고 ' + warns + '건' : 'PASSED — 실패 0건 / 경고 ' + warns + '건') + '</div>';
+    out.innerHTML = html;
+  }
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+  function loadFrame(url) {
+    return new Promise(res => {
+      const f = document.createElement('iframe');
+      f.addEventListener('load', () => setTimeout(() => res(f), 700));
+      f.src = url;
+      document.body.appendChild(f);
+    });
+  }
+  function inject(win, src) {
+    return new Promise(res => {
+      const s = win.document.createElement('script');
+      s.src = src;
+      s.onload = () => res(true);
+      s.onerror = () => res(false);
+      win.document.body.appendChild(s);
+    });
+  }
+
+  try {
+    /* ── 0. 준비: 이전 초안·언어 상태 제거 ── */
+    localStorage.removeItem('ysme-lang');
+    await new Promise(r => { const q = indexedDB.deleteDatabase('ysme-studio'); q.onsuccess = q.onerror = q.onblocked = () => r(); });
+    sessionStorage.setItem('ysme-studio', JSON.stringify({ passcode: 'TEST', author: '검사자', ts: Date.now() }));
+
+    const original = await (await fetch('../' + PAGE, { cache: 'no-store' })).text();
+
+    head('부팅 (' + PAGE + ')');
+    const f = await loadFrame('../' + PAGE);
+    const w = f.contentWindow, d = f.contentDocument;
+
+    /* 프레임 안 스크립트 오류 수집 */
+    const errs = [];
+    w.addEventListener('error', e => errs.push((e.message || 'error') + ' @' + (e.filename || '').split('/').pop() + ':' + e.lineno));
+    const origErr = w.console.error;
+    w.console.error = function () { errs.push('console.error: ' + Array.prototype.map.call(arguments, String).join(' ').slice(0, 200)); origErr.apply(w.console, arguments); };
+
+    /* boot.js 는 프레임에서 스스로 멈추므로(정상) 모듈을 직접 순서대로 넣는다 */
+    let loaded = 0;
+    for (const m of MODULES) {
+      const okm = await inject(w, '../assets/studio/' + m + '.js');
+      if (okm) loaded++; else warn('모듈 로드 실패: ' + m);
+      if (m === 'net') {                       // net 직후 스텁으로 교체 (서버 없이 동작)
+        const Y = w.YStudio;
+        window.__commits = [];
+        Y.net = {
+          call: () => Promise.resolve({}),
+          auth: () => Promise.resolve({ ok: true, branch: 'main', basePath: 'design-candidates', headSha: 'sha-base' }),
+          list: () => Promise.resolve({ pages: [{ path: PAGE, name: PAGE }], assets: [], headSha: 'sha-base' }),
+          read: (p) => fetch('../' + p, { cache: 'no-store' }).then(r => {
+            if (!r.ok) throw new Error(p + ' ' + r.status);
+            return r.text();
+          }).then(t => ({ content: t, blobSha: 'blob', ref: 'main' })),
+          commit: (o) => { window.__commits.push(o); return Promise.resolve({ ok: true, commit: { sha: 'sha-new', html_url: '#' }, headSha: 'sha-new' }); },
+          history: () => Promise.resolve({ commits: [] }),
+          checkpoints: () => Promise.resolve({ items: [] }),
+          ai: () => Promise.resolve({ text: '{}', data: {} })
+        };
+      }
+    }
+    log(loaded === MODULES.length, '모듈 ' + loaded + '/' + MODULES.length + ' 로드');
+
+    const Y = w.YStudio;
+    log(!!(Y && Y.engine && Y.hud), '핵심 전역(engine·hud) 존재');
+
+    /* ── 1. 원문 확보 + 라이브 결합 + HUD 마운트 ── */
+    Y.engine.setHeadSha('sha-base');
+    await Y.engine.open(PAGE);
+    log(Y.engine.mapped(), '원문 대응 성립' + (Y.engine.mapped() ? '' : ' — ' + Y.engine.reason()));
+    log(Y.engine.src() === original, '부팅 직후 원문 바이트 동일');
+    Y.engine.bindLive(d, w);
+    const mp = Y.engine.map();
+    log(!!mp && mp.stats.paired > 100, '정렬 성립 (짝 ' + (mp ? mp.stats.paired : 0) + ')');
+    Y.hud.mount();
+    await sleep(300);
+    log(!!d.querySelector('[data-ys-ui]'), 'HUD 마운트됨');
+    log(Y.engine.src() === original, 'HUD 마운트 후에도 원문 바이트 동일 (UI 오염 0)');
+
+    /* ── 2. 편집 모드 + 선택 ── */
+    head('편집 모드 · 선택');
+    Y.hud.setEditing(true);
+    log(Y.hud.editing() === true, '편집 모드 진입');
+    const outline = Y.engine.outline({ max: 400 });
+    log(outline.length > 10, '편집 대상 개요 ' + outline.length + '건 추출');
+    const target = outline.find(o => o.text.length > 6 && /^(p|h1|h2|h3|span|a|li|strong|b|em)$/.test(o.tag)) || outline[0];
+    Y.hud.select(target.idx);
+    await sleep(150);
+    log(Y.hud.selection() === target.idx, '요소 선택 (idx ' + target.idx + ' <' + target.tag + '>)');
+    log(Y.engine.src() === original, '선택 후에도 원문 바이트 동일');
+
+    /* ── 3. 텍스트 편집 → 초안 → 폐기 ── */
+    head('텍스트 편집 · 초안 · 폐기');
+    const before = Y.engine.info(target.idx).text;
+    const marker = '통합검사문구QX';
+    log(Y.engine.setText(target.idx, marker) === true, 'setText 적용');
+    log(Y.engine.src().indexOf(marker) >= 0, '원문에 반영됨');
+    log(Y.engine.src() !== original && Y.engine.dirty() === true, '더티 상태 표시');
+    const liveEl = mp.liveOf(target.idx);
+    log(!!liveEl && liveEl.textContent === marker, '화면에도 즉시 반영');
+    await Y.engine.flush();
+    const draft = await Y.store.get('drafts', PAGE);
+    log(!!draft && draft.src.indexOf(marker) >= 0, '초안이 IndexedDB 에 저장됨');
+    log(Y.engine.setText(target.idx, before) === true, '원래 문구로 되돌림');
+    log(Y.engine.src() === original, '되돌린 뒤 바이트 동일');
+
+    /* ── 4. UI 오염 최종 확인 ── */
+    head('저장본 오염 검사');
+    Y.engine.setText(target.idx, marker);
+    const outSrc = Y.engine.src();
+    log(outSrc.indexOf('data-ys-ui') < 0, '저장본에 data-ys-ui 없음');
+    log(!/class="[^"]*\bys-[a-z]/.test(outSrc), '저장본에 ys- 클래스 없음');
+    log(outSrc.indexOf('contenteditable') < 0, '저장본에 contenteditable 없음');
+    log(!/\bclass="[^"]*\bsfade\b/.test(outSrc), '저장본에 런타임 클래스(sfade) 없음');
+    log(!/\bstyle="[^"]*opacity/.test(outSrc.slice(outSrc.indexOf('<body'))) || original.indexOf('opacity') >= 0,
+        '저장본에 스크롤 페이드 인라인 opacity 없음');
+    const diffLen = Math.abs(outSrc.length - original.length);
+    log(diffLen < 200, '변경량이 편집한 문구 범위 (' + diffLen + '바이트)');
+
+    /* ── 5. 원자 게시 ── */
+    head('원자 게시 (여러 파일 → 커밋 1개)');
+    await Y.engine.flush();
+    await Y.store.put('drafts', { path: 'assets/i18n/en.json', src: '{"테스트":"Test"}', origSrc: '{}', baseSha: 'sha-base', ts: Date.now(), author: '검사자' });
+    const all = await Y.store.all('drafts');
+    log(all.length === 2, '초안 2건 준비 (' + all.map(x => x.path).join(', ') + ')');
+    window.__commits.length = 0;
+    Y.hud.publish();
+    await sleep(400);
+    const okBtn = Array.prototype.slice.call(d.querySelectorAll('[data-ys-ui] button'))
+      .filter(b => /게시/.test(b.textContent) && /is-pri/.test(b.className))[0];
+    log(!!okBtn, '게시 확인 모달 표시' + (okBtn ? ' — "' + okBtn.textContent.trim() + '"' : ''));
+    if (okBtn) {
+      okBtn.click();
+      await sleep(600);
+      const c = window.__commits[0];
+      log(window.__commits.length === 1, '커밋 호출 1회 (' + window.__commits.length + ')');
+      log(!!c && c.files && c.files.length === 2, '커밋 1개에 파일 2개 포함' + (c && c.files ? ' — ' + c.files.map(x => x.path).join(', ') : ''));
+      log(!!c && c.baseSha === 'sha-base', '낙관적 충돌 검사용 baseSha 전송');
+      const left = await Y.store.all('drafts');
+      log(left.length === 0, '게시 후 초안 비워짐 (' + left.length + '건 남음)');
+    }
+
+    /* ── 6. 한/영 — EN 편집이 HTML 을 건드리지 않는지 ── */
+    head('한/영 전환');
+    const srcBeforeLang = Y.engine.src();
+    const koText = liveEl ? liveEl.textContent : '';
+    w.localStorage.setItem('ysme-lang', 'en');
+    if (Y.i18nEdit && Y.i18nEdit.setLang) { await Y.i18nEdit.setLang('en'); }
+    else if (w.YSMEI18N && w.YSMEI18N.apply) { await w.YSMEI18N.apply('en'); }
+    else warn('i18n 재적용 API 를 찾지 못해 수동 확인 필요');
+    await sleep(700);
+    log(Y.engine.src() === srcBeforeLang, 'EN 전환이 HTML 원문을 바꾸지 않음');
+    const enChanged = Array.prototype.slice.call(d.querySelectorAll('h2, h3, p, a'))
+      .some(el => /[A-Za-z]{4,}/.test(el.textContent) && !/[가-힣]/.test(el.textContent));
+    log(enChanged, '화면 일부가 영어로 전환됨');
+    w.localStorage.removeItem('ysme-lang');
+
+    /* ── 7. 페이지 이동 지속 ── */
+    head('페이지 이동 후 초안 지속');
+    /* 앞 단계(게시)가 기준선을 바꿨으므로 이 검사만 독립적으로 리셋한다 */
+    await Y.store.clear('drafts');
+    await Y.engine.open(PAGE);
+    log(Y.engine.src() === original, '기준선 초기화 (원본 재확보)');
+    const marker2 = '이동지속검사문구ZQ';
+    log(Y.engine.setText(target.idx, marker2) === true, '이동 전 편집 적용');
+    await Y.engine.flush();
+    const f2 = await loadFrame('../' + PAGE);
+    const w2 = f2.contentWindow, d2 = f2.contentDocument;
+    for (const m of MODULES) {
+      await inject(w2, '../assets/studio/' + m + '.js');
+      if (m === 'net') { w2.YStudio.net = Y.net; }
+    }
+    const Y2 = w2.YStudio;
+    Y2.engine.setHeadSha('sha-base');
+    await Y2.engine.open(PAGE);
+    log(Y2.engine.src().indexOf(marker2) >= 0, '새 문서에서 초안을 이어받음');
+    log(Y2.engine.dirty() === true, '더티 상태 유지');
+    await Y2.engine.discardDraft();
+    log(Y2.engine.src() === original, '초안 폐기 후 원본 복귀');
+
+    /* ── 8. 모바일 모드 ── */
+    head('모바일 렌더 모드');
+    if (Y.mobile && Y.mobile.open) {
+      Y.mobile.open();
+      await sleep(1600);
+      const fr = d.querySelector('[data-ys-ui] iframe');
+      log(!!fr, '모바일 프레임 생성');
+      if (fr) {
+        const fw = fr.getBoundingClientRect().width;
+        log(fw > 300 && fw < 460, '프레임 폭 ' + Math.round(fw) + 'px (모바일)');
+        const fd = fr.contentDocument;
+        if (fd) {
+          const burger = fd.querySelector('.ynv-burger');
+          const shown = burger && fr.contentWindow.getComputedStyle(burger).display !== 'none';
+          log(!!shown, '모바일 햄버거 메뉴 노출' + (shown ? '' : ' — 미디어쿼리 재현 실패'));
+        } else warn('프레임 문서를 읽을 수 없음');
+      }
+      Y.mobile.close();
+      await sleep(300);
+      log(!d.querySelector('[data-ys-ui] iframe'), '모바일 모드 종료');
+      log(Y.engine.src() === original || Y.engine.src() === srcBeforeLang, '모바일 모드가 원문을 바꾸지 않음');
+    } else warn('Y.mobile 없음');
+
+    /* ── 9. 오류 없음 ── */
+    head('런타임 오류');
+    log(errs.length === 0, '스크립트 오류 ' + errs.length + '건');
+    errs.slice(0, 8).forEach(e => info('   ' + e));
+
+  } catch (e) {
+    log(false, '검사 중 예외: ' + (e && e.message) + (e && e.stack ? ' | ' + String(e.stack).split('\n')[1] : ''));
+  }
+
+  head('결과');
+  info('실패 ' + fails + '건 · 경고 ' + warns + '건');
+  paint(true);
+  document.title = (fails ? 'FAIL' : 'PASS') + ' ' + fails + '/' + warns;
+  try { sessionStorage.removeItem('ysme-studio'); localStorage.removeItem('ysme-lang'); } catch (e) {}
+  const b = document.getElementById('ysBlocker');
+  if (b && b.parentNode) b.parentNode.removeChild(b);
+})();
+</script>
+</body>
+</html>

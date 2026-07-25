@@ -350,3 +350,48 @@
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount); else mount();
 })();
+
+/* ═══════════════════════════════════════════════════════════════
+   런타임 로더 — 위 헤더 코드와 무관한 부착 블록. (STUDIO_SPEC 1·9절)
+     (1) 방문자용 한/영 적용 런타임(assets/i18n.js) — 항상 붙인다. 파일이 없으면 조용히 넘어간다.
+     (2) 관리자 스튜디오(assets/studio/boot.js) — 세션 또는 ?studio=1 플래그가 있을 때만 붙인다.
+         플래그가 없으면 **요청조차 하지 않는다**(방문자 경험 무영향이 불변식이다).
+   두 블록 모두 try/catch 로 감싸 실패해도 사이트가 죽지 않게 한다.
+   ═══════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+
+  /* nav.js 자신의 위치에서 assets/ 디렉터리를 구한다(?v=38 같은 버전 쿼리는 그대로 물려준다) */
+  function here() {
+    var s = document.currentScript, src = s && s.src ? s.src : '';
+    if (!src) return { dir: 'assets/', ver: '' };
+    var q = src.indexOf('?');
+    return {
+      dir: (q < 0 ? src : src.slice(0, q)).replace(/[^/]*$/, ''),
+      ver: q < 0 ? '' : src.slice(q)
+    };
+  }
+  var H = here();
+
+  function add(file, mark) {
+    if (document.querySelector('script[' + mark + ']')) return;
+    var el = document.createElement('script');
+    el.setAttribute(mark, '');
+    el.src = H.dir + file + H.ver;
+    el.defer = true;
+    el.async = false;                 // 삽입 순서대로 실행
+    el.onerror = function () {};      // 파일이 없어도 사이트는 그대로 동작한다
+    (document.head || document.documentElement).appendChild(el);
+  }
+
+  /* (1) 방문자용 i18n 런타임 */
+  try { add('i18n.js', 'data-ysme-i18n'); } catch (e) {}
+
+  /* (2) 스튜디오 로더 */
+  try {
+    var on = false;
+    try { on = !!sessionStorage.getItem('ysme-studio'); } catch (e2) {}
+    if (!on && /[?&]studio=1(&|$)/.test(location.search)) on = true;
+    if (on) add('studio/boot.js', 'data-ysme-studio');
+  } catch (e3) {}
+})();

@@ -123,6 +123,11 @@
     var out = [], seen = Object.create(null);
     function push(text, kind, el, attr) {
       if (!text || text.length < 1) return;
+      /* 사전의 키는 '한국어 원문'이다(gettext 의 msgid 규약). 한글이 없는 조각
+         — 숫자 33·연도 1962·'SCROLL'·전화번호·BK21 같은 영문 약어 — 은 번역 대상이 아니므로
+         조사 결과에 넣지 않는다. 넣으면 편집 패널의 '미번역' 수만 부풀어 실제 문장이 묻힌다.
+         (번역 적용 경로는 사전 키와 정확히 일치할 때만 치환하므로 여기 필터와 무관하다.) */
+      if (!/[가-힣]/.test(text)) return;
       if (seen[text]) { seen[text].count++; return; }
       var rec = { text: text, kind: kind, el: el, attr: attr || null, count: 1 };
       seen[text] = rec;

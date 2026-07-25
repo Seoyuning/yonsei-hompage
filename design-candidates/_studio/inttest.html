@@ -300,9 +300,15 @@
     if (Y.mobile && Y.mobile.open) {
       Y.hud.setEditing(true);
       Y.mobile.open();
-      await sleep(1800);
-      const fr2 = d.querySelector('[data-ys-ui] iframe');
-      const fd2 = fr2 && fr2.contentDocument;
+      /* 프레임 로드 + 엔진 재바인딩이 끝날 때까지 기다린다(고정 sleep 은 느린 환경에서 흔들린다) */
+      let fr2 = null, fd2 = null;
+      for (let i = 0; i < 60; i++) {
+        await sleep(200);
+        fr2 = d.querySelector('[data-ys-ui] iframe');
+        fd2 = fr2 && fr2.contentDocument;
+        if (fd2 && fd2.readyState === 'complete' && Y.engine.liveDoc() === fd2 && Y.engine.map()) break;
+      }
+      log(!!fd2 && Y.engine.liveDoc() === fd2, '엔진이 프레임 문서에 재바인딩됨');
       if (fd2) {
         let hits = 0;
         const onSel = () => { hits++; };

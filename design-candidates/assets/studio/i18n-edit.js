@@ -216,6 +216,10 @@
     function push(text, kind, owner, attr) {
       text = norm(text);
       if (!text) return;
+      /* 사전의 키는 '한국어 원문'이다. 한글이 없는 조각(숫자 33·연도 1962·'SCROLL'·
+         전화번호·BK21 같은 영문 약어)은 번역 대상이 아니므로 목록에 올리지 않는다.
+         이걸 걸러 내지 않으면 미번역 개수만 부풀어 실제로 번역이 필요한 문장이 묻힌다. */
+      if (!/[가-힣]/.test(text)) return;
       if (seen[text]) { seen[text].count++; return; }
       var rec = { text: text, kind: kind, el: owner, attr: attr || null, count: 1 };
       seen[text] = rec;

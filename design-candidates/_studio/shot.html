@@ -79,7 +79,17 @@
   await sleep(250);
 
   if (PANEL === 'mobile') { Y.mobile.open(); await sleep(1800); }
-  else if (PANEL !== 'none') { Y.hud.openPanel(PANEL); await sleep(700); }
+  else if (PANEL === 'publish') {
+    /* 게시 확인 모달 — 초안 2건을 심어 실제 흐름 그대로 띄운다 */
+    if (t) Y.engine.setText(t.idx, '연세대학교 기계공학부는 사람을 남깁니다');
+    await Y.engine.flush();
+    await Y.store.put('drafts', {
+      path: 'assets/i18n/en.json', src: '{"연구 분야":"Research Areas"}', origSrc: '{}',
+      baseSha: 'sha-demo', ts: Date.now(), author: '김편집'
+    });
+    Y.hud.publish();
+    await sleep(900);
+  } else if (PANEL !== 'none') { Y.hud.openPanel(PANEL); await sleep(700); }
 
   await sleep(400);
   const b = document.getElementById('ysBlocker');

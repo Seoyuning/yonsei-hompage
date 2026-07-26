@@ -542,7 +542,7 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
 
   <!-- 6개 연구 분야 · 자세한 설명 카드 그리드 (독수리 아래) -->
   <section class="fields-detail" id="fieldsDetail" aria-label="6개 연구 분야 상세">
-    <div class="fd-grid" id="fieldGrid"></div>
+    <div class="fd-grid" id="fieldGrid" data-cursor-zone></div>
   </section>
 
   <!-- 연구 비전 -->
@@ -877,7 +877,7 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
   if(fieldGrid){
     fieldGrid.innerHTML = clusters.map(function(c){
       var col = clColor(c.id);
-      return '<button type="button" class="fd-card" data-cid="'+esc(c.id)+'" '
+      return '<button type="button" class="fd-card" data-cid="'+esc(c.id)+'" data-cursor="자세히 보기" '
           + 'style="--fc:'+col+'" '
           + 'aria-label="'+esc(c.ko)+' 분야 · '+c.count+'개 연구실 · 자세히 보기">'
         + '<div class="fd-c-top">'

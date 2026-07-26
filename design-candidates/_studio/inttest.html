@@ -352,8 +352,18 @@
         const NEWKO = '연세대 기계공학부 (사전검사)';
         log(Y.pagedict.set('heroTitle', 'ko', NEWKO, hIdx) === true, '한국어 사전 값 수정');
         log(Y.engine.src().indexOf("heroTitle: '" + NEWKO + "'") >= 0, '원문 사전에 반영');
-        log(Y.engine.src().indexOf('<h1 data-i18n="heroTitle">' + NEWKO + '</h1>') >= 0,
-            'HTML 폴백 텍스트도 함께 동기화');
+        /* h1 에 style 같은 다른 속성이 붙어도 견디도록, 여는 태그 끝~</h1> 사이를 직접 잘라 본다
+           (정규식은 문구에 괄호가 들어 있어 이스케이프가 필요해 쓰지 않는다) */
+        const fallbackText = () => {
+          const s = Y.engine.src();
+          const at = s.indexOf('data-i18n="heroTitle"');
+          if (at < 0) return null;
+          const gt = s.indexOf('>', at);
+          const end = s.indexOf('</h1>', gt);
+          return (gt > 0 && end > 0) ? s.slice(gt + 1, end) : null;
+        };
+        log(fallbackText() === NEWKO,
+            'HTML 폴백 텍스트도 함께 동기화 — "' + fallbackText() + '"');
         if (curLang === 'ko') log(h1.textContent === NEWKO, '화면에 즉시 반영');
         else info('   화면이 영어 상태라 한국어 수정은 화면에 안 보이는 것이 정상');
 
@@ -361,8 +371,7 @@
         const srcBeforeEn = Y.engine.src();
         log(Y.pagedict.set('heroTitle', 'en', NEWEN, hIdx) === true, '영어 사전 값 수정');
         log(Y.pagedict.get('heroTitle', 'en') === NEWEN, '영어 값 반영');
-        log(Y.engine.src().indexOf('<h1 data-i18n="heroTitle">' + NEWKO + '</h1>') >= 0,
-            '영어 수정은 HTML 폴백을 건드리지 않음');
+        log(fallbackText() === NEWKO, '영어 수정은 HTML 폴백을 건드리지 않음');
         log(Math.abs(Y.engine.src().length - srcBeforeEn.length) < 60, '영어 수정 변경량이 그 문장 범위');
 
         Y.pagedict.set('heroTitle', 'en', enWas, hIdx);
@@ -550,6 +559,34 @@
       log(secTitles.indexOf('속성') < 0 && secTitles.indexOf('스타일') < 0,
           '항목 제목에 개발자 말이 없다 — ' + secTitles.join(' / '));
     }
+
+    /* ── 8j. 몰입 구역 커서가 편집을 방해하지 않는가 ── */
+    head('몰입 구역 커서 · 편집 도구와의 관계');
+    const cur = d.querySelector('.ycur');
+    if (cur) {
+      log(cur.hasAttribute('data-ys-ui'), '커서 DOM 이 편집 제외 표시를 갖는다');
+      log(Y.engine.indexFromLive(cur) === null, '커서 DOM 이 편집 대상으로 잡히지 않는다');
+      const st = d.getElementById('ycur-style');
+      log(!st || st.hasAttribute('data-ys-ui'), '커서 스타일 태그도 편집 제외');
+      log(Y.engine.src().indexOf('ycur') < 0, '저장본에 커서 흔적이 없다');
+
+      /* 편집 모드에서는 물러나야 한다 — 선택 상자와 싸우면 안 된다 */
+      Y.hud.setEditing(true);
+      const zone = d.querySelector('[data-cursor-zone]');
+      if (zone) {
+        zone.dispatchEvent(new w.PointerEvent('pointermove',
+          { bubbles: true, clientX: 300, clientY: 300, pointerType: 'mouse' }));
+        await sleep(150);
+        log(!cur.classList.contains('is-on'), '편집 모드에서는 커서가 켜지지 않는다');
+        log(!d.documentElement.classList.contains('ycur-live'), '편집 모드에서 기본 커서를 가리지 않는다');
+      } else info('   이 페이지에는 몰입 구역이 없다(정상 — 홈·연구 페이지에만 둔다)');
+      Y.hud.setEditing(false);
+    } else {
+      info('   커서 모듈이 이 환경에서 스스로 꺼졌다(터치·모션최소화·좁은 화면이면 정상)');
+    }
+    /* 정렬 품질이 커서 DOM 때문에 떨어지지 않았는지 */
+    const mp2 = Y.engine.map();
+    log(!!mp2 && mp2.stats.paired > 100, '커서 주입 후에도 정렬 유지 (짝 ' + (mp2 ? mp2.stats.paired : 0) + ')');
 
     /* ── 9. 오류 없음 ── */
     head('런타임 오류');

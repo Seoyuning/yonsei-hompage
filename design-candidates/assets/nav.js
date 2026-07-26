@@ -388,6 +388,9 @@
   /* (1) 방문자용 i18n 런타임 */
   try { add('i18n.js', 'data-ysme-i18n'); } catch (e) {}
 
+  /* (1-b) 몰입 구역 커서 — 스스로 환경을 보고 안 되면 아무것도 만들지 않는다 */
+  try { add('cursor.js', 'data-ysme-cursor'); } catch (e1b) {}
+
   /* (2) 스튜디오 로더 */
   try {
     var on = false;

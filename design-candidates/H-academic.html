@@ -412,7 +412,7 @@ img{display:block;max-width:100%}
       </div>
       <a class="more" href="G-research.html" data-i18n="moreLabs">연구실 전체 →</a>
     </div>
-    <div class="clist" id="areaGrid"></div>
+    <div class="clist" id="areaGrid" data-cursor-zone></div>
   </section>
 
   <!-- ═══ 교수진 ═══ -->
@@ -635,7 +635,7 @@ img{display:block;max-width:100%}
       var small = LANG === 'en' ? c.ko : c.en;
       var desc = LANG === 'en' ? '' : '<span class="cdesc">' + esc(c.desc) + '</span>';
       var w = Math.round(c.count / max * 100);
-      return '<a class="crow" href="G-research.html#' + esc(c.id) + '">' +
+      return '<a class="crow" href="G-research.html#' + esc(c.id) + '" data-cursor="분야 보기">' +
         '<span class="cno">0' + (i + 1) + '</span>' +
         '<span class="cmain"><span class="cko">' + esc(big) + '</span>' +
         '<span class="cen">' + esc(small) + '</span>' + desc +

@@ -133,8 +133,8 @@
     { t: '연구', h: 'G-research.html', key: 'research', sub: [['연구 비전', 'G-research.html#vision', ['vision']], ['연구 분야', 'G-research.html#fields', ['fields', 'fieldsDetail']], ['연구실 전체', 'G-research.html#clusters', ['clusters']], ['연구실 홍보영상', 'G-research.html#labvideos', ['labvideos']]] },
     { t: '학사', h: 'G-academics.html', key: 'academics', sub: [['교육과정 개관', 'G-academics.html#curriculum', ['curriculum', 'requirements', 'abeek']], ['이수 체계도', 'G-academics.html#roadmap', ['roadmap']], ['졸업 요건', 'G-academics.html#graduation', ['graduation']], ['전공 교과', 'G-academics.html#courses', ['mechanics', 'courses']], ['대학원 교과', 'G-academics.html#grad', ['grad']], ['동아리·학생활동', 'G-academics.html#clubs', ['clubs']]] },
     { t: '대학원', h: 'G-graduate.html', key: 'graduate', sub: [['입학 안내', 'G-graduate.html#grad-admission', ['grad-admission']], ['졸업 요건', 'G-graduate.html#grad-req', ['grad-req']], ['교과목 소개', 'G-graduate.html#grad-courses', ['grad-courses']], ['대학원 연구실', 'G-graduate.html#grad-labs', ['grad-labs']], ['BK21 FOUR', 'G-graduate.html#bk21', ['bk21']]] },
-    { t: '소식', h: 'G-news.html', key: 'news', sub: [['학부 공지', 'G-news.html#notice-ug', ['notice-ug']], ['대학원 공지', 'G-news.html#notice-grad', ['notice-grad']], ['뉴스 · 연구성과', 'G-news.html#hi', ['hi']], ['세미나 · 행사', 'G-news.html#sched', ['sched']]] },
-    { t: '입학', h: 'G-admissions.html', key: 'admissions', sub: [['학부 입학', 'G-admissions.html#undergraduate', ['undergraduate']], ['대학원 진학', 'G-admissions.html#graduate', ['graduate']], ['장학 안내', 'G-admissions.html#scholarships', ['scholarships']], ['취업 정보', 'G-admissions.html#jobs', ['jobs']], ['진로 안내', 'G-admissions.html#careers', ['careers', 'alumni', 'faq']]] }
+    { t: '소식', h: 'G-news.html', key: 'news', sub: [['학부 공지', 'G-news.html#notice-ug', ['notice-ug']], ['대학원 공지', 'G-news.html#notice-grad', ['notice-grad']], ['뉴스 · 연구성과', 'G-news.html#hi', ['hi']], ['세미나 · 행사', 'G-news.html#sched', ['sched']], ['학위논문심사', 'G-news.html#thesis', ['thesis']], ['자료실', 'G-news.html#archive', ['archive']], ['취업 정보', 'G-news.html#jobs', ['jobs']]] },
+    { t: '입학', h: 'G-admissions.html', key: 'admissions', sub: [['학부 입학', 'G-admissions.html#undergraduate', ['undergraduate']], ['대학원 진학', 'G-admissions.html#graduate', ['graduate']], ['장학 안내', 'G-admissions.html#scholarships', ['scholarships']], ['진로 안내', 'G-admissions.html#careers', ['careers', 'alumni', 'faq']]] }
   ];
   var path = (location.pathname.split('/').pop() || '').toLowerCase();
   var curKey = null;
@@ -217,16 +217,46 @@
       setBreadcrumb(s[0]);
       try { history.replaceState(null, '', '#' + (s[1].split('#')[1] || '')); } catch (_) {}
       if (doScroll) {
-        /* 형제 탭 = 형제 페이지 느낌 — 누르면 새 뷰의 맨 위로 이동 */
-        try { scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); } catch (_) { scrollTo(0, 0); }
+        /* 형제 탭 클릭 — 탭 바가 화면 맨 위(헤더 바로 아래)에 붙도록 부드럽게 이동 */
+        var y = bar.getBoundingClientRect().top + (pageYOffset || 0) - Math.round(hdr ? hdr.getBoundingClientRect().height : 62);
+        try { scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' }); } catch (_) { scrollTo(0, y); }
+        /* 새로 보이는 뷰의 글자 등장 애니메이션(.ys-view-in — transition.css) */
+        if (!reduce) managed.forEach(function (el) {
+          if (ids.indexOf(el.id) >= 0) { el.classList.remove('ys-view-in'); void el.offsetWidth; el.classList.add('ys-view-in'); }
+        });
       }
     }
     tabs.forEach(function (t, i) { t.addEventListener('click', function () { show(i, true); }); });
 
     /* 초기 탭 = 해시 매칭 or 첫 탭 */
-    var initial = 0, hash = (location.hash || '').slice(1);
-    if (hash) m.sub.forEach(function (s, i) { if ((s[2] || []).indexOf(hash) >= 0 || s[1].split('#')[1] === hash) initial = i; });
+    var initial = 0, hash = (location.hash || '').slice(1), isTabHash = false;
+    if (hash) m.sub.forEach(function (s, i) { if ((s[2] || []).indexOf(hash) >= 0 || s[1].split('#')[1] === hash) { initial = i; isTabHash = true; } });
     show(initial, false);
+
+    /* 메뉴로 페이지에 들어올 때(탭 해시)는 앵커 위치가 아니라 맨 위(히어로 화면)에서 시작.
+       탭이 아닌 깊은 앵커(연구실 id 등)는 기존 스크롤 유지 */
+    if (isTabHash) {
+      var toTop = function () { try { scrollTo({ top: 0, behavior: 'instant' }); } catch (_) { scrollTo(0, 0); } };
+      toTop();
+      addEventListener('load', function () { setTimeout(toTop, 0); });
+      setTimeout(toTop, 120);
+    }
+
+    /* 같은 페이지의 탭 해시 링크(드롭다운·푸터·모바일 메뉴) — 리로드 없이 탭 전환 + 애니메이션 */
+    document.addEventListener('click', function (e) {
+      var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+      if (!a || a.target === '_blank') return;
+      var href = a.getAttribute('href') || '';
+      var hi = href.indexOf('#'); if (hi < 0) return;
+      var page = href.slice(0, hi).split('?')[0];
+      if (page && page.toLowerCase() !== path) return;   /* 다른 페이지는 그대로(페이지 전환 담당) */
+      var h = href.slice(hi + 1), idx = -1;
+      m.sub.forEach(function (s, i) { if ((s[2] || []).indexOf(h) >= 0 || s[1].split('#')[1] === h) idx = i; });
+      if (idx < 0) return;
+      e.preventDefault();
+      try { history.replaceState(null, '', '#' + h); } catch (_) {}
+      show(idx, true);
+    });
   }
 
   /* ── 사이트맵 정보 푸터 주입(파란 CTA·간이 푸터 제거 후 교체) ── */

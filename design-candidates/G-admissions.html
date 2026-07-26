@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>[시안 G · 관제] 입학 · 진로 — 연세대학교 기계공학부</title>
-<meta name="description" content="연세대학교 기계공학부 입학·진로 안내 — 학부 입학, 대학원 진학, 장학 안내, 취업 정보, 진로 경로, 동문·대외협력, 자주 묻는 질문." />
+<meta name="description" content="연세대학교 기계공학부 입학·진로 안내 — 학부 입학, 대학원 진학, 장학 안내, 진로 경로, 동문·대외협력, 자주 묻는 질문." />
 <meta name="theme-color" content="#1a3d75" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -17,8 +17,8 @@
 /* ───────────────────────────────────────────────
    입학 · 진로 (라이트 테마)
    이미지 배너 · 아이보리 배경 · 네이비 포인트.
-   콘텐츠: 학부 입학 · 대학원 진학 · 장학 · 취업 ·
-   진로 경로 · 동문 · FAQ · 문의 CTA.
+   콘텐츠: 학부 입학 · 대학원 진학 · 장학 ·
+   진로 경로 · 동문 · FAQ. (취업 정보 게시판은 소식으로 이동)
    ─────────────────────────────────────────────── */
 :root{
   --navy:#1a3d75;
@@ -285,22 +285,6 @@ a{color:inherit;text-decoration:none}
   line-height:1.6;font-variant-numeric:normal;white-space:normal}
 @media (max-width:520px){.sch-card .def .drow{grid-template-columns:1fr}.sch-card .def .drow .v{margin-top:.15rem}}
 
-/* ── 취업 정보 (게시판 리스트) ── */
-.job-head{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:.9rem}
-.job-head .overline{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;
-  text-transform:uppercase;color:var(--coral)}
-.job-head .cnt{font-size:.84rem;color:var(--muted);font-variant-numeric:tabular-nums}
-.job-list{border-top:1px solid var(--line)}
-.job-row{display:grid;grid-template-columns:3.6rem 1fr auto;gap:1rem;align-items:baseline;
-  padding:.8rem .2rem;border-bottom:1px solid var(--line-soft);transition:background .12s}
-.job-row:hover{background:var(--card)}
-.job-row:hover .job-title{color:var(--coral)}
-.job-no{font-family:var(--mono);font-size:.7rem;color:var(--faint);font-variant-numeric:tabular-nums}
-.job-title{font-size:.92rem;color:var(--ink);line-height:1.5;min-width:0;transition:color .12s}
-.job-title .ext{font-family:var(--mono);color:var(--coral);margin-left:.35rem;font-size:.8em}
-.job-date{font-family:var(--mono);font-size:.72rem;color:var(--muted);
-  font-variant-numeric:tabular-nums;white-space:nowrap}
-
 /* ── 학부 현황 (숫자) ── */
 .stats{border-top:1px solid var(--line-soft);margin-top:1rem}
 .stats-inner{padding:2.4rem 0 2.6rem;
@@ -318,10 +302,6 @@ a{color:inherit;text-decoration:none}
   .post-cat{grid-row:1;grid-column:1}
   .post-date{grid-row:1;grid-column:2;justify-self:end}
   .post-title{grid-row:2;grid-column:1 / -1}
-  .job-row{grid-template-columns:auto 1fr;gap:.4rem 1rem}
-  .job-no{grid-row:1;grid-column:1;align-self:center}
-  .job-date{grid-row:1;grid-column:2;justify-self:end}
-  .job-title{grid-row:2;grid-column:1 / -1}
   .stats-inner{flex-direction:column;align-items:flex-start}
   .stats-contact{text-align:left}
 }
@@ -339,7 +319,7 @@ a{color:inherit;text-decoration:none}
   <!-- ═══ 페이지 히어로 ═══ -->
   <header class="phero">
     <div class="phero-in">
-      <h1>입학 · 진로</h1>
+      <h1>입학</h1>
       <p class="bc">홈 › 입학</p>
     </div>
   </header>
@@ -474,28 +454,7 @@ a{color:inherit;text-decoration:none}
     <p class="note">신청 방법과 마감은 매 학기 학사 공지와 각 장학재단 · 공지 원문을 확인하세요.</p>
   </section>
 
-  <!-- ═══ §04 취업 정보 ═══ -->
-  <section class="wrap section" id="jobs" aria-labelledby="job-h">
-    <div class="sec-head">
-      <div>
-        <p class="sec-kick">취업</p>
-        <h2 id="job-h" class="sec-title">취업 정보</h2>
-        <p class="sec-sub">기업 채용 · 인턴 · 연구인력 모집 등 학부에 접수된 취업 공고입니다. 제목을 누르면 공고 원문으로 이동합니다.</p>
-      </div>
-      <a class="sec-more" href="https://me.yonsei.ac.kr/me/community/job.do" target="_blank" rel="noopener">전체 공고 <span class="arr" aria-hidden="true">↗</span></a>
-    </div>
-    <div class="job-head">
-      <span class="overline">학생 · 졸업생 채용 / 인턴</span>
-      <span class="cnt"><span id="job-cnt-student">0</span>건</span>
-    </div>
-    <div class="job-list" id="jobListStudent" aria-label="학생 · 졸업생 채용 및 인턴 공고 목록"></div>
-    <div class="job-head" style="margin-top:2rem">
-      <span class="overline">교원 · 연구원 채용</span>
-      <span class="cnt"><span id="job-cnt-faculty">0</span>건</span>
-    </div>
-    <div class="job-list" id="jobListFaculty" aria-label="교원 · 연구원 채용 공고 목록"></div>
-    <p class="note">접수 · 마감 등 세부 사항은 각 공고 원문을 확인하세요.</p>
-  </section>
+  <!-- 취업 정보 게시판은 소식(G-news.html#jobs)으로 이동 -->
 
   <!-- ═══ §05 진로 경로 ═══ -->
   <section class="wrap section" id="careers" aria-labelledby="car-h">
@@ -756,37 +715,7 @@ a{color:inherit;text-decoration:none}
   }
   var gsc = document.getElementById('sch-grad-cnt'); if(gsc) gsc.textContent = gradSch.length;
 
-  /* 취업 공고 — 두 그룹(학생·졸업생 / 교원·연구원)으로 분류, 최신순 */
-  var jobs = (D.jobs || []).slice().sort(function(a, b){
-    var da = String(a.date || '').replace(/\./g,''), db = String(b.date || '').replace(/\./g,'');
-    if(da !== db) return db.localeCompare(da);
-    return String(b.no||'').localeCompare(String(a.no||''), undefined, {numeric:true});
-  });
-  /* 교원·연구원 키워드가 우선. 이후 학생 신호(인턴·현장실습·기업명 등)가 있으면 학생 그룹,
-     둘 다 아니면 보수적으로 교원·연구원 그룹. */
-  var FACULTY_RE = /교원|교수|강사|박사후|전문연구요원|연구인력|연구원/;
-  var STUDENT_RE = /인턴|현장실습|채용연계|신입사원|장학생|공모전|경진대회|교육|양성|부트캠프|설명회|행사|프로그램|견학|삼성|보잉|HD현대|두산|한화|HL/;
-  function isFacultyJob(title){
-    var t = String(title || '');
-    if(FACULTY_RE.test(t)) return true;
-    return !STUDENT_RE.test(t);
-  }
-  function renderJobs(list, elId, cntId){
-    var el = document.getElementById(elId);
-    if(el){
-      el.innerHTML = list.map(function(j){
-        return '<a class="job-row" href="' + safeUrl(j.url) + '" target="_blank" rel="noopener">' +
-          '<span class="job-no">' + esc(j.no) + '</span>' +
-          '<span class="job-title kr">' + esc(j.title) +
-          '<span class="ext" aria-hidden="true">↗</span></span>' +
-          '<time class="job-date" datetime="' + esc(String(j.date||'').replace(/\./g,'-')) + '">' + esc(j.date) + '</time>' +
-          '</a>';
-      }).join('');
-    }
-    var c = document.getElementById(cntId); if(c) c.textContent = list.length;
-  }
-  renderJobs(jobs.filter(function(j){ return !isFacultyJob(j.title); }), 'jobListStudent', 'job-cnt-student');
-  renderJobs(jobs.filter(function(j){ return isFacultyJob(j.title); }), 'jobListFaculty', 'job-cnt-faculty');
+  /* 취업 공고 게시판은 소식(G-news.html#jobs)으로 이동 */
 
   /* ── FAQ: 하나만 펼침 (네이티브 details 배타 오픈) ── */
   var faq = document.getElementById('faqList');

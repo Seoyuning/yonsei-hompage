@@ -172,6 +172,19 @@ a{color:inherit;text-decoration:none}
 .nlink.news-item:hover .nthumb img{transform:scale(1.06)}
 @media(max-width:560px){.nthumb{width:54px;height:40px}.nlink.news-item{gap:.7rem}}
 
+/* ── 단순 게시판(학위논문심사·자료실·취업 정보) — 분류 칩 없는 원본형 표 ── */
+.ntable td.c-att{text-align:center;color:var(--muted)}
+.ntable col.c-att{width:3.4rem}
+.jbadge{display:inline-block;font-size:.68rem;font-weight:700;padding:.14rem .5rem;border-radius:2px;white-space:nowrap}
+.jbadge.stu{background:#eef3fb;color:#2c4f86}
+.jbadge.fac{background:#f3f0e9;color:#7a6428}
+.rule-note{margin-top:1.5rem;background:var(--row);border:1px solid var(--line-soft);padding:1.2rem 1.4rem}
+.rule-note h3{font-size:.92rem;font-weight:700;color:var(--ink)}
+.rule-note h3 span{font-weight:500;font-size:.78rem;color:var(--muted)}
+.rule-note p{font-size:.88rem;color:var(--sub);line-height:1.75;margin-top:.55rem}
+.rule-note .go{display:inline-block;margin-top:.75rem;font-size:.84rem;font-weight:600;color:var(--navy)}
+.rule-note .go:hover{text-decoration:underline;text-underline-offset:3px}
+
 /* ── 세미나 · 행사 2단 ── */
 .duo{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,1rem + 3vw,3.5rem);align-items:start}
 .duo h3{font-size:1.06rem;font-weight:700;color:var(--navy);margin-bottom:.4rem;
@@ -298,6 +311,64 @@ a{color:inherit;text-decoration:none}
       </div>
     </div>
   </section>
+
+  <!-- 학위논문심사 -->
+  <section class="sec" id="thesis" aria-labelledby="t-thesis">
+    <div class="sec-head" style="display:flex;justify-content:space-between;align-items:flex-end;gap:1.5rem;flex-wrap:wrap">
+      <div>
+        <p class="sec-kick">Thesis Defense</p>
+        <h2 class="sec-title" id="t-thesis">학위논문심사</h2>
+        <p class="sec-sub">석·박사 학위논문 심사 공고 게시판입니다. 아래는 최근 공고이며, 전체 공고는 원본 게시판에서 볼 수 있습니다.</p>
+      </div>
+      <a class="sec-more" href="https://me.yonsei.ac.kr/me/community/degree_thesis_review.do" target="_blank" rel="noopener">전체 보기 ↗</a>
+    </div>
+    <table class="ntable">
+      <colgroup><col class="c-no"><col class="c-title"><col class="c-writer"><col class="c-date"></colgroup>
+      <thead><tr><th class="h-no">번호</th><th class="h-title">제목</th><th class="h-writer">작성자</th><th>등록일</th></tr></thead>
+      <tbody id="thesisRows"></tbody>
+    </table>
+    <div class="rule-note">
+      <h3>심사 규정 요약 <span>— 대학원 졸업요건 원문 인용</span></h3>
+      <p>“예비심사 위원회는 주임교수와 지도교수가 협의하여 석사학위 논문의 경우 3인, 박사학위 논문의 경우 5인으로 구성한다.”</p>
+      <p>“본심사 위원회는 석사학위 논문의 경우 3인, 박사학위 논문의 경우 5인으로 하며, 논문 지도교수는 자동적으로 심사위원이 된다.”</p>
+      <p>“석사학위논문에 있어서는 심사위원 2인 이상이 80점 이상으로 평가할 경우 합격으로 간주하며, 박사학위논문에 있어서는 심사위원 4인 이상이 80점 이상으로 평가할 경우 합격으로 간주한다.”</p>
+      <a class="go" href="G-graduate.html#grad-req">대학원 › 졸업 요건에서 전체 규정 보기 →</a>
+    </div>
+  </section>
+
+  <!-- 자료실 -->
+  <section class="sec" id="archive" aria-labelledby="t-archive">
+    <div class="sec-head" style="display:flex;justify-content:space-between;align-items:flex-end;gap:1.5rem;flex-wrap:wrap">
+      <div>
+        <p class="sec-kick">Resources</p>
+        <h2 class="sec-title" id="t-archive">자료실</h2>
+        <p class="sec-sub">출석인정 신청서, 각종 양식 · 안내 자료를 내려받을 수 있는 게시판입니다. 첨부 파일은 원문에서 내려받습니다.</p>
+      </div>
+      <a class="sec-more" href="https://me.yonsei.ac.kr/me/community/information.do" target="_blank" rel="noopener">원본 게시판 ↗</a>
+    </div>
+    <table class="ntable">
+      <colgroup><col class="c-no"><col class="c-title"><col class="c-att"><col class="c-writer"><col class="c-date"></colgroup>
+      <thead><tr><th class="h-no">번호</th><th class="h-title">제목</th><th>첨부</th><th class="h-writer">작성자</th><th>등록일</th></tr></thead>
+      <tbody id="archiveRows"></tbody>
+    </table>
+  </section>
+
+  <!-- 취업 정보 -->
+  <section class="sec" id="jobs" aria-labelledby="t-jobs">
+    <div class="sec-head" style="display:flex;justify-content:space-between;align-items:flex-end;gap:1.5rem;flex-wrap:wrap">
+      <div>
+        <p class="sec-kick">Careers</p>
+        <h2 class="sec-title" id="t-jobs">취업 정보</h2>
+        <p class="sec-sub">기업 채용 · 인턴 · 연구인력 모집 등 학부에 접수된 취업 공고입니다. 구분은 제목 기반 자체 분류입니다.</p>
+      </div>
+      <a class="sec-more" href="https://me.yonsei.ac.kr/me/community/job.do" target="_blank" rel="noopener">전체 공고 ↗</a>
+    </div>
+    <table class="ntable">
+      <colgroup><col class="c-no"><col class="c-cat"><col class="c-title"><col class="c-writer"><col class="c-date"></colgroup>
+      <thead><tr><th class="h-no">번호</th><th>구분</th><th class="h-title">제목</th><th class="h-writer">작성자</th><th>등록일</th></tr></thead>
+      <tbody id="jobsRows"></tbody>
+    </table>
+  </section>
 </main>
 
 <script src="assets/js/data.js?v=d11"></script>
@@ -415,6 +486,32 @@ a{color:inherit;text-decoration:none}
   document.getElementById('evtRows').innerHTML = D.events.map(linkRow).join('');
   document.getElementById('semCount').textContent = D.seminars.length+'건';
   document.getElementById('evtCount').textContent = D.events.length+'건';
+
+  /* ── 학위논문심사 · 자료실 · 취업 정보 — 원본 게시판형 단순 표 ── */
+  function clipSvg(){ return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.4 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>'; }
+  function boardRows(id, list, cols){
+    var el = document.getElementById(id); if(!el || !list || !list.length) return;
+    el.innerHTML = list.map(function(x){
+      var extra = '';
+      if(cols === 'att') extra = '<td class="c-att">'+(x.att ? clipSvg() : '')+'</td>';
+      var badge = '';
+      if(cols === 'job'){
+        var fac = /교원|교수|강사|박사후|전문연구요원|연구인력|연구원/.test(x.title);
+        badge = '<td class="c-cat"><span class="jbadge '+(fac?'fac':'stu')+'">'+(fac?'교원·연구원':'학생·졸업생')+'</span></td>';
+      }
+      return '<tr>'
+        + '<td class="c-no">'+esc(x.no)+'</td>'
+        + badge
+        + '<td class="c-title"><a href="'+esc(x.url)+'" target="_blank" rel="noopener" title="'+esc(x.title)+'">'+esc(x.title)+'</a></td>'
+        + (cols === 'att' ? extra : '')
+        + '<td class="c-writer">기계공학부</td>'
+        + '<td class="c-date">'+esc(x.date)+'</td>'
+        + '</tr>';
+    }).join('');
+  }
+  boardRows('thesisRows', D.thesisReview, 'plain');
+  boardRows('archiveRows', D.archive, 'att');
+  boardRows('jobsRows', D.jobs, 'job');
 })();
 </script>
 <script src="assets/nav.js?v=38"></script>

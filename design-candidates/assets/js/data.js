@@ -4240,6 +4240,121 @@ window.YSME = {
    "url": "https://me.yonsei.ac.kr/me/community/seminar_graduate1.do?mode=view&articleNo=447034&article.offset=0&articleLimit=10"
   }
  ],
+ "thesisReviewSource": "community/degree_thesis_review.do — 총 150건 중 최근 10건, 2026-07-27 확인(개별 글 URL 미확인 → 게시판 링크)",
+ "thesisReview": [
+  {
+   "no": "150",
+   "title": "[260424] 가태권",
+   "date": "2026.04.22",
+   "url": "https://me.yonsei.ac.kr/me/community/degree_thesis_review.do"
+  },
+  {
+   "no": "149",
+   "title": "[260422] 홍수근",
+   "date": "2026.04.22",
+   "url": "https://me.yonsei.ac.kr/me/community/degree_thesis_review.do"
+  },
+  {
+   "no": "148",
+   "title": "[260423] 김재증",
+   "date": "2026.04.16",
+   "url": "https://me.yonsei.ac.kr/me/community/degree_thesis_review.do"
+  },
+  {
+   "no": "147",
+   "title": "[260422] 윤성섭",
+   "date": "2026.04.15",
+   "url": "https://me.yonsei.ac.kr/me/community/degree_thesis_review.do"
+  },
+  {
+   "no": "146",
+   "title": "[260424] 서보경",
+   "date": "2026.04.15",
+   "url": "https://me.yonsei.ac.kr/me/community/degree_thesis_review.do"
+  },
+  {
+   "no": "145",
+   "title": "[260423] 김보경",
+   "date": "2026.04.14",
+   "url": "https://me.yonsei.ac.kr/me/community/degree_thesis_review.do"
+  },
+  {
+   "no": "144",
+   "title": "[260422] 강준구",
+   "date": "2026.04.13",
+   "url": "https://me.yonsei.ac.kr/me/community/degree_thesis_review.do"
+  },
+  {
+   "no": "143",
+   "title": "[260422] 정승민",
+   "date": "2026.04.13",
+   "url": "https://me.yonsei.ac.kr/me/community/degree_thesis_review.do"
+  },
+  {
+   "no": "142",
+   "title": "[260421] 홍태화",
+   "date": "2026.04.13",
+   "url": "https://me.yonsei.ac.kr/me/community/degree_thesis_review.do"
+  },
+  {
+   "no": "141",
+   "title": "[260422] 김세영",
+   "date": "2026.04.13",
+   "url": "https://me.yonsei.ac.kr/me/community/degree_thesis_review.do"
+  }
+ ],
+ "archiveSource": "community/information.do — 총 7건 전체, 2026-07-27 확인",
+ "archive": [
+  {
+   "no": "7",
+   "title": "출석인정 신청서",
+   "date": "2026.03.10",
+   "att": true,
+   "url": "https://me.yonsei.ac.kr/me/community/information.do?mode=view&articleNo=466087&article.offset=0&articleLimit=10"
+  },
+  {
+   "no": "6",
+   "title": "출입권한 부여 절차 안내",
+   "date": "2024.09.05",
+   "att": true,
+   "url": "https://me.yonsei.ac.kr/me/community/information.do?mode=view&articleNo=210349&article.offset=0&articleLimit=10"
+  },
+  {
+   "no": "5",
+   "title": "[BK21] 학술활동지원비 신청 서식 안내",
+   "date": "2022.09.15",
+   "att": true,
+   "url": "https://me.yonsei.ac.kr/me/community/information.do?mode=view&articleNo=149048&article.offset=0&articleLimit=10"
+  },
+  {
+   "no": "4",
+   "title": "[학부] 일몰된 교과목(기계공학수학)에 대한 재수강처리 요청서 양식",
+   "date": "2021.04.06",
+   "att": true,
+   "url": "https://me.yonsei.ac.kr/me/community/information.do?mode=view&articleNo=116196&article.offset=0&articleLimit=10"
+  },
+  {
+   "no": "3",
+   "title": "시설 및 비품관련 양식(시설수리, 불용품 처리)",
+   "date": "2021.04.06",
+   "att": true,
+   "url": "https://me.yonsei.ac.kr/me/community/information.do?mode=view&articleNo=116195&article.offset=0&articleLimit=10"
+  },
+  {
+   "no": "2",
+   "title": "[대학원]투트랙 및 이중지도 교수제 신청서 양식",
+   "date": "2021.04.06",
+   "att": true,
+   "url": "https://me.yonsei.ac.kr/me/community/information.do?mode=view&articleNo=116194&article.offset=0&articleLimit=10"
+  },
+  {
+   "no": "1",
+   "title": "[학부] ABEEK 인증(예정) 증명서 발급 관련 안내",
+   "date": "2021.04.06",
+   "att": true,
+   "url": "https://me.yonsei.ac.kr/me/community/information.do?mode=view&articleNo=116192&article.offset=0&articleLimit=10"
+  }
+ ],
  "jobs": [
   {
    "no": "934",

@@ -229,8 +229,9 @@
     }
     tabs.forEach(function (t, i) { t.addEventListener('click', function () { show(i, true); }); });
 
-    /* 초기 탭 = 해시 매칭 or 첫 탭 */
-    var initial = 0, hash = (location.hash || '').slice(1), isTabHash = false;
+    /* 초기 탭 = 해시 매칭 or 첫 탭.
+       탭 해시는 각 페이지 head 스니펫이 앵커 점프 차단을 위해 미리 떼어 window.__ysTab 에 보관 */
+    var initial = 0, hash = window.__ysTab || (location.hash || '').slice(1), isTabHash = false;
     if (hash) m.sub.forEach(function (s, i) { if ((s[2] || []).indexOf(hash) >= 0 || s[1].split('#')[1] === hash) { initial = i; isTabHash = true; } });
     show(initial, false);
 

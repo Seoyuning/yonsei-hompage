@@ -990,3 +990,23 @@ div.ys-vs-warn {
   list-style: revert;
 }
 .ys-cmp-raw > summary:hover { color: var(--ys-navy); }
+
+/* 대부분의 사용자는 볼 일 없는 안내·설정 — 눈에 덜 띄게 */
+.ys-adv {
+  font-size: .68rem;
+  line-height: 1.5;
+  color: var(--ys-dim);
+  margin: .45rem 0 0;
+  padding-left: .5rem;
+  border-left: 2px solid var(--ys-line-2);
+}
+.ys-advfold { margin-top: .35rem; }
+.ys-advfold > summary {
+  cursor: pointer;
+  font-size: .7rem;
+  font-weight: 700;
+  color: var(--ys-dim);
+  padding: .15rem 0;
+  list-style: revert;
+}
+.ys-advfold > summary:hover { color: var(--ys-navy); }

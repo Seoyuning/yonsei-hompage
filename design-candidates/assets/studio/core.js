@@ -16,6 +16,34 @@
     Z: 2147483000
   };
 
+  /* ── 사람 말 이름표 ──
+     이 도구를 쓰는 사람은 개발자가 아니라 학과 조교다. 화면에는 파일명·배열명·
+     내부 id 를 절대 내보내지 않는다. 여러 모듈이 같은 이름을 쓰도록 여기 모아 둔다. */
+  Y.labels = {
+    /* data.js 의 배열 이름 → 화면에서 부르는 이름 */
+    coll: {
+      noticesUG: '학부 공지', noticesGrad: '대학원 공지', newsList: '연구 소식',
+      seminars: '세미나', events: '행사', professors: '교수', labs: '연구실',
+      clusters: '연구 분야', courses: '교과목', coursesUG: '학부 교과목',
+      coursesGrad: '대학원 교과목', curriculum: '교육과정', jobs: '채용 정보',
+      posts: '게시글', history: '연혁', pages: '페이지', datums: '수치',
+      scholarshipsInternal: '교내 장학', scholarshipsExternal: '교외 장학',
+      site: '사이트 기본 정보', reels: '인스타 릴스', meta: '페이지 정보'
+    },
+    /* 항목 필드 이름 → 입력칸 라벨 */
+    field: {
+      no: '번호', title: '제목', date: '날짜', url: '링크', att: '첨부',
+      thumb: '썸네일', name: '이름', nameEn: '영문 이름', rank: '직위',
+      email: '이메일', tel: '전화', room: '호실', lab: '연구실', labEn: '연구실(영문)',
+      cluster: '연구 분야', field: '분야', desc: '설명', summary: '요약',
+      ko: '한국어', en: '영어', code: '교과목 코드', credit: '학점',
+      grade: '학년', term: '학기', place: '장소', time: '시간', speaker: '연사',
+      photo: '사진', homepage: '홈페이지', keywords: '키워드', count: '개수'
+    },
+    collOf: function (k) { return (Y.labels.coll[k] || k); },
+    fieldOf: function (k) { return (Y.labels.field[k] || k); }
+  };
+
   /* ── 유틸 ── */
   var util = Y.util = {
     esc: function (s) {

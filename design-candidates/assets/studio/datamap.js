@@ -21,32 +21,36 @@
   /* ── 1. 컨테이너 id → 데이터 경로 (SPEC 4.3 표) ── */
   var MAP = {
     /* H-academic (홈) */
-    newsGrid: { page: 'H-academic.html', colls: ['newsList'], label: 'newsList[]' },
-    ntList: { page: 'H-academic.html', colls: ['noticesUG', 'noticesGrad'], label: 'noticesUG[] + noticesGrad[]' },
-    smList: { page: 'H-academic.html', colls: ['seminars'], label: 'seminars[]' },
-    areaGrid: { page: 'H-academic.html', colls: ['clusters'], label: 'clusters[]' },
-    pGrid: { page: 'H-academic.html', colls: ['professors'], label: 'professors[] (화면 순서는 무작위 셔플)' },
+    newsGrid: { page: 'H-academic.html', colls: ['newsList'], label: 'newsList[]', human: '연구 소식 목록' },
+    ntList: { page: 'H-academic.html', colls: ['noticesUG', 'noticesGrad'], label: 'noticesUG[] + noticesGrad[]', human: '공지사항 목록' },
+    smList: { page: 'H-academic.html', colls: ['seminars'], label: 'seminars[]', human: '세미나 목록' },
+    areaGrid: { page: 'H-academic.html', colls: ['clusters'], label: 'clusters[]', human: '연구 분야 카드' },
+    pGrid: { page: 'H-academic.html', colls: ['professors'], label: 'professors[] (화면 순서는 무작위 셔플)', human: '교수진 카드' },
     /* G-people */
-    rows: { page: 'G-people.html', colls: ['professors'], label: 'professors[]' },
-    cChips: { page: 'G-people.html', colls: ['clusters'], label: 'clusters[]' },
+    rows: { page: 'G-people.html', colls: ['professors'], label: 'professors[]', human: '교수진 목록' },
+    cChips: { page: 'G-people.html', colls: ['clusters'], label: 'clusters[]', human: '연구 분야 고르기' },
     /* G-research */
-    fieldGrid: { page: 'G-research.html', colls: ['clusters', 'labs'], label: 'clusters[] + labs[]' },
-    clusterBlocks: { page: 'G-research.html', colls: ['clusters', 'labs'], label: 'clusters[] + labs[]' },
-    statRow: { page: 'G-research.html', colls: ['clusters', 'labs'], label: 'clusters[] + labs[]' },
-    lvGroups: { page: 'G-research.html', colls: ['clusters', 'labs'], label: 'clusters[] + labs[]' },
-    internSum: { page: 'G-research.html', colls: ['clusters', 'labs'], label: 'clusters[] + labs[]' },
+    fieldGrid: { page: 'G-research.html', colls: ['clusters', 'labs'], label: 'clusters[] + labs[]', human: '연구 분야·연구실' },
+    clusterBlocks: { page: 'G-research.html', colls: ['clusters', 'labs'], label: 'clusters[] + labs[]', human: '연구 분야·연구실' },
+    statRow: { page: 'G-research.html', colls: ['clusters', 'labs'], label: 'clusters[] + labs[]', human: '연구 분야·연구실' },
+    lvGroups: { page: 'G-research.html', colls: ['clusters', 'labs'], label: 'clusters[] + labs[]', human: '연구 분야·연구실' },
+    internSum: { page: 'G-research.html', colls: ['clusters', 'labs'], label: 'clusters[] + labs[]', human: '연구 분야·연구실' },
     /* G-news */
-    newsRows: { page: 'G-news.html', colls: ['newsList'], label: 'newsList[]' },
-    semRows: { page: 'G-news.html', colls: ['seminars'], label: 'seminars[]' },
-    evtRows: { page: 'G-news.html', colls: ['events'], label: 'events[]' },
+    newsRows: { page: 'G-news.html', colls: ['newsList'], label: 'newsList[]', human: '연구 소식 목록' },
+    semRows: { page: 'G-news.html', colls: ['seminars'], label: 'seminars[]', human: '세미나 목록' },
+    evtRows: { page: 'G-news.html', colls: ['events'], label: 'events[]', human: '행사 목록' },
     /* G-graduate */
-    gradClusterBlocks: { page: 'G-graduate.html', colls: ['clusters', 'labs'], label: 'clusters[] + labs[]' },
+    gradClusterBlocks: { page: 'G-graduate.html', colls: ['clusters', 'labs'], label: 'clusters[] + labs[]', human: '연구 분야·연구실' },
     /* G-admissions */
-    schInternal: { page: 'G-admissions.html', colls: ['scholarshipsInternal'], label: 'scholarshipsInternal[]' }
+    schInternal: { page: 'G-admissions.html', colls: ['scholarshipsInternal'], label: 'scholarshipsInternal[]', human: '교내 장학 목록' }
   };
   /* 표에는 없지만 같은 방식으로 data.js 가 그리는 컨테이너(조사 결과 보강) */
-  MAP.eagleStage = { page: 'G-research.html', colls: ['clusters'], label: 'clusters[]' };
-  MAP.eagleList = { page: 'G-research.html', colls: ['clusters'], label: 'clusters[]' };
+  MAP.eagleStage = { page: 'G-research.html', colls: ['clusters'], label: 'clusters[]', human: '연구 분야' };
+  MAP.eagleList = { page: 'G-research.html', colls: ['clusters'], label: 'clusters[]', human: '연구 분야' };
+
+  function humanOf(id) { return (MAP[id] && MAP[id].human) || '목록'; }
+  function collName(k) { return Y.labels ? Y.labels.collOf(k) : k; }
+  function fieldName(k) { return Y.labels ? Y.labels.fieldOf(k) : k; }
 
   /* ── 2. JSON 소스 스캐너 ──
      노드: {type,start,end}
@@ -227,7 +231,7 @@
     var list = [], i;
     for (i = 0; i < edits.length; i++) {
       var node = nodeByPath(state.root, edits[i].path);
-      if (!node) throw new Error('데이터 경로를 찾을 수 없습니다: ' + edits[i].path.join('.'));
+      if (!node) throw new Error('저장할 위치를 찾지 못했습니다. 화면을 새로고침한 뒤 다시 시도해 주세요.');
       var lit;
       if (edits[i].kind === 'number') {
         var v = Number(String(edits[i].value).trim());
@@ -337,7 +341,7 @@
     while (cur && cur.nodeType === 1) {
       var id = cur.id;
       if (id && MAP[id]) {
-        return { containerId: id, dataPath: MAP[id].label, colls: MAP[id].colls, page: MAP[id].page, container: cur };
+        return { containerId: id, dataPath: MAP[id].label, human: MAP[id].human, colls: MAP[id].colls, page: MAP[id].page, container: cur };
       }
       cur = cur.parentElement;
     }
@@ -444,9 +448,9 @@
     root.className = 'ys-dm';
     root.setAttribute(Y.config.uiAttr, '');
     root.innerHTML =
-      '<div class="ys-dm-head"><span class="ys-dm-tag">data.js</span>' +
-      '<span class="ys-dm-path">#' + U.esc(owner.containerId) + ' · ' + U.esc(owner.dataPath) + '</span></div>' +
-      '<p class="ys-dm-note">이 영역은 assets/js/data.js 가 그립니다. 화면에서 직접 고칠 수 없으니 아래 값을 고치세요.</p>' +
+      '<div class="ys-dm-head"><span class="ys-dm-tag">목록</span>' +
+      '<span class="ys-dm-path">' + U.esc(owner.human || humanOf(owner.containerId)) + '</span></div>' +
+      '<p class="ys-dm-note">여러 페이지가 함께 쓰는 목록입니다. 아래에서 고치면 이 목록이 나오는 모든 곳에 같이 바뀝니다.</p>' +
       '<div class="ys-dm-body"></div>';
     host.appendChild(root);
     return root.querySelector('.ys-dm-body');
@@ -458,7 +462,7 @@
     var filter = d.createElement('input');
     filter.className = 'ys-dm-filter';
     filter.type = 'search';
-    filter.placeholder = '항목 검색';
+    filter.placeholder = '글 제목으로 찾기';
     var list = d.createElement('div');
     list.className = 'ys-dm-list';
     body.appendChild(filter);
@@ -469,7 +473,7 @@
       var coll = owner.colls[c], arrNode = state.root.props[coll];
       if (!arrNode || arrNode.type !== 'array') continue;
       var h = d.createElement('h5');
-      h.textContent = coll + '[] · ' + arrNode.items.length + '개';
+      h.textContent = collName(coll) + ' · ' + arrNode.items.length + '개';
       list.appendChild(h);
       for (var k = 0; k < arrNode.items.length; k++) {
         var item = plain(arrNode.items[k]);
@@ -498,7 +502,7 @@
     if (!rows.length) {
       var p = d.createElement('p');
       p.className = 'ys-dm-note';
-      p.textContent = '이 컨테이너에 대응하는 데이터 항목이 없습니다.';
+      p.textContent = '이 목록에는 아직 등록된 글이 없습니다.';
       body.appendChild(p);
     }
   }
@@ -514,11 +518,11 @@
 
     var head = d.createElement('div');
     head.className = 'ys-dm-item';
-    head.innerHTML = '<b>' + U.esc(coll) + '[' + index + ']</b>';
+    head.innerHTML = '<b>' + U.esc(collName(coll) + ' · ' + itemLabel(item, coll, index)) + '</b>';
     var alt = d.createElement('button');
     alt.type = 'button';
     alt.className = 'ys-dm-btn';
-    alt.textContent = '다른 항목 선택';
+    alt.textContent = '다른 글 고르기';
     alt.addEventListener('click', function () {
       renderList(host, owner, function (c, i) { renderForm(host, owner, c, i, null); });
     });
@@ -531,7 +535,10 @@
       var lab = d.createElement('label');
       lab.className = 'ys-dm-f' + (hitKey && f.key === hitKey ? ' is-hit' : '');
       var sp = d.createElement('span');
-      sp.textContent = f.key + (f.kind === 'number' ? ' (숫자)' : '');
+      /* 중첩 필드(a.b)는 단계마다 옮긴다 — 화면에 내부 키가 남지 않게 */
+      var parts = String(f.key).split('.'), human = [];
+      for (var pi = 0; pi < parts.length; pi++) human.push(fieldName(parts[pi]));
+      sp.textContent = human.join(' › ') + (f.kind === 'number' ? ' (숫자)' : '');
       var inp;
       if (f.kind === 'string' && String(f.value).length > 90) {
         inp = d.createElement('textarea');
@@ -548,7 +555,7 @@
     if (!fs.length) {
       var none = d.createElement('p');
       none.className = 'ys-dm-note';
-      none.textContent = '이 항목에는 편집할 문자열 필드가 없습니다.';
+      none.textContent = '이 글에는 고칠 수 있는 칸이 없습니다.';
       body.appendChild(none);
     }
 
@@ -557,11 +564,11 @@
     var save = d.createElement('button');
     save.type = 'button';
     save.className = 'ys-dm-btn is-primary';
-    save.textContent = '데이터 저장';
+    save.textContent = '저장';
     var reset = d.createElement('button');
     reset.type = 'button';
     reset.className = 'ys-dm-btn';
-    reset.textContent = '입력 되돌리기';
+    reset.textContent = '되돌리기';
     act.appendChild(save);
     act.appendChild(reset);
     body.appendChild(act);
@@ -577,7 +584,7 @@
         if (v === inputs[j].was) continue;
         edits.push({ path: [coll, index].concat(inputs[j].f.path), kind: inputs[j].f.kind, value: v });
       }
-      if (!edits.length) { Y.toast('바뀐 값이 없습니다.', 'warn'); return; }
+      if (!edits.length) { Y.toast('바뀐 내용이 없습니다.', 'warn'); return; }
       save.disabled = true;
       var n = 0;
       try { n = applyEdits(edits); }
@@ -585,7 +592,7 @@
       persist().then(function () {
         save.disabled = false;
         for (j = 0; j < inputs.length; j++) inputs[j].was = inputs[j].inp.value;
-        Y.toast('data.js 초안에 ' + n + '개 값을 저장했습니다. 이 영역은 새로고침 후 반영됩니다.');
+        Y.toast(n + '개 항목을 저장했습니다. 「게시」를 눌러야 사이트에 반영됩니다.');
       }, function (e) {
         save.disabled = false;
         Y.toast(e && e.message ? e.message : '초안 저장 실패', 'error');
@@ -601,7 +608,7 @@
     /** 라이브 요소가 data.js 소유 영역 안인가 */
     ownerOf: function (liveEl) {
       var o = ownerOf(liveEl);
-      return o ? { containerId: o.containerId, dataPath: o.dataPath, colls: o.colls, page: o.page } : null;
+      return o ? { containerId: o.containerId, dataPath: o.dataPath, human: o.human, colls: o.colls, page: o.page } : null;
     },
 
     /** 미저장 data.js 초안이 있는가 */
@@ -670,13 +677,13 @@
     openFor: function (liveEl, hostEl) {
       var owner = ownerOf(liveEl);
       if (!owner || !hostEl) return Promise.resolve(false);
-      var pub = { containerId: owner.containerId, dataPath: owner.dataPath, colls: owner.colls, page: owner.page };
+      var pub = { containerId: owner.containerId, dataPath: owner.dataPath, human: owner.human, colls: owner.colls, page: owner.page };
 
       var clickText = norm(liveEl.textContent).slice(0, 200);
       var root = itemRootOf(liveEl, owner.container);
       var itemText = norm(root && root.textContent).slice(0, 600);
 
-      hostEl.textContent = 'data.js 를 불러오는 중…';
+      hostEl.textContent = '목록을 불러오는 중…';
       return ensure().then(function () {
         var found = findItem(owner.colls, clickText, itemText);
         if (found) renderForm(hostEl, pub, found.coll, found.index, found.hit);
@@ -684,7 +691,7 @@
         return true;
       }, function (e) {
         hostEl.textContent = '';
-        Y.toast(e && e.message ? e.message : 'data.js 를 불러올 수 없습니다.', 'error');
+        Y.toast(e && e.message ? e.message : '목록을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.', 'error');
         return false;
       });
     }

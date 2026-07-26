@@ -492,6 +492,65 @@
       log(Y.engine.src() === base, '비교 검사 후 원문 복귀');
     } else warn('Y.changes 없음');
 
+    /* ── 8i. 조교 사용자 기준 — 개발자 말이 화면에 새지 않는가 ── */
+    head('용어 검사 (쓰는 사람은 개발자가 아니다)');
+    Y.hud.setEditing(true);
+    Y.hud.openPanel('inspect');
+    await sleep(200);
+    /* 목록 안쪽 링크 — 파일에 같은 클래스의 자리표시자가 있어 잘못 '파일 소유'로 잡히던 자리다.
+       제목이 실린 행을 골라야 항목 자동 인식(findItem)까지 함께 검사할 수 있다. */
+    const notice = Array.prototype.slice
+      .call(d.querySelectorAll('#ntList a, #newsGrid a, #smList a'))
+      .filter(a => (a.textContent || '').trim().length > 14)[0]
+      || d.querySelector('#ntList a');
+    if (notice) {
+      log(Y.datamap.ownerOf(notice) != null, '목록 소유로 판별되는 링크를 찾음');
+      notice.dispatchEvent(new w.MouseEvent('click', { bubbles: true, cancelable: true }));
+      /* datamap 이 data.js 를 비동기로 읽어 폼을 그린다 — 폼이 나올 때까지 기다린다 */
+      let host = null, txt = '';
+      for (let i = 0; i < 40; i++) {
+        await sleep(150);
+        host = d.querySelector('[data-ys-panel="inspect"]');
+        txt = host ? host.textContent : '';
+        if (/제목/.test(txt) && /날짜/.test(txt)) break;
+      }
+      log(/목록/.test(txt), '목록에서 온 글임을 사람 말로 안내');
+      log(/제목/.test(txt) && /날짜/.test(txt), '입력칸 이름이 한글 (제목·날짜)');
+      if (!(/제목/.test(txt) && /날짜/.test(txt))) info('   패널 내용: ' + txt.replace(/\s+/g, ' ').slice(0, 320));
+      log(txt.indexOf('data.js') < 0, '화면에 파일명 data.js 가 없다');
+      log(!/noticesUG|noticesGrad|newsList\[|scholarships/.test(txt), '내부 배열 이름이 없다');
+      log(txt.indexOf('#ntList') < 0 && !/\bdiv#|section\./.test(txt), 'CSS 선택자가 없다');
+      log(!/\beid\s*\d/.test(txt), '내부 번호(eid)가 없다');
+      log(!/\bHTML\b/.test(txt), '"HTML" 이라는 말이 안내문에 없다');
+      /* 빨간 경고가 아니라 안내여야 한다 — 정상 경로이기 때문 */
+      log(!host.querySelector('.ys-warn'), '오류처럼 보이는 빨간 경고가 없다');
+      log(!!host.querySelector('.ys-note'), '안내 문구로 표시된다');
+      /* 자리표시자 오인 회귀 — 목록 안쪽은 절대 '파일 소유'로 잡히면 안 된다 */
+      const si = Y.hud.selectionInfo();
+      log(!!si && si.self === false, '목록 안쪽은 파일 편집이 아니라 데이터 편집으로 간다');
+      log(!!host.querySelector('.ys-dm'), '데이터 편집 폼이 열린다');
+      /* HTML 편집 칸이 자리표시자가 아니라 목록 상자를 겨냥해야 한다 */
+      const boxId = Y.datamap.ownerOf(notice).containerId;
+      const boxIdx = Y.engine.indexFromLive(d.getElementById(boxId));
+      log(si.idx === boxIdx, 'HTML 편집 대상이 자리표시자가 아니라 목록 상자');
+      log(Y.engine.info(si.idx).tag !== 'a', '선택 대상이 목록 안 링크가 아님 — <' + Y.engine.info(si.idx).tag + '>');
+    } else warn('목록에서 그린 링크를 찾지 못함');
+
+    /* 일반 요소를 골랐을 때의 경로 표시 */
+    const anyP = Y.engine.outline({ max: 400 }).filter(o => o.tag === 'p' && o.text.length > 10)[0];
+    if (anyP) {
+      Y.hud.select(anyP.idx);
+      await sleep(300);
+      const h2 = d.querySelector('[data-ys-panel="inspect"]');
+      const crumb = h2 ? h2.querySelector('.ys-crumb') : null;
+      const ct = crumb ? crumb.textContent : '';
+      log(!!ct && !/[#.]/.test(ct.replace(/[·›]/g, '')), '위치 표시에 CSS 선택자가 없다 — "' + ct.replace(/\s+/g, ' ').trim() + '"');
+      log(/본문|구역|영역|문단/.test(ct), '위치 표시가 사람 말');
+      const secTitles = Array.prototype.map.call(h2.querySelectorAll('.ys-sec-t'), e => e.textContent);
+      log(secTitles.indexOf('속성') < 0 && secTitles.indexOf('스타일') < 0,
+          '항목 제목에 개발자 말이 없다 — ' + secTitles.join(' / '));
+    }
+
     /* ── 9. 오류 없음 ── */
     head('런타임 오류');
     log(errs.length === 0, '스크립트 오류 ' + errs.length + '건');

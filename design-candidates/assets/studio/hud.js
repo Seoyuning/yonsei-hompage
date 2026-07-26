@@ -79,6 +79,33 @@
   function hint(txt) { return mk('p', 'ys-hint', txt); }
   function warnBox(txt) { return mk('p', 'ys-warn', txt); }
   function noteBox(txt) { return mk('p', 'ys-note', txt); }
+  /* 대부분의 사용자는 볼 일이 없는 안내 — 눈에 덜 띄게 */
+  function advBox(txt) { return mk('p', 'ys-adv', txt); }
+
+  /* ── 사람 말 이름표 ──
+     쓰는 사람은 학과 조교다. 화면에 태그명·CSS 선택자·내부 번호를 내보내지 않는다. */
+  var ROLE_KO = {
+    html: '문서', body: '본문', main: '본문', header: '머리말', footer: '꼬리말', nav: '메뉴',
+    section: '구역', article: '글', aside: '곁단', div: '영역', span: '글자',
+    h1: '큰 제목', h2: '제목', h3: '소제목', h4: '소제목', h5: '소제목', h6: '소제목',
+    p: '문단', a: '링크', ul: '목록', ol: '번호 목록', li: '목록 항목',
+    table: '표', thead: '표 머리', tbody: '표 몸통', tr: '표 줄', td: '표 칸', th: '표 제목칸',
+    caption: '표 설명', img: '이미지', figure: '그림', figcaption: '그림 설명',
+    button: '버튼', form: '입력폼', input: '입력칸', label: '입력 이름',
+    select: '선택칸', textarea: '긴 입력칸', option: '선택지',
+    strong: '강조 글자', b: '굵은 글자', em: '기울임 글자', i: '기울임 글자',
+    small: '작은 글자', mark: '형광 글자', time: '날짜', code: '코드',
+    dl: '설명 목록', dt: '항목 이름', dd: '항목 설명', blockquote: '인용', hr: '구분선'
+  };
+  function roleKo(tag) { return ROLE_KO[String(tag).toLowerCase()] || tag; }
+
+  var ATTR_KO = {
+    href: '링크 주소', src: '이미지 주소', alt: '대체 설명', title: '마우스 올렸을 때 설명',
+    'aria-label': '읽어 주는 이름', id: '고유 이름(고급)', class: '스타일 이름(고급)',
+    'data-count': '최종 숫자'
+  };
+  function attrKo(name) { return ATTR_KO[name] || name; }
+  var DEV_ATTRS = { id: 1, 'class': 1 };
   function sect(title) {
     var s = mk('section', 'ys-sec');
     if (title) s.appendChild(mk('h4', 'ys-sec-t', title));
@@ -739,14 +766,41 @@
   }
 
   /* ── 선택 ── */
+
+  /**
+   * 목록 컨테이너 **안쪽**은 런타임이 innerHTML 로 통째로 다시 그린다.
+   * 그런데 파일에도 같은 클래스의 자리표시자가 들어 있어(예: #newsGrid 의
+   * `<a class="nrow">학부 뉴스 보기</a>`) 정렬기가 실제 목록의 첫 항목을 그 자리표시자와
+   * 짝지어 버린다. 그대로 두면 "파일 소유"로 보여 편집을 허용하는데, 고쳐 봐야
+   * 아무도 못 보는 자리표시자만 바뀌고 다음 로드에 사라진다.
+   * → 컨테이너 자신이 아닌 그 안쪽 요소는 무조건 목록(데이터) 편집으로 보낸다.
+   */
+  function listBoxOf(liveEl) {
+    if (!liveEl || !Y.datamap || !Y.datamap.ownerOf) return null;
+    var o = Y.datamap.ownerOf(liveEl);
+    if (!o) return null;
+    var d = liveEl.ownerDocument;
+    var box = d ? d.getElementById(o.containerId) : null;
+    return (box && box !== liveEl) ? box : null;   // 컨테이너 자신은 파일 소유가 맞다
+  }
+
   function applySelection(idx, clicked, isSelf) {
+    var self = isSelf !== false;
+    var box = listBoxOf(clicked || (Y.engine.info(idx) || {}).live);
+    if (box) {
+      /* 목록 안쪽이다. HTML 편집 칸이 자리표시자를 겨냥하지 않도록 대상을 목록 상자로 옮긴다
+         — 그래야 「바깥 틀을 고치는 칸」이라는 안내가 실제와 맞는다. */
+      self = false;
+      var bi = Y.engine.indexFromLive(box);
+      if (bi != null) idx = bi;
+    }
     var info = Y.engine.info(idx);
     if (!info) { Y.toast('선택한 요소를 원문에서 찾지 못했습니다.', 'warn'); return; }
     sel = {
       idx: idx,
       live: info.live || clicked || null,
       clicked: clicked || info.live || null,
-      self: isSelf !== false
+      self: self
     };
     placeSel();
     if (curPanel === 'inspect') renderInspect(panels.inspect.host);
@@ -867,17 +921,22 @@
     host.appendChild(headBar(info));
 
     if (!sel.self) {
-      host.appendChild(warnBox('이 부분은 사이트 스크립트(data.js)가 화면에서 만든 요소입니다. ' +
-        'HTML 을 고쳐도 다음 로드에 사라지므로, 아래 데이터 편집으로 고쳐야 합니다.'));
+      /* 오류가 아니라 정상 경로다 — 목록에서 온 글이므로 그 글의 원본을 바로 열어 준다.
+         빨간 경고로 보여 주면 조교 사용자는 실패한 줄 안다. */
+      var owner = (Y.datamap && Y.datamap.ownerOf) ? Y.datamap.ownerOf(sel.clicked || sel.live) : null;
+      var areaName = (owner && owner.human) || '목록';
+      host.appendChild(noteBox('여기는 ' + areaName + '에서 자동으로 그려지는 자리입니다. ' +
+        '아래에서 이 글의 내용을 바로 고칠 수 있습니다.'));
       var slot = mk('div', 'ys-dm');
       host.appendChild(slot);
       if (Y.datamap && typeof Y.datamap.openFor === 'function') {
         try { Y.datamap.openFor(sel.clicked || sel.live, slot); }
-        catch (e) { slot.appendChild(warnBox('데이터 편집기를 여는 중 오류가 발생했습니다.')); }
+        catch (e) { slot.appendChild(warnBox('목록 편집기를 여는 중 문제가 생겼습니다. 새로고침 후 다시 시도해 주세요.')); }
       } else {
-        slot.appendChild(hint('데이터 편집(data.js) 모듈이 아직 준비되지 않았습니다.'));
+        slot.appendChild(hint('목록 편집 기능을 준비하는 중입니다. 잠시 후 다시 눌러 주세요.'));
       }
-      host.appendChild(noteBox('아래 항목은 이 데이터를 담고 있는 "파일 소유" 컨테이너(' + info.label + ')를 고치는 칸입니다.'));
+      host.appendChild(advBox('아래 칸은 이 목록을 담고 있는 바깥 틀을 고치는 곳입니다. ' +
+        '글 내용이 아니라 배치·여백을 바꿀 때만 쓰세요.'));
     }
 
     if (info.isLeaf) host.appendChild(textSection(idx, info));
@@ -890,13 +949,30 @@
 
   function crumbBar(idx) {
     var wrap = mk('nav', 'ys-crumb');
-    wrap.setAttribute('aria-label', '요소 경로');
+    wrap.setAttribute('aria-label', '선택한 곳의 위치');
     var list = Y.engine.breadcrumb(idx) || [];
+
+    /* `div#ntList.blist` 같은 CSS 선택자 대신 사람 말 이름을 쓴다.
+       아는 목록(#ntList 등)이면 그 목록 이름을 그대로 보여 준다. */
+    function labelOf(raw) {
+      var m = /^([A-Za-z0-9]+)(?:#([^.\s]+))?/.exec(String(raw)) || [];
+      var id = m[2] || '';
+      if (id && Y.datamap && Y.datamap.MAP && Y.datamap.MAP[id] && Y.datamap.MAP[id].human) {
+        return Y.datamap.MAP[id].human;
+      }
+      return roleKo(m[1] || raw);
+    }
+
+    var prev = null;
     for (var i = 0; i < list.length; i++) {
-      if (i) wrap.appendChild(mk('span', 'ys-crumb-s', '›'));
       var it = list[i];
-      var b = mk('button', 'ys-crumb-b' + (it.idx === idx ? ' is-cur' : ''), it.label);
-      b.title = it.label;
+      var name = labelOf(it.label);
+      /* '영역 › 영역 › 영역' 처럼 같은 이름이 이어지면 중간을 접는다 — 마지막은 항상 남긴다 */
+      if (name === prev && it.idx !== idx) continue;
+      prev = name;
+      if (wrap.childNodes.length) wrap.appendChild(mk('span', 'ys-crumb-s', '›'));
+      var b = mk('button', 'ys-crumb-b' + (it.idx === idx ? ' is-cur' : ''), name);
+      b.title = it.label;                       // 개발자는 여기서 원래 선택자를 볼 수 있다
       (function (target) {
         b.addEventListener('click', function () { applySelection(target, null, true); revealIdx(target); });
       })(it.idx);
@@ -907,9 +983,14 @@
 
   function headBar(info) {
     var row = mk('div', 'ys-head');
-    row.appendChild(mk('span', 'ys-chip', '<' + info.tag + '>'));
-    row.appendChild(mk('span', 'ys-chip is-dim', 'eid ' + info.idx));
-    if (info.runtime) row.appendChild(mk('span', 'ys-chip is-warn', info.runtime === 'count' ? '카운트업' : '홈 사전'));
+    /* 태그명과 내부 번호는 개발자 정보다 — 이름표는 사람 말로, 원래 값은 툴팁에 둔다 */
+    var chip = mk('span', 'ys-chip', roleKo(info.tag));
+    chip.title = '<' + info.tag + '> · 내부 번호 ' + info.idx;
+    row.appendChild(chip);
+    if (info.runtime) {
+      row.appendChild(mk('span', 'ys-chip is-warn',
+        info.runtime === 'count' ? '세어 올라가는 숫자' : '한/영 함께 관리'));
+    }
     var eye = mk('button', 'ys-icon-b');
     eye.title = '화면에서 이 요소 보기';
     eye.setAttribute('aria-label', '화면에서 이 요소 보기');
@@ -950,7 +1031,7 @@
   }
 
   function textSection(idx, info) {
-    var s = sect('텍스트');
+    var s = sect('글 내용');
 
     /* 카운트업 — 화면 숫자는 애니메이션이 0부터 다시 쓰므로 목표값(data-count)을 고친다 */
     if (info.runtime === 'count') {
@@ -1014,27 +1095,41 @@
 
   /* ── 속성 ── */
   function attrSection(idx, info) {
-    var s = sect('속성');
+    var s = sect('링크 · 설명');
     var names = [], i;
     for (i = 0; i < ATTRS.length; i++) if (attrRelevant(info.tag, ATTRS[i], info.attrs)) names.push(ATTRS[i]);
     /* data-count 는 텍스트 칸(「최종 숫자」)이 이미 갖고 있다 — 같은 값을 두 칸에 두면
        한쪽을 고쳐도 다른 쪽이 옛 값을 보여 준다. 텍스트 칸이 없을 때만 여기서 낸다. */
     if (Object.prototype.hasOwnProperty.call(info.attrs, 'data-count') && !info.isLeaf) names.push('data-count');
 
-    for (i = 0; i < names.length; i++) s.appendChild(attrRow(idx, names[i], info));
+    var plain = [], dev = [];
+    for (i = 0; i < names.length; i++) (DEV_ATTRS[names[i]] ? dev : plain).push(names[i]);
+    for (i = 0; i < plain.length; i++) s.appendChild(attrRow(idx, plain[i], info));
+    if (dev.length) {
+      /* id·class 는 화면에 보이지 않는 개발자 정보다 — 접어 둔다 */
+      var det = D.createElement('details');
+      det.className = 'ys-advfold';
+      det.setAttribute(UIA, '');
+      var sm = D.createElement('summary');
+      sm.textContent = '고급 설정';
+      det.appendChild(sm);
+      for (i = 0; i < dev.length; i++) det.appendChild(attrRow(idx, dev[i], info));
+      s.appendChild(det);
+    }
 
     if (info.attrs.href) {
       var open = act('이 링크 열기', '', function () { openLink(info.attrs.href); });
       var row = mk('div', 'ys-row');
       row.appendChild(open);
       s.appendChild(row);
-      s.appendChild(hint('편집 모드에서는 링크 클릭이 선택으로 바뀝니다. 이동은 이 버튼이나 Alt+클릭 으로 하세요.'));
+      s.appendChild(hint('편집 중에는 링크를 눌러도 이동하지 않고 선택만 됩니다. 이동하려면 이 버튼을 누르거나 Alt 를 누른 채 클릭하세요.'));
     }
     return s;
   }
 
   function attrRow(idx, name, info) {
-    var f = fieldRow(name);
+    var f = fieldRow(attrKo(name));
+    if (f.firstChild) f.firstChild.title = name;
     var cur = info.attrs[name];
     var inp = mk('input', 'ys-in');
     inp.type = 'text';
@@ -1074,7 +1169,7 @@
 
   /* ── 스타일 ── */
   function styleSection(idx) {
-    var s = sect('스타일');
+    var s = sect('모양 꾸미기');
     s.appendChild(sizeRow(idx));
     s.appendChild(weightRow(idx));
     s.appendChild(lineRow(idx));
@@ -1212,7 +1307,7 @@
 
   /* ── 동작 ── */
   function actionSection(idx, info) {
-    var s = sect('동작');
+    var s = sect('순서 · 복제 · 삭제');
     var row = mk('div', 'ys-row');
     row.appendChild(act('위로', '', function () {
       var lv = sel && sel.live;

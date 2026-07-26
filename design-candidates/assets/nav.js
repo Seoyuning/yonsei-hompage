@@ -217,8 +217,8 @@
       setBreadcrumb(s[0]);
       try { history.replaceState(null, '', '#' + (s[1].split('#')[1] || '')); } catch (_) {}
       if (doScroll) {
-        var y = bar.getBoundingClientRect().top + (pageYOffset || 0) - Math.round(hdr ? hdr.getBoundingClientRect().height : 62);
-        if ((pageYOffset || 0) > y + 4) { try { scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' }); } catch (_) { scrollTo(0, y); } }
+        /* 형제 탭 = 형제 페이지 느낌 — 누르면 새 뷰의 맨 위로 이동 */
+        try { scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); } catch (_) { scrollTo(0, 0); }
       }
     }
     tabs.forEach(function (t, i) { t.addEventListener('click', function () { show(i, true); }); });

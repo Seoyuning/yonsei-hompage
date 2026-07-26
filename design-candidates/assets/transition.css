@@ -1,0 +1,25 @@
+/* ═══════════════════════════════════════════════════════════════
+   페이지 간 매끄러운 전환 — MPA(다중 페이지) View Transitions.
+   메뉴·하위 페이지로 이동할 때 이전 화면이 부드럽게 사라지고 새 화면이
+   살짝 떠오르며 들어온다. 같은 출처(배포 https)에서 Chrome/Edge 126+ 가 적용하고,
+   미지원 브라우저나 file:// 직접 열기에서는 그냥 즉시 이동으로 조용히 폴백한다.
+
+   이 규칙은 반드시 <head> 에 있어야 새 문서가 그려지기 전에 opt-in 이 인식된다.
+   (그래서 nav.js 런타임 주입이 아니라 정적 파일로 각 페이지 head 에서 불러온다.)
+   ═══════════════════════════════════════════════════════════════ */
+@view-transition { navigation: auto; }
+
+/* 크로스페이드 — 나가는 화면이 페이드아웃, 들어오는 화면이 페이드인. 두 구간이 겹쳐 끊김 없이 이어진다.
+   (root 스냅샷에는 런타임 주입된 고정 헤더도 포함된다. transform 슬라이드를 주면 헤더가 함께
+    움직여 매 이동마다 "튀어" 보이므로, 이동은 빼고 투명도만 바꾼다.) */
+::view-transition-old(root) { animation: ys-vt-out .26s ease both; }
+::view-transition-new(root) { animation: ys-vt-in .42s ease both; }
+
+@keyframes ys-vt-out { to { opacity: 0; } }
+@keyframes ys-vt-in  { from { opacity: 0; } to { opacity: 1; } }
+
+/* 움직임 최소화 선호 시 — 슬라이드를 없애고 즉시(혹은 최소 페이드)로 둔다. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) { animation: none; }
+}

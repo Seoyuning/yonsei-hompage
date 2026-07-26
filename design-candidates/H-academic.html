@@ -343,6 +343,7 @@ img{display:block;max-width:100%}
 .ftr a:hover{color:#fff}
 </style>
 <style>h1,h2,.sec-title,.phero h1,.hero h1,.hero-title,.club-name,.vt,.staff-head h2,.brand .bko,.ynv-brand .bko{font-family:"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;letter-spacing:-.01em}</style>
+<link rel="stylesheet" href="assets/transition.css">
 </head>
 <body>
 
@@ -435,7 +436,7 @@ img{display:block;max-width:100%}
       <span class="sidx" aria-hidden="true">03</span>
       <div>
         <p class="kick">People</p>
-        <h2 class="sec-title" id="h-people" data-i18n="peopleTitle" style="font-size:58px">교수진</h2>
+        <h2 class="sec-title" id="h-people" data-i18n="peopleTitle">교수진</h2>
       </div>
       <a class="more" href="G-people.html" data-i18n="morePeople">교수진 전체 →</a>
     </div>
@@ -657,7 +658,7 @@ img{display:block;max-width:100%}
       var small = LANG === 'en' ? c.ko : c.en;
       var desc = LANG === 'en' ? '' : '<span class="cdesc">' + esc(c.desc) + '</span>';
       var w = Math.round(c.count / max * 100);
-      return '<a class="crow" href="G-research.html#' + esc(c.id) + '" data-cursor="분야 보기">' +
+      return '<a class="crow" href="G-research.html?field=' + encodeURIComponent(c.id) + '#fields" data-cursor="분야 보기">' +
         '<span class="cno">0' + (i + 1) + '</span>' +
         '<span class="cmain"><span class="cko">' + esc(big) + '</span>' +
         '<span class="cen">' + esc(small) + '</span>' + desc +

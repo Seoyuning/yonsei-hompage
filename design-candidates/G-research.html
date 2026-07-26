@@ -520,8 +520,43 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
 @media (prefers-reduced-motion:reduce){
   .lv-card,.lv-thumb::before,.lv-play{transition:none}
 }
+/* 실제 썸네일(YouTube 등) — 그라데이션 위에 덮는다. 로드 실패 시 onerror 로 제거되어 그라데이션이 남는다 */
+.lv-thumb .lv-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;transition:transform .5s var(--e,ease)}
+.lv-card:hover .lv-thumb .lv-img{transform:scale(1.05)}
+/* 영상 보유 카드 — 썸네일 하단 살짝 어둡게(재생버튼·태그 대비) */
+.lv-card.has-video .lv-thumb::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:linear-gradient(180deg,rgba(8,17,34,.05) 42%,rgba(8,17,34,.34))}
+.lv-card.has-video .lv-tag,.lv-card.has-video .lv-play{z-index:3}
+/* 준비 중 카드 — 재생버튼 없이 차분하게 */
+.lv-card.is-soon .lv-thumb{filter:saturate(.92)}
+
+/* ── 영상 라이트박스(모달) — 분야 모달과 같은 방식으로 body 에 append ── */
+.lvm{position:fixed;inset:0;z-index:120;display:flex;align-items:center;justify-content:center;padding:clamp(1rem,4vw,3rem)}
+.lvm[hidden]{display:none}
+.lvm-back{position:absolute;inset:0;background:rgba(6,13,26,.84);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);opacity:0;transition:opacity .3s ease}
+.lvm.show .lvm-back{opacity:1}
+.lvm-dialog{position:relative;z-index:1;width:min(960px,100%)}
+.lvm-close{position:absolute;top:-2.9rem;right:0;z-index:2;width:2.4rem;height:2.4rem;border-radius:50%;
+  background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);color:#fff;
+  display:grid;place-items:center;cursor:pointer;transition:background .15s,transform .15s}
+.lvm-close:hover{background:rgba(255,255,255,.26);transform:scale(1.06)}
+.lvm-close svg{width:18px;height:18px}
+.lvm-frame{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:8px;overflow:hidden;
+  box-shadow:0 28px 70px rgba(0,0,0,.55);opacity:0;transform:scale(.965);
+  transition:opacity .32s var(--e,ease),transform .4s var(--e,ease)}
+.lvm.show .lvm-frame{opacity:1;transform:none}
+.lvm-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.lvm-cap{margin-top:1rem;text-align:center;font-family:var(--kr);
+  display:flex;align-items:center;justify-content:center;gap:.6rem;flex-wrap:wrap}
+.lvm-cap .lvm-ttl{font-weight:700;font-size:1.02rem;color:#eaf0fa}
+.lvm-cap .lvm-pi{font-size:.86rem;color:#b7c4da}
+.lvm-cap .lvm-more{font-size:.84rem;color:#cdd9ec;text-decoration:none;border-bottom:1px solid rgba(205,217,236,.4);padding-bottom:1px}
+.lvm-cap .lvm-more:hover{color:#fff;border-color:#fff}
+@media(max-width:560px){.lvm-close{top:-2.6rem;width:2.1rem;height:2.1rem}}
+@media(prefers-reduced-motion:reduce){.lvm-back,.lvm-frame{transition:none}}
 </style>
 <style>h1,h2,.sec-title,.phero h1,.hero h1,.hero-title,.club-name,.vt,.staff-head h2,.brand .bko,.ynv-brand .bko{font-family:"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;letter-spacing:-.01em}</style>
+<link rel="stylesheet" href="assets/transition.css">
 </head>
 <body>
 <div class="ynav-ph" aria-hidden="true"></div>
@@ -615,7 +650,7 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
       <div>
         <p class="sec-kick">Lab Videos</p>
         <h2 class="sec-title" id="lv-title">연구실 홍보영상</h2>
-        <p class="sec-sub">각 연구실이 직접 소개하는 연구 주제·성과 영상입니다. 카드를 누르면 해당 분야 연구실 목록으로 이동합니다.</p>
+        <p class="sec-sub">각 연구실이 직접 소개하는 연구 주제·성과 영상입니다. 영상이 있는 연구실은 카드를 누르면 바로 재생되고, 준비 중인 연구실은 연구실 정보로 이동합니다.</p>
       </div>
     </div>
     <div id="lvGroups"></div>
@@ -936,6 +971,8 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
       if(on){ var sbw = window.innerWidth - el.clientWidth;
         el.style.overflow='hidden'; if(sbw>0) el.style.paddingRight = sbw+'px'; }
       else { el.style.overflow=''; el.style.paddingRight=''; }
+      /* 배경을 inert 로 만들어 포커스가 모달 밖으로 새지 않게(aria-modal 과 일치). 스튜디오 UI(data-ys-ui)는 건드리지 않는다 */
+      [].forEach.call(document.body.children, function(ch){ if(ch!==fx && !ch.hasAttribute('data-ys-ui')){ if(on) ch.setAttribute('inert',''); else ch.removeAttribute('inert'); } });
     }
     function openFieldModal(card){
       if(fxAnimating) return;
@@ -982,10 +1019,44 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
       setTimeout(function(){ openCluster(cid, true); }, 360);
     });
     document.addEventListener('keydown', function(e){ if(e.key==='Escape' && !fx.hidden) closeFieldModal(); });
+
+    /* 홈에서 분야를 눌러 들어온 경우 — G-research.html?field=<id>#fields.
+       nav.js 서브내비의 show()가 history.replaceState('#fields')로 쿼리를 지우므로,
+       지금(인라인 스크립트 파싱 시점, nav.js 로드 전) 동기로 캡처해 둔다.
+       로드 후 '연구 분야' 탭이 열린 상태에서 해당 분야 카드 모달을 자동으로 편다. */
+    var homeField = null;
+    try { homeField = new URLSearchParams(location.search).get('field'); } catch(_e){}
+    if(homeField && clById[homeField]){
+      var openTries = 0;
+      var openFromHome = function(){
+        var card = fieldGrid.querySelector('.fd-card[data-cid="'+homeField+'"]');
+        if(!card) return;
+        if(!card.offsetParent && openTries < 6){   /* 아직 숨은 탭 → '연구 분야' 탭으로 전환 후 재시도 */
+          openTries++;
+          var ft = null;
+          [].forEach.call(document.querySelectorAll('.ysub-tab'), function(t){ if(/연구\s*분야/.test(t.textContent)) ft = t; });
+          if(ft){ ft.click(); requestAnimationFrame(function(){ requestAnimationFrame(openFromHome); }); return; }
+        }
+        if(card.offsetParent) openFieldModal(card);   /* 숨은 카드면 제로-rect FLIP 방지 — 자동열기 생략 */
+      };
+      if(document.readyState === 'complete') setTimeout(openFromHome, 90);
+      else window.addEventListener('load', function(){ setTimeout(openFromHome, 90); });
+    }
   }
 
   /* ══ 연구실 홍보영상 갤러리 — 분야별 그룹 · 카드(썸네일+재생버튼) ══ */
   function playSvg(){ return '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>'; }
+  /* 영상 URL → 임베드/썸네일. 실데이터(data.js labs[].video): YouTube 또는 Google Drive. */
+  function ytId(u){ var m=/(?:youtu\.be\/|[?&]v=|\/embed\/)([\w-]{6,})/.exec(u||''); return m?m[1]:''; }
+  function vidInfo(u){
+    if(!u) return null;
+    if(/youtu/.test(u)){ var id=ytId(u); if(!id) return null;
+      return { embed:'https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&rel=0', thumb:'https://i.ytimg.com/vi/'+id+'/hqdefault.jpg' }; }
+    var d=/drive\.google\.com\/file\/d\/([\w-]+)/.exec(u);
+    if(d){ return { embed:'https://drive.google.com/file/d/'+d[1]+'/preview', thumb:'https://drive.google.com/thumbnail?id='+d[1]+'&sz=w640' }; }
+    return { embed:u, thumb:'' };
+  }
+
   var lvWrap = document.getElementById('lvGroups');
   if(lvWrap){
     lvWrap.innerHTML = clusters.map(function(c){
@@ -994,23 +1065,33 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
       if(!groupLabs.length) return '';
       var cards = groupLabs.map(function(l){
         var prof = profByLab[l.id];
-        /* 담당 교수 프로필이 있으면 그 행 딥링크, 없으면 분야 앵커로 */
-        var href = prof ? 'G-people.html#'+esc(prof.id) : '#'+esc(l.cluster);
+        var vi = vidInfo(l.video);
         var pi = l.pi
           ? '<div class="lvpi"><span class="cdot" aria-hidden="true"></span>'+esc(l.pi)+' 교수</div>'
           : '';
         var en = l.en ? '<div class="lven">'+esc(l.en)+'</div>' : '';
-        return '<a class="lv-card" href="'+href+'" '
-            + 'aria-label="'+esc(l.ko+(l.pi?' · '+l.pi+' 교수':'')+' 연구실 홍보영상 (준비 중) — '+c.ko+' 분야로 이동')+'">'
+        var body = '<div class="lv-body"><div class="lvname">'+esc(l.ko)+'</div>'+pi+en+'</div>';
+        if(vi){
+          /* 영상 보유 — 클릭 시 라이트박스에서 재생. href 는 실제 영상 URL(무JS 폴백: 새 탭). */
+          var img = vi.thumb ? '<img class="lv-img" src="'+esc(vi.thumb)+'" alt="" loading="lazy" onerror="this.remove()">' : '';
+          return '<a class="lv-card has-video" href="'+esc(l.video)+'" target="_blank" rel="noopener" '
+              + 'data-embed="'+esc(vi.embed)+'" data-ttl="'+esc(l.ko)+'" data-pi="'+esc(l.pi?l.pi+' 교수':'')+'" '
+              + (prof?'data-prof="'+esc(prof.id)+'" ':'')
+              + 'aria-label="'+esc(l.ko+(l.pi?' · '+l.pi+' 교수':'')+' 홍보영상 재생')+'">'
+            + '<div class="lv-thumb">'+img
+              + '<span class="lv-tag">'+esc(c.ko)+'</span>'
+              + '<span class="lv-play" aria-hidden="true">'+playSvg()+'</span>'
+            + '</div>' + body
+            + '</a>';
+        }
+        /* 영상 없음 — 정직하게 준비 중, 카드는 연구실(교수) 정보로 이동 */
+        var href = prof ? 'G-people.html#'+esc(prof.id) : '#'+esc(l.cluster);
+        return '<a class="lv-card is-soon" href="'+href+'" '
+            + 'aria-label="'+esc(l.ko+(l.pi?' · '+l.pi+' 교수':'')+' — 홍보영상 준비 중, 연구실 정보로 이동')+'">'
           + '<div class="lv-thumb">'
             + '<span class="lv-tag">'+esc(c.ko)+'</span>'
-            + '<span class="lv-play" aria-hidden="true">'+playSvg()+'</span>'
             + '<span class="lv-soon">영상 준비 중</span>'
-          + '</div>'
-          + '<div class="lv-body">'
-            + '<div class="lvname">'+esc(l.ko)+'</div>'
-            + pi + en
-          + '</div>'
+          + '</div>' + body
           + '</a>';
       }).join('');
       return '<div class="lv-group" style="--lvc:'+col+'">'
@@ -1023,6 +1104,57 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
         + '<div class="lv-grid">'+cards+'</div>'
         + '</div>';
     }).join('');
+
+    /* ── 영상 라이트박스 — YouTube/Drive iframe 임베드. 닫으면 src 를 비워 재생 정지 ── */
+    var lvm = document.createElement('div');
+    lvm.className = 'lvm'; lvm.hidden = true;
+    lvm.innerHTML = '<div class="lvm-back"></div>'
+      + '<div class="lvm-dialog" role="dialog" aria-modal="true" aria-label="연구실 홍보영상">'
+        + '<button type="button" class="lvm-close" aria-label="닫기">'
+          + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>'
+        + '<div class="lvm-frame"><iframe title="연구실 홍보영상" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>'
+        + '<div class="lvm-cap"><span class="lvm-ttl"></span><span class="lvm-pi"></span><a class="lvm-more" href="#">연구실 정보 →</a></div>'
+      + '</div>';
+    document.body.appendChild(lvm);
+    var lvmFrame = lvm.querySelector('iframe'),
+        lvmTtl = lvm.querySelector('.lvm-ttl'),
+        lvmPi = lvm.querySelector('.lvm-pi'),
+        lvmMore = lvm.querySelector('.lvm-more'),
+        lvmClose = lvm.querySelector('.lvm-close'),
+        lvmLast = null;
+    var lvReduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    function lvLock(on){ var el=document.documentElement;
+      if(on){ var sbw=window.innerWidth-el.clientWidth; el.style.overflow='hidden'; if(sbw>0) el.style.paddingRight=sbw+'px'; }
+      else { el.style.overflow=''; el.style.paddingRight=''; }
+      /* 배경 inert — 포커스 트랩(스튜디오 UI 는 제외) */
+      [].forEach.call(document.body.children, function(ch){ if(ch!==lvm && !ch.hasAttribute('data-ys-ui')){ if(on) ch.setAttribute('inert',''); else ch.removeAttribute('inert'); } }); }
+    function lvOpen(card){
+      lvmLast = card;
+      lvmTtl.textContent = card.getAttribute('data-ttl') || '';
+      lvmPi.textContent = card.getAttribute('data-pi') || '';
+      var prof = card.getAttribute('data-prof');
+      if(prof){ lvmMore.style.display=''; lvmMore.setAttribute('href','G-people.html#'+prof); }
+      else { lvmMore.style.display='none'; }
+      lvmFrame.src = card.getAttribute('data-embed') || '';
+      lvm.hidden = false; lvLock(true);
+      requestAnimationFrame(function(){ lvm.classList.add('show'); });
+      lvmClose.focus();
+    }
+    function lvClose(){
+      if(lvm.hidden) return;
+      lvm.classList.remove('show');
+      lvmFrame.src = '';   /* 재생 정지 + 리소스 해제 */
+      var done = function(){ lvm.hidden=true; lvLock(false); if(lvmLast){ try{ lvmLast.focus(); }catch(e){} } };
+      if(lvReduce) done(); else setTimeout(done, 260);
+    }
+    lvWrap.addEventListener('click', function(e){
+      var card = e.target.closest('.lv-card.has-video'); if(!card) return;
+      if(e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;  /* 새 탭 열기는 그대로 */
+      e.preventDefault(); lvOpen(card);
+    });
+    lvmClose.addEventListener('click', lvClose);
+    lvm.querySelector('.lvm-back').addEventListener('click', lvClose);
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape' && !lvm.hidden) lvClose(); });
   }
 })();
 </script>

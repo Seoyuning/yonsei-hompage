@@ -40,12 +40,14 @@
     { name: 'align', req: true },
     { name: 'engine', req: true },
     { name: 'diff', req: false },
+    { name: 'pagedict', req: false },
     { name: 'hud', req: false },
     { name: 'versions', req: false },
     { name: 'ai', req: false },
     { name: 'i18n-edit', req: false },
     { name: 'mobile', req: false },
-    { name: 'datamap', req: false }
+    { name: 'datamap', req: false },
+    { name: 'posts', req: false }
   ];
 
   var loaded = [], failed = [], coreDead = false;

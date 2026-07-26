@@ -249,6 +249,88 @@
     return list.length;
   }
 
+  /* ── 3-2. 배열 항목 추가·삭제 (공지·소식 등록) ──
+     새 항목도 재직렬화 없이 **원문에 텍스트를 끼워 넣는** 방식으로 만든다.
+     들여쓰기는 파일에서 읽어 내 그대로 흉내 낸다 → diff 가 새 항목만 잡힌다. */
+
+  function arrayOf(coll) {
+    var arr = state.root.props[coll];
+    if (!arr || arr.type !== 'array') throw new Error('데이터 배열을 찾을 수 없습니다: ' + coll);
+    return arr;
+  }
+
+  /** 배열의 들여쓰기 규칙을 원문에서 읽어 낸다. */
+  function arrayStyle(arr) {
+    var src = state.src;
+    var lineM = /\n([ \t]*)[^\n]*$/.exec(src.slice(0, arr.start));
+    var baseIndent = lineM ? lineM[1] : '';
+    if (arr.items.length) {
+      var sep = src.slice(arr.start + 1, arr.items[0].start);
+      var im = /\n([ \t]*)$/.exec(sep);
+      var itemIndent = im ? im[1] : baseIndent + ' ';
+      var fm = /\n([ \t]*)/.exec(src.slice(arr.items[0].start, arr.items[0].end));
+      return {
+        sep: im ? sep : '\n' + itemIndent,
+        itemIndent: itemIndent,
+        fieldIndent: fm ? fm[1] : itemIndent + ' ',
+        baseIndent: baseIndent
+      };
+    }
+    return {
+      sep: '\n' + baseIndent + ' ',
+      itemIndent: baseIndent + ' ',
+      fieldIndent: baseIndent + '  ',
+      baseIndent: baseIndent
+    };
+  }
+
+  /** 객체를 원문 스타일의 JSON 리터럴로 만든다. */
+  function objLiteral(obj, style) {
+    var keys = Object.keys(obj), lines = [];
+    for (var i = 0; i < keys.length; i++) {
+      var v = obj[keys[i]];
+      var lit = (typeof v === 'number' || typeof v === 'boolean' || v === null)
+        ? JSON.stringify(v) : JSON.stringify(String(v));
+      lines.push(style.fieldIndent + JSON.stringify(keys[i]) + ': ' + lit);
+    }
+    if (!lines.length) return '{}';
+    return '{\n' + lines.join(',\n') + '\n' + style.itemIndent + '}';
+  }
+
+  /** 원문을 바꾸고 다시 파싱한다. 깨지면 되돌린다(초안 오염 방지). */
+  function spliceSrc(from, to, text) {
+    var before = state.src;
+    state.src = before.slice(0, from) + text + before.slice(to);
+    try { reparse(); }
+    catch (e) { state.src = before; reparse(); throw e; }
+  }
+
+  function insertItem(coll, obj, atFront) {
+    var arr = arrayOf(coll), style = arrayStyle(arr);
+    var lit = objLiteral(obj, style);
+    if (!arr.items.length) {
+      spliceSrc(arr.start + 1, arr.start + 1, '\n' + style.itemIndent + lit + '\n' + style.baseIndent);
+      return 0;
+    }
+    if (atFront === false) {
+      var last = arr.items[arr.items.length - 1];
+      spliceSrc(last.end, last.end, ',' + style.sep + lit);
+      return arr.items.length;
+    }
+    spliceSrc(arr.items[0].start, arr.items[0].start, lit + ',' + style.sep);
+    return 0;
+  }
+
+  function deleteItem(coll, index) {
+    var arr = arrayOf(coll), it = arr.items[index];
+    if (!it) throw new Error('삭제할 항목이 없습니다: ' + coll + '[' + index + ']');
+    var from, to;
+    if (arr.items.length === 1) { from = arr.start + 1; to = arr.end - 1; }
+    else if (index < arr.items.length - 1) { from = it.start; to = arr.items[index + 1].start; }
+    else { from = arr.items[index - 1].end; to = it.end; }
+    spliceSrc(from, to, '');
+  }
+
   /* ── 4. 소유 판별 ── */
   function ownerOf(el) {
     var cur = el;
@@ -527,6 +609,50 @@
 
     /** 원문 확보 (HUD 등이 미리 데워 둘 때) */
     load: function () { return ensure(); },
+
+    /** 배열 항목 목록 — [{index, item, pending}] (ensure() 뒤에 부를 것)
+        pending = 아직 게시되지 않은 항목. 삽입은 원문 텍스트를 그대로 끼워 넣으므로
+        그 조각이 게시본(origSrc)에 없으면 새 항목이다. */
+    items: function (coll) {
+      var arr = state && state.root && state.root.props[coll];
+      if (!arr || arr.type !== 'array') return [];
+      var out = [], orig = state.origSrc || '';
+      for (var i = 0; i < arr.items.length; i++) {
+        var lit = state.src.slice(arr.items[i].start, arr.items[i].end);
+        out.push({ index: i, item: plain(arr.items[i]), pending: orig.indexOf(lit) < 0 });
+      }
+      return out;
+    },
+
+    /** 첫 항목에서 필드 모양을 읽어 낸다 — [{key, kind}] */
+    shapeOf: function (coll) {
+      var arr = state && state.root && state.root.props[coll];
+      if (!arr || arr.type !== 'array' || !arr.items.length) return [];
+      var first = plain(arr.items[0]), keys = Object.keys(first || {}), out = [];
+      for (var i = 0; i < keys.length; i++) {
+        var v = first[keys[i]];
+        var kind = typeof v === 'boolean' ? 'bool' : (typeof v === 'number' ? 'number' : 'string');
+        if (v && typeof v === 'object') continue;             // 중첩은 등록 폼에서 다루지 않는다
+        out.push({ key: keys[i], kind: kind });
+      }
+      return out;
+    },
+
+    /** 새 항목 등록 — 기본은 맨 앞(최신) */
+    addItem: function (coll, obj, atFront) {
+      return ensure().then(function () {
+        var at = insertItem(coll, obj, atFront);
+        return persist().then(function () { return at; });
+      });
+    },
+
+    /** 항목 삭제 */
+    removeItem: function (coll, index) {
+      return ensure().then(function () {
+        deleteItem(coll, index);
+        return persist();
+      });
+    },
 
     /** data.js 초안 버리기 */
     discardDraft: function () {

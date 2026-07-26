@@ -24,7 +24,7 @@
    테스트 전용이므로 사이트 코드 규약(ES5)을 따르지 않고 async/await 를 쓴다. */
 (async function () {
   const PAGE = 'H-academic.html';
-  const MODULES = ['core', 'net', 'source', 'align', 'engine', 'diff', 'hud', 'versions', 'ai', 'i18n-edit', 'mobile', 'datamap'];
+  const MODULES = ['core', 'net', 'source', 'align', 'engine', 'diff', 'pagedict', 'hud', 'versions', 'ai', 'i18n-edit', 'mobile', 'datamap', 'posts'];
   const out = document.getElementById('out');
   let lines = [], fails = 0, warns = 0;
 
@@ -324,6 +324,105 @@
       Y.mobile.close();
       await sleep(250);
     }
+
+    /* ── 8e. 홈 내장 사전 문장을 인스펙터에서 바로 고치기 ── */
+    head('홈 사전 문장 인플레이스 편집');
+    await Y.store.clear('drafts');
+    await Y.engine.open(PAGE);
+    Y.engine.bindLive(d, w);
+    log(Y.engine.src() === original, '기준선 초기화 (원본 재확보)');
+    if (Y.pagedict) {
+      log(Y.pagedict.available() === true, '내장 사전(var I18N) 인식' +
+        (Y.pagedict.available() ? '' : ' — ' + Y.pagedict.reason()));
+      log(Y.pagedict.langs().join(',') === 'ko,en', '언어 ko,en 인식 (' + Y.pagedict.langs().join(',') + ')');
+
+      const h1 = d.querySelector('h1[data-i18n="heroTitle"]');
+      const hIdx = h1 ? Y.engine.indexFromLive(h1) : null;
+      log(hIdx != null, '사전 문장 요소를 원문 인덱스로 찾음 (eid ' + hIdx + ')');
+      if (hIdx != null) {
+        const hInfo = Y.engine.info(hIdx);
+        log(hInfo.runtime === 'i18n', '사전 관리 요소로 판별');
+        const srcD = Y.engine.src();
+        const koWas = Y.pagedict.get('heroTitle', 'ko');
+        const enWas = Y.pagedict.get('heroTitle', 'en');
+        log(koWas === '연세대학교 기계공학부', '한국어 사전 값 읽음 — "' + koWas + '"');
+        log(/^School of/.test(enWas), '영어 사전 값 읽음 — "' + enWas + '"');
+
+        const curLang = Y.pagedict.liveLang();
+        const NEWKO = '연세대 기계공학부 (사전검사)';
+        log(Y.pagedict.set('heroTitle', 'ko', NEWKO, hIdx) === true, '한국어 사전 값 수정');
+        log(Y.engine.src().indexOf("heroTitle: '" + NEWKO + "'") >= 0, '원문 사전에 반영');
+        log(Y.engine.src().indexOf('<h1 data-i18n="heroTitle">' + NEWKO + '</h1>') >= 0,
+            'HTML 폴백 텍스트도 함께 동기화');
+        if (curLang === 'ko') log(h1.textContent === NEWKO, '화면에 즉시 반영');
+        else info('   화면이 영어 상태라 한국어 수정은 화면에 안 보이는 것이 정상');
+
+        const NEWEN = 'YSME Dictionary Test';
+        const srcBeforeEn = Y.engine.src();
+        log(Y.pagedict.set('heroTitle', 'en', NEWEN, hIdx) === true, '영어 사전 값 수정');
+        log(Y.pagedict.get('heroTitle', 'en') === NEWEN, '영어 값 반영');
+        log(Y.engine.src().indexOf('<h1 data-i18n="heroTitle">' + NEWKO + '</h1>') >= 0,
+            '영어 수정은 HTML 폴백을 건드리지 않음');
+        log(Math.abs(Y.engine.src().length - srcBeforeEn.length) < 60, '영어 수정 변경량이 그 문장 범위');
+
+        Y.pagedict.set('heroTitle', 'en', enWas, hIdx);
+        Y.pagedict.set('heroTitle', 'ko', koWas, hIdx);
+        log(Y.engine.src() === srcD, '두 값 되돌린 뒤 바이트 동일');
+        log(Y.engine.src().indexOf('data-ys-ui') < 0, '사전 편집이 저장본을 오염시키지 않음');
+      }
+    } else warn('Y.pagedict 없음');
+
+    /* ── 8f. 카운트업 숫자 ── */
+    head('카운트업 숫자 편집');
+    const cnt = d.querySelector('[data-count]');
+    const cIdx = cnt ? Y.engine.indexFromLive(cnt) : null;
+    if (cIdx != null) {
+      const cInfo = Y.engine.info(cIdx);
+      log(cInfo.runtime === 'count', 'data-count 요소로 판별');
+      const cWas = cInfo.attrs['data-count'];
+      const srcC = Y.engine.src();
+      log(Y.engine.setAttr(cIdx, 'data-count', '44') === true, '목표 숫자 44 로 변경');
+      log(Y.engine.src().indexOf('data-count="44"') >= 0, '원문 속성에 반영');
+      Y.engine.setAttr(cIdx, 'data-count', cWas);
+      log(Y.engine.src() === srcC, '되돌린 뒤 바이트 동일');
+    } else warn('data-count 요소를 찾지 못함');
+
+    /* ── 8g. 공지 등록 ── */
+    head('공지 · 소식 등록');
+    if (Y.posts && Y.datamap) {
+      await Y.datamap.load();
+      const n0 = Y.datamap.items('noticesUG').length;
+      log(n0 > 0, 'noticesUG ' + n0 + '건 읽음');
+      const TITLE = '통합검사용 공지 — 등록 확인';
+      await Y.posts.add('noticesUG', {
+        no: '공지', title: TITLE, date: '2026.07.26', url: 'https://example.com/n', att: false
+      });
+      const rows = Y.datamap.items('noticesUG');
+      log(rows.length === n0 + 1, '항목 1건 추가 (' + n0 + ' → ' + rows.length + ')');
+      log(rows[0].item.title === TITLE, '맨 앞(최신)에 들어감');
+      log(rows[0].pending === true && rows[1].pending === false, '새 항목만 미게시로 표시');
+      const dd = await Y.store.get('drafts', 'assets/js/data.js');
+      log(!!dd && dd.src.indexOf(TITLE) >= 0, 'data.js 초안이 저장됨');
+      /* 초안이 실제로 실행 가능한 JS 인지 — 구문이 깨지면 사이트가 통째로 죽는다 */
+      let evalOk = false;
+      try { evalOk = !!(new Function('window', dd.src + ';return window.YSME;'))({}).noticesUG; } catch (e) { evalOk = false; }
+      log(evalOk, '초안 data.js 가 구문 오류 없이 평가됨');
+      await Y.posts.remove('noticesUG', 0);
+      log(Y.datamap.items('noticesUG').length === n0, '삭제 후 원래 개수로 복귀');
+      log(!(await Y.store.get('drafts', 'assets/js/data.js')), '원본과 같아져 초안이 정리됨');
+      /* core.js 회귀: 없는 키를 조회하면 undefined 여야 한다(IDBRequest 가 새면 안 됨) */
+      log((await Y.store.get('drafts', '없는파일.html')) === undefined,
+          'store.get 이 없는 키에 undefined 를 돌려줌');
+
+      Y.hud.openPanel('post');
+      await sleep(600);
+      const ph = d.querySelector('[data-ys-panel="post"]');
+      log(!!ph && /분류/.test(ph.textContent), '글 등록 패널이 그려짐');
+      log(!!ph && ph.querySelectorAll('select option').length === Y.posts.kinds().length,
+          '분류 ' + Y.posts.kinds().length + '종이 선택지로 나옴');
+      Y.hud.closePanel();
+      await sleep(150);
+    } else warn('Y.posts 또는 Y.datamap 없음');
 
     /* ── 9. 오류 없음 ── */
     head('런타임 오류');

@@ -19,7 +19,7 @@
   const q = new URLSearchParams(location.search);
   const PAGE = q.get('page') || 'H-academic.html';
   const PANEL = q.get('panel') || 'inspect';
-  const MODULES = ['core', 'net', 'source', 'align', 'engine', 'diff', 'hud', 'versions', 'ai', 'i18n-edit', 'mobile', 'datamap'];
+  const MODULES = ['core', 'net', 'source', 'align', 'engine', 'diff', 'pagedict', 'hud', 'versions', 'ai', 'i18n-edit', 'mobile', 'datamap', 'posts'];
   const sleep = ms => new Promise(r => setTimeout(r, ms));
 
   sessionStorage.setItem('ysme-studio', JSON.stringify({ passcode: 'DEMO', author: '김편집', ts: Date.now() }));
@@ -73,8 +73,18 @@
   Y.hud.setEditing(true);
 
   /* 인스펙터를 의미 있게 보이도록 텍스트 요소 하나를 선택해 둔다 */
-  const outline = Y.engine.outline({ max: 400 });
-  const t = outline.filter(o => o.text.length > 8 && /^(h2|h3|p)$/.test(o.tag))[0] || outline[0];
+  /* ?sel=<CSS 선택자> 로 특정 요소를 골라 인스펙터를 확인할 수 있다 */
+  const SEL = q.get('sel');
+  let t = null;
+  if (SEL) {
+    const el = d.querySelector(SEL);
+    const i = el ? Y.engine.indexFromLive(el) : null;
+    if (i != null) t = { idx: i };
+  }
+  if (!t) {
+    const outline = Y.engine.outline({ max: 400 });
+    t = outline.filter(o => o.text.length > 8 && /^(h2|h3|p)$/.test(o.tag))[0] || outline[0];
+  }
   if (t) Y.hud.select(t.idx);
   await sleep(250);
 

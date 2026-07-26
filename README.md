@@ -17,11 +17,18 @@ OT 청취 결과 "수정·보수 관리가 용이한가"가 핵심 심사 기준
 
 | 프로젝트 | 서빙 폴더 | 주소 | 소유 |
 |---|---|---|---|
-| `yonsei-me-homepage` | `design-candidates/` | https://yonsei-me-homepage.vercel.app | 우리 계정(`kwonchanghans-projects`) — **편집 스튜디오가 여기 있다** |
-| `prototype-v3` | `prototype-v3/` | https://prototype-v3-nine.vercel.app | 우리 계정 — 구 온라인 콘솔 `/studio` |
-| (팀원 계정) | 저장소 루트 | https://yonsei-hompage.vercel.app | 우리 Vercel 계정에 없음 — 설정 변경 불가 |
+| `yonsei-me-homepage` | `design-candidates/` | https://yonsei-me-homepage.vercel.app | 우리 계정(`kwonchanghans-projects`) — **유일한 현행 배포. 편집 스튜디오가 여기 있다** |
 
-두 프로젝트 모두 같은 GitHub 저장소를 보므로, 푸시하면 양쪽이 함께 갱신된다.
+- 진입: 보기 `…/H-academic.html` · 편집 `…/H-academic.html?studio=1`
+  (한 번 로그인하면 세션이 유지되어 다른 페이지로 넘어가도 편집이 붙어 있다)
+- 루트 `/` 는 홈이 아니라 「관제 시안」 목록 페이지다.
+- `prototype-v3` 프로젝트(구 `prototype-v3-nine.vercel.app`)는 2026-07-26 삭제했다.
+  소스는 `prototype-v3/` 에 그대로 있으므로 필요하면 다시 배포하면 된다.
+
+> ⚠️ **`https://yonsei-hompage.vercel.app`** 는 우리 Vercel 계정에 없다(팀원 계정 추정).
+> 저장소 **루트 전체**를 서빙해서 `/%EA%B8%B0%ED%9A%8D_%EC%A0%84%EB%9E%B5/00_INDEX.md`
+> (기획_전략 폴더)와 `/admin/js/editor.js` 가 공개 URL 로 열린다. 소유자를 찾아
+> 프로젝트를 삭제하거나 Root Directory 를 `design-candidates` 로 바꿔야 한다.
 
 ## 폴더 구조
 
@@ -95,8 +102,8 @@ OT 청취 결과 "수정·보수 관리가 용이한가"가 핵심 심사 기준
 배포된 사이트를 방문자처럼 돌아다니면서 그 화면 위에서 고친다. 별도 콘솔을 열지 않는다.
 
 1. https://yonsei-me-homepage.vercel.app/H-academic.html**?studio=1** 로 접속
-2. 공용 암호 + 편집자 이름 입력 → 우하단에 버튼 6개가 뜬다
-   (편집 · 버전 · AI · 모바일 · 한·영 · 게시)
+2. 공용 암호 + 편집자 이름 입력 → 우하단에 버튼 7개가 뜬다
+   (편집 · 글등록 · 버전 · AI · 모바일 · 한·영 · 게시)
 3. 「편집」을 켜고 글자를 클릭해 고친다. **초안은 브라우저에 쌓이고, 「게시」를 눌러야 파일에 반영된다**
    (여러 페이지·여러 파일이 GitHub 커밋 **1개**로 묶인다).
 4. 페이지를 옮겨도 편집 세션과 초안이 유지된다. 「편집」을 끄면 방문자와 완전히 동일하게 동작한다.
@@ -106,6 +113,28 @@ OT 청취 결과 "수정·보수 관리가 용이한가"가 핵심 심사 기준
 - 서버 함수 env(`GH_TOKEN`·`PUBLISH_PASSCODE` 등)는 Vercel 프로젝트 설정에만 있다. 저장소에 넣지 않는다.
 - 화면의 카드·공지·교수 목록처럼 `assets/js/data.js` 가 그리는 영역은 HTML 이 아니라 **데이터 필드 편집**으로 안내된다.
 - 영어 전환 중에 고친 글은 HTML 이 아니라 `assets/i18n/en.json` 사전에 들어간다.
+
+### 새 공지·소식 등록 (「글등록」 버튼)
+
+공지·뉴스·세미나·행사는 HTML 이 아니라 `assets/js/data.js` 의 배열이 원본이므로 화면 조작으로는
+만들 수 없다. 「글등록」 패널이 그 배열 맨 앞에 항목 하나를 끼워 넣는다.
+
+1. 분류 선택 — 학부 공지 / 대학원 공지 / 연구 소식 / 세미나 / 행사 (노출 위치가 함께 표시된다)
+2. 제목·날짜(기본 오늘)·링크·첨부 여부를 넣고 「등록」. 입력칸은 기존 항목의 실제 필드에서
+   자동으로 만들어지므로 데이터 모양이 바뀌어도 폼이 따라간다.
+3. 등록한 글은 목록에 **미게시** 배지로 표시된다. 「게시」를 눌러야 사이트에 나간다.
+   그 전까지는 같은 패널에서 삭제할 수 있다.
+
+번호(`no`)를 `공지` 로 두면 목록 맨 위에 고정 표시된다. 세미나·행사는 다음 번호가 자동으로 채워진다.
+
+### 홈 한/영 사전 문장 (「홈 사전」 칩이 붙는 문장)
+
+홈(`H-academic.html`)의 히어로·섹션 제목 등은 인라인 스크립트의 `var I18N = {ko:…, en:…}` 이
+`textContent` 를 덮어쓴다. 이런 문장을 고를 때 인스펙터는 **한국어·English 두 칸**을 함께 보여 주고,
+고치면 사전 값과 HTML 폴백 텍스트를 동시에 갱신한다(`assets/studio/pagedict.js`).
+예전처럼 "한/영 패널에서 고치세요" 로 막지 않는다.
+
+스크롤할 때 0부터 올라가는 숫자(`data-count`)는 「최종 숫자」 칸에서 목표값을 고친다.
 
 ## 검증 방법 (수정 후 회귀 확인)
 
@@ -118,9 +147,22 @@ OT 청취 결과 "수정·보수 관리가 용이한가"가 핵심 심사 기준
   ```
   덤프 끝의 `PASSED` / `FAILED` 와 각 항목의 `ok` / `FAIL` 을 확인한다.
   - `selftest` — 8페이지 전부에서 원문 스캔·DOM 대응·오프셋 정합성·편집 후 **바이트 동일 복귀**·
-    라이브 정렬(88~97%)·nav.js 주입물 제외·JS 생성 영역 판별.
+    라이브 정렬(88~97%)·nav.js 주입물 제외·JS 생성 영역 판별. (146항목)
   - `inttest` — 실제 페이지에 스튜디오를 부팅해 저장본 오염 0·원자 게시(커밋 1개)·이동 후 초안 지속·
-    체크포인트 매니페스트·모바일 프레임·한영 편집 분리·패널 연결·런타임 오류 0.
+    체크포인트 매니페스트·모바일 프레임·한영 편집 분리·홈 사전 인플레이스 편집·카운트업 숫자·
+    공지 등록/삭제 왕복·패널 연결·런타임 오류 0. (87항목)
+- 서버 없이 도는 단위 검사 — 실제 `assets/js/data.js` 로 배열 삽입·삭제를 왕복시킨다:
+  ```
+  node design-candidates/_studio/tools/test-posts.js      # 28항목
+  ```
+  새 항목을 넣어도 (1) JS 로 다시 평가되고 (2) diff 가 그 항목 7줄만 잡고 (3) 지우면
+  바이트 단위로 원본과 같아지는지 본다.
+- 화면 눈으로 확인 — `_studio/shot.html?panel=inspect|post|versions|ai|lang|mobile|publish`,
+  `&sel=<CSS 선택자>` 로 특정 요소의 인스펙터를 띄울 수 있다:
+  ```
+  chrome --headless --screenshot=out.png --window-size=1280,1000 \
+    "http://127.0.0.1:8124/_studio/shot.html?panel=inspect&sel=h1[data-i18n=heroTitle]"
+  ```
 - 문법: `node --check admin/js/*.js`
 - E2E: headless Chrome `--dump-dom`은 load 직후 덤프되므로, 테스트 페이지에
   `<img src="/hang">`(30초 지연 응답 엔드포인트) 블로커를 두고 테스트 완료 시
@@ -138,9 +180,19 @@ OT 청취 결과 "수정·보수 관리가 용이한가"가 핵심 심사 기준
 - [x] **2축 재설계: 인플레이스 편집 스튜디오** (2026-07-25) — 사이트 화면 위에서 바로 편집, 페이지를
       옮겨도 유지, 이름+시각 시점 저장(GitHub 커밋 기반), AI 다건 변경안 개별 승인, 한/영·모바일 전환.
       `design-candidates/STUDIO_SPEC.md` 가 계약, `design-candidates/api/` 가 서버 함수.
-      검증: selftest 8페이지 통과 + inttest 56항목 통과(저장본 오염 0·런타임 오류 0).
+      검증: selftest 8페이지 통과 + inttest 통과(저장본 오염 0·런타임 오류 0).
       핵심 결정은 **DOM 재직렬화를 버리고 원문 오프셋 치환**을 쓴 것 — 무편집 저장이 바이트 동일하고
       텍스트 한 줄 수정이 diff 한 줄이 된다.
+- [x] **편집 막힘 해소 + 글 등록** (2026-07-26)
+      - `assets/studio/pagedict.js` — 홈 인라인 `var I18N` 을 오프셋 치환으로 고친다.
+        「홈 사전」 문장의 텍스트 칸이 더 이상 잠기지 않고 한국어·English 두 칸으로 바로 편집된다.
+      - `data-count` 숫자를 「최종 숫자」 칸에서 직접 고친다(속성 칸 중복 제거).
+      - `assets/studio/posts.js` + `datamap` 배열 삽입/삭제 — 공지·뉴스·세미나·행사 등록.
+      - `core.js` 회귀 수정: `Y.store.get` 이 없는 키에 IDBRequest 객체를 돌려주던 것을 `undefined` 로.
+      - 검증: selftest 146 · inttest 87 · test-posts 28 전부 통과, 런타임 오류 0.
+- [x] 구 배포 정리 (2026-07-26): `prototype-v3` Vercel 프로젝트 삭제.
+- [ ] **`yonsei-hompage.vercel.app` 정리** — 우리 계정 밖. 소유자를 찾아 삭제/Root Directory 변경 요청.
+      현재 `기획_전략/` 문서와 `admin/` 소스가 공개 URL 로 열린다.
 - [ ] 실제 환경 잔여 검증: 체크포인트 **복원** 왕복(실제 GitHub 커밋), AI 실키 호출, 여러 사람 동시 편집 충돌(409).
 - [ ] 2축 구 콘솔(`admin/`) 확장분 회귀 — 보드·게시·찾기바꾸기는 아직 E2E 회귀를 돌리지 않았다.
 - [ ] 1축: 디자인·설계 추가 개선.

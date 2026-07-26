@@ -62,6 +62,7 @@
     mob: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6.8" y="3" width="10.4" height="18" rx="2.2"/><path d="M10.6 17.9h2.8"/></svg>',
     lang: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.2"/><path d="M3.8 12h16.4"/><path d="M12 3.8c2.6 2.6 2.6 13 0 16.4-2.6-3.4-2.6-13.8 0-16.4z"/></svg>',
     pub: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 17.6V5.4"/><path d="M7.2 10.2L12 5.4l4.8 4.8"/><path d="M5 19.6h14"/></svg>',
+    post: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2.4"/><path d="M8 9.2h8M8 13h8M8 16.4h4.6"/></svg>',
     x: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>',
     eye: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.8 12S6.6 6.4 12 6.4 21.2 12 21.2 12 17.4 17.6 12 17.6 2.8 12 2.8 12z"/><circle cx="12" cy="12" r="2.6"/></svg>'
   };
@@ -136,6 +137,7 @@
      ══════════════════════════════════════════════════════════ */
   var STACK = [
     { key: 'edit', label: '편집', icon: 'edit', kind: 'toggle', name: '편집 모드' },
+    { key: 'post', label: '글등록', icon: 'post', kind: 'panel', panel: 'post', name: '공지·소식 등록' },
     { key: 'versions', label: '버전', icon: 'hist', kind: 'panel', panel: 'versions', name: '버전 관리' },
     { key: 'ai', label: 'AI', icon: 'ai', kind: 'panel', panel: 'ai', name: 'AI 수정' },
     { key: 'mobile', label: '모바일', icon: 'mob', kind: 'mobile', name: '모바일 모드' },
@@ -918,25 +920,85 @@
   }
 
   /* ── 텍스트 ── */
+
+  var LANG_LABEL = { ko: '한국어', en: 'English' };
+
+  /** 화면에 보이는 글자를 즉시 맞춘다(런타임 관리 요소는 resyncLive 가 건너뛴다). */
+  function pushLive(idx, text) {
+    var m = Y.engine.map();
+    var lv = m && m.liveOf(idx);
+    if (lv && lv.textContent !== text) lv.textContent = text;
+  }
+
+  /** 홈 내장 사전(var I18N) 한 언어분 입력 칸 */
+  function dictBox(idx, key, lang, value, curLang) {
+    var wrap = mk('div', 'ys-dict-f' + (lang === curLang ? ' is-cur' : ''));
+    var lab = mk('span', 'ys-f-l', LANG_LABEL[lang] || lang);
+    if (lang === curLang) lab.appendChild(mk('em', 'ys-dict-cur', '지금 화면'));
+    var ta = mk('textarea', 'ys-ta');
+    ta.value = value == null ? '' : value;
+    ta.rows = Math.min(8, Math.max(2, Math.ceil((ta.value.length || 1) / 34)));
+    ta.spellcheck = false;
+    function commit() {
+      if (Y.pagedict.set(key, lang, ta.value, idx)) refreshSoft();
+    }
+    ta.addEventListener('input', U.debounce(commit, 350));
+    ta.addEventListener('blur', commit);
+    wrap.appendChild(lab);
+    wrap.appendChild(ta);
+    return wrap;
+  }
+
   function textSection(idx, info) {
     var s = sect('텍스트');
+
+    /* 카운트업 — 화면 숫자는 애니메이션이 0부터 다시 쓰므로 목표값(data-count)을 고친다 */
     if (info.runtime === 'count') {
-      s.appendChild(warnBox('이 숫자는 카운트업 애니메이션이 덮어씁니다 — 아래 data-count 속성을 고치세요.'));
-      var ta0 = mk('textarea', 'ys-ta');
-      ta0.value = info.text == null ? '' : info.text;
-      ta0.disabled = true;
-      s.appendChild(ta0);
+      s.appendChild(noteBox('스크롤할 때 0부터 세어 올라가는 숫자입니다. 최종 값을 여기서 고치세요.'));
+      var row = fieldRow('최종 숫자');
+      var num = mk('input', 'ys-in');
+      num.type = 'text';
+      num.inputMode = 'numeric';
+      num.value = info.attrs['data-count'] == null ? '' : info.attrs['data-count'];
+      var numWarn = mk('p', 'ys-hint', '');
+      function pushNum() {
+        var v = num.value.trim();
+        if (!/^-?\d+(?:\.\d+)?$/.test(v)) { numWarn.textContent = '숫자만 넣을 수 있습니다.'; return; }
+        numWarn.textContent = '';
+        if (Y.engine.setAttr(idx, 'data-count', v)) { pushLive(idx, v); refreshSoft(); }
+      }
+      num.addEventListener('input', U.debounce(pushNum, 300));
+      num.addEventListener('blur', pushNum);
+      row.appendChild(num);
+      s.appendChild(row);
+      s.appendChild(numWarn);
       return s;
     }
+
+    /* 홈 내장 사전 — 사전 값을 직접 고쳐 새로고침 뒤에도 남게 한다 */
     if (info.runtime === 'i18n') {
-      s.appendChild(warnBox('이 문장은 홈 전용 한/영 사전(applyI18n)이 관리합니다. 화면에서 고치면 새로고침 때 되돌아갑니다.'));
+      var key = info.attrs['data-i18n'] || '';
+      var vals = (Y.pagedict && Y.pagedict.available()) ? Y.pagedict.values(key) : null;
+      var have = vals ? Object.keys(vals) : [];
+      if (have.length) {
+        var cur = Y.pagedict.liveLang();
+        s.appendChild(noteBox('홈 한/영 사전이 관리하는 문장입니다 — 두 언어를 여기서 바로 고칩니다. ' +
+          '저장하면 화면과 파일에 함께 반영됩니다.'));
+        for (var li = 0; li < have.length; li++) {
+          s.appendChild(dictBox(idx, key, have[li], vals[have[li]], cur));
+        }
+        s.appendChild(hint('사전 키 ' + key + ' · 한/영 패널에서 전체 목록을 볼 수 있습니다.'));
+        return s;
+      }
+      s.appendChild(warnBox('이 문장은 홈 한/영 사전이 관리하는데 사전을 읽지 못했습니다.' +
+        (Y.pagedict && Y.pagedict.reason() ? ' (' + Y.pagedict.reason() + ')' : '')));
       var ta1 = mk('textarea', 'ys-ta');
       ta1.value = info.text == null ? '' : info.text;
       ta1.disabled = true;
       s.appendChild(ta1);
-      s.appendChild(hint('사전 항목(data-i18n="' + (info.attrs['data-i18n'] || '') + '")은 한/영 편집 패널에서 고칩니다.'));
       return s;
     }
+
     var ta = mk('textarea', 'ys-ta');
     ta.value = info.text == null ? '' : info.text;
     ta.rows = Math.min(10, Math.max(2, Math.ceil((ta.value.length || 1) / 34)));
@@ -955,7 +1017,9 @@
     var s = sect('속성');
     var names = [], i;
     for (i = 0; i < ATTRS.length; i++) if (attrRelevant(info.tag, ATTRS[i], info.attrs)) names.push(ATTRS[i]);
-    if (Object.prototype.hasOwnProperty.call(info.attrs, 'data-count')) names.push('data-count');
+    /* data-count 는 텍스트 칸(「최종 숫자」)이 이미 갖고 있다 — 같은 값을 두 칸에 두면
+       한쪽을 고쳐도 다른 쪽이 옛 값을 보여 준다. 텍스트 칸이 없을 때만 여기서 낸다. */
+    if (Object.prototype.hasOwnProperty.call(info.attrs, 'data-count') && !info.isLeaf) names.push('data-count');
 
     for (i = 0; i < names.length; i++) s.appendChild(attrRow(idx, names[i], info));
 

@@ -108,7 +108,12 @@
       return new Promise(function (res, rej) {
         var t = db.transaction(store, mode), s = t.objectStore(store), out;
         try { out = fn(s); } catch (e) { rej(e); return; }
-        t.oncomplete = function () { res(out && out.result !== undefined ? out.result : out); };
+        /* IDBRequest 를 돌려받았으면 그 결과를 넘긴다. `out.result !== undefined` 로 판별하면
+           키가 없을 때(결과 undefined) 요청 객체 자체가 그대로 넘어가 "값이 있다"로 보인다. */
+        t.oncomplete = function () {
+          var isReq = out && typeof IDBRequest !== 'undefined' && out instanceof IDBRequest;
+          res(isReq ? out.result : out);
+        };
         t.onerror = function () { rej(t.error); };
         t.onabort = function () { rej(t.error); };
       });

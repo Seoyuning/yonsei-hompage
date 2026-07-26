@@ -280,6 +280,38 @@
 }
 .ys-in:disabled,
 .ys-ta:disabled { background: #f7f8fb; color: var(--ys-dim); }
+
+/* 홈 내장 사전 — 한 문장의 언어별 입력 칸 */
+.ys-dict-f {
+  display: block;
+  margin: 0 0 .5rem;
+  padding: .4rem .5rem;
+  border: 1px solid var(--ys-line);
+  border-radius: 9px;
+  background: #fbfcfe;
+}
+.ys-dict-f.is-cur {
+  border-color: var(--ys-navy-2);
+  background: #f4f7fc;
+}
+.ys-dict-f > .ys-f-l {
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  flex: none;
+  margin-bottom: .28rem;
+}
+.ys-dict-cur {
+  font-style: normal;
+  font-size: .62rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  color: #fff;
+  background: var(--ys-navy-2);
+  border-radius: 999px;
+  padding: .1rem .38rem;
+}
+.ys-dict-f .ys-ta { min-height: 2.6rem; }
 .ys-ta {
   display: block;
   width: 100%;

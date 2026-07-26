@@ -239,7 +239,7 @@ img{display:block;max-width:100%}
   letter-spacing:.14em;text-transform:uppercase;font-weight:500;color:var(--coral)}
 /* 분야 육각 배지 — 구성원 페이지의 분야 레일과 같은 글리프·같은 색 */
 .fbadge{flex:none;width:17px;height:19px;display:grid;place-items:center;color:#fff;
-  background:var(--fx,#12294f);
+  background:var(--fx,#12294f);background:color-mix(in srgb,var(--fx,#12294f) 73%,#0a1633);
   clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
 .fbadge svg{width:10px;height:10px;display:block}
 .pc .pko{margin-top:.18rem;font-size:1.02rem;font-weight:800;color:var(--ink)}
@@ -341,7 +341,7 @@ img{display:block;max-width:100%}
   <div class="hero-veil" aria-hidden="true"></div>
   <div class="hero-in">
     <p class="hero-kick" data-i18n="heroKick">School of Mechanical Engineering</p>
-    <h1 data-i18n="heroTitle" style="color:#fa0000">연세대학교 기계공학부</h1>
+    <h1 data-i18n="heroTitle">연세대학교 기계공학부</h1>
     <p class="sub" data-i18n="heroSub">기계공학은 모든 산업의 기반이 되는 학문입니다.
       연세대학교 기계공학부는 1962년 설립 이래 6개 연구 분야, 33개 연구실에서 교육과 연구를 이어 오고 있습니다.</p>
     <div class="hero-btns">
@@ -650,8 +650,8 @@ img{display:block;max-width:100%}
     var j = Math.floor(Math.random() * (i + 1)), t = pool[i]; pool[i] = pool[j]; pool[j] = t;
   }
   /* 분야 글리프·색 — G-people.html 의 분야 레일과 동일하게 맞춘다 */
-  var FCOLOR = { solid:'#2b4a7a', thermal:'#b0742c', dynamics:'#7a5aa0',
-                 manufacturing:'#4a7c59', micro:'#2d8a8a', optics:'#3f6fb0' };
+  var FCOLOR = { solid:'#2b4a7a', thermal:'#b0742c', dynamics:'#996baa',
+                 manufacturing:'#26865e', micro:'#22a4b6', optics:'#a84551' };
   var FSV = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
   var FICON = {
     solid: FSV + '<rect x="3.5" y="6" width="17" height="12" rx="1.2"/><path d="M3.5 12h17M9.2 6v12M14.8 6v12"/></svg>',

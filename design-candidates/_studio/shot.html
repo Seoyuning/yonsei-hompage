@@ -19,7 +19,7 @@
   const q = new URLSearchParams(location.search);
   const PAGE = q.get('page') || 'H-academic.html';
   const PANEL = q.get('panel') || 'inspect';
-  const MODULES = ['core', 'net', 'source', 'align', 'engine', 'diff', 'pagedict', 'hud', 'versions', 'ai', 'i18n-edit', 'mobile', 'datamap', 'posts'];
+  const MODULES = ['core', 'net', 'source', 'align', 'engine', 'diff', 'changes', 'pagedict', 'hud', 'versions', 'ai', 'i18n-edit', 'mobile', 'datamap', 'posts'];
   const sleep = ms => new Promise(r => setTimeout(r, ms));
 
   sessionStorage.setItem('ysme-studio', JSON.stringify({ passcode: 'DEMO', author: '김편집', ts: Date.now() }));
@@ -88,7 +88,25 @@
   if (t) Y.hud.select(t.idx);
   await sleep(250);
 
-  if (PANEL === 'mobile') { Y.mobile.open(); await sleep(1800); }
+  if (PANEL === 'compare') {
+    /* 시점 비교 모달 — 옛 판본(원문)과 지금(편집본)을 만들어 실제 흐름 그대로 띄운다 */
+    const orig = Y.engine.src();
+    Y.net.read = (p, sha) => sha
+      ? Promise.resolve({ content: orig, blobSha: 'b', ref: sha })          // 그 시점 = 편집 전
+      : fetch('../' + p, { cache: 'no-store' }).then(r => r.text()).then(t => ({ content: t, blobSha: 'b', ref: 'main' }));
+    const h2 = d.querySelector('h2[data-i18n="peopleTitle"]') || d.querySelector('main h2');
+    const hi = h2 ? Y.engine.indexFromLive(h2) : null;
+    if (hi != null) { Y.engine.setText(hi, '우리 교수진'); Y.engine.setStyleProp(hi, 'font-size', '72px'); }
+    const a0 = d.querySelector('main a[href]');
+    const ai = a0 ? Y.engine.indexFromLive(a0) : null;
+    if (ai != null) Y.engine.setAttr(ai, 'href', 'G-people.html?from=news');
+    const p0 = Y.engine.outline({ max: 400 }).filter(o => o.tag === 'p' && o.text.length > 20)[0];
+    if (p0) Y.engine.setText(p0.idx, '기계공학은 모든 산업의 기반입니다. 연세대학교 기계공학부는 1962년 설립 이래 여섯 개 분야에서 연구를 이어 왔습니다.');
+    await Y.versions.refresh();
+    await Y.versions.compare('cp-1');
+    await sleep(900);
+  }
+  else if (PANEL === 'mobile') { Y.mobile.open(); await sleep(1800); }
   else if (PANEL === 'publish') {
     /* 게시 확인 모달 — 초안 2건을 심어 실제 흐름 그대로 띄운다 */
     if (t) Y.engine.setText(t.idx, '연세대학교 기계공학부는 사람을 남깁니다');

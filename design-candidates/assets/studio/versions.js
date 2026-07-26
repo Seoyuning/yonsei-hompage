@@ -374,23 +374,7 @@
 
     return Promise.all([Y.net.read(path, sha), curP]).then(function (a) {
       stop();
-      var rows = Y.diff.lines(a[0].content, a[1].content);
-      var sum = Y.diff.summary(rows);
-      var frag = document.createDocumentFragment();
-      var head = document.createElement('div');
-      head.className = 'ys-vs-cmp-head';
-      head.setAttribute(Y.config.uiAttr, '');
-      head.textContent = path + ' — 「' + (it.name || '이름 없음') + '」(' +
-        (it.ts ? U.fmtTime(it.ts) : '시각 미기록') + ') → 현재' + (a[1].dirty ? '(미저장 초안 포함)' : '');
-      frag.appendChild(head);
-      var s = document.createElement('div');
-      s.className = 'ys-vs-cmp-sum';
-      s.textContent = (sum.add || sum.del) ? ('추가 ' + sum.add + '줄 · 삭제 ' + sum.del + '줄') : '이 페이지는 그 시점과 같습니다.';
-      frag.appendChild(s);
-      frag.appendChild(Y.diff.render(rows, { context: 2 }));
-      if (Y.hud && Y.hud.modal) {
-        Y.hud.modal({ title: '시점 비교 · ' + path, body: frag, okLabel: '닫기', wide: true });
-      }
+      showCompare(path, it, a[0].content, a[1].content, a[1].dirty);
       return true;
     }, function (e) {
       stop();
@@ -399,6 +383,148 @@
       Y.toast('비교 실패 — ' + m, 'error');
       return false;
     });
+  }
+
+  /* ── 2-a-2. 비교 화면 (사람이 읽는 변경 목록) ──
+     코드 diff 는 조교 사용자가 읽을 수 없다. 기본은 "무엇이 어디서 어떻게 바뀌었나"
+     카드 목록이고, 원문 코드는 접힌 「개발자용」 영역에 둔다. */
+
+  var TYPE_TAG = {
+    text: { t: '글', c: 'is-text' }, style: { t: '모양', c: 'is-style' },
+    attr: { t: '링크', c: 'is-attr' }, add: { t: '추가', c: 'is-add' },
+    del: { t: '삭제', c: 'is-del' }, 'data-add': { t: '새 글', c: 'is-add' },
+    'data-del': { t: '글 삭제', c: 'is-del' }, 'data-edit': { t: '목록', c: 'is-text' },
+    i18n: { t: '영어', c: 'is-i18n' }
+  };
+
+  function el(tag, cls, txt) {
+    var n = document.createElement(tag);
+    if (tag === 'button') n.type = 'button';
+    if (cls) n.className = cls;
+    if (txt != null) n.textContent = txt;
+    n.setAttribute(Y.config.uiAttr, '');
+    return n;
+  }
+
+  /** 변경 1건 카드 */
+  function changeCard(ch, canJump, onJump) {
+    var card = el('div', 'ys-ch');
+    var head = el('div', 'ys-ch-h');
+    var meta = TYPE_TAG[ch.type] || { t: '변경', c: '' };
+    head.appendChild(el('span', 'ys-ch-tag ' + meta.c, meta.t));
+    head.appendChild(el('b', 'ys-ch-what', ch.label));
+    head.appendChild(el('span', 'ys-ch-where', ch.where || ''));
+    card.appendChild(head);
+
+    if (ch.before) {
+      var b = el('div', 'ys-ch-row is-before');
+      b.appendChild(el('span', 'ys-ch-k', '이전'));
+      b.appendChild(el('span', 'ys-ch-v', ch.before));
+      card.appendChild(b);
+    }
+    if (ch.after) {
+      var f = el('div', 'ys-ch-row is-after');
+      f.appendChild(el('span', 'ys-ch-k', '지금'));
+      f.appendChild(el('span', 'ys-ch-v', ch.after));
+      card.appendChild(f);
+    }
+    if (canJump && ch.idxNew != null) {
+      var go = el('button', 'ys-btn ys-btn-sm ys-ch-go', '화면에서 보기');
+      go.addEventListener('click', function () { onJump(ch.idxNew); });
+      card.appendChild(go);
+    }
+    return card;
+  }
+
+  /** 옛 판본을 그대로 렌더해 보여 준다(같은 오리진 iframe · 스튜디오는 프레임에서 스스로 멈춘다). */
+  function pastFrame(srcHtml) {
+    var wrap = el('div', 'ys-ch-past');
+    var f = document.createElement('iframe');
+    f.setAttribute(Y.config.uiAttr, '');
+    f.className = 'ys-ch-frame';
+    f.setAttribute('title', '이 시점의 화면');
+    f.setAttribute('sandbox', 'allow-same-origin allow-scripts');
+    f.srcdoc = srcHtml;
+    wrap.appendChild(f);
+    return wrap;
+  }
+
+  function showCompare(path, it, oldSrc, newSrc, dirty) {
+    var res = (Y.changes && Y.changes.of) ? Y.changes.of(path, oldSrc, newSrc) : { ok: false, list: [] };
+    var curPath = (Y.engine && Y.engine.path && Y.engine.path()) || '';
+    var canJump = !!(curPath && curPath === path && Y.hud && Y.hud.select && Y.engine.mapped && Y.engine.mapped());
+    var modalApi = null;
+
+    var body = el('div', 'ys-cmp');
+    var head = el('div', 'ys-cmp-head');
+    head.appendChild(el('b', null, '「' + (it.name || '이름 없음') + '」'));
+    head.appendChild(el('span', 'ys-cmp-dim',
+      (it.ts ? U.fmtTime(it.ts) : '시각 미기록') + ' 시점  →  지금' + (dirty ? ' (미저장 초안 포함)' : '')));
+    body.appendChild(head);
+
+    var sum = el('p', 'ys-cmp-sum',
+      res.ok ? (Y.changes.summarize(res.list)) : (res.reason || '항목별 비교를 할 수 없습니다.'));
+    body.appendChild(sum);
+
+    if (res.ok && res.list.length) {
+      var CAP = 60;                                   // 복원 직후처럼 변경이 수백 건일 수 있다
+      var list = el('div', 'ys-ch-list');
+      var shownN = Math.min(CAP, res.list.length);
+      for (var i = 0; i < shownN; i++) {
+        list.appendChild(changeCard(res.list[i], canJump, function (idx) {
+          if (modalApi) modalApi.close();
+          try { Y.hud.select(idx); Y.hud.openPanel('inspect'); } catch (e) {}
+        }));
+      }
+      body.appendChild(list);
+      if (res.list.length > CAP) {
+        body.appendChild(el('p', 'ys-hint',
+          '변경이 많아 ' + CAP + '건만 보여 드립니다 (전체 ' + res.list.length + '건). 나머지는 아래 원문 비교에서 볼 수 있습니다.'));
+      }
+      if (!canJump) {
+        body.appendChild(el('p', 'ys-hint',
+          '「화면에서 보기」는 지금 열려 있는 페이지(' + (curPath || '없음') + ')와 같은 파일일 때만 쓸 수 있습니다.'));
+      }
+    } else if (res.ok) {
+      body.appendChild(el('p', 'ys-hint', '이 파일은 그 시점과 똑같습니다.'));
+    }
+
+    /* 옛 화면 보기 — HTML 일 때만 */
+    if (/\.html?$/i.test(path)) {
+      var toggle = el('button', 'ys-btn ys-btn-sm', '이 시점 화면 그대로 보기');
+      var slot = el('div', null);
+      var shown = false;
+      toggle.addEventListener('click', function () {
+        shown = !shown;
+        toggle.textContent = shown ? '이 시점 화면 접기' : '이 시점 화면 그대로 보기';
+        slot.innerHTML = '';
+        if (shown) slot.appendChild(pastFrame(oldSrc));
+      });
+      body.appendChild(toggle);
+      body.appendChild(slot);
+    }
+
+    /* 개발자용 원문 비교 — 접어 둔다 */
+    var det = document.createElement('details');
+    det.className = 'ys-cmp-raw';
+    det.setAttribute(Y.config.uiAttr, '');
+    var sm = document.createElement('summary');
+    sm.textContent = '원문 코드로 비교 (개발자용)';
+    det.appendChild(sm);
+    var built = false;
+    det.addEventListener('toggle', function () {
+      if (!det.open || built) return;
+      built = true;
+      var rows = Y.diff.lines(oldSrc, newSrc);
+      var s = Y.diff.summary(rows);
+      det.appendChild(el('p', 'ys-cmp-sum', '추가 ' + s.add + '줄 · 삭제 ' + s.del + '줄'));
+      det.appendChild(Y.diff.render(rows, { context: 2 }));
+    });
+    body.appendChild(det);
+
+    if (Y.hud && Y.hud.modal) {
+      modalApi = Y.hud.modal({ title: '시점 비교 · ' + path, body: body, okLabel: '닫기', cancelLabel: null, wide: true });
+    }
   }
 
   /* ── 2-b. 복원 ── */

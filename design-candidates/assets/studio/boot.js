@@ -40,6 +40,7 @@
     { name: 'align', req: true },
     { name: 'engine', req: true },
     { name: 'diff', req: false },
+    { name: 'changes', req: false },
     { name: 'pagedict', req: false },
     { name: 'hud', req: false },
     { name: 'versions', req: false },

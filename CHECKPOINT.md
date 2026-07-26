@@ -1,0 +1,74 @@
+# 작업 체크포인트
+
+> PC가 꺼지거나 세션이 끊겨도 여기서부터 이어서 작업한다.
+> **작업을 시작·전환·완료할 때마다 이 파일을 갱신하고 커밋한다.**
+> 프로젝트 전체 상태는 `README.md` 의 「현재 상태 & 다음 할 일」, 편집 도구 계약은
+> `design-candidates/STUDIO_SPEC.md` 를 본다. 이 파일은 **지금 진행 중인 것**만 담는다.
+
+---
+
+## 마지막 갱신
+
+| 항목 | 값 |
+|---|---|
+| 시각 | **2026-07-26 (일) 18:07 KST** (UTC 09:07) |
+| 커밋 | `267e014` feat(studio): 잠긴 텍스트 칸 해소 + 공지·소식 등록 |
+| 원격 | `origin/main` 과 동기 (push 완료) |
+| 배포 | `yonsei-me-homepage` 프로덕션 Ready — 자산 5종 200 확인 |
+| 진행 중 | **없음 — 다음 작업 선택 대기** |
+
+## 지금 상태 한 줄
+
+인플레이스 스튜디오의 "고칠 수 없는 칸" 문제를 없애고 공지 등록 기능을 넣어 배포까지 끝냈다.
+남은 것은 **실환경 검증 3건**(공용 암호·AI 키 필요)과 **심사 제출물 마무리**다.
+
+---
+
+## 완료 (이번 세션, 2026-07-26)
+
+- [x] `prototype-v3` Vercel 프로젝트 삭제 → `prototype-v3-nine.vercel.app` 404 확인
+- [x] `pagedict.js` 신규 — 홈 인라인 `var I18N` 사전 오프셋 편집.
+      `data-i18n` 문장을 인스펙터에서 한국어·English 두 칸으로 직접 수정
+- [x] `data-count` 카운트업 숫자를 「최종 숫자」 칸에서 수정 (속성 칸 중복 제거)
+- [x] `posts.js` 신규 + `datamap` 배열 삽입/삭제 — 공지·뉴스·세미나·행사 등록/삭제
+- [x] `core.js` 회귀 수정 — `Y.store.get` 이 없는 키에 IDBRequest 를 반환하던 것
+- [x] 문서 갱신 — `README.md`, `STUDIO_SPEC.md`(§4.4, §5.1, 합격기준 11·12), `FEATURES.md`
+- [x] 검증 — selftest 146 / inttest 87 / test-posts 28, 전부 통과 · 런타임 오류 0
+
+## 다음 후보 (미착수)
+
+1. **실환경 검증 3건** — 공용 암호(+AI 키) 필요. 체크포인트 복원 왕복 / AI 실키 호출 / 동시편집 409
+2. **심사용 데모 시나리오 + 발표 자료**
+3. **구 콘솔 `admin/` 처리 결정** — 인플레이스 스튜디오와 이중 유지 여부
+4. **1축 디자인 개선**
+5. 편집 UX 다듬기 — 등록한 공지의 게시 전 미리보기 등
+
+## 확인 필요 (사용자 결정)
+
+- `yonsei-hompage.vercel.app` — 우리 Vercel 계정 밖(팀원 계정 추정). 저장소 루트를 서빙해
+  `기획_전략/` 문서와 `admin/` 소스가 공개 URL 로 열린다. **소유자를 찾아 삭제/설정 변경 요청 필요.**
+- 커밋 `f8d8d83`(팀원 게시)이 `H-academic.html` 의 "교수진" 제목에 `style="font-size:58px"` 를
+  인라인으로 넣었다. 의도한 디자인 변경인지, 도구 시험 흔적인지 확인 후 유지/되돌리기 결정.
+
+---
+
+## 이어서 하기 — 환경 복구 절차
+
+```bash
+cd "C:/Users/thf56/Desktop/공모전 준비/연세대_사이트 공모전"
+git fetch origin && git status -sb          # behind 면 git merge --ff-only origin/main
+
+# 로컬 검증 서버 (스튜디오 테스트에 필수 — /hang 으로 load 를 붙잡는다)
+cd design-candidates
+python _studio/tools/testserver.py .        # 127.0.0.1:8124
+
+# 회귀 3종
+node _studio/tools/test-posts.js                                             # 28항목
+chrome --headless --disable-gpu --dump-dom http://127.0.0.1:8124/_studio/selftest.html   # 146항목
+chrome --headless --disable-gpu --dump-dom http://127.0.0.1:8124/_studio/inttest.html    # 87항목
+```
+
+- 시간 확인은 **PowerShell `Get-Date`** 로 한다.
+  Git Bash 의 `TZ=Asia/Seoul date` 는 tzdata 가 없어 UTC 로 떨어진다(9시간 어긋남).
+- 헤드리스 Chrome 을 연달아 띄울 때는 `--user-data-dir` 를 매번 다르게 준다(프로필 잠금 충돌).
+- 임시 파일은 `/tmp` 가 아니라 세션 스크래치패드에 쓴다(Node 가 `C:\tmp` 로 해석한다).

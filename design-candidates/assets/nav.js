@@ -217,9 +217,10 @@
       setBreadcrumb(s[0]);
       try { history.replaceState(null, '', '#' + (s[1].split('#')[1] || '')); } catch (_) {}
       if (doScroll) {
-        /* 형제 탭 클릭 — 탭 바가 화면 맨 위(헤더 바로 아래)에 붙도록 부드럽게 이동 */
+        /* 형제 탭 클릭 — 탭 바가 화면 맨 위(헤더 바로 아래)에 붙도록 부드럽게 이동.
+           'auto'는 CSS scroll-behavior:smooth 에 덮이므로 즉시 이동은 'instant'로 강제(모션 축소·숨은 탭) */
         var y = bar.getBoundingClientRect().top + (pageYOffset || 0) - Math.round(hdr ? hdr.getBoundingClientRect().height : 62);
-        try { scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' }); } catch (_) { scrollTo(0, y); }
+        try { scrollTo({ top: y, behavior: (reduce || document.hidden) ? 'instant' : 'smooth' }); } catch (_) { scrollTo(0, y); }
         /* 새로 보이는 뷰의 글자 등장 애니메이션(.ys-view-in — transition.css) */
         if (!reduce) managed.forEach(function (el) {
           if (ids.indexOf(el.id) >= 0) { el.classList.remove('ys-view-in'); void el.offsetWidth; el.classList.add('ys-view-in'); }

@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>교수진 레일 검사</title>
+<style>
+  body { font: 13px/1.65 ui-monospace, Consolas, monospace; padding: 1rem 1.2rem; }
+  pre { white-space: pre-wrap; margin: 0; }
+  .fail { color: #b3261e; font-weight: 700; }
+  #verdict { margin-top: 1rem; padding: .6rem .9rem; border-radius: .5rem; font-weight: 700; }
+  #verdict.pass { background: #e6f4ea; color: #0a6b39; }
+  #verdict.fail { background: #fce8e6; color: #b3261e; }
+  iframe { position: fixed; right: 0; top: 0; width: 1280px; height: 820px; border: 0; opacity: .01; }
+</style>
+</head>
+<body>
+<h1 style="font-size:1.02rem;margin:0 0 .8rem">홈 교수진 레일 — 좌우 버튼 · 자동 넘김 검사</h1>
+<div id="out"><pre>실행 중…</pre></div>
+<img id="ysBlocker" src="/hang" alt="" style="display:none" />
+
+<script>
+/* 배포되지 않는다(.vercelignore).
+   주의: 이 검사는 **탭이 보이는 상태**에서 돌려야 한다. 탭이 숨겨지면 브라우저가
+   requestAnimationFrame 과 부드러운 스크롤을 멈추므로 레일이 움직이지 않는다
+   (그건 결함이 아니라 정상 동작이다 — 우리 코드도 hidden 이면 스스로 쉰다).
+   프레임은 화면 밖으로 밀지 않고 opacity 로만 숨긴다 — 화면 밖이면 레일의
+   IntersectionObserver 가 꺼져 자동 넘김이 돌지 않는다. */
+(async function () {
+  const out = document.getElementById('out');
+  let lines = [], fails = 0;
+  const log = (ok, m) => { lines.push((ok ? '  ok   ' : ' FAIL  ') + m); if (!ok) fails++; paint(); };
+  const info = m => { lines.push('       ' + m); paint(); };
+  const head = m => { lines.push(''); lines.push('── ' + m); paint(); };
+  function paint(done) {
+    const esc = lines.join('\n').replace(/&/g, '&amp;').replace(/</g, '&lt;');
+    let html = '<pre>' + esc.replace(/^ FAIL .*$/gm, m => '<span class="fail">' + m + '</span>') + '</pre>';
+    if (done) html += '<div id="verdict" class="' + (fails ? 'fail' : 'pass') + '">' +
+      (fails ? 'FAILED — 실패 ' + fails + '건' : 'PASSED — 실패 0건') + '</div>';
+    out.innerHTML = html;
+  }
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+  try {
+    head('준비');
+    if (document.hidden) info('※ 탭이 숨겨져 있다 — 애니메이션이 멈춰 결과가 무의미하다');
+    const f = document.createElement('iframe');
+    await new Promise(res => { f.addEventListener('load', () => setTimeout(res, 1200)); f.src = '../H-academic.html'; document.body.appendChild(f); });
+    const w = f.contentWindow, d = f.contentDocument;
+    const rail = d.getElementById('pGrid');
+    log(!!rail, '레일(#pGrid) 존재');
+    const wrap = rail.parentElement;
+    log(wrap && wrap.classList.contains('prail-wrap'), '레일 감싸개(.prail-wrap) 존재');
+    const prev = wrap.querySelector('.prail-nav.is-prev');
+    const next = wrap.querySelector('.prail-nav.is-next');
+    log(!!prev && !!next, '이전·다음 버튼 존재');
+    log(prev.getAttribute('aria-label') && next.getAttribute('aria-label'), '버튼에 읽어 주는 이름이 있다');
+
+    const cards = rail.querySelectorAll('.pc');
+    log(cards.length > 3, '카드 ' + cards.length + '장 렌더');
+    const gap = parseFloat(w.getComputedStyle(rail).columnGap) || 0;
+    const step = Math.round(cards[0].getBoundingClientRect().width + gap);
+    const max = rail.scrollWidth - rail.clientWidth;
+    log(max > step, '레일이 넘칠 만큼 길다 (여유 ' + Math.round(max) + 'px · 한 칸 ' + step + 'px)');
+
+    head('버튼이 눈에 보이고 제자리에 있는가');
+    const pr = prev.getBoundingClientRect(), nr = next.getBoundingClientRect();
+    const rr = rail.getBoundingClientRect();
+    const pcs = w.getComputedStyle(prev);
+    log(pr.width >= 34 && pr.height >= 34, '버튼 크기 ' + Math.round(pr.width) + '×' + Math.round(pr.height) + 'px (누르기 충분)');
+    log(parseFloat(pcs.opacity) >= .8, '평상시에도 보인다 (투명도 ' + pcs.opacity + ')');
+    log(pcs.position === 'absolute' && pcs.borderRadius.indexOf('50%') === 0, '레일 위에 겹친 원형 버튼');
+    log(Math.abs(pr.left - rr.left) < 60, '이전 버튼이 레일 왼쪽 끝에 붙어 있다');
+    log(Math.abs(nr.right - rr.right) < 60, '다음 버튼이 레일 오른쪽 끝에 붙어 있다');
+    log(Math.abs((pr.top + pr.height / 2) - (nr.top + nr.height / 2)) < 2, '두 버튼 높이가 같다');
+    log(!!prev.querySelector('svg') && !!next.querySelector('svg'), '화살표 아이콘이 들어 있다');
+
+    /* 레일이 보이도록 프레임 안에서 스크롤 — scroll-behavior:smooth 때문에 instant 로 준다 */
+    head('버튼으로 한 칸씩');
+    w.scrollTo({ top: wrap.getBoundingClientRect().top + w.scrollY - 160, behavior: 'instant' });
+    await sleep(700);
+    rail.scrollLeft = 0;
+    await sleep(200);
+
+    next.click();
+    await sleep(1100);
+    const a = Math.round(rail.scrollLeft);
+    log(Math.abs(a - step) <= 12, '다음 버튼 → 한 칸 이동 (0 → ' + a + ', 기대 ' + step + ')');
+
+    next.click();
+    await sleep(1100);
+    const b = Math.round(rail.scrollLeft);
+    log(Math.abs(b - step * 2) <= 20, '다음 버튼 → 두 칸째 (' + a + ' → ' + b + ')');
+
+    prev.click();
+    await sleep(1100);
+    const c = Math.round(rail.scrollLeft);
+    log(Math.abs(c - step) <= 20, '이전 버튼 → 한 칸 되돌아옴 (' + b + ' → ' + c + ')');
+
+    head('끝에서 처음으로 되돌기');
+    rail.scrollLeft = max;
+    await sleep(300);
+    next.click();
+    await sleep(1100);
+    const e = Math.round(rail.scrollLeft);
+    log(e <= 12, '오른쪽 끝에서 다음 → 처음으로 (' + Math.round(max) + ' → ' + e + ')');
+
+    head('손대지 않으면 알아서 넘어가는가');
+    /* 앞선 버튼 클릭이 자동 넘김을 영구히 멈췄으므로, 프레임을 새로 띄워 확인한다 */
+    const f2 = document.createElement('iframe');
+    await new Promise(res => { f2.addEventListener('load', () => setTimeout(res, 1400)); f2.src = '../H-academic.html'; document.body.appendChild(f2); });
+    const w2 = f2.contentWindow, d2 = f2.contentDocument;
+    const rail2 = d2.getElementById('pGrid');
+    const wrap2 = rail2.parentElement;
+    w2.scrollTo({ top: wrap2.getBoundingClientRect().top + w2.scrollY - 160, behavior: 'instant' });
+    await sleep(1600);
+    const s0 = Math.round(rail2.scrollLeft);
+    await sleep(4400);
+    const s1 = Math.round(rail2.scrollLeft);
+    await sleep(4400);
+    const s2 = Math.round(rail2.scrollLeft);
+    log(s1 > s0, '가만히 두면 스스로 이동 (' + s0 + ' → ' + s1 + ')');
+    log(s2 > s1, '계속 한 칸씩 진행 (' + s1 + ' → ' + s2 + ')');
+    info('   한 칸 ' + step + 'px 기준 · 주기 3.6초');
+
+    head('조작하면 자동 넘김이 멈추는가');
+    const before = Math.round(rail2.scrollLeft);
+    wrap2.querySelector('.prail-nav.is-next').click();
+    await sleep(1200);
+    const afterClick = Math.round(rail2.scrollLeft);
+    await sleep(5000);
+    const afterWait = Math.round(rail2.scrollLeft);
+    log(afterClick !== before, '클릭은 즉시 반응 (' + before + ' → ' + afterClick + ')');
+    log(afterWait === afterClick, '그 뒤로는 스스로 움직이지 않음 (' + afterClick + ' → ' + afterWait + ')');
+
+  } catch (err) {
+    log(false, '검사 중 예외: ' + (err && err.message));
+  }
+
+  head('결과');
+  info('실패 ' + fails + '건');
+  paint(true);
+  document.title = (fails ? 'FAIL' : 'PASS') + ' ' + fails;
+  const b = document.getElementById('ysBlocker');
+  if (b && b.parentNode) b.parentNode.removeChild(b);
+})();
+</script>
+</body>
+</html>

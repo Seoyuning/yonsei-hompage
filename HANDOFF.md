@@ -227,7 +227,18 @@ api/
     제목 기반 자체 분류 배지 유지). data.js 에 `thesisReview`/`archive` 배열 + Source 키 추가,
     en.json 11항목 보충.
 - ⚠️ **사용자가 옛 미러(yonsei-hompage.vercel.app)에서 테스트하다 "적용 안 됨" 혼선** —
-  현행 라이브는 yonsei-me-homepage.vercel.app 하나뿐. 미러 정리(삭제/리다이렉트) 결정 필요.
+  현행 라이브는 yonsei-me-homepage.vercel.app 하나뿐. 사용자 승인으로 미러 저장소
+  (Seoyuning/yonsei-hompage)를 **리다이렉트 전용으로 force-push**(`f5d86a8` — vercel.json 이
+  /design-candidates/* 포함 전 경로를 현행 라이브로 넘김, 문서·admin 노출도 제거).
+  단 미러 쪽 Vercel 이 자동 배포를 안 해 **대시보드에서 Redeploy 1회 필요**(사용자 액션 대기).
+- **진입 앵커 점프 제거(렉 느낌 수정).** 탭 해시로 진입 시 "앵커 점프→유틸바 접힘→맨위 복귀"
+  왕복이 버벅임으로 보임 → 7개 G페이지 head 스니펫이 탭 해시를 파싱 전에 떼어
+  `window.__ysTab` 보관, nav.js 가 탭 복원. 깊은 앵커(연구실·교수 id)는 목록 밖이라 기존 유지.
+  즉시 스크롤은 `'instant'` 강제('auto'는 CSS scroll-behavior:smooth 에 덮임 — 모션 축소·숨은 탭 수정).
+- 확정 UX 규칙: **상단 메뉴(드롭다운 포함) 클릭 = 히어로부터 시작 / 형제 탭 클릭 = 탭 바가
+  헤더 아래 맨 위에 붙고 그 아래 콘텐츠 시작**(사용자 확인 완료).
+- 검증: 실브라우저(로컬) 진입 6항목·탭 클릭 5항목 통과, selftest 실패0/경고0 ·
+  inttest 실패0/경고0 · test-posts 28/28.
 
 ---
 

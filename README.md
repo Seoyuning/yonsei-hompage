@@ -1,8 +1,10 @@
 # 연세대 기계공학부 사이트 공모전 — 팀 DATUM
 
 연세대학교 기계공학부 홈페이지 경진대회 출품 프로젝트.
-이 문서 하나로 **다른 PC에서 이전 대화·작업 내역 없이 바로 이어서 작업**할 수 있도록
-전체 구조·실행법·개발 규칙·현재 상태를 정리한다.
+이 문서는 **실행법·개발 규칙·검증법**을 담는다.
+
+> 🔰 **이어서 작업하는 사람은 [`HANDOFF.md`](HANDOFF.md) 를 먼저 읽으세요.**
+> 전체 그림·현재 상태·남은 일·함정, 그리고 **Claude Code 재개 프롬프트**가 거기 있습니다.
 
 ## 전략 (2축)
 
@@ -179,6 +181,7 @@ OT 청취 결과 "수정·보수 관리가 용이한가"가 핵심 심사 기준
   python _studio/tools/testserver.py .                 # 127.0.0.1:8124, /hang 으로 load 를 붙잡는다
   chrome --headless --disable-gpu --dump-dom http://127.0.0.1:8124/_studio/selftest.html
   chrome --headless --disable-gpu --dump-dom http://127.0.0.1:8124/_studio/inttest.html
+  chrome --headless --disable-gpu --dump-dom http://127.0.0.1:8124/_studio/railtest.html
   ```
   덤프 끝의 `PASSED` / `FAILED` 와 각 항목의 `ok` / `FAIL` 을 확인한다.
   - `selftest` — 8페이지 전부에서 원문 스캔·DOM 대응·오프셋 정합성·편집 후 **바이트 동일 복귀**·

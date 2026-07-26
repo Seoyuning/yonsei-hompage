@@ -238,18 +238,58 @@ function main() {
   }
   perPage.push({ page: '(런타임 조각)', total: EXTRA.length, texts: EXTRA.length, attrs: 0, fresh: extraFresh });
 
+  /* ── data.js 에서 이미 짝이 있는 번역 가져오기 ──
+     공지·뉴스 제목 같은 실데이터는 번역하지 않는다(원문 대조가 안 되므로).
+     하지만 분야명·인명·연구실명처럼 **데이터 안에 국문과 영문이 나란히 있는 것**은
+     화면 라벨이므로 영어 화면에서 한국어로 남으면 안 된다. 그 쌍만 사전에 옮긴다. */
+  var PAIRS = [['ko', 'en'], ['rank', 'titleEn']];
+  var dataPairs = {};
+  var dataFile = path.join(ROOT, 'assets', 'js', 'data.js');
+  if (fs.existsSync(dataFile)) {
+    var ds = fs.readFileSync(dataFile, 'utf8');
+    var root = null;
+    try { root = JSON.parse(ds.slice(ds.indexOf('{'), ds.lastIndexOf('}') + 1)); }
+    catch (e) { console.log('  (data.js 를 해석하지 못해 건너뜁니다: ' + e.message + ')'); }
+    (function walk(v) {
+      if (!v || typeof v !== 'object') return;
+      if (v instanceof Array) { for (var i = 0; i < v.length; i++) walk(v[i]); return; }
+      for (var p2 = 0; p2 < PAIRS.length; p2++) {
+        var kk = v[PAIRS[p2][0]], ee = v[PAIRS[p2][1]];
+        if (typeof kk === 'string' && typeof ee === 'string') {
+          var nk = normKey(kk);
+          /* 국문 쪽에 한글이 있고, 영문 쪽은 한글이 없어야 진짜 번역 쌍이다 */
+          if (nk && /[가-힣]/.test(nk) && !/[가-힣]/.test(ee) && ee.trim()) dataPairs[nk] = ee.trim();
+        }
+      }
+      var ks = Object.keys(v);
+      for (var j = 0; j < ks.length; j++) walk(v[ks[j]]);
+    })(root);
+  }
+  var dpKeys = Object.keys(dataPairs);
+  for (var q = 0; q < dpKeys.length; q++) {
+    if (!found[dpKeys[q]]) found[dpKeys[q]] = [];
+    if (found[dpKeys[q]].indexOf('(data.js)') < 0) found[dpKeys[q]].push('(data.js)');
+  }
+  perPage.push({ page: '(data.js 국·영 쌍)', total: dpKeys.length, texts: dpKeys.length, attrs: 0, fresh: dpKeys.length });
+
   var prev = {};
   if (fs.existsSync(DICT)) {
     try { prev = JSON.parse(fs.readFileSync(DICT, 'utf8')) || {}; }
     catch (e) { console.error('en.json 을 읽을 수 없습니다 — 병합을 중단합니다: ' + e.message); process.exit(1); }
   }
 
-  var keys = Object.keys(found), added = 0, orphan = 0;
+  var keys = Object.keys(found), added = 0, orphan = 0, filled = 0;
   var merged = {};
   for (var a = 0; a < keys.length; a++) {
     var key = keys[a];
-    if (Object.prototype.hasOwnProperty.call(prev, key)) merged[key] = prev[key];
-    else { merged[key] = ''; added++; }
+    if (Object.prototype.hasOwnProperty.call(prev, key) && prev[key]) {
+      merged[key] = prev[key];                       // 사람이 넣은 번역이 우선
+    } else if (dataPairs[key]) {
+      merged[key] = dataPairs[key];                  // data.js 가 이미 갖고 있던 영문
+      if (!Object.prototype.hasOwnProperty.call(prev, key)) added++; else filled++;
+    } else if (Object.prototype.hasOwnProperty.call(prev, key)) {
+      merged[key] = prev[key];
+    } else { merged[key] = ''; added++; }
   }
   var pk = Object.keys(prev);
   for (var b = 0; b < pk.length; b++) {
@@ -280,7 +320,7 @@ function main() {
   console.log('  전체   ' + sorted.length + '개');
   console.log('  번역됨 ' + done + '개 (' + Math.round(done / Math.max(1, sorted.length) * 100) + '%)');
   console.log('  미번역 ' + (sorted.length - done) + '개');
-  console.log('  이번에 추가 ' + added + '개 · 원문에서 사라진 키 ' + orphan + '개(보존)');
+  console.log("  이번에 추가 " + added + "개 · data.js 번역으로 채운 기존 키 " + filled + "개 · 원문에서 사라진 키 " + orphan + "개(보존)");
 }
 
 function pad(s, n) { s = String(s); while (s.length < n) s += ' '; return s; }

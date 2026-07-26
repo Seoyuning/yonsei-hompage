@@ -235,8 +235,13 @@ img{display:block;max-width:100%}
   transition:transform .8s var(--e)}
 .pc:hover .pph img{transform:scale(1.06)}
 .pc .pin{padding:.75rem .85rem .85rem;pointer-events:none}
-.pc .pclu{font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;
-  font-weight:500;color:var(--coral)}
+.pc .pclu{display:flex;align-items:center;gap:.32rem;font-family:var(--mono);font-size:.58rem;
+  letter-spacing:.14em;text-transform:uppercase;font-weight:500;color:var(--coral)}
+/* 분야 육각 배지 — 구성원 페이지의 분야 레일과 같은 글리프·같은 색 */
+.fbadge{flex:none;width:17px;height:19px;display:grid;place-items:center;color:#fff;
+  background:var(--fx,#12294f);
+  clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
+.fbadge svg{width:10px;height:10px;display:block}
 .pc .pko{margin-top:.18rem;font-size:1.02rem;font-weight:800;color:var(--ink)}
 .pc .prk{margin-top:.05rem;font-size:.74rem;color:var(--muted)}
 
@@ -644,6 +649,19 @@ img{display:block;max-width:100%}
   for (var i = pool.length - 1; i > 0; i--) {
     var j = Math.floor(Math.random() * (i + 1)), t = pool[i]; pool[i] = pool[j]; pool[j] = t;
   }
+  /* 분야 글리프·색 — G-people.html 의 분야 레일과 동일하게 맞춘다 */
+  var FCOLOR = { solid:'#2b4a7a', thermal:'#b0742c', dynamics:'#7a5aa0',
+                 manufacturing:'#4a7c59', micro:'#2d8a8a', optics:'#3f6fb0' };
+  var FSV = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
+  var FICON = {
+    solid: FSV + '<rect x="3.5" y="6" width="17" height="12" rx="1.2"/><path d="M3.5 12h17M9.2 6v12M14.8 6v12"/></svg>',
+    thermal: FSV + '<path d="M3 7.5c3-2.8 5 2.8 8 0s5-2.8 8 0"/><path d="M3 12c3-2.8 5 2.8 8 0s5-2.8 8 0"/><path d="M3 16.5c3-2.8 5 2.8 8 0s5-2.8 8 0"/></svg>',
+    dynamics: FSV + '<circle cx="5.5" cy="18.5" r="2"/><path d="M5.5 18.5 10.5 10l5.5 1.8"/><circle cx="10.5" cy="10" r="1.7"/><rect x="15" y="5" width="6" height="6" rx="1.2"/></svg>',
+    manufacturing: FSV + '<circle cx="12" cy="12" r="3.3"/><path d="M12 3.6v2.6M12 17.8v2.6M3.6 12h2.6M17.8 12h2.6M6.1 6.1l1.8 1.8M16.1 16.1l1.8 1.8M17.9 6.1l-1.8 1.8M7.9 16.1l-1.8 1.8"/></svg>',
+    micro: FSV + '<circle cx="12" cy="12" r="1.9"/><ellipse cx="12" cy="12" rx="9" ry="3.8"/><ellipse cx="12" cy="12" rx="9" ry="3.8" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9" ry="3.8" transform="rotate(120 12 12)"/></svg>',
+    optics: FSV + '<path d="M8 3c0 5.2 8 5.2 8 9s-8 3.8-8 9"/><path d="M16 3c0 5.2-8 5.2-8 9s8 3.8 8 9"/><path d="M9.3 7h5.4M9.3 17h5.4"/></svg>'
+  };
+
   function renderPeople() {
     var pg = document.getElementById('pGrid');
     if (!pg || !pool.length) return;
@@ -655,7 +673,8 @@ img{display:block;max-width:100%}
         '<span class="pph" style="display:block"><span>' + esc(p.initial) + '</span>' +
         '<img src="assets/faculty/' + esc(p.id) + '.jpg" alt="" loading="lazy" onerror="this.remove()"></span>' +
         '<span class="pin" style="display:block">' +
-        '<span class="pclu" style="display:block">' + esc(cl[p.cluster] || '') + '</span>' +
+        '<span class="pclu"><span class="fbadge" style="--fx:' + (FCOLOR[p.cluster] || '#12294f') + '" aria-hidden="true">' +
+          (FICON[p.cluster] || '') + '</span>' + esc(cl[p.cluster] || '') + '</span>' +
         '<span class="pko" style="display:block">' + esc(name) + '</span>' +
         '<span class="prk" style="display:block">' + esc(rank) + '</span></span></a>';
     }).join('');

@@ -688,9 +688,12 @@ img{display:block;max-width:100%}
     var pg = document.getElementById('pGrid');
     if (!pg || !pool.length) return;
     var cl = {}; (D.clusters || []).forEach(function (c) { cl[c.id] = LANG === 'en' ? c.en : c.ko; });
-    pg.innerHTML = pool.slice(0, 10).map(function (p) {
+    /* 전임 교수 전원을 싣는다(레일이 좌우 버튼·자동 넘김으로 넘어간다) */
+    pg.innerHTML = pool.map(function (p) {
       var name = LANG === 'en' ? (p.en || p.ko) : p.ko;
-      var rank = LANG === 'en' ? (p.titleEn || RANK_EN[p.rank] || p.rank) : (p.rank + (p.role ? ' · ' + p.role : ''));
+      /* 직위(교수·부교수·조교수)는 카드 표면에 내지 않는다 — 구성원 페이지의
+         「자세히 보기」에서 본다. 보직(학과장 등)은 직위와 다른 정보라 그대로 둔다. */
+      var duty = p.role || '';
       return '<a class="pc" href="G-people.html#' + esc(p.id) + '">' +
         '<span class="pph" style="display:block"><span>' + esc(p.initial) + '</span>' +
         '<img src="assets/faculty/' + esc(p.id) + '.jpg" alt="" loading="lazy" onerror="this.remove()"></span>' +
@@ -698,7 +701,8 @@ img{display:block;max-width:100%}
         '<span class="pclu"><span class="fbadge" style="--fx:' + (FCOLOR[p.cluster] || '#12294f') + '" aria-hidden="true">' +
           (FICON[p.cluster] || '') + '</span>' + esc(cl[p.cluster] || '') + '</span>' +
         '<span class="pko" style="display:block">' + esc(name) + '</span>' +
-        '<span class="prk" style="display:block">' + esc(rank) + '</span></span></a>';
+        (duty ? '<span class="prk" style="display:block">' + esc(duty) + '</span>' : '') +
+        '</span></a>';
     }).join('');
   }
 
@@ -931,11 +935,15 @@ img{display:block;max-width:100%}
     function go(dir, smooth) {
       var m = maxLeft();
       if (m <= 1) return;
+      var wrapped = false;
       var target = rail.scrollLeft + dir * cardStep();
-      if (dir > 0 && rail.scrollLeft >= m - 2) target = 0;          // 끝 → 처음
-      else if (dir < 0 && rail.scrollLeft <= 2) target = m;          // 처음 → 끝
+      if (dir > 0 && rail.scrollLeft >= m - 2) { target = 0; wrapped = true; }        // 끝 → 처음
+      else if (dir < 0 && rail.scrollLeft <= 2) { target = m; wrapped = true; }       // 처음 → 끝
       target = Math.max(0, Math.min(m, target));
-      try { rail.scrollTo({ left: target, behavior: (smooth && !slow) ? 'smooth' : 'auto' }); }
+      /* 되돌기는 즉시 옮긴다 — 교수 33명이면 끝에서 처음까지 7000px 가 넘어,
+         부드럽게 굴리면 카드가 한참 흘러가 어지럽다. 한 칸 이동만 부드럽게. */
+      var how = (smooth && !slow && !wrapped) ? 'smooth' : 'auto';
+      try { rail.scrollTo({ left: target, behavior: how }); }
       catch (e) { rail.scrollLeft = target; }
     }
 

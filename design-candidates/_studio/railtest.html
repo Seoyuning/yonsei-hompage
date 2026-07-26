@@ -56,7 +56,24 @@
     log(prev.getAttribute('aria-label') && next.getAttribute('aria-label'), '버튼에 읽어 주는 이름이 있다');
 
     const cards = rail.querySelectorAll('.pc');
-    log(cards.length > 3, '카드 ' + cards.length + '장 렌더');
+    const total = (w.YSME && w.YSME.professors ? w.YSME.professors.length : 33);
+    log(cards.length === total, '전임 교수 전원이 실린다 (' + cards.length + '/' + total + '장)');
+
+    head('직위는 카드에 바로 보이지 않는다');
+    /* 직위가 있던 자리(.prk)에 남은 값은 보직뿐이어야 한다.
+       텍스트 전체를 정규식으로 훑으면 '학부지도교수' 같은 보직이 걸려 오탐이 난다. */
+    const duties = (w.YSME && w.YSME.professors || []).filter(p => p.role).map(p => p.role);
+    const prkTexts = Array.prototype.map.call(rail.querySelectorAll('.prk'), e => e.textContent.trim());
+    const ranks = [...new Set((w.YSME && w.YSME.professors || []).map(p => p.rank))];
+    const leaked = prkTexts.filter(t => ranks.indexOf(t) >= 0);
+    log(leaked.length === 0, '카드에 직위(' + ranks.join('·') + ')가 남아 있지 않다' +
+        (leaked.length ? ' — 남음: ' + leaked.join(',') : ''));
+    log(prkTexts.every(t => duties.indexOf(t) >= 0),
+        '보조줄에 남은 것은 보직뿐 (' + (prkTexts.join(', ') || '없음') + ')');
+    if (duties.length) {
+      log(duties.every(r => prkTexts.indexOf(r) >= 0),
+          '보직(' + duties.join('·') + ')은 그대로 보인다 — 직위와 다른 정보다');
+    } else info('   보직을 가진 교수가 없다');
     const gap = parseFloat(w.getComputedStyle(rail).columnGap) || 0;
     const step = Math.round(cards[0].getBoundingClientRect().width + gap);
     const max = rail.scrollWidth - rail.clientWidth;
@@ -131,6 +148,26 @@
     const afterWait = Math.round(rail2.scrollLeft);
     log(afterClick !== before, '클릭은 즉시 반응 (' + before + ' → ' + afterClick + ')');
     log(afterWait === afterClick, '그 뒤로는 스스로 움직이지 않음 (' + afterClick + ' → ' + afterWait + ')');
+
+    head('구성원 페이지 — 직위는 「자세히 보기」 안에서');
+    const f3 = document.createElement('iframe');
+    await new Promise(res => { f3.addEventListener('load', () => setTimeout(res, 1400)); f3.src = '../G-people.html'; document.body.appendChild(f3); });
+    const d3 = f3.contentDocument;
+    const pc = d3.querySelector('.pcard');
+    log(!!pc, '교수 카드 렌더');
+    const nameLine = pc.querySelector('.pname').textContent;
+    log(!/교수$|부교수|조교수/.test(nameLine.trim()), '이름줄에 직위가 없다 — "' + nameLine.trim() + '"');
+    const detail = pc.querySelector('.pdetail');
+    log(!!detail && /교수/.test(detail.textContent), '접힌 상세 안에 직위가 들어 있다');
+    log(detail.getBoundingClientRect().height < 4, '펼치기 전에는 상세가 접혀 있다');
+    pc.querySelector('.pbtn.more').click();
+    await sleep(700);
+    log(detail.getBoundingClientRect().height > 20, '「자세히 보기」를 누르면 펼쳐진다');
+    /* 상세의 첫 줄이 직위여야 한다 — textContent 를 통째로 훑으면 이메일 등이 붙어 오탐이 난다 */
+    const firstRow = detail.querySelector('.il');
+    const rankText = firstRow ? firstRow.textContent.trim() : '';
+    const allRanks = [...new Set((f3.contentWindow.YSME && f3.contentWindow.YSME.professors || []).map(p => p.rank))];
+    log(allRanks.indexOf(rankText) >= 0, '펼친 뒤 첫 줄이 직위 — "' + rankText + '"');
 
   } catch (err) {
     log(false, '검사 중 예외: ' + (err && err.message));

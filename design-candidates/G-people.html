@@ -380,6 +380,8 @@ a{color:inherit;text-decoration:none}
   }
 
   /* 패널 우측 원형 버튼 아이콘 (홈페이지·상세 펼침) */
+  /* 직위 아이콘 (학위모) — 상세 안에서 직위를 나타낸다 */
+  var ICON_RANK = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4 3 8.4l9 4.4 9-4.4L12 4z"/><path d="M6.6 10.7V15c0 1.4 2.4 2.5 5.4 2.5s5.4-1.1 5.4-2.5v-4.3"/></svg>';
   var ICON_HOME = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v9h14v-9"/><path d="M10 19v-5h4v5"/></svg>';
   var ICON_PLUS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
 
@@ -457,7 +459,9 @@ a{color:inherit;text-decoration:none}
       + ' aria-label="'+esc(p.ko)+' 상세 정보 펼치기" title="상세 정보"><span class="ic-plus">'+ICON_PLUS+'</span></button>';
 
     /* 상세(+ 토글) 행 — 이메일 · 사무실 · 연락처 · 프로필 */
+    /* 직위는 카드 표면이 아니라 여기(자세히 보기)에서 보여 준다 */
     var det = '';
+    if(p.rank) det += '<span class="il">'+ICON_RANK+'<span class="it">'+esc(p.rank)+'</span></span>';
     if(p.email) det += '<a class="il" href="mailto:'+esc(p.email)+'">'+ICON_MAIL+'<span class="it">'+esc(p.email)+'</span></a>';
     if(p.office) det += '<span class="il">'+ICON_PIN+'<span class="it">'+esc(officeKo(p.office))+'</span></span>';
     if(p.phone) det += '<span class="il">'+ICON_TEL+'<span class="it">'+esc(p.phone)+'</span></span>';
@@ -468,7 +472,8 @@ a{color:inherit;text-decoration:none}
       + '<div class="pmedia">' + fieldRail(p) + photoOpen + photo + '</a></div>'
       + '<div class="pbody">'
         + '<div class="pbody-top">'
-          + '<div class="pnamebx"><p class="pname"><span class="ko">'+esc(p.ko)+'</span><span class="rk">'+esc(p.rank)+'</span></p>'+pos+'</div>'
+          + '<div class="pnamebx"><p class="pname"><span class="ko">'+esc(p.ko)+'</span>'
+            + (p.role ? '<span class="rk">'+esc(p.role)+'</span>' : '') + '</p>'+pos+'</div>'
           + '<div class="pbtns">'+homeBtn+moreBtn+'</div>'
         + '</div>'
         + '<div class="pfieldline"><span class="lb">연구분야 :</span> '+esc(cl.ko||'')+'</div>'

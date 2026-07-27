@@ -310,19 +310,29 @@
       setTimeout(toTop, 120);
     }
 
-    /* 같은 페이지의 탭 해시 링크(드롭다운·푸터·모바일 메뉴) — 리로드 없이 탭 전환 + 애니메이션 */
+    /* 같은 페이지를 가리키는 메뉴·드롭다운·푸터·모바일메뉴 링크 — 리로드 없이 처리한다.
+       주의: 지금 URL 은 show() 가 replaceState 로 써 넣은 '#<탭>' 을 달고 있다.
+       그래서 최상위 메뉴(예: 구성원 → "G-people.html", 해시 없음)를 누르면 브라우저가
+       '해시만 다른 같은 문서'로 보고 **리로드도 스크롤도 하지 않는다** — 보고 있던 자리에
+       그대로 머물러 "메뉴를 눌렀는데 히어로가 아니라 교수진이 맨 위"가 된다. 직접 처리한다. */
     document.addEventListener('click', function (e) {
       var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
       if (!a || a.target === '_blank') return;
       var href = a.getAttribute('href') || '';
-      var hi = href.indexOf('#'); if (hi < 0) return;
-      var page = href.slice(0, hi).split('?')[0];
-      if (page && page.toLowerCase() !== path) return;   /* 다른 페이지는 그대로(페이지 전환 담당) */
-      var h = href.slice(hi + 1), idx = -1;
-      m.sub.forEach(function (s, i) { if ((s[2] || []).indexOf(h) >= 0 || s[1].split('#')[1] === h) idx = i; });
-      if (idx < 0) return;
+      if (!href || /^(https?:|mailto:|tel:|javascript:)/i.test(href)) return;
+      var hi = href.indexOf('#');
+      var page = (hi < 0 ? href : href.slice(0, hi)).split('?')[0];
+      if (!page || page.toLowerCase() !== path) return;  /* 다른 페이지는 그대로(페이지 전환 담당) */
+
+      var h = hi < 0 ? '' : href.slice(hi + 1);
+      var idx = 0;                                        /* 해시 없는 최상위 메뉴 = 첫 탭 */
+      if (h) {
+        idx = -1;
+        m.sub.forEach(function (s, i) { if ((s[2] || []).indexOf(h) >= 0 || s[1].split('#')[1] === h) idx = i; });
+        if (idx < 0) return;                              /* 탭이 아닌 깊은 앵커는 브라우저에 맡긴다 */
+      }
       e.preventDefault();
-      try { history.replaceState(null, '', '#' + h); } catch (_) {}
+      if (h) { try { history.replaceState(null, '', '#' + h); } catch (_) {} }
       /* 메뉴·푸터로 들어온 것이므로 히어로부터 — 다른 페이지에서 메뉴로 진입했을 때와 같은 감각.
          (형제 탭 바 클릭만 'view' 로 그 탭 내용의 상단에 선다) */
       show(idx, 'top');

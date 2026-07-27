@@ -287,6 +287,142 @@ html[lang="en"] .ppos{display:none}
 .staff-contact .v{font-size:.88rem;color:var(--body);font-weight:600}
 .staff-contact .note{width:100%;font-size:.78rem;color:var(--muted);line-height:1.6}
 
+/* ═══════════════════════════════════════════════════════════
+   동문 (구성원 세 번째 탭) — 연혁 · 인터뷰 · 대외협력 · 발전기금
+   교직원 섹션과 같은 폭·여백 체계를 쓰되, 새 규칙은 모두 al- 접두를 달아
+   기존 .pcard / .staff-* / .fchip / .kseg* 와 겹치지 않게 한다.
+   ═══════════════════════════════════════════════════════════ */
+.al{max-width:1320px;margin:0 auto;
+  padding:1rem clamp(1.2rem,.6rem + 2vw,2.6rem) 3.6rem;
+  scroll-margin-top:5rem;border-top:1px solid var(--line-soft)}
+.al-head{padding-top:2rem;margin-bottom:1.8rem}
+.al-head h2{font-size:clamp(1.3rem,1rem + 1vw,1.7rem);font-weight:800;color:var(--navy);letter-spacing:-.01em}
+.al-lead{margin-top:.7rem;font-size:.92rem;color:var(--sub);max-width:46rem;line-height:1.7}
+
+/* 블록 구분 — 한 섹션 안에 네 덩어리가 들어가므로 얇은 선으로만 나눈다 */
+.al-block{margin-top:2.6rem;padding-top:2.4rem;border-top:1px solid var(--line-soft)}
+/* 첫 블록만 선을 뺀다. :first-of-type 은 형제 중 첫 div(=.al-head)를 가리켜 맞지 않으므로
+   인접 선택자로 «머리 바로 다음 블록»을 집는다. */
+.al-head + .al-block{margin-top:0;padding-top:0;border-top:0}
+.al-h{font-size:1.18rem;font-weight:700;color:var(--navy);letter-spacing:-.01em;line-height:1.35}
+.al-sub{margin-top:.55rem;font-size:.9rem;color:var(--sub);line-height:1.7;max-width:48rem}
+.al-src{margin-top:1.1rem;font-size:.84rem;color:var(--muted);line-height:1.7;max-width:48rem}
+/* 링크는 한 줄로 세워 탭 타깃 44px 을 확보한다 */
+.al-mores{display:flex;flex-wrap:wrap;gap:0 1.6rem;margin-top:.4rem}
+.al-more{display:inline-flex;align-items:center;gap:.4rem;min-height:44px;
+  font-size:.87rem;font-weight:600;color:var(--navy);
+  text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line);
+  transition:text-decoration-color .15s}
+.al-more:hover{text-decoration-color:var(--navy)}
+
+/* 예시 데이터 고지 — 사실과 자리표시자를 화면에서 구분한다 */
+.al-note{display:flex;gap:.7rem;flex-wrap:wrap;align-items:baseline;
+  margin-top:1.3rem;padding:.9rem 1.1rem;
+  border:1px solid var(--line);border-left:3px solid var(--navy);background:var(--row);
+  font-size:.85rem;color:var(--sub);line-height:1.7}
+.al-note-t{flex:none;font-size:.74rem;font-weight:700;color:#fff;background:var(--navy);
+  padding:.22rem .55rem;letter-spacing:.02em}
+.al-note-b{flex:1 1 16rem;min-width:0}
+
+/* ── 1) 확인된 기록 + 연혁 타임라인 ── */
+.al-facts{display:flex;flex-wrap:wrap;gap:.9rem;margin-top:1.4rem}
+.al-fact{flex:1 1 9.5rem;border:1px solid var(--line-soft);background:var(--row);padding:.95rem 1.1rem}
+.al-fk{display:block;font-size:.78rem;color:var(--muted);line-height:1.5}
+.al-fv{display:block;margin-top:.3rem;font-size:1.5rem;font-weight:700;color:var(--navy);
+  letter-spacing:-.01em;font-variant-numeric:tabular-nums;line-height:1.1}
+.al-tl{margin-top:1.6rem;border-top:1px solid var(--line)}
+.al-tr{display:grid;grid-template-columns:5.4rem 1fr;gap:1.2rem;align-items:baseline;
+  padding:.85rem .2rem;border-bottom:1px solid var(--line-soft);transition:background .12s}
+.al-tr:hover{background:var(--row)}
+.al-tr.al-key{box-shadow:inset 2px 0 0 var(--navy)}
+.al-ty{font-size:.88rem;font-weight:600;color:var(--navy);white-space:nowrap;
+  font-variant-numeric:tabular-nums}
+.al-tt{font-size:.9rem;color:var(--sub);line-height:1.6}
+.al-tr.al-key .al-tt{color:var(--body);font-weight:600}
+
+/* ── 2) 동문 인터뷰 카드 ── */
+.al-cards{display:grid;gap:1rem;margin-top:1.3rem;
+  grid-template-columns:repeat(auto-fit,minmax(17rem,1fr))}
+.al-card{display:flex;flex-direction:column;border:1px solid var(--line);background:#fff;
+  padding:1.3rem 1.4rem 1.4rem;transition:border-color .15s}
+.al-card:hover{border-color:#b9c4d4}
+.al-who{display:flex;align-items:center;gap:.85rem}
+/* 사진이 없으므로 이니셜 도형으로 대신한다 */
+.al-ava{flex:none;width:2.7rem;height:2.7rem;display:grid;place-items:center;
+  border:1px solid var(--line);background:var(--row);
+  font-size:1rem;font-weight:700;color:var(--navy)}
+.al-nm{font-size:1.02rem;font-weight:700;color:var(--navy);line-height:1.3}
+.al-alias{margin-left:.4rem;font-size:.74rem;font-weight:600;color:var(--muted)}
+.al-meta{margin-top:.25rem;font-size:.8rem;color:var(--muted);line-height:1.5}
+.al-field{align-self:flex-start;margin-top:1rem;font-size:.78rem;font-weight:600;color:var(--sub);
+  border:1px solid var(--line);padding:.24rem .6rem}
+.al-quote{margin-top:.95rem;padding-left:.85rem;border-left:2px solid var(--navy);
+  font-size:.93rem;font-weight:600;color:var(--navy);line-height:1.65}
+.al-txt{margin-top:.85rem;font-size:.86rem;color:var(--body);line-height:1.75}
+
+/* ── 3) 대외협력 유형 + 협력 사례 표 ── */
+.al-types{display:grid;gap:1rem;margin-top:1.4rem;
+  grid-template-columns:repeat(auto-fit,minmax(15rem,1fr))}
+.al-type{border:1px solid var(--line);background:#fff;padding:1.2rem 1.3rem 1.3rem}
+.al-type h4{font-size:1rem;font-weight:700;color:var(--navy);line-height:1.35}
+.al-type p{margin-top:.5rem;font-size:.85rem;color:var(--body);line-height:1.75}
+/* 표 — 좁은 화면에서는 행 카드로 펴서 가로 스크롤이 생기지 않게 한다 */
+.al-tbl{margin-top:1.3rem;border-top:1px solid var(--line)}
+.al-thead,.al-row{display:grid;grid-template-columns:7.5rem 10rem 1fr;gap:1rem;
+  padding:.82rem .2rem;border-bottom:1px solid var(--line-soft);align-items:baseline}
+.al-thead{font-size:.78rem;color:var(--muted);background:var(--row)}
+.al-row{font-size:.88rem;color:var(--body);transition:background .12s}
+.al-row:hover{background:var(--row)}
+.al-c{min-width:0;overflow-wrap:anywhere}
+.al-ck{display:none;font-size:.74rem;color:var(--muted);line-height:1.5;margin-bottom:.1rem}
+
+/* 문의 창구 */
+.al-contact{margin-top:1.3rem;border:1px solid var(--line-soft);background:var(--row);
+  padding:1rem 1.2rem;display:flex;flex-wrap:wrap;align-items:center;gap:.3rem 1.3rem}
+.al-ck2{font-size:.76rem;color:var(--label);flex:none}
+.al-cv{font-size:.92rem;font-weight:700;color:var(--navy)}
+.al-cv a{display:inline-flex;align-items:center;min-height:44px}
+.al-cn{width:100%;font-size:.8rem;color:var(--muted);line-height:1.65}
+
+/* ── 4) 발전기금 ── */
+.al-uses{display:grid;gap:1rem;margin-top:1.4rem;
+  grid-template-columns:repeat(auto-fit,minmax(14rem,1fr))}
+.al-use{border:1px solid var(--line-soft);background:var(--row);padding:1.15rem 1.25rem 1.25rem}
+.al-use h4{font-size:.98rem;font-weight:700;color:var(--navy);line-height:1.35}
+.al-use p{margin-top:.45rem;font-size:.84rem;color:var(--body);line-height:1.7}
+.al-steps{margin-top:1.4rem;display:flex;flex-direction:column;gap:.75rem}
+.al-step{display:grid;grid-template-columns:auto 1fr;gap:.85rem;align-items:baseline}
+.al-sn{justify-self:start;font-size:.74rem;font-weight:700;color:var(--navy);
+  border:1px solid var(--line);padding:.14rem .42rem;font-variant-numeric:tabular-nums}
+.al-st{font-size:.88rem;color:var(--body);line-height:1.7}
+.al-st b{font-weight:700;color:var(--navy)}
+.al-tax{margin-top:1.5rem;border:1px solid var(--line);background:#fff}
+.al-tax-h{padding:.78rem 1.1rem;border-bottom:1px solid var(--line-soft);background:var(--row);
+  font-size:.88rem;font-weight:700;color:var(--navy)}
+.al-tax-r{display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:baseline;
+  padding:.85rem 1.1rem;border-bottom:1px solid var(--line-soft)}
+.al-tax-r:last-child{border-bottom:0}
+.al-tax-k{font-size:.87rem;color:var(--body);line-height:1.6}
+.al-tax-v{font-size:1.05rem;font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums;
+  white-space:nowrap}
+
+/* ── 휴대폰 (360 / 390 / 430) ── */
+@media (max-width:640px){
+  .al-thead{display:none}
+  .al-row{grid-template-columns:1fr;gap:.45rem;padding:.95rem .2rem}
+  .al-ck{display:block}
+}
+@media (max-width:480px){
+  .al-block{margin-top:2.2rem;padding-top:2rem}
+  .al-tr{grid-template-columns:4.7rem 1fr;gap:.85rem}
+  .al-facts{gap:.7rem}
+  .al-fact{flex:1 1 8.5rem;padding:.85rem .95rem}
+  .al-fv{font-size:1.35rem}
+  .al-card{padding:1.15rem 1.15rem 1.25rem}
+  .al-note{padding:.85rem .95rem}
+  .al-type,.al-use{padding:1.05rem 1.1rem 1.15rem}
+  .al-tax-r{padding:.8rem .95rem}
+}
 </style>
 <style>.ynav-ph{position:fixed;top:0;left:0;right:0;height:3.7rem;background:rgba(255,255,255,.96);border-bottom:1px solid rgba(0,0,0,.08);z-index:39}</style>
 <style>h1,h2,.sec-title,.phero h1,.hero h1,.hero-title,.club-name,.vt,.staff-head h2,.brand .bko,.ynv-brand .bko{font-family:"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;letter-spacing:-.01em}</style>
@@ -386,6 +522,245 @@ html[lang="en"] .ppos{display:none}
     <div class="staff-contact">
       <p class="note">담당과 연락처는 학부 공식 홈페이지의 교직원 안내를 따릅니다.
         <a href="https://me.yonsei.ac.kr/me/community/faculty.do" target="_blank" rel="noopener">공식 교직원 안내 <span aria-hidden="true">↗</span></a></p>
+    </div>
+  </section>
+
+  <!-- 동문 — 구성원의 세 번째 탭.
+       nav.js 는 활성 탭의 섹션만 남기고 나머지를 .ysub-hide 로 감추므로
+       이 섹션은 반드시 .dir / .staff 와 형제 레벨의 최상위 <section> 이어야 한다.
+       연혁은 assets/js/data.js 의 history 실데이터(공식 연혁 faculty/history.do)를 그대로 옮겼고,
+       인터뷰·협력 사례·기금 운영은 확인된 자료가 없어 예시임을 화면에 밝힌 자리표시자다. -->
+  <section class="al" id="alumni" aria-labelledby="al-title">
+    <div class="al-head">
+      <h2 id="al-title">동문</h2>
+      <p class="al-lead">동문은 학부의 또 다른 구성원입니다. 졸업생과 재학생, 학부를 잇는 연혁과 인터뷰, 대외협력과 발전기금 안내를 모았습니다.</p>
+    </div>
+
+    <!-- ── 1. 동문 연혁 (사실) ── -->
+    <div class="al-block">
+      <h3 class="al-h">동문 연혁</h3>
+      <p class="al-sub">학부 공식 연혁 가운데 졸업생 배출과 관련된 기록입니다. 1962년 기계공학과로 분리한 뒤 1964년 2월 첫 졸업생을 배출했습니다.</p>
+
+      <div class="al-facts">
+        <div class="al-fact"><span class="al-fk">기계공학과 분리</span><span class="al-fv">1962</span></div>
+        <div class="al-fact"><span class="al-fk">첫 졸업생 배출</span><span class="al-fv">1964</span></div>
+        <div class="al-fact"><span class="al-fk">대학원 석사과정 신설</span><span class="al-fv">1971</span></div>
+        <div class="al-fact"><span class="al-fk">창립 50주년</span><span class="al-fv">2010</span></div>
+      </div>
+
+      <div class="al-tl" role="list" aria-label="동문 연혁">
+        <div class="al-tr" role="listitem"><span class="al-ty">1958.12</span><span class="al-tt">이공대학 건설공학과 신설</span></div>
+        <div class="al-tr" role="listitem"><span class="al-ty">1960.03</span><span class="al-tt">첫 신입생 입학</span></div>
+        <div class="al-tr al-key" role="listitem"><span class="al-ty">1962.12</span><span class="al-tt">기계공학과로 분리</span></div>
+        <div class="al-tr" role="listitem"><span class="al-ty">1963.02</span><span class="al-tt">기계공학과 첫 신입생 입학</span></div>
+        <div class="al-tr al-key" role="listitem"><span class="al-ty">1964.02</span><span class="al-tt">첫 졸업생 배출</span></div>
+        <div class="al-tr" role="listitem"><span class="al-ty">1971.03</span><span class="al-tt">대학원 석사과정 신설</span></div>
+        <div class="al-tr" role="listitem"><span class="al-ty">1972.03</span><span class="al-tt">대학원 박사과정 신설</span></div>
+        <div class="al-tr" role="listitem"><span class="al-ty">1996.03</span><span class="al-tt">기전공학부로 통합</span></div>
+        <div class="al-tr" role="listitem"><span class="al-ty">1999.03</span><span class="al-tt">기계공학·기계설계학과 → 기계공학전공 통합</span></div>
+        <div class="al-tr al-key" role="listitem"><span class="al-ty">2002.03</span><span class="al-tt">기계공학부로 분리 독립 (입학정원 180명)</span></div>
+        <div class="al-tr" role="listitem"><span class="al-ty">2003.03</span><span class="al-tt">ABEEK 공학교육인증 프로그램 가입</span></div>
+        <div class="al-tr al-key" role="listitem"><span class="al-ty">2010.11</span><span class="al-tt">창립 50주년</span></div>
+        <div class="al-tr" role="listitem"><span class="al-ty">2016.03</span><span class="al-tt">3단계 BK21 플러스 사업단 협약</span></div>
+        <div class="al-tr al-key" role="listitem"><span class="al-ty">2020.08</span><span class="al-tt">4단계 BK21 사업 선정</span></div>
+      </div>
+
+      <p class="al-src">출처는 학부 공식 연혁입니다. 졸업생 총수처럼 집계가 확인되지 않은 수치는 싣지 않았습니다.</p>
+      <div class="al-mores">
+        <a class="al-more" href="G-about.html#history">학부 전체 연혁 보기 <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+
+    <!-- ── 2. 동문 인터뷰 (자리표시자) ── -->
+    <div class="al-block">
+      <h3 class="al-h">동문 인터뷰</h3>
+      <p class="al-sub">졸업 후 어떤 일을 하는지 동문의 이야기로 전합니다. 진출 분야는 학부의 여섯 개 연구 분야 구분을 따릅니다.</p>
+
+      <p class="al-note"><span class="al-note-t">예시 데이터</span><span class="al-note-b">아래 인터뷰는 화면 구성을 위한 예시이며, 실제 동문 정보는 학부 확인 후 등재됩니다.</span></p>
+
+      <div class="al-cards">
+        <article class="al-card">
+          <div class="al-who">
+            <span class="al-ava" aria-hidden="true">A</span>
+            <div>
+              <h4 class="al-nm">졸업생 A<span class="al-alias">가명</span></h4>
+              <p class="al-meta">2009년 학사 졸업</p>
+            </div>
+          </div>
+          <p class="al-field">설계·제조</p>
+          <blockquote class="al-quote">학부에서 배운 설계 절차는 지금도 매일 쓰는 언어입니다.</blockquote>
+          <p class="al-txt">제조 대기업 생산기술 부서에서 공정 설비를 설계합니다. 4학년 종합설계 과목에서 도면을 처음부터 끝까지 그려 본 경험이 현장 업무의 기준이 되었다고 말합니다.</p>
+        </article>
+
+        <article class="al-card">
+          <div class="al-who">
+            <span class="al-ava" aria-hidden="true">B</span>
+            <div>
+              <h4 class="al-nm">졸업생 B<span class="al-alias">가명</span></h4>
+              <p class="al-meta">2014년 석사 졸업</p>
+            </div>
+          </div>
+          <p class="al-field">에너지·열유체</p>
+          <blockquote class="al-quote">측정값을 한 번 더 의심하는 습관이 연구의 시작이었습니다.</blockquote>
+          <p class="al-txt">에너지 분야 연구기관에서 열전달 해석을 담당합니다. 대학원 시절 실험과 수치해석을 함께 다뤘던 훈련이 지금의 업무로 이어졌다고 말합니다.</p>
+        </article>
+
+        <article class="al-card">
+          <div class="al-who">
+            <span class="al-ava" aria-hidden="true">C</span>
+            <div>
+              <h4 class="al-nm">졸업생 C<span class="al-alias">가명</span></h4>
+              <p class="al-meta">2017년 학사 졸업</p>
+            </div>
+          </div>
+          <p class="al-field">로보틱스·제어</p>
+          <blockquote class="al-quote">제어 과목 과제로 만든 작은 장치가 진로를 정했습니다.</blockquote>
+          <p class="al-txt">로봇 소프트웨어를 개발하는 기업에서 제어 알고리즘을 맡고 있습니다. 학부 동아리에서 팀으로 기계를 만들어 본 경험을 가장 도움이 된 준비로 꼽습니다.</p>
+        </article>
+
+        <article class="al-card">
+          <div class="al-who">
+            <span class="al-ava" aria-hidden="true">D</span>
+            <div>
+              <h4 class="al-nm">졸업생 D<span class="al-alias">가명</span></h4>
+              <p class="al-meta">2020년 박사 졸업</p>
+            </div>
+          </div>
+          <p class="al-field">바이오·포토닉스</p>
+          <blockquote class="al-quote">실험을 설계하는 법을 배운 것이 가장 큰 자산입니다.</blockquote>
+          <p class="al-txt">의료기기 기업 연구소에서 광학 진단 장비를 개발합니다. 연구실에서 논문을 쓰며 익힌 문제 정의 방식이 제품 개발에도 그대로 쓰인다고 말합니다.</p>
+        </article>
+      </div>
+
+      <p class="al-src">인터뷰 참여를 원하는 동문은 학부 행정팀으로 연락해 주세요.</p>
+      <div class="al-mores">
+        <a class="al-more" href="G-research.html#fields">여섯 개 연구 분야 보기 <span aria-hidden="true">→</span></a>
+        <a class="al-more" href="G-admissions.html#careers">진로 안내 보기 <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+
+    <!-- ── 3. 대외협력 (유형은 설명, 사례는 자리표시자) ── -->
+    <div class="al-block">
+      <h3 class="al-h">대외협력</h3>
+      <p class="al-sub">기업·기관과 학부가 함께하는 협력의 형태를 안내합니다. 협력은 아래 네 가지 형태로 이루어집니다.</p>
+
+      <div class="al-types">
+        <div class="al-type">
+          <h4>공동연구</h4>
+          <p>기업이 제시한 과제를 연구실과 함께 수행합니다. 계약과 연구비 집행은 산학협력단 절차를 따릅니다.</p>
+        </div>
+        <div class="al-type">
+          <h4>채용 연계</h4>
+          <p>채용 설명회와 현장 견학을 학기 중에 진행합니다. 모집 공고는 소식 페이지의 취업 정보에 올립니다.</p>
+        </div>
+        <div class="al-type">
+          <h4>장학 후원</h4>
+          <p>기업과 기관, 동문이 지정 기부로 재학생 장학금을 후원합니다. 운영 중인 장학은 입학 안내의 장학 항목에서 확인할 수 있습니다.</p>
+        </div>
+        <div class="al-type">
+          <h4>현장실습</h4>
+          <p>방학 기간에 기업 현장에서 실무를 경험하는 과정입니다. 참여 방법은 학부 행정팀에 문의해 주세요.</p>
+        </div>
+      </div>
+
+      <p class="al-note"><span class="al-note-t">예시 데이터</span><span class="al-note-b">아래 협력 사례는 화면 구성을 위한 예시이며, 실제 협력 기관은 학부 확인 후 등재됩니다. 기관은 업종으로만 표기했습니다.</span></p>
+
+      <div class="al-tbl" role="table" aria-label="협력 사례 예시">
+        <div class="al-thead" role="row">
+          <span class="al-c" role="columnheader">협력 유형</span>
+          <span class="al-c" role="columnheader">연구 분야</span>
+          <span class="al-c" role="columnheader">참여 기관</span>
+        </div>
+        <div class="al-row" role="row">
+          <span class="al-c" role="cell"><span class="al-ck">협력 유형</span>공동연구</span>
+          <span class="al-c" role="cell"><span class="al-ck">연구 분야</span>에너지·열유체</span>
+          <span class="al-c" role="cell"><span class="al-ck">참여 기관</span>발전 설비 기업</span>
+        </div>
+        <div class="al-row" role="row">
+          <span class="al-c" role="cell"><span class="al-ck">협력 유형</span>공동연구</span>
+          <span class="al-c" role="cell"><span class="al-ck">연구 분야</span>마이크로·나노</span>
+          <span class="al-c" role="cell"><span class="al-ck">참여 기관</span>반도체 장비 기업</span>
+        </div>
+        <div class="al-row" role="row">
+          <span class="al-c" role="cell"><span class="al-ck">협력 유형</span>채용 연계</span>
+          <span class="al-c" role="cell"><span class="al-ck">연구 분야</span>설계·제조</span>
+          <span class="al-c" role="cell"><span class="al-ck">참여 기관</span>제조 대기업</span>
+        </div>
+        <div class="al-row" role="row">
+          <span class="al-c" role="cell"><span class="al-ck">협력 유형</span>장학 후원</span>
+          <span class="al-c" role="cell"><span class="al-ck">연구 분야</span>전 분야</span>
+          <span class="al-c" role="cell"><span class="al-ck">참여 기관</span>자동차 부품 기업</span>
+        </div>
+        <div class="al-row" role="row">
+          <span class="al-c" role="cell"><span class="al-ck">협력 유형</span>현장실습</span>
+          <span class="al-c" role="cell"><span class="al-ck">연구 분야</span>로보틱스·제어</span>
+          <span class="al-c" role="cell"><span class="al-ck">참여 기관</span>산업용 로봇 기업</span>
+        </div>
+      </div>
+
+      <div class="al-contact">
+        <span class="al-ck2">협력 문의</span>
+        <span class="al-cv"><a href="tel:0221234426">02-2123-4426</a></span>
+        <span class="al-cn">(03722) 서울특별시 서대문구 연세로 50 · 연세대학교 공과대학 기계공학부 행정팀</span>
+      </div>
+      <div class="al-mores">
+        <a class="al-more" href="G-news.html#jobs">취업 정보 보기 <span aria-hidden="true">→</span></a>
+        <a class="al-more" href="G-admissions.html#scholarships">장학 안내 보기 <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+
+    <!-- ── 4. 발전기금 (세액공제는 법정 사실, 운영 방식은 자리표시자) ── -->
+    <div class="al-block">
+      <h3 class="al-h">발전기금</h3>
+      <p class="al-sub">동문과 기업이 보낸 기금은 재학생 장학과 연구, 교육시설에 쓰입니다.</p>
+
+      <p class="al-note"><span class="al-note-t">예시 데이터</span><span class="al-note-b">기금 용도와 기부 절차는 화면 구성을 위한 안내 예시이며, 실제 운영 방식은 학부 확인 후 반영됩니다.</span></p>
+
+      <div class="al-uses">
+        <div class="al-use">
+          <h4>장학 지원</h4>
+          <p>학업에 전념할 수 있도록 재학생 장학금으로 씁니다.</p>
+        </div>
+        <div class="al-use">
+          <h4>연구 지원</h4>
+          <p>대학원생의 연구 활동과 학술대회 발표를 지원합니다.</p>
+        </div>
+        <div class="al-use">
+          <h4>교육시설</h4>
+          <p>실습실과 실험 장비를 개선하는 데 씁니다.</p>
+        </div>
+        <div class="al-use">
+          <h4>학생 활동</h4>
+          <p>설계 경진대회와 학생 동아리 활동을 지원합니다.</p>
+        </div>
+      </div>
+
+      <div class="al-steps">
+        <div class="al-step"><span class="al-sn">01</span><span class="al-st">학부 행정팀으로 기부 의사를 알려 주세요.</span></div>
+        <div class="al-step"><span class="al-sn">02</span><span class="al-st">기부 목적과 금액, 납부 방법을 함께 정합니다.</span></div>
+        <div class="al-step"><span class="al-sn">03</span><span class="al-st">안내받은 절차에 따라 납부합니다.</span></div>
+        <div class="al-step"><span class="al-sn">04</span><span class="al-st">기부금 영수증과 기금 사용 안내를 받습니다.</span></div>
+      </div>
+      <p class="al-src">계좌 정보는 이 페이지에 싣지 않습니다. 학부 행정팀에서 개별로 안내합니다.</p>
+
+      <div class="al-tax">
+        <p class="al-tax-h">기부금 세액공제</p>
+        <div class="al-tax-r">
+          <span class="al-tax-k">연간 기부금 1천만원 이하 부분</span>
+          <span class="al-tax-v">15%</span>
+        </div>
+        <div class="al-tax-r">
+          <span class="al-tax-k">1천만원을 초과하는 부분</span>
+          <span class="al-tax-v">30%</span>
+        </div>
+      </div>
+      <p class="al-src">공제율은 관련 법령에 따릅니다. 적용 대상과 절차는 국세청 안내를 확인해 주세요.</p>
+
+      <div class="al-contact">
+        <span class="al-ck2">기부 문의</span>
+        <span class="al-cv"><a href="tel:0221234426">02-2123-4426</a></span>
+        <span class="al-cn">전화로 문의하시면 담당자가 절차를 안내합니다.</span>
+      </div>
     </div>
   </section>
 </main>
@@ -721,7 +1096,7 @@ html[lang="en"] .ppos{display:none}
   }
 })();
 </script>
-<script src="assets/nav.js?v=48"></script>
+<script src="assets/nav.js?v=52"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--dimmer)">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

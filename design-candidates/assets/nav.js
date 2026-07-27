@@ -174,12 +174,12 @@
   /* ── 2. 메뉴 정의 (메인 H-academic 순서·라벨과 동일) ── */
   var MENU = [
     { t: '학부소개', h: 'G-about.html', key: 'about', sub: [['학부 소개', 'G-about.html#intro', ['intro']], ['교육목적 · 교육목표', 'G-about.html#vision', ['vision']], ['조직 · 행정', 'G-about.html#organization', ['organization']], ['주요 연혁', 'G-about.html#history', ['history']], ['연락처 · 오시는 길', 'G-about.html#location', ['location']]] },
-    { t: '구성원', h: 'G-people.html', key: 'people', sub: [['교수진', 'G-people.html#faculty', ['faculty', 'dir']], ['교직원', 'G-people.html#staff', ['staff']]] },
+    { t: '구성원', h: 'G-people.html', key: 'people', sub: [['교수진', 'G-people.html#faculty', ['faculty', 'dir']], ['교직원', 'G-people.html#staff', ['staff']], ['동문', 'G-people.html#alumni', ['alumni']]] },
     { t: '연구', h: 'G-research.html', key: 'research', sub: [['연구 비전', 'G-research.html#vision', ['vision']], ['연구 분야', 'G-research.html#fields', ['fields', 'fieldsDetail']], ['연구실 전체', 'G-research.html#clusters', ['clusters']], ['연구실 홍보영상', 'G-research.html#labvideos', ['labvideos']]] },
     { t: '학사', h: 'G-academics.html', key: 'academics', sub: [['교육과정 개관', 'G-academics.html#curriculum', ['curriculum', 'requirements', 'abeek']], ['이수 체계도', 'G-academics.html#roadmap', ['roadmap']], ['졸업 요건', 'G-academics.html#graduation', ['graduation']], ['전공 교과', 'G-academics.html#courses', ['mechanics', 'courses']], ['동아리·학생활동', 'G-academics.html#clubs', ['clubs']]] },
     { t: '대학원', h: 'G-graduate.html', key: 'graduate', sub: [['입학 안내', 'G-graduate.html#grad-admission', ['grad-admission']], ['졸업 요건', 'G-graduate.html#grad-req', ['grad-req']], ['교과목 소개', 'G-graduate.html#grad-courses', ['grad-courses']], ['대학원 연구실', 'G-graduate.html#grad-labs', ['grad-labs']], ['BK21 FOUR', 'G-graduate.html#bk21', ['bk21']]] },
     { t: '소식', h: 'G-news.html', key: 'news', sub: [['학부 공지', 'G-news.html#notice-ug', ['notice-ug']], ['대학원 공지', 'G-news.html#notice-grad', ['notice-grad']], ['뉴스 · 연구성과', 'G-news.html#hi', ['hi']], ['세미나 · 행사', 'G-news.html#sched', ['sched']], ['학위논문심사', 'G-news.html#thesis', ['thesis']], ['자료실', 'G-news.html#archive', ['archive']], ['취업 정보', 'G-news.html#jobs', ['jobs']]] },
-    { t: '입학', h: 'G-admissions.html', key: 'admissions', sub: [['학부 입학', 'G-admissions.html#undergraduate', ['undergraduate']], ['대학원 진학', 'G-admissions.html#graduate', ['graduate']], ['장학 안내', 'G-admissions.html#scholarships', ['scholarships']], ['진로 안내', 'G-admissions.html#careers', ['careers', 'alumni', 'faq']]] }
+    { t: '입학', h: 'G-admissions.html', key: 'admissions', sub: [['학부 입학', 'G-admissions.html#undergraduate', ['undergraduate']], ['대학원 진학', 'G-admissions.html#graduate', ['graduate']], ['장학 안내', 'G-admissions.html#scholarships', ['scholarships']], ['진로 · 취업', 'G-admissions.html#careers', ['careers']], ['자주 묻는 질문', 'G-admissions.html#faq', ['faq']]] }
   ];
   var path = (location.pathname.split('/').pop() || '').toLowerCase();
   var curKey = null;
@@ -239,7 +239,9 @@
     bar.className = 'ysub'; bar.setAttribute('role', 'tablist'); bar.setAttribute('aria-label', m.t + ' 하위 메뉴');
     bar.innerHTML = '<div class="ysub-w">' + m.sub.map(function (s, i) {
       return '<button type="button" role="tab" class="ysub-tab" data-i="' + i + '"' +
-        ' data-tab="' + esc((s[2] && s[2][0]) || '') + '">' + esc(s[0]) + '</button>';
+        ' data-tab="' + esc((s[2] && s[2][0]) || '') + '"' +
+        /* 이 탭이 담당하는 섹션 id 전부 — 다른 탭에 숨은 앵커로 갈 때 어느 탭을 켜야 하는지 찾는 열쇠 */
+        ' data-tabids="' + esc((s[2] || []).join(' ')) + '">' + esc(s[0]) + '</button>';
     }).join('') + '</div>';
     phero.parentNode.insertBefore(bar, phero.nextSibling);
 

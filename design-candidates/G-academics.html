@@ -358,6 +358,10 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
   .crs-code{padding-top:0}
   .grad-acc-head{flex-wrap:wrap;gap:.4rem 1rem}
 }
+/* 이수체계도에서 눌러 도착한 과목을 잠깐 표시해 준다 — 어디로 왔는지 보이게 */
+.is-hit{animation:hit 1.9s ease}
+@keyframes hit{0%,70%{background:#eef3fa;box-shadow:inset 3px 0 0 var(--navy)}100%{background:transparent;box-shadow:none}}
+@media (prefers-reduced-motion:reduce){.is-hit{animation:none;background:#eef3fa}}
 </style>
 <style>.ynav-ph{position:fixed;top:0;left:0;right:0;height:3.7rem;background:rgba(255,255,255,.96);border-bottom:1px solid rgba(0,0,0,.08);z-index:39}</style>
 <style>h1,h2,.sec-title,.phero h1,.hero h1,.hero-title,.club-name,.vt,.staff-head h2,.brand .bko,.ynv-brand .bko{font-family:"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;letter-spacing:-.01em}</style>
@@ -1040,7 +1044,59 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
   });
 })();
 </script>
-<script src="assets/nav.js?v=48"></script>
+<script>
+/* ── 이수체계도의 과목명 → 「전공 교과」 상세로 ──
+   과목 링크는 #course-MEU2600 같은 깊은 앵커인데, 그 대상은 다른 탭(전공 교과) 안에 있다.
+   탭이 바뀌면 나머지 섹션은 .ysub-hide 로 display:none 이 되므로 **브라우저가 앵커로 갈 수 없다**
+   — 눌러도 아무 일도 일어나지 않았다(주소창 해시만 바뀜).
+   그래서 대상이 숨어 있으면 그 섹션을 담당하는 탭을 먼저 켜고, 렌더된 뒤에 이동한다.
+   어느 탭이 어느 섹션을 담당하는지는 nav.js 가 심어 준 data-tabids 로 찾는다. */
+(function () {
+  var REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function offsetTop() {                       /* 고정 헤더 + sticky 탭 바 높이만큼 비켜 세운다 */
+    var hdr = document.querySelector('.ynv-hdr');
+    var bar = document.querySelector('.ysub');
+    return (hdr ? hdr.getBoundingClientRect().height : 62) +
+           (bar ? bar.getBoundingClientRect().height : 0) + 14;
+  }
+
+  function goTo(id) {
+    var t = document.getElementById(id);
+    if (!t) return;
+    var y = t.getBoundingClientRect().top + (pageYOffset || 0) - offsetTop();
+    try { scrollTo({ top: Math.max(0, y), behavior: (REDUCE || document.hidden) ? 'instant' : 'smooth' }); }
+    catch (e) { scrollTo(0, Math.max(0, y)); }
+    t.classList.add('is-hit');
+    setTimeout(function () { t.classList.remove('is-hit'); }, 1900);
+  }
+
+  document.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest ? e.target.closest('a[href^="#course-"]') : null;
+    if (!a) return;
+    var id = a.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if (!el) return;
+    e.preventDefault();
+    try { history.replaceState(null, '', '#' + id); } catch (_) {}
+
+    if (!el.offsetParent) {                    /* 다른 탭에 숨어 있다 → 그 탭부터 켠다 */
+      var tab = document.querySelector('.ysub-tab[data-tabids~="' + id.replace(/"/g, '') + '"]') ||
+                document.querySelector('.ysub-tab[data-tabids~="courses"]');
+      if (tab) {
+        /* 탭의 show() 는 .ysub-hide 를 동기로 벗기므로 레이아웃은 곧바로 잰다.
+           다만 show() 자신도 스크롤을 한 번 하므로, 그 뒤에 오도록 태스크를 한 번 넘긴다.
+           (rAF 는 숨은 탭에서 멈춰 검증이 불가능해 쓰지 않는다) */
+        tab.click();
+        setTimeout(function () { goTo(id); }, 0);
+        return;
+      }
+    }
+    goTo(id);
+  });
+})();
+</script>
+<script src="assets/nav.js?v=52"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--kr);font-size:.74rem;color:#7b8595">
   © 2026 연세대학교 기계공학부 &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

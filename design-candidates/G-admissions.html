@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>[시안 G · 관제] 입학 · 진로 — 연세대학교 기계공학부</title>
-<meta name="description" content="연세대학교 기계공학부 입학·진로 안내 — 학부 입학, 대학원 진학, 장학 안내, 진로 안내, 졸업생 연혁, 자주 묻는 질문." />
+<meta name="description" content="연세대학교 기계공학부 입학 안내 — 학부 입학, 대학원 진학, 장학 안내, 진로 · 취업, 자주 묻는 질문." />
 <meta name="theme-color" content="#1a3d75" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -18,7 +18,7 @@
    입학 · 진로 (라이트 테마)
    이미지 배너 · 아이보리 배경 · 네이비 포인트.
    콘텐츠: 학부 입학 · 대학원 진학 · 장학 ·
-   진로 안내 · 졸업생 연혁 · FAQ. (취업 정보 게시판은 소식으로 이동)
+   진로 · 취업 · FAQ. (취업 정보 게시판은 소식으로, 동문은 구성원으로 이동)
    ─────────────────────────────────────────────── */
 :root{
   --navy:#1a3d75;
@@ -445,7 +445,7 @@ a{color:inherit;text-decoration:none}
 
   <!-- 취업 정보 게시판은 소식(G-news.html#jobs)으로 이동 -->
 
-  <!-- ═══ §05 진로 안내 ═══
+  <!-- ═══ §05 진로 · 취업 ═══
        '제품을 설계하는 엔지니어 / 대학원 연구자 / 산업의 문제를 푸는 전문가 /
        인재와 기술을 찾는 기업' 네 가지 페르소나 카드를 삭제했다.
        어느 출처에도 없는 임의 구분이었다. 대신 학부에 실제로 게시되는
@@ -453,8 +453,8 @@ a{color:inherit;text-decoration:none}
   <section class="wrap section" id="careers" aria-labelledby="car-h">
     <div class="sec-head">
       <div>
-        <p class="sec-kick">진로</p>
-        <h2 id="car-h" class="sec-title">진로 안내</h2>
+        <p class="sec-kick">진로 · 취업</p>
+        <h2 id="car-h" class="sec-title">진로 · 취업</h2>
         <p class="sec-sub">채용 · 인턴 · 채용설명회 등 학부에 접수된 취업 관련 공고는 취업 정보 게시판에 게시됩니다.</p>
       </div>
       <a class="sec-more" href="G-news.html#jobs">취업 정보 <span class="arr" aria-hidden="true">→</span></a>
@@ -467,8 +467,12 @@ a{color:inherit;text-decoration:none}
           <a class="btn btn--coral" href="G-news.html#jobs">취업 정보 전체 보기 <span class="arr" aria-hidden="true">→</span></a>
         </div>
       </article>
+      <!-- 기업 담당자용 접수 창구 — 세 학교 중 고려대만 두고 있다.
+           우리는 접수된 공고 실데이터가 30건 있어 이 창구가 자연스럽게 이어진다. -->
       <article class="card card--soft">
-        <span class="overline">관련 안내</span>
+        <span class="overline">채용 공고 등록</span>
+        <p>학부 학생을 대상으로 채용 · 인턴 · 채용설명회를 안내하려는 기업은 학부 행정팀으로 문의해 주세요.
+          접수된 공고는 취업 정보 게시판에 게시됩니다.</p>
         <p>교육과정 이수 체계는 <a class="inline" href="G-academics.html">교육과정</a>에서, 연구 분야와 연구실은 <a class="inline" href="G-research.html">연구</a>에서 확인할 수 있습니다. 대학원 진학은 <a class="inline" href="#graduate">대학원 진학</a> 항목에 정리되어 있습니다.</p>
         <p class="contact-line" style="margin-top:1rem">학부 행정팀 02-2123-4426</p>
         <div class="btns">
@@ -476,62 +480,13 @@ a{color:inherit;text-decoration:none}
         </div>
       </article>
     </div>
-    <p class="note">취업률 · 진출 기업 등 통계 자료는 준비되는 대로 게시할 예정입니다.</p>
+    <!-- 통계를 감추지 않고 '무엇을 실을 것인지' 선언한다 — KAIST 도 진로현황을 이미지 한 장으로만 낸다 -->
+    <p class="note">졸업생 진로 통계(취업률 · 진학률 · 산업 분야별 분포)는 학부 확인을 거쳐 게시할 예정입니다.
+      확인되지 않은 수치는 싣지 않습니다.</p>
   </section>
 
-  <!-- ═══ §06 졸업생 연혁 ═══
-       '동문 네트워크를 운영하고 있습니다' · '동문 네트워크 참여 · 기부 · 초청 강연 등
-       협력 문의' 문구를 삭제했다. 학부 차원의 동문회나 기부 창구가 있다는 근거가 없고
-       공식 사이트 메뉴에도 동문 항목이 없다. 1962년 분리 · 1964년 첫 졸업생 등
-       공식 연혁에 있는 사실만 남긴다. 서브탭 정의(assets/nav.js)가 이 섹션을 참조하므로
-       섹션 자체는 유지한다. -->
-  <section class="wrap section" id="alumni" aria-labelledby="alu-h">
-    <div class="sec-head">
-      <div>
-        <p class="sec-kick">졸업생</p>
-        <h2 id="alu-h" class="sec-title">졸업생 연혁</h2>
-        <p class="sec-sub">1964년 2월 첫 졸업생을 배출했습니다.</p>
-      </div>
-      <a class="sec-more" href="G-about.html">전체 연혁 <span class="arr" aria-hidden="true">→</span></a>
-    </div>
-    <div class="duo">
-      <article class="card">
-        <span class="overline">주요 연혁</span>
-        <div class="timeline">
-          <div class="tl-item tl-item--hl">
-            <p class="tl-date">1962.12</p>
-            <p class="tl-text">기계공학과 분리.</p>
-          </div>
-          <div class="tl-item">
-            <p class="tl-date">1963.02</p>
-            <p class="tl-text">첫 신입생 입학.</p>
-          </div>
-          <div class="tl-item tl-item--hl">
-            <p class="tl-date">1964.02</p>
-            <p class="tl-text">첫 졸업생 배출.</p>
-          </div>
-          <div class="tl-item">
-            <p class="tl-date">2010.11</p>
-            <p class="tl-text">창립 50주년.</p>
-          </div>
-        </div>
-        <div class="btns">
-          <a class="btn" href="G-about.html">전체 연혁 보기 <span class="arr" aria-hidden="true">→</span></a>
-        </div>
-      </article>
-      <article class="card card--soft">
-        <span class="overline">학부 소식</span>
-        <p>학부 행사 · 세미나 · 수상 등 소식은 <a class="inline" href="G-news.html">소식 페이지</a>에 게시됩니다.</p>
-        <p class="contact-line" style="margin-top:1rem">학부 행정팀 02-2123-4426</p>
-        <div class="btns">
-          <a class="btn btn--coral" href="G-news.html">소식 보기 <span class="arr" aria-hidden="true">→</span></a>
-          <a class="btn" href="G-about.html">연락처 보기</a>
-        </div>
-      </article>
-    </div>
-  </section>
+  <!-- §06 졸업생·동문은 「구성원 > 동문」으로 옮겼다(사용자 지시). 입학에서는 진로 탭이 대신 받는다. -->
 
-  <!-- ═══ §07 자주 묻는 질문 ═══ -->
   <section class="wrap section" id="faq" aria-labelledby="faq-h">
     <div class="sec-head">
       <div>
@@ -686,11 +641,12 @@ a{color:inherit;text-decoration:none}
   var gsc = document.getElementById('sch-grad-cnt'); if(gsc) gsc.textContent = gradSch.length;
 
   /* 취업 공고 게시판 전체는 소식(G-news.html#jobs)에 있고,
-     여기 §05 진로 안내에는 최근 4건만 실데이터(jobs)에서 뽑아 보여 준다.
-     지어낸 진로 페르소나 카드를 대체하는 블록이다. */
+     여기 §05 진로 · 취업에는 최근 8건을 실데이터(jobs)에서 뽑아 보여 준다.
+     서울대·KAIST·고려대는 셋 다 취업 공고를 커뮤니티 게시판으로만 밀어 두는데,
+     우리는 실데이터가 있으니 입학을 보는 화면에서 바로 보여 주는 쪽을 택했다. */
   var jobs = (D.jobs || []).slice().sort(function(a, b){
     return String(b.date || '').replace(/\./g,'').localeCompare(String(a.date || '').replace(/\./g,''));
-  }).slice(0, 4);
+  }).slice(0, 8);
   var elJobs = document.getElementById('careerJobs');
   if(elJobs){
     elJobs.innerHTML = jobs.length ? jobs.map(function(j){
@@ -717,7 +673,7 @@ a{color:inherit;text-decoration:none}
 
 })();
 </script>
-<script src="assets/nav.js?v=48"></script>
+<script src="assets/nav.js?v=52"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--dimmer)">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

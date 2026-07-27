@@ -254,7 +254,12 @@
     m.sub.forEach(function (s) { (s[2] || []).forEach(function (id) { var el = document.getElementById(id); if (el && managed.indexOf(el) < 0) managed.push(el); }); });
     var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    function show(idx, doScroll) {
+    /* mode — 어디를 화면 맨 위로 올릴지. 누른 것이 무엇이냐에 따라 목적지가 다르다.
+         'view' : 형제 탭 바 클릭. 히어로는 위로 넘기고 **그 탭 내용의 첫 줄**을 맨 위로.
+                  (탭 바가 고정 헤더 바로 아래 붙는 위치 = 그 형제 페이지의 상단)
+         'top'  : 상단 메뉴·드롭다운·푸터의 같은 페이지 링크. 그 페이지의 **히어로**부터.
+         false  : 스크롤하지 않음(초기 렌더). */
+    function show(idx, mode) {
       var s = m.sub[idx]; if (!s) return;
       var ids = s[2] || [];
       /* 활성 탭 섹션만 노출, 다른 탭 섹션 숨김 — '각 하위 메뉴 = 각 탭' 뷰 분리 */
@@ -262,19 +267,33 @@
       tabs.forEach(function (t, i) { t.classList.toggle('cur', i === idx); t.setAttribute('aria-selected', i === idx ? 'true' : 'false'); });
       setBreadcrumb(s[0]);
       try { history.replaceState(null, '', '#' + (s[1].split('#')[1] || '')); } catch (_) {}
-      if (doScroll) {
-        /* 형제 탭으로 옮기면 얼마나 내려와 있었든 그 뷰의 맨 위(히어로)부터 다시 시작한다 —
-           새 페이지로 들어간 것과 같은 감각. 메뉴로 들어올 때(isTabHash)와도 동작이 같아진다.
-           'auto'는 CSS scroll-behavior:smooth 에 덮이므로 즉시 이동은 'instant'로 강제
+      if (mode) {
+        var y = 0;
+        if (mode === 'view') {
+          /* 탭 바를 헤더 바로 아래에 세워 그 아래부터 새 탭 내용이 시작되게 한다.
+             바는 sticky 라 제 위치를 물어보면 '붙어 있는 자리'(늘 헤더 밑)를 답한다 —
+             getBoundingClientRect 도 offsetTop 도 그렇다. 그 값으로 계산하면 아무리
+             내려와 있어도 "움직일 필요 없음"이 나온다.
+             그래서 sticky 가 아닌 바로 위 형제(=히어로)의 아랫변으로 제자리를 잡는다. */
+          var prev = bar.previousElementSibling;
+          var nat = prev
+            ? prev.getBoundingClientRect().bottom + (pageYOffset || 0)
+            : bar.getBoundingClientRect().top + (pageYOffset || 0);
+          y = Math.round(nat) - Math.round(hdr ? hdr.getBoundingClientRect().height : 62);
+          if (y < 0) y = 0;
+        }
+        /* 'auto'는 CSS scroll-behavior:smooth 에 덮이므로 즉시 이동은 'instant'로 강제
            (모션 축소 선호·숨은 탭에서는 부드러운 이동이 진행되지 않는다) */
-        try { scrollTo({ top: 0, behavior: (reduce || document.hidden) ? 'instant' : 'smooth' }); } catch (_) { scrollTo(0, 0); }
+        try { scrollTo({ top: y, behavior: (reduce || document.hidden) ? 'instant' : 'smooth' }); }
+        catch (_) { scrollTo(0, y); }
         /* 새로 보이는 뷰의 글자 등장 애니메이션(.ys-view-in — transition.css) */
         if (!reduce) managed.forEach(function (el) {
           if (ids.indexOf(el.id) >= 0) { el.classList.remove('ys-view-in'); void el.offsetWidth; el.classList.add('ys-view-in'); }
         });
       }
     }
-    tabs.forEach(function (t, i) { t.addEventListener('click', function () { show(i, true); }); });
+    /* 형제 탭 바 — 그 탭 내용의 상단으로 */
+    tabs.forEach(function (t, i) { t.addEventListener('click', function () { show(i, 'view'); }); });
 
     /* 초기 탭 = 해시 매칭 or 첫 탭.
        탭 해시는 각 페이지 head 스니펫이 앵커 점프 차단을 위해 미리 떼어 window.__ysTab 에 보관 */
@@ -304,7 +323,9 @@
       if (idx < 0) return;
       e.preventDefault();
       try { history.replaceState(null, '', '#' + h); } catch (_) {}
-      show(idx, true);
+      /* 메뉴·푸터로 들어온 것이므로 히어로부터 — 다른 페이지에서 메뉴로 진입했을 때와 같은 감각.
+         (형제 탭 바 클릭만 'view' 로 그 탭 내용의 상단에 선다) */
+      show(idx, 'top');
     });
   }
 

@@ -241,16 +241,6 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
   background:#fff;border:1px solid var(--line);padding:.62rem 1.5rem;transition:border-color .15s,color .15s}
 .ug-toggle:hover,.ug-toggle:focus-visible{border-color:var(--coral);color:var(--coral)}
 
-/* ── §05 대학원 교과 요약 ── */
-.grad-card{border:1px solid var(--line-soft);background:var(--card);
-  display:grid;grid-template-columns:auto 1fr;gap:clamp(1.4rem,1rem + 2vw,2.4rem);align-items:center;
-  padding:1.8rem clamp(1.2rem,.8rem + 1vw,2rem)}
-.grad-num{font-family:var(--mono);font-weight:400;font-size:clamp(2rem,1.4rem + 2vw,2.6rem);line-height:1;
-  color:var(--ink);font-variant-numeric:tabular-nums}
-.grad-num .u{color:var(--muted);font-family:var(--kr);font-size:.34em;margin-left:.2em;vertical-align:.35em}
-.grad-body p{font-family:var(--kr);font-size:.92rem;color:var(--body);line-height:1.75;max-width:44rem}
-.grad-body p b{color:var(--ink);font-weight:600}
-
 /* ── 입학 CTA — 네이비 밴드 (메인 계승) ── */
 .cta{background:var(--navy);color:#fff;
   padding:clamp(2.6rem,1.6rem + 3.5vw,4.2rem) clamp(1.4rem,.6rem + 2vw,3rem);
@@ -362,8 +352,7 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
   .crs-block-desc{max-width:none}
 }
 @media (max-width:680px){
-  .grad-card{grid-template-columns:1fr;gap:1rem}
-  .ug-toolbar{flex-direction:column;align-items:stretch}
+    .ug-toolbar{flex-direction:column;align-items:stretch}
   .ug-status{align-self:flex-end}
   .crs-row{grid-template-columns:1fr;gap:.35rem}
   .crs-code{padding-top:0}
@@ -373,7 +362,10 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
 <style>.ynav-ph{position:fixed;top:0;left:0;right:0;height:3.7rem;background:rgba(255,255,255,.96);border-bottom:1px solid rgba(0,0,0,.08);z-index:39}</style>
 <style>h1,h2,.sec-title,.phero h1,.hero h1,.hero-title,.club-name,.vt,.staff-head h2,.brand .bko,.ynv-brand .bko{font-family:"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;letter-spacing:-.01em}</style>
 <link rel="stylesheet" href="assets/transition.css">
-<script>/* 탭 해시 진입은 히어로부터 — 파싱 전에 해시를 떼어 앵커 점프·상단바 접힘 왕복을 원천 차단(nav.js가 탭 복원) */(function(){var h=location.hash.slice(1);if(h&&/^(intro|vision|organization|history|location|faculty|dir|staff|fields|fieldsDetail|clusters|labvideos|curriculum|requirements|abeek|roadmap|graduation|mechanics|courses|grad|clubs|grad-admission|grad-req|grad-courses|grad-labs|bk21|notice-ug|notice-grad|hi|sched|thesis|archive|jobs|undergraduate|graduate|scholarships|careers|alumni|faq)$/.test(h)){window.__ysTab=h;try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}}})();</script>
+<script>/* 탭 해시 진입은 히어로부터 — 파싱 전에 해시를 떼어 앵커 점프·상단바 접힘 왕복을 원천 차단(nav.js가 탭 복원).
+   scrollRestoration=manual: 뒤로가기·같은 주소 재방문 때 브라우저가 이전 스크롤을 되살려
+   히어로를 건너뛰고 첫 탭 중간부터 보이는 것을 막는다(깊은 앵커 #id 이동에는 영향 없음). */
+(function(){try{history.scrollRestoration="manual"}catch(e){}var h=location.hash.slice(1);if(h&&/^(intro|vision|organization|history|location|faculty|dir|staff|fields|fieldsDetail|clusters|labvideos|curriculum|requirements|abeek|roadmap|graduation|mechanics|courses|grad|clubs|grad-admission|grad-req|grad-courses|grad-labs|bk21|notice-ug|notice-grad|hi|sched|thesis|archive|jobs|undergraduate|graduate|scholarships|careers|alumni|faq)$/.test(h)){window.__ysTab=h;try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}}})();</script>
 </head>
 <body>
 <div class="ynav-ph" aria-hidden="true"></div>
@@ -386,7 +378,6 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
     <p class="bc">홈 › 학사</p>
   </div>
 </header>
-
 
 <main>
   <!-- §01 교육과정 개관 -->
@@ -406,7 +397,6 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
       <div class="metrics" aria-label="교육과정 주요 수치">
         <div class="metric"><span class="m-lab">졸업 학점</span><span class="m-val"><span data-count="130">0</span></span></div>
         <div class="metric"><span class="m-lab">학부 전공 교과</span><span class="m-val"><span data-count="40">0</span><span class="u">과목</span></span></div>
-        <div class="metric"><span class="m-lab">대학원 교과</span><span class="m-val"><span data-count="183">0</span><span class="u">과목</span></span></div>
         <div class="metric"><span class="m-lab">전공필수</span><span class="m-val acc"><span id="metricReq">—</span><span class="u">과목</span></span></div>
       </div>
     </div>
@@ -689,23 +679,7 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
     <p class="table-note">전공필수는 이수 순서에 따라, 전공선택은 관련 연구 분야에 따라 묶어 정리했습니다 · 학점은 입학연도별로 달라 본 목록에서는 표기를 생략했습니다.</p>
   </section>
 
-  <!-- §05 대학원 교과 요약 -->
-  <section class="sec" id="grad" aria-labelledby="grad-h">
-    <div class="sec-head">
-      <div>
-        <p class="sec-kick">대학원</p>
-        <h2 id="grad-h" class="sec-title">대학원 교과</h2>
-        <p class="sec-sub">대학원 과정에서 개설되는 전공 교과의 총량입니다. 코드·국문명·영문명·학점의 전체 목록은 학사요람·연세포털에서 확인할 수 있습니다.</p>
-      </div>
-    </div>
-    <div class="grad-card">
-      <div class="grad-num"><span data-count="183">0</span><span class="u">과목</span></div>
-      <div class="grad-body">
-        <p>대학원 과정에는 <b>총 183과목</b>이 개설되어 있습니다. 4대 역학의 심화부터 마이크로·나노, 로보틱스·제어, 바이오·포토닉스까지 6개 연구 분야에 걸쳐 있습니다.</p>
-        <a class="arrow" href="G-admissions.html#graduate">대학원 진학 안내 <span aria-hidden="true">→</span></a>
-      </div>
-    </div>
-  </section>
+  <!-- §05 대학원 교과는 「대학원 > 교과목 소개」에 183과목 전체 목록으로 있다 — 학사에서는 뺀다 -->
 
   <!-- 공학교육인증 (#abeek) -->
   <section class="sec" id="abeek" aria-labelledby="abeek-h">
@@ -1066,7 +1040,7 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
   });
 })();
 </script>
-<script src="assets/nav.js?v=46"></script>
+<script src="assets/nav.js?v=48"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--kr);font-size:.74rem;color:#7b8595">
   © 2026 연세대학교 기계공학부 &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

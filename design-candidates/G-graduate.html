@@ -311,7 +311,10 @@ html[lang="en"] .lab-en-only{display:none}
 <style>.ynav-ph{position:fixed;top:0;left:0;right:0;height:3.7rem;background:rgba(255,255,255,.96);border-bottom:1px solid rgba(0,0,0,.08);z-index:39}</style>
 <style>h1,h2,.sec-title,.phero h1,.hero h1,.hero-title,.card-name,.vt,.staff-head h2,.brand .bko,.ynv-brand .bko{font-family:"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;letter-spacing:-.01em}</style>
 <link rel="stylesheet" href="assets/transition.css">
-<script>/* 탭 해시 진입은 히어로부터 — 파싱 전에 해시를 떼어 앵커 점프·상단바 접힘 왕복을 원천 차단(nav.js가 탭 복원) */(function(){var h=location.hash.slice(1);if(h&&/^(intro|vision|organization|history|location|faculty|dir|staff|fields|fieldsDetail|clusters|labvideos|curriculum|requirements|abeek|roadmap|graduation|mechanics|courses|grad|clubs|grad-admission|grad-req|grad-courses|grad-labs|bk21|notice-ug|notice-grad|hi|sched|thesis|archive|jobs|undergraduate|graduate|scholarships|careers|alumni|faq)$/.test(h)){window.__ysTab=h;try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}}})();</script>
+<script>/* 탭 해시 진입은 히어로부터 — 파싱 전에 해시를 떼어 앵커 점프·상단바 접힘 왕복을 원천 차단(nav.js가 탭 복원).
+   scrollRestoration=manual: 뒤로가기·같은 주소 재방문 때 브라우저가 이전 스크롤을 되살려
+   히어로를 건너뛰고 첫 탭 중간부터 보이는 것을 막는다(깊은 앵커 #id 이동에는 영향 없음). */
+(function(){try{history.scrollRestoration="manual"}catch(e){}var h=location.hash.slice(1);if(h&&/^(intro|vision|organization|history|location|faculty|dir|staff|fields|fieldsDetail|clusters|labvideos|curriculum|requirements|abeek|roadmap|graduation|mechanics|courses|grad|clubs|grad-admission|grad-req|grad-courses|grad-labs|bk21|notice-ug|notice-grad|hi|sched|thesis|archive|jobs|undergraduate|graduate|scholarships|careers|alumni|faq)$/.test(h)){window.__ysTab=h;try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}}})();</script>
 </head>
 <body>
 <div class="ynav-ph" aria-hidden="true"></div>
@@ -670,7 +673,7 @@ html[lang="en"] .lab-en-only{display:none}
   render();
 })();
 </script>
-<script src="assets/nav.js?v=46"></script>
+<script src="assets/nav.js?v=48"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--kr);font-size:.74rem;color:#7b8595">
   © 2026 연세대학교 기계공학부 &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

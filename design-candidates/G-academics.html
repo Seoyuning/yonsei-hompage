@@ -65,7 +65,7 @@ a{color:inherit;text-decoration:none}
 .skip:focus{top:.6rem}
 
 /* ── 페이지 히어로 (이미지 배너 · 중앙 정렬 · 브레드크럼) ── */
-.phero{position:relative;min-height:clamp(14rem,30vh,20rem);display:flex;align-items:center;justify-content:center;text-align:center;background:#12294f url("assets/hero-academics.jpg") center 42%/cover no-repeat;color:#fff;overflow:hidden}
+.phero{position:relative;min-height:clamp(19rem,42vh,26rem);display:flex;align-items:center;justify-content:center;text-align:center;background:#12294f url("assets/hero-academics.jpg") center 42%/cover no-repeat;color:#fff;overflow:hidden}
 /* 사진은 배경 질감으로 — 흑백 + 네이비 모노톤. 스톡 사진은 잘 보이게 할수록
    "다국적 학생들이 웃는 강의실" 전형이 드러나 티가 난다. 인물이 주인공이 되지 않게 눌러
    질감으로만 남긴다. filter 를 요소에 걸면 글자까지 흐려지므로 사진 층(::before)에만 건다.
@@ -107,6 +107,8 @@ a{color:inherit;text-decoration:none}
 .overview .lede b{color:var(--ink);font-weight:600}
 .overview .lede .cor{color:var(--coral);font-weight:600}
 .overview p.body{font-family:var(--kr);font-size:.95rem;color:var(--body);line-height:1.85;margin-top:1.2rem}
+/* lede 없이 본문부터 시작하는 경우 윗여백 제거 */
+.overview p.body:first-child{margin-top:0}
 .overview p.body b{color:var(--ink);font-weight:600}
 a.arrow{display:inline-flex;align-items:center;gap:.4rem;margin-top:1.4rem;
   font-family:var(--kr);font-size:.88rem;font-weight:600;color:var(--coral);transition:gap .15s}
@@ -302,11 +304,17 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
 .grad-table tr.gt-total td{border-top:1px solid var(--line);border-bottom:0;
   font-weight:700;color:var(--ink);padding-top:.8rem}
 .grad-table tr.gt-total td.gt-num{font-size:1rem}
+/* 표 대신 안내 문장만 두는 패널 (공식 요건표 형식이 달라 표로 옮기지 않은 학번 그룹) */
+.grad-acc-msg{font-family:var(--kr);font-size:.86rem;color:var(--sub);line-height:1.7;max-width:52rem;padding:.4rem 0 .2rem}
+.grad-acc-msg a{color:var(--navy);font-weight:600;border-bottom:1px solid var(--line);transition:color .15s,border-color .15s}
+.grad-acc-msg a:hover,.grad-acc-msg a:focus-visible{color:var(--coral);border-bottom-color:var(--coral)}
 .grad-notes{list-style:none;padding:0;margin:1.2rem 0 0}
 .grad-notes li{position:relative;font-family:var(--kr);font-size:.78rem;color:var(--muted);
   line-height:1.7;padding-left:1.1rem}
 .grad-notes li::before{content:"·";position:absolute;left:.3rem;color:var(--label)}
 .grad-notes li b{color:var(--sub);font-weight:600}
+.grad-notes li a{color:var(--navy);font-weight:600;border-bottom:1px solid var(--line);transition:color .15s,border-color .15s}
+.grad-notes li a:hover,.grad-notes li a:focus-visible{color:var(--coral);border-bottom-color:var(--coral)}
 
 /* ── §04 학부 전공 교과 — 영역별 편집형(재디자인) ── */
 .crs-search{position:relative;max-width:24rem;margin:0 0 2rem}
@@ -365,7 +373,7 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
 <style>.ynav-ph{position:fixed;top:0;left:0;right:0;height:3.7rem;background:rgba(255,255,255,.96);border-bottom:1px solid rgba(0,0,0,.08);z-index:39}</style>
 <style>h1,h2,.sec-title,.phero h1,.hero h1,.hero-title,.club-name,.vt,.staff-head h2,.brand .bko,.ynv-brand .bko{font-family:"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;letter-spacing:-.01em}</style>
 <link rel="stylesheet" href="assets/transition.css">
-<script>/* 탭 해시 진입은 히어로부터 — 파싱 전에 해시를 떼어 앵커 점프·상단바 접힘 왕복을 원천 차단(nav.js가 탭 복원) */(function(){var h=location.hash.slice(1);if(h&&/^(greeting|vision|organization|history|location|faculty|dir|staff|fields|fieldsDetail|clusters|labvideos|curriculum|requirements|abeek|roadmap|graduation|mechanics|courses|grad|clubs|grad-admission|grad-req|grad-courses|grad-labs|bk21|notice-ug|notice-grad|hi|sched|thesis|archive|jobs|undergraduate|graduate|scholarships|careers|alumni|faq)$/.test(h)){window.__ysTab=h;try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}}})();</script>
+<script>/* 탭 해시 진입은 히어로부터 — 파싱 전에 해시를 떼어 앵커 점프·상단바 접힘 왕복을 원천 차단(nav.js가 탭 복원) */(function(){var h=location.hash.slice(1);if(h&&/^(intro|vision|organization|history|location|faculty|dir|staff|fields|fieldsDetail|clusters|labvideos|curriculum|requirements|abeek|roadmap|graduation|mechanics|courses|grad|clubs|grad-admission|grad-req|grad-courses|grad-labs|bk21|notice-ug|notice-grad|hi|sched|thesis|archive|jobs|undergraduate|graduate|scholarships|careers|alumni|faq)$/.test(h)){window.__ysTab=h;try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}}})();</script>
 </head>
 <body>
 <div class="ynav-ph" aria-hidden="true"></div>
@@ -392,7 +400,6 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
     </div>
     <div class="overview">
       <div>
-        <p class="lede">기계공학부 교육과정은 <b>에너지·재료·설계·제어</b>를 다루는 기초 역량을 학년별로 단계적으로 이수하도록 구성되어 있습니다.</p>
         <p class="body">1·2학년에 수학·물리 등 기초 과목을 이수하고, 2학년부터 <b>고체역학·열역학·유체역학·동역학</b>의 4대 역학을 이수합니다. 3·4학년에는 전공 과목을 선택 이수하며, 4학년의 창의제품설계(캡스톤)에서 이를 종합합니다. 연구논문으로 학부 과정을 마무리합니다.</p>
         <a class="arrow" href="#mechanics">4대 역학 보기 <span aria-hidden="true">→</span></a>
       </div>
@@ -471,29 +478,29 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
         <p class="sec-sub">입학연도(학번)에 따라 이수구분별 학점 배분과 졸업 이수학점이 달라집니다. 본인 입학 학번이 속한 그룹을 펼쳐 이수학점 기준을 확인하세요.</p>
       </div>
     </div>
-    <p class="grad-intro">아래 표는 학번 그룹별 대표 기준을 정리한 <b>시안</b>입니다 — 실제 이수 요건은 본인 입학연도의 학사요람을 따릅니다. 각 항목을 누르면 이수구분별 학점 표가 펼쳐집니다.</p>
+    <p class="grad-intro">아래 표는 학부 공식 홈페이지의 <b>학번별 졸업이수 요건표(단일전공 기준)</b>를 옮긴 것입니다. 학사편입·복수전공·부전공 기준은 공식 홈페이지에서 확인하세요. 각 항목을 누르면 이수구분별 학점 표가 펼쳐집니다.</p>
 
     <div class="grad-acc" id="gradAccordion">
-      <!-- 그룹 1 -->
+      <!-- 그룹 1 — 2024·2025학번 (공식 요건표의 두 학번 값이 동일해 한 항목으로 묶음) -->
       <div class="grad-acc-item">
         <button type="button" class="grad-acc-head" id="gradHead-1" role="button"
                 aria-expanded="false" aria-controls="gradPanel-1">
-          <span class="gah-l"><span class="gah-title">2024학번 이후</span><span class="gah-sub">2024 · 2025학번</span></span>
+          <span class="gah-l"><span class="gah-title">2024~2025학번</span><span class="gah-sub">2024 · 2025학번</span></span>
           <span class="gah-r"><span class="gah-total">졸업 <b>130</b>학점</span><span class="gah-chev" aria-hidden="true"></span></span>
         </button>
         <div class="grad-acc-panel" id="gradPanel-1" role="region" aria-labelledby="gradHead-1" hidden>
           <div class="grad-acc-inner">
             <table class="grad-table">
-              <caption>2024학번 이후 · 이수구분별 졸업 이수학점</caption>
+              <caption>2024~2025학번 · 이수구분별 졸업 이수학점 (단일전공)</caption>
               <thead><tr><th scope="col">이수구분</th><th scope="col" class="gt-num">학점</th></tr></thead>
               <tbody>
-                <tr><td class="gt-lab">교양기초</td><td class="gt-num">6</td></tr>
-                <tr><td class="gt-lab">대학교양(필수)</td><td class="gt-num">9</td></tr>
+                <tr><td class="gt-lab">교양기초</td><td class="gt-num">8</td></tr>
                 <tr><td class="gt-lab">대학교양(선택)</td><td class="gt-num">12</td></tr>
-                <tr><td class="gt-lab">전공기초</td><td class="gt-num">18</td></tr>
-                <tr><td class="gt-lab">전공필수</td><td class="gt-num">39</td></tr>
-                <tr><td class="gt-lab">전공선택</td><td class="gt-num">37</td></tr>
-                <tr><td class="gt-lab">자유선택</td><td class="gt-num">9</td></tr>
+                <tr><td class="gt-lab">대학교양(필수)</td><td class="gt-num">27</td></tr>
+                <tr><td class="gt-lab">기초교육</td><td class="gt-num">2</td></tr>
+                <tr><td class="gt-lab">전공필수</td><td class="gt-num">24</td></tr>
+                <tr><td class="gt-lab">전공선택</td><td class="gt-num">36</td></tr>
+                <tr><td class="gt-lab">일반선택</td><td class="gt-num">21</td></tr>
                 <tr class="gt-total"><td class="gt-lab">졸업 이수학점(계)</td><td class="gt-num">130</td></tr>
               </tbody>
             </table>
@@ -501,26 +508,26 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
         </div>
       </div>
 
-      <!-- 그룹 2 -->
+      <!-- 그룹 2 — 2023학번 -->
       <div class="grad-acc-item">
         <button type="button" class="grad-acc-head" id="gradHead-2" role="button"
                 aria-expanded="false" aria-controls="gradPanel-2">
-          <span class="gah-l"><span class="gah-title">2021~2023학번</span><span class="gah-sub">2021 · 2022 · 2023학번</span></span>
+          <span class="gah-l"><span class="gah-title">2023학번</span></span>
           <span class="gah-r"><span class="gah-total">졸업 <b>130</b>학점</span><span class="gah-chev" aria-hidden="true"></span></span>
         </button>
         <div class="grad-acc-panel" id="gradPanel-2" role="region" aria-labelledby="gradHead-2" hidden>
           <div class="grad-acc-inner">
             <table class="grad-table">
-              <caption>2021~2023학번 · 이수구분별 졸업 이수학점</caption>
+              <caption>2023학번 · 이수구분별 졸업 이수학점 (단일전공)</caption>
               <thead><tr><th scope="col">이수구분</th><th scope="col" class="gt-num">학점</th></tr></thead>
               <tbody>
-                <tr><td class="gt-lab">교양기초</td><td class="gt-num">6</td></tr>
-                <tr><td class="gt-lab">대학교양(필수)</td><td class="gt-num">9</td></tr>
+                <tr><td class="gt-lab">교양기초</td><td class="gt-num">8</td></tr>
                 <tr><td class="gt-lab">대학교양(선택)</td><td class="gt-num">12</td></tr>
-                <tr><td class="gt-lab">전공기초</td><td class="gt-num">18</td></tr>
-                <tr><td class="gt-lab">전공필수</td><td class="gt-num">36</td></tr>
-                <tr><td class="gt-lab">전공선택</td><td class="gt-num">40</td></tr>
-                <tr><td class="gt-lab">자유선택</td><td class="gt-num">9</td></tr>
+                <tr><td class="gt-lab">대학교양(필수)</td><td class="gt-num">27</td></tr>
+                <tr><td class="gt-lab">기초교육</td><td class="gt-num">2</td></tr>
+                <tr><td class="gt-lab">전공필수</td><td class="gt-num">27</td></tr>
+                <tr><td class="gt-lab">전공선택</td><td class="gt-num">33</td></tr>
+                <tr><td class="gt-lab">일반선택</td><td class="gt-num">21</td></tr>
                 <tr class="gt-total"><td class="gt-lab">졸업 이수학점(계)</td><td class="gt-num">130</td></tr>
               </tbody>
             </table>
@@ -528,65 +535,138 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
         </div>
       </div>
 
-      <!-- 그룹 3 -->
+      <!-- 그룹 3 — 2022학번 -->
       <div class="grad-acc-item">
         <button type="button" class="grad-acc-head" id="gradHead-3" role="button"
                 aria-expanded="false" aria-controls="gradPanel-3">
-          <span class="gah-l"><span class="gah-title">2018~2020학번</span><span class="gah-sub">2018 · 2019 · 2020학번</span></span>
-          <span class="gah-r"><span class="gah-total">졸업 <b>132</b>학점</span><span class="gah-chev" aria-hidden="true"></span></span>
+          <span class="gah-l"><span class="gah-title">2022학번</span></span>
+          <span class="gah-r"><span class="gah-total">졸업 <b>130</b>학점</span><span class="gah-chev" aria-hidden="true"></span></span>
         </button>
         <div class="grad-acc-panel" id="gradPanel-3" role="region" aria-labelledby="gradHead-3" hidden>
           <div class="grad-acc-inner">
             <table class="grad-table">
-              <caption>2018~2020학번 · 이수구분별 졸업 이수학점</caption>
+              <caption>2022학번 · 이수구분별 졸업 이수학점 (단일전공)</caption>
               <thead><tr><th scope="col">이수구분</th><th scope="col" class="gt-num">학점</th></tr></thead>
               <tbody>
-                <tr><td class="gt-lab">교양기초</td><td class="gt-num">6</td></tr>
-                <tr><td class="gt-lab">대학교양(필수)</td><td class="gt-num">12</td></tr>
+                <tr><td class="gt-lab">교양기초</td><td class="gt-num">8</td></tr>
                 <tr><td class="gt-lab">대학교양(선택)</td><td class="gt-num">12</td></tr>
-                <tr><td class="gt-lab">전공기초</td><td class="gt-num">18</td></tr>
-                <tr><td class="gt-lab">전공필수</td><td class="gt-num">36</td></tr>
-                <tr><td class="gt-lab">전공선택</td><td class="gt-num">42</td></tr>
-                <tr><td class="gt-lab">자유선택</td><td class="gt-num">6</td></tr>
-                <tr class="gt-total"><td class="gt-lab">졸업 이수학점(계)</td><td class="gt-num">132</td></tr>
+                <tr><td class="gt-lab">대학교양(필수)</td><td class="gt-num">27</td></tr>
+                <tr><td class="gt-lab">기초교육</td><td class="gt-num">1</td></tr>
+                <tr><td class="gt-lab">전공필수</td><td class="gt-num">27</td></tr>
+                <tr><td class="gt-lab">전공선택</td><td class="gt-num">33</td></tr>
+                <tr><td class="gt-lab">일반선택</td><td class="gt-num">22</td></tr>
+                <tr class="gt-total"><td class="gt-lab">졸업 이수학점(계)</td><td class="gt-num">130</td></tr>
               </tbody>
             </table>
           </div>
         </div>
       </div>
 
-      <!-- 그룹 4 -->
+      <!-- 그룹 4 — 2021학번 -->
       <div class="grad-acc-item">
         <button type="button" class="grad-acc-head" id="gradHead-4" role="button"
                 aria-expanded="false" aria-controls="gradPanel-4">
-          <span class="gah-l"><span class="gah-title">2017학번 이전</span><span class="gah-sub">2017학번 및 그 이전</span></span>
-          <span class="gah-r"><span class="gah-total">졸업 <b>132</b>학점</span><span class="gah-chev" aria-hidden="true"></span></span>
+          <span class="gah-l"><span class="gah-title">2021학번</span></span>
+          <span class="gah-r"><span class="gah-total">졸업 <b>140</b>학점</span><span class="gah-chev" aria-hidden="true"></span></span>
         </button>
         <div class="grad-acc-panel" id="gradPanel-4" role="region" aria-labelledby="gradHead-4" hidden>
           <div class="grad-acc-inner">
             <table class="grad-table">
-              <caption>2017학번 이전 · 이수구분별 졸업 이수학점</caption>
+              <caption>2021학번 · 이수구분별 졸업 이수학점 (단일전공)</caption>
               <thead><tr><th scope="col">이수구분</th><th scope="col" class="gt-num">학점</th></tr></thead>
               <tbody>
-                <tr><td class="gt-lab">교양기초</td><td class="gt-num">6</td></tr>
-                <tr><td class="gt-lab">대학교양(필수)</td><td class="gt-num">12</td></tr>
+                <tr><td class="gt-lab">교양기초</td><td class="gt-num">8</td></tr>
                 <tr><td class="gt-lab">대학교양(선택)</td><td class="gt-num">15</td></tr>
-                <tr><td class="gt-lab">전공기초</td><td class="gt-num">15</td></tr>
-                <tr><td class="gt-lab">전공필수</td><td class="gt-num">33</td></tr>
-                <tr><td class="gt-lab">전공선택</td><td class="gt-num">45</td></tr>
-                <tr><td class="gt-lab">자유선택</td><td class="gt-num">6</td></tr>
-                <tr class="gt-total"><td class="gt-lab">졸업 이수학점(계)</td><td class="gt-num">132</td></tr>
+                <tr><td class="gt-lab">대학교양(필수)</td><td class="gt-num">21</td></tr>
+                <tr><td class="gt-lab">기초교육</td><td class="gt-num">1</td></tr>
+                <tr><td class="gt-lab">전공기초</td><td class="gt-num">9</td></tr>
+                <tr><td class="gt-lab">전공필수</td><td class="gt-num">27</td></tr>
+                <tr><td class="gt-lab">전공선택</td><td class="gt-num">33</td></tr>
+                <tr><td class="gt-lab">일반선택</td><td class="gt-num">26</td></tr>
+                <tr class="gt-total"><td class="gt-lab">졸업 이수학점(계)</td><td class="gt-num">140</td></tr>
               </tbody>
             </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 그룹 5 — 2020학번 -->
+      <div class="grad-acc-item">
+        <button type="button" class="grad-acc-head" id="gradHead-5" role="button"
+                aria-expanded="false" aria-controls="gradPanel-5">
+          <span class="gah-l"><span class="gah-title">2020학번</span></span>
+          <span class="gah-r"><span class="gah-total">졸업 <b>140</b>학점</span><span class="gah-chev" aria-hidden="true"></span></span>
+        </button>
+        <div class="grad-acc-panel" id="gradPanel-5" role="region" aria-labelledby="gradHead-5" hidden>
+          <div class="grad-acc-inner">
+            <table class="grad-table">
+              <caption>2020학번 · 이수구분별 졸업 이수학점 (단일전공)</caption>
+              <thead><tr><th scope="col">이수구분</th><th scope="col" class="gt-num">학점</th></tr></thead>
+              <tbody>
+                <tr><td class="gt-lab">교양기초</td><td class="gt-num">8</td></tr>
+                <tr><td class="gt-lab">대학교양</td><td class="gt-num">15</td></tr>
+                <tr><td class="gt-lab">계열기초</td><td class="gt-num">21</td></tr>
+                <tr><td class="gt-lab">기초교육</td><td class="gt-num">1</td></tr>
+                <tr><td class="gt-lab">전공기초</td><td class="gt-num">9</td></tr>
+                <tr><td class="gt-lab">전공필수</td><td class="gt-num">27</td></tr>
+                <tr><td class="gt-lab">전공선택</td><td class="gt-num">33</td></tr>
+                <tr><td class="gt-lab">일반선택</td><td class="gt-num">26</td></tr>
+                <tr class="gt-total"><td class="gt-lab">졸업 이수학점(계)</td><td class="gt-num">140</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 그룹 6 — 2019학번 -->
+      <div class="grad-acc-item">
+        <button type="button" class="grad-acc-head" id="gradHead-6" role="button"
+                aria-expanded="false" aria-controls="gradPanel-6">
+          <span class="gah-l"><span class="gah-title">2019학번</span></span>
+          <span class="gah-r"><span class="gah-total">졸업 <b>140</b>학점</span><span class="gah-chev" aria-hidden="true"></span></span>
+        </button>
+        <div class="grad-acc-panel" id="gradPanel-6" role="region" aria-labelledby="gradHead-6" hidden>
+          <div class="grad-acc-inner">
+            <table class="grad-table">
+              <caption>2019학번 · 이수구분별 졸업 이수학점 (단일전공)</caption>
+              <thead><tr><th scope="col">이수구분</th><th scope="col" class="gt-num">학점</th></tr></thead>
+              <tbody>
+                <tr><td class="gt-lab">교양기초</td><td class="gt-num">12</td></tr>
+                <tr><td class="gt-lab">대학교양</td><td class="gt-num">15</td></tr>
+                <tr><td class="gt-lab">계열기초</td><td class="gt-num">21</td></tr>
+                <tr><td class="gt-lab">기초교육</td><td class="gt-num">2</td></tr>
+                <tr><td class="gt-lab">전공기초</td><td class="gt-num">9</td></tr>
+                <tr><td class="gt-lab">전공필수</td><td class="gt-num">27</td></tr>
+                <tr><td class="gt-lab">전공선택</td><td class="gt-num">33</td></tr>
+                <tr><td class="gt-lab">일반선택</td><td class="gt-num">21</td></tr>
+                <tr class="gt-total"><td class="gt-lab">졸업 이수학점(계)</td><td class="gt-num">140</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 그룹 7 — 2018학번 이전. 공식 요건표가 이수구분이 아닌 공학인증 분류(MSC·전공·전문교양)로
+           작성되어 있어 위와 같은 형식의 표로 옮기지 않고 공식 안내로 연결한다. -->
+      <div class="grad-acc-item">
+        <button type="button" class="grad-acc-head" id="gradHead-7" role="button"
+                aria-expanded="false" aria-controls="gradPanel-7">
+          <span class="gah-l"><span class="gah-title">2018학번 이전</span><span class="gah-sub">2018학번 및 그 이전</span></span>
+          <span class="gah-r"><span class="gah-total">학번별 기준 확인</span><span class="gah-chev" aria-hidden="true"></span></span>
+        </button>
+        <div class="grad-acc-panel" id="gradPanel-7" role="region" aria-labelledby="gradHead-7" hidden>
+          <div class="grad-acc-inner">
+            <p class="grad-acc-msg">학번별 세부 기준은 학사요람과 학부 공식 홈페이지를 따릅니다 — <a href="https://me.yonsei.ac.kr/me/faculty/graduation.do" target="_blank" rel="noopener">기계공학부 졸업요건 안내</a>에서 확인하세요.</p>
           </div>
         </div>
       </div>
     </div>
 
     <ul class="grad-notes">
-      <li>공학교육인증(ABEEK) 프로그램 이수자는 인증 트랙의 <b>설계학점·MSC(수학·기초과학·전산)</b> 최소 이수 기준을 별도로 충족해야 합니다.</li>
-      <li>전공선택은 <b>3000·4000단위</b> 과목을 기준으로 이수하며, 일부 학번은 4000단위 최소 이수학점이 지정될 수 있습니다.</li>
-      <li>영어강의 이수, 졸업논문(연구)·종합설계(캡스톤) 등 <b>졸업 필수 요건</b>은 입학연도별 학사요람과 학부 공지를 따릅니다.</li>
+      <li>03학번 이후 학생은 <b>3000/4000단위 과목에서 45학점 이상</b>을 이수하여야 합니다(대학원 과목은 4000단위입니다).</li>
+      <li>공학인증과정 대상자는 <b>설계 18학점(03~12학번), 설계 12학점(13학번 이후)</b> 이상을 이수하여야 합니다.</li>
+      <li>한 학기에 한 교수님의 연구실에서 수행한 연구 결과물로 <b>학부연구와 연구논문</b> 두 개 교과목에서 학점을 이수하는 것은 인정하지 않습니다.</li>
+      <li>졸업이수요건표는 학번별로 확인해 주시기 바랍니다 — 자세한 기준은 학부 공식 홈페이지 <a href="https://me.yonsei.ac.kr/me/faculty/graduation.do" target="_blank" rel="noopener">졸업요건</a> 안내를 따릅니다.</li>
     </ul>
   </section>
 
@@ -647,32 +727,32 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
       <div>
         <p class="sec-kick">학생 활동</p>
         <h2 id="clubs-h" class="sec-title">동아리 · 학생활동</h2>
-        <p class="sec-sub">학생들은 교과 이수를 넘어 다양한 학술·설계 활동에 참여하며 전공 지식을 실제 문제에 적용합니다. 대표적인 활동 범주는 다음과 같습니다.</p>
+        <p class="sec-sub">기계공학부 학생들이 운영하는 동아리입니다. 무인비행체·자작자동차·로봇·항공우주 분야에서 직접 설계하고 제작합니다.</p>
       </div>
     </div>
     <div class="club-grid">
       <article class="club">
         <span class="club-idx" aria-hidden="true">01</span>
-        <h3 class="club-name">학술·설계 프로젝트팀</h3>
-        <p class="club-desc">자작자동차 · 로봇 · 무인항공기 등 기계공학 전반의 제작 프로젝트팀에서 학생들이 직접 설계·가공·조립을 수행하며 4대 역학과 종합설계 지식을 실물로 구현합니다.</p>
+        <h3 class="club-name">연세드론</h3>
+        <p class="club-desc">무인비행체(드론·고정익·VTOL 등)를 직접 제작하고 비행하는 동아리로, 기체를 제작하는 하드웨어팀과 자율비행 알고리즘을 개발하는 소프트웨어팀으로 나뉘어 활동합니다. 제21·22·23회 한국로봇항공기 경연대회 본선에 진출했고(제21회 2등), 2024 현대모비스 모빌리티 SW 해커톤 1위(대상), 2025 전국 대학(원)생 우주항공 Makerthon 경진대회 수직이착륙기(VTOL) 부문 대상을 받았습니다.</p>
       </article>
       <article class="club">
         <span class="club-idx" aria-hidden="true">02</span>
-        <h3 class="club-name">학회·세미나 활동</h3>
-        <p class="club-desc">관심 분야별 학술 학회와 정기 세미나를 통해 전공 심화 주제를 함께 학습하고, 최신 연구 동향과 산업 기술을 공유하며 발표·토론 역량을 기릅니다.</p>
+        <h3 class="club-name">메카 (MECar)</h3>
+        <p class="club-desc">차량 설계부터 부품 발주·제작까지 직접 수행하는 연세대학교 유일의 자작 자동차 동아리입니다. 기계팀·전기팀·기계설계팀·마케팅팀 4개 팀으로 구성되어 매년 KSAE 대학생 자작자동차 대회 오프로드 E-BAJA 부문과 EV 영광대회를 목표로 활동합니다. 2020 KSAE BAJA 부문 장려상과 베스트 팀워크상을 받았고, 2024 KSAE BAJA 내구력 경기를 완주했습니다.</p>
       </article>
       <article class="club">
         <span class="club-idx" aria-hidden="true">03</span>
-        <h3 class="club-name">공모전·경진대회 참여</h3>
-        <p class="club-desc">설계·창의 경진대회와 각종 공모전에 팀 단위로 참가해, 주어진 문제를 정의하고 해결안을 설계·검증하는 실전 프로젝트 경험을 쌓습니다.</p>
+        <h3 class="club-name">로보인</h3>
+        <p class="club-desc">기계공학과 로봇 학술 동아리입니다. 로봇을 배우고 싶은 학생을 위한 ‘로보인 커리큘럼’ 프로그램에서 아두이노·라즈베리 파이·3D 캐드·AI 활용 등 다양한 주제의 세미나와 실습을 진행하고, 로봇팔·드론·4족보행 로봇·자율주행 자동차 등 제작 프로젝트를 수행합니다. 에디슨 전산설계 대회, KU 메디컬 해커톤, 로보마스터 대회 등에 참가해 수상했습니다.</p>
       </article>
       <article class="club">
         <span class="club-idx" aria-hidden="true">04</span>
-        <h3 class="club-name">산학·현장 연계 활동</h3>
-        <p class="club-desc">현장 견학, 인턴십, 산학 연계 프로젝트를 통해 강의실에서 배운 이론을 산업 현장과 연구실의 실제 과제에 적용하며 진로 방향을 구체화합니다.</p>
+        <h3 class="club-name">SPACE Y</h3>
+        <p class="club-desc">연세대학교 유일의 항공우주 동아리로 로켓·인공위성·항공·컨버전스 4개 팀으로 구성되어 있습니다. 로켓팀은 발사체 설계와 연료 실험, 인공위성팀은 캔위성 제작과 대회 참가, 항공팀은 항공기 모델 설계·제작, 컨버전스팀은 세미나와 카드뉴스 제작을 맡습니다. 2024 NURA 학술대회 2등(금상), 2023·2024 국내 캔위성 경연대회 우수상을 받았습니다.</p>
       </article>
     </div>
-    <p class="table-note">위 내용은 학생 활동의 일반적 범주를 소개한 것으로, 운영되는 동아리·프로그램은 학기별로 달라질 수 있습니다.</p>
+    <p class="table-note">동아리 상세 소개와 모집 안내는 학부 공식 홈페이지 <a href="https://me.yonsei.ac.kr/me/community/circles.do" target="_blank" rel="noopener" style="color:var(--navy);font-weight:600">동아리 소개</a>에서 확인할 수 있습니다.</p>
   </section>
 </main>
 
@@ -687,7 +767,7 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
 </section>
 
 <!-- 단일 데이터 소스 (window.YSME) -->
-<script src="assets/js/data.js?v=d11"></script>
+<script src="assets/js/data.js?v=d13"></script>
 <script>
 (function(){
   'use strict';
@@ -708,12 +788,13 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
   var CVAR = { solid:'--c-solid', thermal:'--c-thermal', dynamics:'--c-dyn',
                manufacturing:'--c-manuf', micro:'--c-nanobio', optics:'--c-optics' };
 
-  /* ── §02 4대 역학 — 학부 전공(coursesUG)에서 4대 역학 pillar 추출 + 에디토리얼 서술 ── */
+  /* ── §02 4대 역학 — 학부 전공(coursesUG)에서 4대 역학 pillar 추출.
+     설명은 자체 작성 문구를 쓰지 않고 data.js의 공식 교과 개요(desc)를 그대로 사용한다. ── */
   var PILLARS = [
-    { code:'MEU2600', cluster:'solid',    desc:'재료가 힘을 받을 때의 변형과 파괴를 해석합니다. 구조 설계의 기초가 됩니다.' },
-    { code:'MEU2610', cluster:'thermal',  desc:'에너지와 엔트로피의 법칙을 다룹니다. 엔진·발전·냉난방 시스템의 기반입니다.' },
-    { code:'MEU2640', cluster:'thermal',  desc:'유체의 흐름을 해석하는 법을 다룹니다. 펌프·터빈·항공기 설계에 활용됩니다.' },
-    { code:'MEU2650', cluster:'dynamics', desc:'운동하는 기계 요소의 거동을 해석합니다. 로봇·기구 설계의 기초가 됩니다.' }
+    { code:'MEU2600', cluster:'solid'    },
+    { code:'MEU2610', cluster:'thermal'  },
+    { code:'MEU2640', cluster:'thermal'  },
+    { code:'MEU2650', cluster:'dynamics' }
   ];
   var mechGrid = document.getElementById('mechGrid');
   if (mechGrid) {
@@ -725,7 +806,7 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
         + '<span class="mech-idx" aria-hidden="true">0'+(i+1)+'</span>'
         + '<h3 class="mech-name">'+esc(c.ko||'')+'</h3>'
         + '<a class="mech-code" href="#course-'+esc(p.code)+'" title="'+esc(c.ko||p.code)+' — 상세 설명으로 이동">과목 상세 <span aria-hidden="true">↓</span></a>'
-        + '<p class="mech-desc">'+esc(p.desc)+'</p>'
+        + (c.desc ? '<p class="mech-desc">'+esc(c.desc)+'</p>' : '')
         + '<span class="mech-tag"><span class="dot" style="--tag-c:var('+cvar+')" aria-hidden="true"></span>'+esc(clu.ko||'')+'</span>'
       + '</article>';
     }).join('');
@@ -823,7 +904,7 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
         if(e.propertyName==='height' && head.getAttribute('aria-expanded')==='true') panel.style.height='auto';
       });
     });
-    /* 첫 그룹(2024학번 이후) 기본 열림 */
+    /* 첫 그룹(2024~2025학번) 기본 열림 */
     if(gradHeads[0]) gradOpen(gradHeads[0]);
   }
 
@@ -985,7 +1066,7 @@ a.cur-item:hover .ci-name::after,a.cur-item:focus-visible .ci-name::after{color:
   });
 })();
 </script>
-<script src="assets/nav.js?v=39"></script>
+<script src="assets/nav.js?v=42"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--kr);font-size:.74rem;color:#7b8595">
   © 2026 연세대학교 기계공학부 &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

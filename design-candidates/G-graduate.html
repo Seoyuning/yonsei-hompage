@@ -64,7 +64,7 @@ a{color:inherit;text-decoration:none}
 .skip:focus{top:.6rem}
 
 /* ── 페이지 히어로 (이미지 배너 · 중앙 정렬 · 브레드크럼) ── */
-.phero{position:relative;min-height:clamp(14rem,30vh,20rem);display:flex;align-items:center;justify-content:center;text-align:center;background:#12294f url("assets/hero-academics.jpg") center 42%/cover no-repeat;color:#fff;overflow:hidden}
+.phero{position:relative;min-height:clamp(19rem,42vh,26rem);display:flex;align-items:center;justify-content:center;text-align:center;background:#12294f url("assets/hero-academics.jpg") center 42%/cover no-repeat;color:#fff;overflow:hidden}
 /* 사진은 배경 질감으로 — 흑백 + 네이비 모노톤. 스톡 사진은 잘 보이게 할수록
    "다국적 학생들이 웃는 강의실" 전형이 드러나 티가 난다. 인물이 주인공이 되지 않게 눌러
    질감으로만 남긴다. filter 를 요소에 걸면 글자까지 흐려지므로 사진 층(::before)에만 건다.
@@ -109,14 +109,9 @@ a.arrow{display:inline-flex;align-items:center;gap:.4rem;margin-top:1.4rem;
   font-family:var(--kr);font-size:.88rem;font-weight:600;color:var(--coral);transition:gap .15s}
 a.arrow:hover{gap:.7rem}
 
-/* ── 범용 카드 그리드 (G-academics .club/.mech 그리드 언어 재사용) ── */
-.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(15.5rem,1fr));gap:1px;
-  background:var(--line-soft);border:1px solid var(--line-soft)}
-.card{background:var(--card);padding:1.6rem 1.5rem;transition:background .15s}
-.card:hover{background:var(--card-hover)}
-.card-idx{font-family:var(--mono);font-weight:600;font-size:.82rem;line-height:1;color:var(--muted);font-variant-numeric:tabular-nums;letter-spacing:.04em}
-.card-name{font-family:var(--kr);font-weight:700;font-size:1.15rem;color:var(--ink);margin-top:.9rem;line-height:1.3}
-.card-desc{font-family:var(--kr);font-size:.88rem;color:var(--sub);line-height:1.7;margin-top:.85rem}
+/* .card-grid / .card / .card-idx / .card-name / .card-desc 규칙 삭제 —
+   §03 교과목 소개의 '교과 트랙 6종' 카드에서만 쓰이던 것으로,
+   근거 없는 임의 분류라 마크업을 지우면서 함께 정리했다. */
 
 /* ── 요건 그리드 (G-academics .req-grid 계승) ── */
 .req-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:1px;
@@ -175,9 +170,42 @@ a.arrow:hover{gap:.7rem}
 .cta .cta-btn:hover{background:transparent;color:#fff;border-color:#fff}
 .cta .cta-btn .arr{color:var(--coral)}
 
+/* ── 대학원 교과목 목록 (§03) — G-academics §04 학부 전공 교과의 .crs-* 패턴을 그대로 따랐다.
+      학부는 이수구분이 있어 블록으로 나누지만, 대학원 데이터에는 이수구분 항목이 없어
+      코드 순 단일 목록 + 검색 + 전체 보기로만 구성한다(분류를 지어내지 않는다). ── */
+.crs-search{position:relative;max-width:24rem;margin:0 0 1.4rem}
+.crs-search input{width:100%;font-family:var(--kr);font-size:.86rem;color:#2a3a56;
+  background:#fff;border:0;border-bottom:1px solid var(--line);padding:.55rem .3rem .55rem 1.7rem;transition:border-color .15s}
+.crs-search input::placeholder{color:var(--label)}
+.crs-search input:focus{outline:none;border-bottom-color:var(--navy)}
+.crs-search::before{content:"⌕";position:absolute;left:.15rem;top:50%;transform:translateY(-50%);color:var(--label);font-size:1rem;pointer-events:none}
+.crs-status{font-family:var(--kr);font-size:.78rem;color:var(--label);margin:0 0 1.2rem;
+  font-variant-numeric:tabular-nums;min-height:1.1em}
+.crs-list{border-top:1px solid var(--line-soft)}
+.crs-row{display:grid;grid-template-columns:5.4rem 1fr auto;gap:0 1.3rem;align-items:baseline;
+  padding:.95rem 0;border-bottom:1px solid var(--line-soft);scroll-margin-top:6.6rem}
+.crs-row.is-hidden{display:none}
+.crs-code{font-family:var(--mono);font-size:.68rem;letter-spacing:.04em;color:var(--label);
+  font-variant-numeric:tabular-nums;padding-top:.15em}
+.crs-main{min-width:0}
+.crs-name{font-family:var(--kr);font-weight:600;font-size:.98rem;color:var(--ink);line-height:1.3}
+.crs-en{font-family:var(--kr);font-size:.74rem;color:var(--label);margin-top:.24rem;line-height:1.45}
+.crs-credit{font-family:var(--mono);font-size:.74rem;color:var(--muted);
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+.crs-empty{padding:2rem 0;font-family:var(--kr);font-size:.88rem;color:var(--muted)}
+.crs-more{margin-top:1.3rem;font-family:var(--kr);font-size:.85rem;font-weight:600;color:#2a3a56;
+  background:#fff;border:1px solid var(--line);padding:.55rem 1.1rem;cursor:pointer;
+  transition:border-color .15s,color .15s}
+.crs-more:hover{border-color:var(--coral);color:var(--coral)}
+.crs-more[hidden]{display:none}
+
 /* ── 반응형 ── */
 @media (max-width:900px){
   .req-grid{grid-template-columns:1fr}
+}
+@media (max-width:680px){
+  .crs-row{grid-template-columns:1fr;gap:.3rem}
+  .crs-code{padding-top:0}
 }
 
 /* ═══ 분야별 연구실 아코디언 (G-research 연구실 전체 이식) ═══ */
@@ -278,11 +306,12 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
   .ip-grid{grid-template-columns:1fr;gap:.2rem}
   .ip-grid dd{margin-bottom:.55rem}
 }
+html[lang="en"] .lab-en-only{display:none}
 </style>
 <style>.ynav-ph{position:fixed;top:0;left:0;right:0;height:3.7rem;background:rgba(255,255,255,.96);border-bottom:1px solid rgba(0,0,0,.08);z-index:39}</style>
 <style>h1,h2,.sec-title,.phero h1,.hero h1,.hero-title,.card-name,.vt,.staff-head h2,.brand .bko,.ynv-brand .bko{font-family:"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;letter-spacing:-.01em}</style>
 <link rel="stylesheet" href="assets/transition.css">
-<script>/* 탭 해시 진입은 히어로부터 — 파싱 전에 해시를 떼어 앵커 점프·상단바 접힘 왕복을 원천 차단(nav.js가 탭 복원) */(function(){var h=location.hash.slice(1);if(h&&/^(greeting|vision|organization|history|location|faculty|dir|staff|fields|fieldsDetail|clusters|labvideos|curriculum|requirements|abeek|roadmap|graduation|mechanics|courses|grad|clubs|grad-admission|grad-req|grad-courses|grad-labs|bk21|notice-ug|notice-grad|hi|sched|thesis|archive|jobs|undergraduate|graduate|scholarships|careers|alumni|faq)$/.test(h)){window.__ysTab=h;try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}}})();</script>
+<script>/* 탭 해시 진입은 히어로부터 — 파싱 전에 해시를 떼어 앵커 점프·상단바 접힘 왕복을 원천 차단(nav.js가 탭 복원) */(function(){var h=location.hash.slice(1);if(h&&/^(intro|vision|organization|history|location|faculty|dir|staff|fields|fieldsDetail|clusters|labvideos|curriculum|requirements|abeek|roadmap|graduation|mechanics|courses|grad|clubs|grad-admission|grad-req|grad-courses|grad-labs|bk21|notice-ug|notice-grad|hi|sched|thesis|archive|jobs|undergraduate|graduate|scholarships|careers|alumni|faq)$/.test(h)){window.__ysTab=h;try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}}})();</script>
 </head>
 <body>
 <div class="ynav-ph" aria-hidden="true"></div>
@@ -345,8 +374,8 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
     <div class="req-grid">
       <div class="req-card">
         <p class="req-lab">석사 과정</p>
-        <p class="req-val">이수학점 · 학위논문</p>
-        <p class="req-desc">규정 학점 이상의 전공 교과를 이수하고 <b>학위논문 심사</b>를 통과해야 합니다. 지도교수의 지도 아래 연구를 수행하며 논문을 완성합니다.</p>
+        <p class="req-val">이수학점 · 종합시험 · 학위논문</p>
+        <p class="req-desc">규정 학점 이상의 전공 교과를 이수하고 <b>학위논문 심사</b>를 통과해야 합니다. 지도교수의 지도 아래 연구를 수행하며 논문을 완성합니다. 종합시험은 석사과정에도 필수로, <b>2학기 종료시점 이내에 첫 종합시험을 응시</b>해야 합니다.</p>
       </div>
       <div class="req-card">
         <p class="req-lab">박사 과정</p>
@@ -360,51 +389,36 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
       </div>
     </div>
     <p class="table-note">구체적인 이수학점, 외국어·종합시험 기준, 논문 제출 자격 및 심사 절차는 <b style="color:#2a3a56;font-weight:600">연세대학교 대학원 학사요람</b> 및 학부 내규 기준을 따르며, 입학년도별로 다를 수 있습니다.</p>
+    <div class="link-row">
+      <a href="https://me.yonsei.ac.kr/me/graduate/graduation.do" target="_blank" rel="noopener">공식 졸업요건 원문 <span aria-hidden="true">↗</span></a>
+    </div>
   </section>
 
-  <!-- §03 교과목 소개 -->
+  <!-- §03 교과목 소개
+       임의로 나눈 '교과 트랙 6종' 카드(고체·구조 역학 ~ 광학·포토닉스)를 삭제했다.
+       어느 공식 자료에도 없는 분류였다. 대신 data.js의 coursesGrad(대학원 개설 183과목)
+       실데이터를 코드 순 그대로 렌더한다. -->
   <section class="sec" id="grad-courses" aria-labelledby="crs-h">
     <div class="sec-head">
       <div>
         <p class="sec-kick">Courses</p>
         <h2 id="crs-h" class="sec-title">교과목 소개</h2>
-        <p class="sec-sub">대학원 전공 교과는 학부에서 다진 4대 역학의 기초를 심화하고, 각 연구 분야의 최신 이론과 방법론으로 확장합니다. 아래는 대표적인 교과 트랙 예시입니다.</p>
+        <p class="sec-sub">대학원 과정에 개설된 전공 교과 목록입니다. 학정번호 · 과목명 · 영문명 · 학점을 그대로 옮겼으며, 코드나 과목명으로 검색할 수 있습니다.</p>
       </div>
     </div>
-    <div class="card-grid">
-      <article class="card">
-        <span class="card-idx" aria-hidden="true">01</span>
-        <h3 class="card-name">고체·구조 역학</h3>
-        <p class="card-desc">탄성·소성, 파괴역학, 유한요소해석, 복합재료 등 재료와 구조의 거동을 심화 해석하는 교과 트랙입니다.</p>
-      </article>
-      <article class="card">
-        <span class="card-idx" aria-hidden="true">02</span>
-        <h3 class="card-name">열·유체 공학</h3>
-        <p class="card-desc">고급 열역학, 대류·복사 열전달, 전산유체역학(CFD), 연소·에너지 시스템을 다루는 교과 트랙입니다.</p>
-      </article>
-      <article class="card">
-        <span class="card-idx" aria-hidden="true">03</span>
-        <h3 class="card-name">동역학·제어</h3>
-        <p class="card-desc">진동·다물체 동역학, 시스템 제어, 로보틱스, 메카트로닉스 등 운동과 제어를 다루는 교과 트랙입니다.</p>
-      </article>
-      <article class="card">
-        <span class="card-idx" aria-hidden="true">04</span>
-        <h3 class="card-name">생산·설계 공학</h3>
-        <p class="card-desc">정밀가공, 적층제조, 설계 최적화, 디지털 제조 등 제품을 만들어 내는 방법론을 다루는 교과 트랙입니다.</p>
-      </article>
-      <article class="card">
-        <span class="card-idx" aria-hidden="true">05</span>
-        <h3 class="card-name">마이크로·나노·바이오</h3>
-        <p class="card-desc">MEMS/NEMS, 나노소재, 바이오 융합 등 미소 스케일과 생체 응용을 다루는 교과 트랙입니다.</p>
-      </article>
-      <article class="card">
-        <span class="card-idx" aria-hidden="true">06</span>
-        <h3 class="card-name">광학·포토닉스</h3>
-        <p class="card-desc">광학 계측, 포토닉스, 이미징 등 빛을 이용한 계측·응용 기술을 다루는 교과 트랙입니다.</p>
-      </article>
+    <label class="crs-search"><span class="visually-hidden">대학원 교과목 검색</span>
+      <input type="search" id="gcrsSearch" placeholder="학정번호 · 과목명 · 영문명 검색" autocomplete="off" />
+    </label>
+    <p class="crs-status" id="gcrsStatus" role="status" aria-live="polite"></p>
+    <div class="crs-list" id="gcrsList">
+      <noscript><p class="crs-empty">대학원 교과목 목록은 JavaScript 활성 시 표시됩니다.</p></noscript>
     </div>
-    <p class="table-note">위 트랙은 대학원 전공 교과의 대표 분야를 정리한 예시입니다. 개설 교과목의 코드·국문·영문명과 학점 등 전체 목록은 <b style="color:#2a3a56;font-weight:600">대학원 학사요람 및 연세포털</b>에서 확인할 수 있습니다.</p>
-    <a class="arrow" href="G-academics.html#grad">학부·대학원 교과 개요 보기 <span aria-hidden="true">→</span></a>
+    <button type="button" class="crs-more" id="gcrsMore" hidden>전체 보기</button>
+    <p class="table-note">개설 과목과 학점은 학기 · 입학연도에 따라 달라질 수 있습니다. 해당 학기 실제 개설 여부는 <b style="color:#2a3a56;font-weight:600">대학원 학사요람 및 연세포털</b>에서 확인하시기 바랍니다.</p>
+    <div class="link-row">
+      <a href="https://me.yonsei.ac.kr/me/graduate/graduate_intro.do" target="_blank" rel="noopener">공식 교과목 소개 <span aria-hidden="true">↗</span></a>
+      <a href="G-academics.html#grad">학부 · 대학원 교과 개요 <span aria-hidden="true">→</span></a>
+    </div>
   </section>
 
   <!-- §04 대학원 연구실 -->
@@ -424,24 +438,28 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
     <p class="table-note">각 분야의 세부 연구 주제와 소속 교수진, 대학원 구성원 정보는 <b style="color:#2a3a56;font-weight:600">연구</b> 및 <b style="color:#2a3a56;font-weight:600">구성원</b> 페이지에서 확인할 수 있습니다.</p>
   </section>
 
-  <!-- §05 BK21 FOUR -->
+  <!-- §05 BK21 FOUR
+       사업단 명의의 비전·인력양성·연구 3문단을 삭제했다. 공식 BK21 페이지
+       (me/bk21/vision.do)는 본문이 이미지뿐이라 옮겨 적을 원문 텍스트가 없고,
+       어느 데이터셋에도 해당 선언문이 없어 근거를 댈 수 없었다.
+       확인되는 사실(선정 연월·문의 전화)과 공식 링크만 남긴다. -->
   <section class="sec" id="bk21" aria-labelledby="bk-h">
     <div class="sec-head">
       <div>
         <p class="sec-kick">BK21 FOUR</p>
         <h2 id="bk-h" class="sec-title">BK21 FOUR</h2>
-        <p class="sec-sub">BK21 FOUR(4단계 두뇌한국 21)는 대학원 교육·연구 역량 강화를 위한 국가 지원 사업으로, 우수 석·박사급 연구 인력 양성과 세계 수준의 연구를 지향합니다.</p>
+        <p class="sec-sub">BK21 FOUR(4단계 두뇌한국 21)는 대학원 교육 · 연구 역량 강화를 위한 정부 지원 사업입니다.</p>
       </div>
     </div>
     <div class="info-card">
-      <p><b>비전</b> — 미래 산업과 학문을 선도할 창의적 기계공학 연구 인력을 양성하고, 세계적 수준의 연구 성과를 창출하는 교육연구단을 지향합니다.</p>
-      <p><b>인력 양성</b> — 대학원생·신진 연구인력의 연구 몰입을 지원하고, 국제 공동연구·학술 교류·산학 협력 기회를 제공하여 차세대 연구자를 길러냅니다.</p>
-      <p><b>연구</b> — 6개 연구 분야에 걸친 융합 연구를 통해 학문적 우수성과 사회적 기여를 함께 추구하며, 대학원 교육과 연구의 선순환을 만들어 갑니다.</p>
-      <p class="note">BK21 FOUR 사업은 국가 정책과 사업 단계에 따라 운영되며, 참여 자격·지원 내용 등 세부 사항은 사업단 공지 및 대학원 안내를 따릅니다.</p>
+      <p>본 학부는 <b>2020년 8월 4단계 BK21 사업</b>에 선정되어 교육연구단을 운영하고 있습니다.</p>
+      <p>참여 자격, 지원 내용 등 세부 사항은 <b>BK21 사업단 02-2123-7817</b>로 문의해 주세요.</p>
+      <p class="note">비전 및 목표, 참여인력, 교육연구단 현황, 사업성과 등 사업단 안내는 학부 공식 홈페이지의 BK21 FOUR 메뉴에 게시됩니다.</p>
     </div>
     <div class="link-row">
+      <a href="https://me.yonsei.ac.kr/me/bk21/vision.do" target="_blank" rel="noopener">BK21 FOUR 공식 안내 <span aria-hidden="true">↗</span></a>
       <a href="G-research.html">연구 분야 보기 <span aria-hidden="true">→</span></a>
-      <a href="G-people.html">참여 교수진 보기 <span aria-hidden="true">→</span></a>
+      <a href="G-people.html">교수 · 연구 구성원 보기 <span aria-hidden="true">→</span></a>
     </div>
   </section>
 </main>
@@ -457,7 +475,7 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
 </section>
 
 <!-- 공유 단일 데이터 소스 (window.YSME) -->
-<script src="assets/js/data.js?v=d11"></script>
+<script src="assets/js/data.js?v=d13"></script>
 <script>
 /* ═══ §04 대학원 연구실 — G-research '연구실 전체' 아코디언 이식 ═══ */
 (function(){
@@ -505,7 +523,7 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
       var items = l.areaDetail.split('\n').map(function(s){ return s.trim(); }).filter(Boolean);
       if(items.length) kw = '<div class="en" title="'+esc(items.join(' · '))+'">'+esc(items.join(' · '))+'</div>';
     }
-    if(!kw && l.en) kw = '<div class="en">'+esc(l.en)+'</div>';
+    if(!kw && l.en) kw = '<div class="en lab-en-only">'+esc(l.en)+'</div>';   /* ENG 에서는 위 연구실명도 같은 영문으로 치환돼 두 번 나온다 → CSS 로 감춘다 */
     var piInner = '<span class="cdot" aria-hidden="true"></span>'+esc(l.pi)+' 교수';
     var piCell = prof
       ? '<a class="pi" href="G-people.html#'+esc(prof.id)+'">'+piInner+'<span class="visually-hidden"> 프로필 보기</span></a>'
@@ -583,8 +601,76 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
     if(e.key==='Enter' || e.key===' ' || e.key==='Spacebar'){ e.preventDefault(); toggleCluster(head.parentNode.id); }
   });
 })();
+
+/* ═══ §03 교과목 소개 — coursesGrad(대학원 개설 183과목) 실데이터 렌더 ═══
+   G-academics §04 학부 전공 교과의 검색·필터 관례를 그대로 따랐다.
+   183과목을 한 번에 늘어놓으면 페이지가 지나치게 길어져,
+   기본은 앞 30과목만 보이고 '전체 보기'로 나머지를 펼친다.
+   검색어를 넣으면 펼침 여부와 무관하게 183과목 전체를 대상으로 한다. */
+(function(){
+  'use strict';
+  var D = window.YSME; if(!D) return;
+  var courses = D.coursesGrad || [];
+  var listEl   = document.getElementById('gcrsList');
+  var inputEl  = document.getElementById('gcrsSearch');
+  var statusEl = document.getElementById('gcrsStatus');
+  var moreEl   = document.getElementById('gcrsMore');
+  if(!listEl || !courses.length) return;
+
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+  var TOTAL = courses.length;
+  var PREVIEW = 30;       /* 처음 보여 줄 과목 수 */
+  var expanded = false;   /* '전체 보기'로 펼쳤는지 */
+
+  /* 검색 인덱스 — 학정번호·국문명·영문명 */
+  var idx = courses.map(function(c){
+    return (String(c.code)+' '+String(c.ko)+' '+String(c.en)).toLowerCase();
+  });
+
+  listEl.innerHTML = courses.map(function(c){
+    var en = c.en ? '<p class="crs-en">'+esc(c.en)+'</p>' : '';
+    /* 학점 0(세미나·연구윤리 등)도 데이터 그대로 표기한다 */
+    var cr = (c.credits === '' || c.credits == null) ? ''
+      : '<span class="crs-credit">'+esc(c.credits)+'학점</span>';
+    return '<div class="crs-row" id="gcourse-'+esc(c.code)+'">'
+      + '<span class="crs-code">'+esc(c.code)+'</span>'
+      + '<div class="crs-main"><span class="crs-name">'+esc(c.ko)+'</span>'+en+'</div>'
+      + cr
+    + '</div>';
+  }).join('');
+
+  var rows = Array.prototype.slice.call(listEl.querySelectorAll('.crs-row'));
+
+  function render(){
+    var q = (inputEl && inputEl.value || '').trim().toLowerCase();
+    var shown = 0, hits = 0;
+    rows.forEach(function(r,i){
+      var hit = !q || idx[i].indexOf(q) >= 0;
+      if(hit) hits++;
+      /* 검색 중에는 일치하는 과목을 모두 보여 주고, 평상시에는 앞 PREVIEW개만 */
+      var show = hit && (q || expanded || shown < PREVIEW);
+      if(show) shown++;
+      r.classList.toggle('is-hidden', !show);
+    });
+    if(statusEl){
+      statusEl.textContent = q
+        ? (hits ? hits + ' / ' + TOTAL + '과목 표시' : '‘' + q + '’ 조건에 맞는 교과목이 없습니다')
+        : (expanded ? '전체 ' + TOTAL + '과목' : TOTAL + '과목 중 ' + shown + '과목 표시');
+    }
+    if(moreEl){
+      /* 검색 중이거나 이미 전체를 펼친 뒤에는 버튼을 감춘다 */
+      moreEl.hidden = !!q || expanded || TOTAL <= PREVIEW;
+    }
+  }
+
+  if(moreEl) moreEl.addEventListener('click', function(){ expanded = true; render(); });
+  if(inputEl) inputEl.addEventListener('input', render);
+  render();
+})();
 </script>
-<script src="assets/nav.js?v=39"></script>
+<script src="assets/nav.js?v=42"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--kr);font-size:.74rem;color:#7b8595">
   © 2026 연세대학교 기계공학부 &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

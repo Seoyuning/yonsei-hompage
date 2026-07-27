@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>[시안 G · 관제] 입학 · 진로 — 연세대학교 기계공학부</title>
-<meta name="description" content="연세대학교 기계공학부 입학·진로 안내 — 학부 입학, 대학원 진학, 장학 안내, 진로 경로, 동문·대외협력, 자주 묻는 질문." />
+<meta name="description" content="연세대학교 기계공학부 입학·진로 안내 — 학부 입학, 대학원 진학, 장학 안내, 진로 안내, 졸업생 연혁, 자주 묻는 질문." />
 <meta name="theme-color" content="#1a3d75" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -18,7 +18,7 @@
    입학 · 진로 (라이트 테마)
    이미지 배너 · 아이보리 배경 · 네이비 포인트.
    콘텐츠: 학부 입학 · 대학원 진학 · 장학 ·
-   진로 경로 · 동문 · FAQ. (취업 정보 게시판은 소식으로 이동)
+   진로 안내 · 졸업생 연혁 · FAQ. (취업 정보 게시판은 소식으로 이동)
    ─────────────────────────────────────────────── */
 :root{
   --navy:#1a3d75;
@@ -36,11 +36,8 @@
   --card-hover:#eef3fa;
   --mono:"Apple SD Gothic Neo","Noto Sans KR","Pretendard Variable","Pretendard",system-ui,sans-serif;
   --kr:"Apple SD Gothic Neo","Noto Sans KR","Pretendard Variable","Pretendard",system-ui,sans-serif;
-  /* 진로 트랙 색 — 네이비 계열로 통일 */
-  --c-solid:#1a3d75;
-  --c-thermal:#1a3d75;
-  --c-manuf:#1a3d75;
-  --c-dyn:#1a3d75;
+  /* --c-solid / --c-thermal / --c-manuf / --c-dyn 삭제 —
+     §05 진로 페르소나 4카드의 --route-c 전용 토큰이었고, 카드와 함께 참조가 끊겼다. */
 }
 *,*::before,*::after{box-sizing:border-box;margin:0}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
@@ -65,7 +62,7 @@ a{color:inherit;text-decoration:none}
   padding-left:clamp(1.2rem,.6rem + 2vw,2.6rem);padding-right:clamp(1.2rem,.6rem + 2vw,2.6rem)}
 
 /* ── 페이지 히어로 (이미지 배너 + 중앙 타이틀) ── */
-.phero{position:relative;min-height:clamp(14rem,30vh,20rem);display:flex;align-items:center;justify-content:center;text-align:center;background:#12294f url("assets/hero-admissions.jpg") center 42%/cover no-repeat;color:#fff;overflow:hidden}
+.phero{position:relative;min-height:clamp(19rem,42vh,26rem);display:flex;align-items:center;justify-content:center;text-align:center;background:#12294f url("assets/hero-admissions.jpg") center 42%/cover no-repeat;color:#fff;overflow:hidden}
 /* 사진은 배경 질감으로 — 흑백 + 네이비 모노톤. 스톡 사진은 잘 보이게 할수록
    "다국적 학생들이 웃는 강의실" 전형이 드러나 티가 난다. 인물이 주인공이 되지 않게 눌러
    질감으로만 남긴다. filter 를 요소에 걸면 글자까지 흐려지므로 사진 층(::before)에만 건다.
@@ -120,7 +117,7 @@ a{color:inherit;text-decoration:none}
 /* 그리드 유틸 */
 .grid{display:grid;gap:1.1rem}
 .grid--3{grid-template-columns:repeat(auto-fit,minmax(15rem,1fr))}
-.grid--4{grid-template-columns:repeat(auto-fit,minmax(15rem,1fr))}
+/* .grid--4 삭제 — §05 진로 페르소나 4카드에서만 쓰이던 규칙 */
 .duo{display:grid;gap:1.1rem;grid-template-columns:1.3fr 1fr}
 @media (max-width:860px){.duo{grid-template-columns:1fr}}
 
@@ -187,24 +184,10 @@ a{color:inherit;text-decoration:none}
   margin-top:1rem;padding-top:.85rem;border-top:1px dashed var(--line-soft)}
 .gloss b{color:var(--sub);font-weight:600}
 
-/* ── 진로 트랙 카드 ── */
-.route{border:1px solid var(--line-soft);background:var(--card);
-  padding:1.5rem 1.5rem 1.6rem;display:flex;flex-direction:column;
-  border-top:2px solid var(--route-c,var(--coral))}
-.route .persona{display:inline-flex;align-items:center;gap:.45rem;
-  font-size:.8rem;color:var(--muted);margin-bottom:.8rem}
-.route .persona .pdot{width:7px;height:7px;border-radius:50%;background:var(--route-c,var(--coral));flex:none}
-.route h3{font-weight:700;font-size:1.05rem;color:var(--navy);margin-bottom:.85rem;line-height:1.3}
-.route .flow{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;margin-bottom:.85rem}
-.route .flow .st{font-size:.76rem;color:var(--sub);
-  border:1px solid var(--line-soft);background:#fff;padding:.25rem .55rem;white-space:nowrap}
-.route .flow .ar{color:var(--route-c,var(--coral));font-size:.7rem}
-.route p{font-size:.86rem;color:var(--body);line-height:1.7;margin-bottom:1rem}
-.route .go{margin-top:auto;font-size:.86rem;color:var(--muted);transition:color .15s}
-.route .go:hover{color:var(--route-c,var(--coral))}
-.route .go .arr{color:var(--route-c,var(--coral))}
+/* .route / .persona / .pdot / .flow / .st / .ar 규칙 삭제 —
+   §05 진로 페르소나 4카드 전용 스타일이었고, 카드를 지우면서 참조가 끊겼다. */
 
-/* ── 동문 타임라인 ── */
+/* ── 연혁 타임라인 ── */
 .timeline{border-left:1px solid var(--line);margin-top:.4rem;padding-left:1.1rem;
   display:flex;flex-direction:column;gap:1.1rem}
 .tl-item{position:relative}
@@ -311,7 +294,7 @@ a{color:inherit;text-decoration:none}
 <style>.ynav-ph{position:fixed;top:0;left:0;right:0;height:3.7rem;background:rgba(255,255,255,.96);border-bottom:1px solid rgba(0,0,0,.08);z-index:39}</style>
 <style>h1,h2,.sec-title,.phero h1,.hero h1,.hero-title,.club-name,.vt,.staff-head h2,.brand .bko,.ynv-brand .bko{font-family:"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;letter-spacing:-.01em}</style>
 <link rel="stylesheet" href="assets/transition.css">
-<script>/* 탭 해시 진입은 히어로부터 — 파싱 전에 해시를 떼어 앵커 점프·상단바 접힘 왕복을 원천 차단(nav.js가 탭 복원) */(function(){var h=location.hash.slice(1);if(h&&/^(greeting|vision|organization|history|location|faculty|dir|staff|fields|fieldsDetail|clusters|labvideos|curriculum|requirements|abeek|roadmap|graduation|mechanics|courses|grad|clubs|grad-admission|grad-req|grad-courses|grad-labs|bk21|notice-ug|notice-grad|hi|sched|thesis|archive|jobs|undergraduate|graduate|scholarships|careers|alumni|faq)$/.test(h)){window.__ysTab=h;try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}}})();</script>
+<script>/* 탭 해시 진입은 히어로부터 — 파싱 전에 해시를 떼어 앵커 점프·상단바 접힘 왕복을 원천 차단(nav.js가 탭 복원) */(function(){var h=location.hash.slice(1);if(h&&/^(intro|vision|organization|history|location|faculty|dir|staff|fields|fieldsDetail|clusters|labvideos|curriculum|requirements|abeek|roadmap|graduation|mechanics|courses|grad|clubs|grad-admission|grad-req|grad-courses|grad-labs|bk21|notice-ug|notice-grad|hi|sched|thesis|archive|jobs|undergraduate|graduate|scholarships|careers|alumni|faq)$/.test(h)){window.__ysTab=h;try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}}})();</script>
 </head>
 <body>
 <div class="ynav-ph" aria-hidden="true"></div>
@@ -346,7 +329,7 @@ a{color:inherit;text-decoration:none}
         <ol class="num-list">
           <li><span class="n">01</span><span>모집요강 확인 — <a href="https://admission.yonsei.ac.kr" target="_blank" rel="noopener">연세대학교 입학처</a> 공지 기준</span></li>
           <li><span class="n">02</span><span>전공 미리보기 — <a href="G-academics.html">교육과정</a>에서 4대 역학과 이수 체계로 4년을 조망</span></li>
-          <li><span class="n">03</span><span>연구 분야 탐색 — <a href="G-research.html">33개 연구실 · 6개 분야</a></span></li>
+          <li><span class="n">03</span><span>연구 분야 탐색 — <a href="G-research.html">여섯 개 연구 분야</a></span></li>
         </ol>
         <p class="gloss"><b>모집요강</b> — 전형 일정 · 방법 · 제출 서류가 담긴 공식 안내문. <b>수시</b> — 학생부 · 서류 중심 전형, <b>정시</b> — 수능 성적 중심 전형입니다.</p>
         <div class="btns">
@@ -357,11 +340,11 @@ a{color:inherit;text-decoration:none}
       </article>
       <article class="card card--soft">
         <span class="overline">학부 개요</span>
-        <h3>1962년 설립</h3>
+        <h3>1958년 설립</h3>
         <p>4대 역학부터 종합설계까지 설계 중심 교육과정을 운영합니다.</p>
         <div class="def" style="margin-top:1.1rem">
-          <div class="drow"><span class="k">창립</span><span class="v tnum">1962</span></div>
-          <div class="drow"><span class="k">전임 교수 · 연구실</span><span class="v tnum">33 · 33</span></div>
+          <div class="drow"><span class="k">창립</span><span class="v tnum">1958</span></div>
+          <div class="drow"><span class="k">전임 교수</span><span class="v tnum">33</span></div>
           <div class="drow"><span class="k">ABEEK 공학교육인증 가입</span><span class="v tnum">2003</span></div>
           <div class="drow"><span class="k">학부 분리 독립</span><span class="v tnum">2002</span></div>
           <div class="drow"><span class="k">4단계 BK21 선정</span><span class="v hl tnum">2020</span></div>
@@ -388,7 +371,7 @@ a{color:inherit;text-decoration:none}
       <article class="step">
         <div class="sn">STEP <u>01</u></div>
         <h3>분야 탐색</h3>
-        <p>33개 연구실이 6개 분야로 나뉘어 있습니다. 연구 페이지에서 분야 · 키워드로 살펴보고, 관심 있는 연구실을 찾아보세요.</p>
+        <p>연구실은 여섯 개 분야로 나뉘어 있습니다. 연구 페이지에서 분야 · 키워드로 살펴보고, 관심 있는 연구실을 찾아보세요.</p>
         <a class="go" href="G-research.html">연구 분야 보기 <span class="arr" aria-hidden="true">→</span></a>
       </article>
       <article class="step">
@@ -459,77 +442,58 @@ a{color:inherit;text-decoration:none}
 
   <!-- 취업 정보 게시판은 소식(G-news.html#jobs)으로 이동 -->
 
-  <!-- ═══ §05 진로 경로 ═══ -->
+  <!-- ═══ §05 진로 안내 ═══
+       '제품을 설계하는 엔지니어 / 대학원 연구자 / 산업의 문제를 푸는 전문가 /
+       인재와 기술을 찾는 기업' 네 가지 페르소나 카드를 삭제했다.
+       어느 출처에도 없는 임의 구분이었다. 대신 학부에 실제로 게시되는
+       취업 정보(data.js jobs)를 안내하는 블록으로 바꾼다. -->
   <section class="wrap section" id="careers" aria-labelledby="car-h">
     <div class="sec-head">
       <div>
         <p class="sec-kick">진로</p>
-        <h2 id="car-h" class="sec-title">진로 경로</h2>
-        <p class="sec-sub">졸업 후 대표적인 진로 네 가지를 단계별로 정리했습니다.</p>
+        <h2 id="car-h" class="sec-title">진로 안내</h2>
+        <p class="sec-sub">채용 · 인턴 · 채용설명회 등 학부에 접수된 취업 관련 공고는 취업 정보 게시판에 게시됩니다.</p>
       </div>
+      <a class="sec-more" href="G-news.html#jobs">취업 정보 <span class="arr" aria-hidden="true">→</span></a>
     </div>
-    <div class="grid grid--4">
-      <article class="route" style="--route-c:var(--c-solid)">
-        <span class="persona"><span class="pdot" aria-hidden="true"></span>예비 신입생 → 설계·R&amp;D</span>
-        <h3>제품을 설계하는 엔지니어</h3>
-        <div class="flow" aria-label="경로 단계">
-          <span class="st">4대 역학</span><span class="ar" aria-hidden="true">→</span>
-          <span class="st">창의제품설계</span><span class="ar" aria-hidden="true">→</span>
-          <span class="st">기업 설계·R&amp;D</span>
+    <div class="duo">
+      <article class="card">
+        <span class="overline">최근 취업 정보</span>
+        <div class="post-list" id="careerJobs" aria-label="최근 취업 정보 목록"></div>
+        <div class="btns">
+          <a class="btn btn--coral" href="G-news.html#jobs">취업 정보 전체 보기 <span class="arr" aria-hidden="true">→</span></a>
         </div>
-        <p>고체 · 열 · 유체 · 동역학의 기초 위에 캡스톤 설계로 종합 설계 역량을 완성하고, 제조 · 모빌리티 · 에너지 산업의 설계 · 연구개발 직무로 나아가는 길입니다.</p>
-        <a class="go" href="G-academics.html">교육과정 이수 체계 <span class="arr" aria-hidden="true">→</span></a>
       </article>
-      <article class="route" style="--route-c:var(--c-dyn)">
-        <span class="persona"><span class="pdot" aria-hidden="true"></span>재학생 → 대학원 연구자</span>
-        <h3>대학원 연구자</h3>
-        <div class="flow" aria-label="경로 단계">
-          <span class="st">학부연구 참여</span><span class="ar" aria-hidden="true">→</span>
-          <span class="st">석사 · 박사</span><span class="ar" aria-hidden="true">→</span>
-          <span class="st">학계 · 연구소</span>
+      <article class="card card--soft">
+        <span class="overline">관련 안내</span>
+        <p>교육과정 이수 체계는 <a class="inline" href="G-academics.html">교육과정</a>에서, 연구 분야와 연구실은 <a class="inline" href="G-research.html">연구</a>에서 확인할 수 있습니다. 대학원 진학은 <a class="inline" href="#graduate">대학원 진학</a> 항목에 정리되어 있습니다.</p>
+        <p class="contact-line" style="margin-top:1rem">학부 행정팀 02-2123-4426</p>
+        <div class="btns">
+          <a class="btn" href="G-about.html">연락처 · 오시는 길 <span class="arr" aria-hidden="true">→</span></a>
         </div>
-        <p>학부연구 · 연구논문으로 연구를 경험하고, 33개 연구실 중 자신의 분야에서 석 · 박사로 이어 가는 길입니다. 4단계 BK21 사업단이 대학원 연구를 뒷받침합니다.</p>
-        <a class="go" href="#graduate">대학원 진학 안내 ↑</a>
-      </article>
-      <article class="route" style="--route-c:var(--c-manuf)">
-        <span class="persona"><span class="pdot" aria-hidden="true"></span>대학원생 → 심화 전문가</span>
-        <h3>산업의 문제를 푸는 전문가</h3>
-        <div class="flow" aria-label="경로 단계">
-          <span class="st">연구실 심화</span><span class="ar" aria-hidden="true">→</span>
-          <span class="st">산학 프로젝트</span><span class="ar" aria-hidden="true">→</span>
-          <span class="st">전문 연구 인력</span>
-        </div>
-        <p>반도체 장비 · 정밀제조 · 로보틱스 · 에너지 시스템 등 연구실의 산학 과제를 통해 산업 현장의 문제를 직접 다루며 전문성을 쌓는 길입니다.</p>
-        <a class="go" href="G-research.html">6개 연구 분야 <span class="arr" aria-hidden="true">→</span></a>
-      </article>
-      <article class="route" style="--route-c:var(--c-thermal)">
-        <span class="persona"><span class="pdot" aria-hidden="true"></span>기업 · 채용 담당자</span>
-        <h3>인재와 기술을 찾는 기업</h3>
-        <div class="flow" aria-label="경로 단계">
-          <span class="st">연구 분야 확인</span><span class="ar" aria-hidden="true">→</span>
-          <span class="st">산학·채용 문의</span><span class="ar" aria-hidden="true">→</span>
-          <span class="st">협력 · 채용</span>
-        </div>
-        <p>33개 연구실의 연구 분야를 확인하고, 산학 협력 · 채용 연계는 학부 행정팀(02-2123-4426)으로 문의해 주세요.</p>
-        <a class="go" href="G-about.html">연락처 · 오시는 길 <span class="arr" aria-hidden="true">→</span></a>
       </article>
     </div>
     <p class="note">취업률 · 진출 기업 등 통계 자료는 준비되는 대로 게시할 예정입니다.</p>
   </section>
 
-  <!-- ═══ §06 동문 · 대외협력 ═══ -->
+  <!-- ═══ §06 졸업생 연혁 ═══
+       '동문 네트워크를 운영하고 있습니다' · '동문 네트워크 참여 · 기부 · 초청 강연 등
+       협력 문의' 문구를 삭제했다. 학부 차원의 동문회나 기부 창구가 있다는 근거가 없고
+       공식 사이트 메뉴에도 동문 항목이 없다. 1962년 분리 · 1964년 첫 졸업생 등
+       공식 연혁에 있는 사실만 남긴다. 서브탭 정의(assets/nav.js)가 이 섹션을 참조하므로
+       섹션 자체는 유지한다. -->
   <section class="wrap section" id="alumni" aria-labelledby="alu-h">
     <div class="sec-head">
       <div>
-        <p class="sec-kick">동문</p>
-        <h2 id="alu-h" class="sec-title">동문 · 대외협력</h2>
-        <p class="sec-sub">1964년 첫 졸업생을 배출한 이래 동문 네트워크를 운영하고 있습니다.</p>
+        <p class="sec-kick">졸업생</p>
+        <h2 id="alu-h" class="sec-title">졸업생 연혁</h2>
+        <p class="sec-sub">1964년 2월 첫 졸업생을 배출했습니다.</p>
       </div>
       <a class="sec-more" href="G-about.html">전체 연혁 <span class="arr" aria-hidden="true">→</span></a>
     </div>
     <div class="duo">
       <article class="card">
-        <span class="overline">동문 연혁</span>
+        <span class="overline">주요 연혁</span>
         <div class="timeline">
           <div class="tl-item tl-item--hl">
             <p class="tl-date">1962.12</p>
@@ -553,12 +517,12 @@ a{color:inherit;text-decoration:none}
         </div>
       </article>
       <article class="card card--soft">
-        <span class="overline">동문 네트워크</span>
-        <p>동문 행사 · 초청 세미나 · 학부 소식은 <a class="inline" href="G-news.html">소식 페이지</a>에서 갱신됩니다. 동문 네트워크 참여 · 기부 · 초청 강연 등 협력 문의는 학부 행정팀으로 연락해 주세요.</p>
+        <span class="overline">학부 소식</span>
+        <p>학부 행사 · 세미나 · 수상 등 소식은 <a class="inline" href="G-news.html">소식 페이지</a>에 게시됩니다.</p>
         <p class="contact-line" style="margin-top:1rem">학부 행정팀 02-2123-4426</p>
         <div class="btns">
           <a class="btn btn--coral" href="G-news.html">소식 보기 <span class="arr" aria-hidden="true">→</span></a>
-          <a class="btn" href="G-about.html">문의하기</a>
+          <a class="btn" href="G-about.html">연락처 보기</a>
         </div>
       </article>
     </div>
@@ -584,7 +548,7 @@ a{color:inherit;text-decoration:none}
       </details>
       <details>
         <summary><span class="qm">Q3</span><span class="qt">대학원 진학을 위해 연구실은 어떻게 찾나요?</span><span class="mk" aria-hidden="true"></span></summary>
-        <div class="fbody"><a href="G-research.html">연구 페이지</a>에서 33개 연구실을 6개 분야(역학·소재 / 에너지·열유체 / 로보틱스·제어 / 설계·제조 / 마이크로·나노 / 바이오·포토닉스)로 나누어 살펴볼 수 있습니다. 이후 지도교수 사전 컨택 → 모집요강 확인 순서를 권합니다(<a href="#graduate">대학원 진학 안내</a>).</div>
+        <div class="fbody"><a href="G-research.html">연구 페이지</a>에서 연구실을 여섯 개 분야(역학·소재 / 에너지·열유체 / 로보틱스·제어 / 설계·제조 / 마이크로·나노 / 바이오·포토닉스)로 나누어 살펴볼 수 있습니다. 이후 지도교수 사전 컨택 → 모집요강 확인 순서를 권합니다(<a href="#graduate">대학원 진학 안내</a>).</div>
       </details>
       <details>
         <summary><span class="qm">Q4</span><span class="qt">학부 · 대학원 행정 문의는 어디로 하나요?</span><span class="mk" aria-hidden="true"></span></summary>
@@ -616,7 +580,7 @@ a{color:inherit;text-decoration:none}
 
 </main>
 
-<script src="assets/js/data.js?v=d11"></script>
+<script src="assets/js/data.js?v=d13"></script>
 <script>
 (function(){
   'use strict';
@@ -718,7 +682,23 @@ a{color:inherit;text-decoration:none}
   }
   var gsc = document.getElementById('sch-grad-cnt'); if(gsc) gsc.textContent = gradSch.length;
 
-  /* 취업 공고 게시판은 소식(G-news.html#jobs)으로 이동 */
+  /* 취업 공고 게시판 전체는 소식(G-news.html#jobs)에 있고,
+     여기 §05 진로 안내에는 최근 4건만 실데이터(jobs)에서 뽑아 보여 준다.
+     지어낸 진로 페르소나 카드를 대체하는 블록이다. */
+  var jobs = (D.jobs || []).slice().sort(function(a, b){
+    return String(b.date || '').replace(/\./g,'').localeCompare(String(a.date || '').replace(/\./g,''));
+  }).slice(0, 4);
+  var elJobs = document.getElementById('careerJobs');
+  if(elJobs){
+    elJobs.innerHTML = jobs.length ? jobs.map(function(j){
+      return '<a class="post-row" href="' + safeUrl(j.url) + '" target="_blank" rel="noopener">' +
+        '<span class="post-cat">취업</span>' +
+        '<span class="post-title kr">' + esc(j.title) +
+        '<span class="ext" aria-hidden="true">↗</span></span>' +
+        '<time class="post-date" datetime="' + esc(String(j.date||'').replace(/\./g,'-')) + '">' + esc(j.date) + '</time>' +
+        '</a>';
+    }).join('') : '<p class="note" style="margin-top:0">게시된 취업 정보가 없습니다.</p>';
+  }
 
   /* ── FAQ: 하나만 펼침 (네이티브 details 배타 오픈) ── */
   var faq = document.getElementById('faqList');
@@ -734,7 +714,7 @@ a{color:inherit;text-decoration:none}
 
 })();
 </script>
-<script src="assets/nav.js?v=39"></script>
+<script src="assets/nav.js?v=42"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--dimmer)">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

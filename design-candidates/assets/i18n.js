@@ -19,7 +19,10 @@
 
   var KEY = 'ysme-lang';
   var ATTRS = ['alt', 'title', 'aria-label', 'placeholder'];
-  var SKIP = '.ynv, .ysub, .ytop, .ynv-ovl, footer.yft, [data-ys-ui], [data-i18n],' +
+  /* 예전에는 nav.js 가 그리는 헤더·서브탭·푸터(.ynv/.ysub/.ytop/.ynv-ovl/footer.yft)를 통째로 건너뛰었다.
+     그 바람에 주메뉴 7개·드롭다운 34개·푸터 41개 링크가 — 번역문이 사전에 이미 다 있는데도 —
+     ENG 에서 한국어로 남았다. 이제 훑는다. 번역하면 안 되는 것(언어 전환 버튼)에는 data-no-i18n 을 단다. */
+  var SKIP = '[data-ys-ui], [data-i18n],' +
     ' script, style, noscript, template, textarea, [data-no-i18n]';
 
   var dict = null;          // 사전 (null = 아직 없음)
@@ -170,13 +173,31 @@
     walk(node);
   }
 
+  /* <head> 는 body 순회에 잡히지 않아 브라우저 탭 제목이 한국어로 남았다 — 따로 바꾼다 */
+  var rawHead = null;
+  function applyHead() {
+    if (!dict) return;
+    var meta = document.querySelector('meta[name="description"]');
+    if (rawHead === null) rawHead = { title: document.title, desc: meta ? meta.getAttribute('content') : null };
+    var t = lookup(rawHead.title); if (t) document.title = t;
+    if (meta && rawHead.desc) { var d = lookup(rawHead.desc); if (d) meta.setAttribute('content', d); }
+  }
+  function restoreHead() {
+    if (rawHead === null) return;
+    document.title = rawHead.title;
+    var meta = document.querySelector('meta[name="description"]');
+    if (meta && rawHead.desc !== null) meta.setAttribute('content', rawHead.desc);
+  }
+
   function applyAll() {
     if (!dict || !document.body) return;
     walk(document.body);
+    applyHead();
   }
 
   function restore() {
     var i;
+    restoreHead();
     for (i = textLog.length - 1; i >= 0; i--) {
       var t = textLog[i];
       try { t.node.nodeValue = t.raw; } catch (e) {}

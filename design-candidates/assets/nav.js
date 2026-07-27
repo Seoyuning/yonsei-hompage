@@ -173,7 +173,7 @@
 
   /* ── 2. 메뉴 정의 (메인 H-academic 순서·라벨과 동일) ── */
   var MENU = [
-    { t: '학부소개', h: 'G-about.html', key: 'about', sub: [['학과장 인사말', 'G-about.html#greeting', ['greeting']], ['비전 · 교육철학', 'G-about.html#vision', ['vision']], ['조직 · 행정', 'G-about.html#organization', ['organization']], ['주요 연혁', 'G-about.html#history', ['history']], ['연락처 · 오시는 길', 'G-about.html#location', ['location']]] },
+    { t: '학부소개', h: 'G-about.html', key: 'about', sub: [['학부 소개', 'G-about.html#intro', ['intro']], ['교육목적 · 교육목표', 'G-about.html#vision', ['vision']], ['조직 · 행정', 'G-about.html#organization', ['organization']], ['주요 연혁', 'G-about.html#history', ['history']], ['연락처 · 오시는 길', 'G-about.html#location', ['location']]] },
     { t: '구성원', h: 'G-people.html', key: 'people', sub: [['교수진', 'G-people.html#faculty', ['faculty', 'dir']], ['교직원', 'G-people.html#staff', ['staff']]] },
     { t: '연구', h: 'G-research.html', key: 'research', sub: [['연구 비전', 'G-research.html#vision', ['vision']], ['연구 분야', 'G-research.html#fields', ['fields', 'fieldsDetail']], ['연구실 전체', 'G-research.html#clusters', ['clusters']], ['연구실 홍보영상', 'G-research.html#labvideos', ['labvideos']]] },
     { t: '학사', h: 'G-academics.html', key: 'academics', sub: [['교육과정 개관', 'G-academics.html#curriculum', ['curriculum', 'requirements', 'abeek']], ['이수 체계도', 'G-academics.html#roadmap', ['roadmap']], ['졸업 요건', 'G-academics.html#graduation', ['graduation']], ['전공 교과', 'G-academics.html#courses', ['mechanics', 'courses']], ['대학원 교과', 'G-academics.html#grad', ['grad']], ['동아리·학생활동', 'G-academics.html#clubs', ['clubs']]] },
@@ -208,8 +208,8 @@
       '<a href="https://engineering.yonsei.ac.kr" target="_blank" rel="noopener">공과대학</a>' +
       '<a href="https://me.yonsei.ac.kr" target="_blank" rel="noopener">기계공학부 현행 홈</a>' +
       '<div class="ynv-lang" role="group" aria-label="언어 선택">' +
-        '<button type="button" id="ynvKo" class="on">한국어</button>' +
-        '<button type="button" id="ynvEn">ENG</button></div>' +
+        '<button type="button" id="ynvKo" class="on" data-no-i18n>한국어</button>' +
+        '<button type="button" id="ynvEn" data-no-i18n>ENG</button></div>' +
     '</div></div>' +
     '<header class="ynv-hdr"><div class="ynv-w">' + brand +
       '<nav class="ynv-menu" aria-label="주메뉴">' + menuHtml + '</nav>' +
@@ -238,7 +238,8 @@
     var bar = document.createElement('nav');
     bar.className = 'ysub'; bar.setAttribute('role', 'tablist'); bar.setAttribute('aria-label', m.t + ' 하위 메뉴');
     bar.innerHTML = '<div class="ysub-w">' + m.sub.map(function (s, i) {
-      return '<button type="button" role="tab" class="ysub-tab" data-i="' + i + '">' + esc(s[0]) + '</button>';
+      return '<button type="button" role="tab" class="ysub-tab" data-i="' + i + '"' +
+        ' data-tab="' + esc((s[2] && s[2][0]) || '') + '">' + esc(s[0]) + '</button>';
     }).join('') + '</div>';
     phero.parentNode.insertBefore(bar, phero.nextSibling);
 
@@ -262,10 +263,11 @@
       setBreadcrumb(s[0]);
       try { history.replaceState(null, '', '#' + (s[1].split('#')[1] || '')); } catch (_) {}
       if (doScroll) {
-        /* 형제 탭 클릭 — 탭 바가 화면 맨 위(헤더 바로 아래)에 붙도록 부드럽게 이동.
-           'auto'는 CSS scroll-behavior:smooth 에 덮이므로 즉시 이동은 'instant'로 강제(모션 축소·숨은 탭) */
-        var y = bar.getBoundingClientRect().top + (pageYOffset || 0) - Math.round(hdr ? hdr.getBoundingClientRect().height : 62);
-        try { scrollTo({ top: y, behavior: (reduce || document.hidden) ? 'instant' : 'smooth' }); } catch (_) { scrollTo(0, y); }
+        /* 형제 탭으로 옮기면 얼마나 내려와 있었든 그 뷰의 맨 위(히어로)부터 다시 시작한다 —
+           새 페이지로 들어간 것과 같은 감각. 메뉴로 들어올 때(isTabHash)와도 동작이 같아진다.
+           'auto'는 CSS scroll-behavior:smooth 에 덮이므로 즉시 이동은 'instant'로 강제
+           (모션 축소 선호·숨은 탭에서는 부드러운 이동이 진행되지 않는다) */
+        try { scrollTo({ top: 0, behavior: (reduce || document.hidden) ? 'instant' : 'smooth' }); } catch (_) { scrollTo(0, 0); }
         /* 새로 보이는 뷰의 글자 등장 애니메이션(.ys-view-in — transition.css) */
         if (!reduce) managed.forEach(function (el) {
           if (ids.indexOf(el.id) >= 0) { el.classList.remove('ys-view-in'); void el.offsetWidth; el.classList.add('ys-view-in'); }

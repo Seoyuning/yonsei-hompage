@@ -81,7 +81,10 @@ img{display:block;max-width:100%}
   .gd a{transform:none}}
 
 /* ── 히어로 — 풀블리드 이미지 + 중앙 학부명 (SNU ME 참고) ── */
-.hero{position:relative;min-height:clamp(30rem,88vh,54rem);display:flex;align-items:center;justify-content:center;
+/* 첫 화면은 히어로가 독차지한다 — 88vh 였을 때 아래 지표 밴드가 빼꼼 보여
+   "스크롤 해야 하나" 싶은 어중간한 화면이 됐다. 100vh 로 화면을 꽉 채운다.
+   (휴대폰 브라우저의 100vh 는 주소창이 접힌 큰 뷰포트 기준이라 지표 밴드가 걸칠 일이 없다) */
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;
   text-align:center;overflow:hidden;background:var(--navy-d);color:#fff}
 .hero-bg{position:absolute;inset:0;background:url("assets/hero-me.jpg") center 42%/cover no-repeat}
 .hero-veil{position:absolute;inset:0;background:
@@ -104,20 +107,20 @@ img{display:block;max-width:100%}
 .btn-white:hover{background:#fff;box-shadow:0 14px 34px rgba(0,0,0,.35)}
 .btn-ghost{border:1px solid rgba(255,255,255,.62);color:#fff}
 .btn-ghost:hover{background:rgba(255,255,255,.14);box-shadow:0 14px 34px rgba(0,0,0,.28)}
-.hero-scroll{position:absolute;left:50%;bottom:1.3rem;transform:translateX(-50%);
+.hero-scroll{position:absolute;left:50%;bottom:calc(1.3rem + env(safe-area-inset-bottom));transform:translateX(-50%);
   font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.72)}
 .hero-scroll::after{content:"";display:block;width:1px;height:2rem;margin:.45rem auto 0;
   background:linear-gradient(rgba(255,255,255,.8),transparent)}
 /* 히어로 하단 지표 스트립 — 잉크 텔레메트리 밴드, 거대 숫자 */
 .stats{background:var(--navy-d);border-top:2px solid rgba(138,166,212,.5);color:#fff}
-.stats .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;
+.stats .wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;
   padding-top:clamp(3.4rem,7vh,5rem);padding-bottom:clamp(3.4rem,7vh,5rem)}
 .st{display:flex;flex-direction:column;gap:.35rem;border-left:1px solid rgba(255,255,255,.16);padding-left:1.2rem}
 .st b{font-family:var(--mono);font-weight:700;letter-spacing:.02em;line-height:1;
   font-size:clamp(2.1rem,1.4rem + 2.6vw,3.4rem);color:#fff;font-variant-numeric:tabular-nums}
 .st:last-child b{color:var(--accent-d)}
 .st span{font-family:var(--mono);font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;color:#8fa2c2}
-@media(max-width:640px){.stats .wrap{grid-template-columns:repeat(2,1fr);row-gap:1.4rem}}
+@media(max-width:640px){.stats .wrap{grid-template-columns:repeat(3,1fr);gap:.7rem;row-gap:1.4rem}}
 
 /* ── 공통 섹션 — 에디토리얼: 아웃라인 인덱스 + 거대 타이틀 ── */
 .sec{padding-top:clamp(7rem,15vh,12rem);padding-bottom:clamp(7rem,15vh,12rem)}
@@ -397,8 +400,8 @@ img{display:block;max-width:100%}
   <div class="hero-in">
     <p class="hero-kick" data-i18n="heroKick">School of Mechanical Engineering</p>
     <h1 data-i18n="heroTitle">연세대학교 기계공학부</h1>
-    <p class="sub" data-i18n="heroSub">기계공학은 모든 산업의 기반이 되는 학문입니다.
-      연세대학교 기계공학부는 1962년 설립 이래 6개 연구 분야, 33개 연구실에서 교육과 연구를 이어 오고 있습니다.</p>
+    <p class="sub" data-i18n="heroSub">연세대학교 기계공학부는 1958년 이래 역학·소재부터
+      바이오·포토닉스까지 여섯 분야에서 교육과 연구를 이어 오고 있습니다.</p>
     <div class="hero-btns">
       <a class="btn btn-white" href="#research" data-i18n="btnResearch">연구 분야 보기</a>
       <a class="btn btn-ghost" href="G-admissions.html" data-i18n="btnAdm">입학 안내</a>
@@ -409,9 +412,8 @@ img{display:block;max-width:100%}
 <div class="stats">
   <div class="wrap">
     <div class="st"><b data-count="33">0</b><span data-i18n="stFaculty">전임 교수</span></div>
-    <div class="st"><b data-count="33">0</b><span data-i18n="stLabs">연구실</span></div>
     <div class="st"><b data-count="6">0</b><span data-i18n="stAreas">연구 분야</span></div>
-    <div class="st"><b>1962</b><span data-i18n="stFounded">설립</span></div>
+    <div class="st"><b>1958</b><span data-i18n="stFounded">설립</span></div>
   </div>
 </div>
 
@@ -525,8 +527,8 @@ img{display:block;max-width:100%}
   <!-- ═══ 아웃라인 마퀴 ═══ -->
   <div class="mq" aria-hidden="true">
     <div class="mq-track">
-      <span>YONSEI MECHANICAL ENGINEERING <i>◆</i> SINCE 1962 <i>◆</i> 33 LABORATORIES <i>◆</i> 6 RESEARCH AREAS <i>◆</i></span>
-      <span>YONSEI MECHANICAL ENGINEERING <i>◆</i> SINCE 1962 <i>◆</i> 33 LABORATORIES <i>◆</i> 6 RESEARCH AREAS <i>◆</i></span>
+      <span>YONSEI MECHANICAL ENGINEERING <i>◆</i> SINCE 1958 <i>◆</i> 6 RESEARCH AREAS <i>◆</i></span>
+      <span>YONSEI MECHANICAL ENGINEERING <i>◆</i> SINCE 1958 <i>◆</i> 6 RESEARCH AREAS <i>◆</i></span>
     </div>
   </div>
 
@@ -551,7 +553,7 @@ img{display:block;max-width:100%}
 </main>
 
 
-<script src="assets/js/data.js?v=d11"></script>
+<script src="assets/js/data.js?v=d13"></script>
 <script async src="https://www.instagram.com/embed.js"></script>
 <script>window.addEventListener("load",function(){if(window.instgrm)window.instgrm.Embeds.process();});</script>
 <script>
@@ -569,9 +571,9 @@ img{display:block;max-width:100%}
       tbYonsei: '연세대학교', tbEng: '공과대학', tbCur: '기계공학부 현행 홈',
       navAbout: '학부소개', navPeople: '구성원', navResearch: '연구', navAcad: '학사', navNews: '소식', navAdm: '입학',
       heroKick: 'School of Mechanical Engineering', heroTitle: '연세대학교 기계공학부',
-      heroSub: '기계공학은 모든 산업의 기반이 되는 학문입니다. 연세대학교 기계공학부는 1962년 설립 이래 6개 연구 분야, 33개 연구실에서 교육과 연구를 이어 오고 있습니다.',
+      heroSub: '연세대학교 기계공학부는 1958년 이래 역학·소재부터 바이오·포토닉스까지 여섯 분야에서 교육과 연구를 이어 오고 있습니다.',
       btnResearch: '연구 분야 보기', btnAdm: '입학 안내',
-      stFaculty: '전임 교수', stLabs: '연구실', stAreas: '연구 분야', stFounded: '설립',
+      stFaculty: '전임 교수', stAreas: '연구 분야', stFounded: '설립',
       newsTitle: '연구 소식', moreAll: '전체 보기 →',
       ntTitle: '공지사항', tabAll: '전체', tabUG: '학부', tabGrad: '대학원',
       smTitle: '세미나', moreShort: '전체 →',
@@ -583,7 +585,7 @@ img{display:block;max-width:100%}
       fTel: '학부 02-2123-4426 · 대학원 02-2123-2810', fAdmin: '관리자',
       catUG: '학부', catGrad: '대학원', labUnit: '개 연구실',
       igTitle: '@yonsei_mech 릴스', moreIg: '팔로우 →',
-      smAbout1: '학과장 인사말', smAbout2: '비전 · 교육철학', smAbout3: '조직 · 행정',
+      smAbout1: '학부 소개', smAbout2: '교육목적 · 교육목표', smAbout3: '조직 · 행정',
       smAbout4: '주요 연혁', smAbout5: '연락처 · 오시는 길',
       smPeople1: '교수진', smPeople2: '교직원', smRes1: '여섯 개 분야', smRes2: '연구실 전체', smRes3: '연구실 홍보영상',
       smAcad1: '교육과정 개관', smAcad2: '이수 체계도', smAcad5: '졸업 요건', smAcad3: '전공 교과', smAcad4: '대학원 교과',
@@ -594,9 +596,9 @@ img{display:block;max-width:100%}
       tbYonsei: 'Yonsei University', tbEng: 'College of Engineering', tbCur: 'Current ME site',
       navAbout: 'About', navPeople: 'People', navResearch: 'Research', navAcad: 'Academics', navNews: 'News', navAdm: 'Admissions',
       heroKick: '연세대학교 기계공학부', heroTitle: 'School of Mechanical Engineering',
-      heroSub: 'Mechanical engineering underpins every industry. Founded in 1962, Yonsei\'s School of Mechanical Engineering advances education and research across 6 areas and 33 laboratories.',
+      heroSub: 'Since 1958, the School of Mechanical Engineering at Yonsei University has advanced education and research across six areas, from mechanics and materials to bio and photonics.',
       btnResearch: 'Research Areas', btnAdm: 'Admissions',
-      stFaculty: 'Faculty', stLabs: 'Laboratories', stAreas: 'Research Areas', stFounded: 'Founded',
+      stFaculty: 'Faculty', stAreas: 'Research Areas', stFounded: 'Founded',
       newsTitle: 'Research News', moreAll: 'View all →',
       ntTitle: 'Notices', tabAll: 'All', tabUG: 'Undergrad', tabGrad: 'Graduate',
       smTitle: 'Seminars', moreShort: 'All →',
@@ -608,7 +610,7 @@ img{display:block;max-width:100%}
       fTel: 'Undergrad +82-2-2123-4426 · Graduate +82-2-2123-2810', fAdmin: 'Admin',
       catUG: 'UG', catGrad: 'Grad', labUnit: 'Laboratories',
       igTitle: '@yonsei_mech Reels', moreIg: 'Follow →',
-      smAbout1: 'Dean\'s Greeting', smAbout2: 'Vision & Philosophy', smAbout3: 'Organization',
+      smAbout1: 'About the School', smAbout2: 'Educational Objectives', smAbout3: 'Organization',
       smAbout4: 'History', smAbout5: 'Contact & Directions',
       smPeople1: 'Faculty', smPeople2: 'Staff', smRes1: 'Six Research Areas', smRes2: 'All Laboratories', smRes3: 'Lab Videos',
       smAcad1: 'Curriculum Overview', smAcad2: 'Degree Roadmap', smAcad5: 'Graduation Requirements', smAcad3: 'Undergraduate Courses', smAcad4: 'Graduate Courses',
@@ -1056,6 +1058,6 @@ img{display:block;max-width:100%}
 })();
 </script>
 <!-- 공용 헤더·사이트맵 푸터(서브페이지와 동일) 주입 -->
-<script src="assets/nav.js?v=39"></script>
+<script src="assets/nav.js?v=42"></script>
 </body>
 </html>

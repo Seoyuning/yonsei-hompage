@@ -216,7 +216,7 @@ window.YSME = {
    "ko": "김우철",
    "en": "Woochul Kim",
    "rank": "교수",
-   "role": "학과장",
+   "role": "학부장",
    "cluster": "thermal",
    "labId": "atel",
    "initial": "김",
@@ -232,7 +232,7 @@ window.YSME = {
    "ko": "김원정",
    "en": "Wonjung Kim",
    "rank": "부교수",
-   "role": "학부지도교수",
+   "role": "학부주임교수",
    "cluster": "thermal",
    "labId": "ssfl",
    "initial": "김",
@@ -587,6 +587,30 @@ window.YSME = {
  "professorsSource": {
   "source": "faculty_list.do",
   "verifiedAt": "2026-06-30"
+ },
+ "professorsEmeritus": [
+  { "ko": "김천욱", "en": "KIM, Cheon Uk", "rank": "명예교수", "field": "고체역학", "term": "1963–2002" },
+  { "ko": "민옥기", "en": "MIN, Ok Gi", "rank": "명예교수", "field": "응용역학", "term": "1983–2013" },
+  { "ko": "박영필", "en": "PARK, Yeong Pil", "rank": "명예교수", "field": "동역학 · 기계진동 · 진동제어", "term": "1977–2013" },
+  { "ko": "백윤수", "en": "BAEK, Yun Su", "rank": "명예교수", "field": "", "term": "" },
+  { "ko": "이강용", "en": "LEE, Gang Yong", "rank": "명예교수", "field": "파괴역학", "term": "1980–2012" },
+  { "ko": "이상조", "en": "LEE, Sang Jo", "rank": "명예교수", "field": "생산공학", "term": "1986–2019" },
+  { "ko": "이수홍", "en": "LEE, Soo Hong", "rank": "명예교수", "field": "AI CAD/CAM 동시공학설계", "term": "1994–2024" },
+  { "ko": "이진호", "en": "LEE, Jin Ho", "rank": "명예교수", "field": "AI CAD/CAM 동시공학설계 · 열공학", "term": "1983–2018" },
+  { "ko": "임윤철", "en": "LIM, Yun Cheol", "rank": "명예교수", "field": "AI CAD/CAM 동시공학설계", "term": "" },
+  { "ko": "전광민", "en": "JEON, Gwang Min", "rank": "명예교수", "field": "", "term": "" },
+  { "ko": "조강래", "en": "CHO, Gang Rae", "rank": "명예교수", "field": "유체역학", "term": "1971–2002" },
+  { "ko": "조형희", "en": "CHO, Hyeong Hee", "rank": "명예교수", "field": "", "term": "" },
+  { "ko": "주원구", "en": "JOO, Won Gu", "rank": "명예교수", "field": "", "term": "" },
+  { "ko": "차성운", "en": "CAH, Seong Un", "rank": "명예교수", "field": "", "term": "" },
+  { "ko": "최용제", "en": "CHOI, Yong Je", "rank": "명예교수", "field": "", "term": "" },
+  { "ko": "한재원", "en": "HAHN, Jae Won", "rank": "명예교수", "field": "", "term": "" },
+  { "ko": "황정호", "en": "HWANG, Jeong Ho", "rank": "명예교수", "field": "", "term": "" }
+ ],
+ "professorsEmeritusSource": {
+  "source": "professor_list.do?srCategoryId1=958 (국문) · 1185 (영문)",
+  "verifiedAt": "2026-07-27",
+  "note": "17명 전원. 재직기간·전공이 빈 항목은 공식 사이트에 게재되어 있지 않아 비워 둔다(추정 금지). 전임 33 + 명예·퇴임 17 = 전체 50 으로 건수 검증됨."
  },
  "labs": [
   {
@@ -1569,7 +1593,7 @@ window.YSME = {
   },
   {
    "href": "about.html",
-   "title": "학과장 인사말",
+   "title": "학부 소개",
    "desc": "소개 · 비전 · 교육목표"
   },
   {

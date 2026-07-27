@@ -334,6 +334,46 @@ img{display:block;max-width:100%}
   #newsPrev{display:none}
 }
 
+/* ═══ 모바일 ═══
+   데스크톱 여백(섹션당 위·아래 7rem)이 휴대폰에서 그대로 걸려 한 화면이 거의 빈칸이었다.
+   여백·타이포를 화면에 맞게 줄이고, 한 줄로 잘리던 제목은 두 줄까지 펴 준다. */
+@media(max-width:840px){
+  .sec{padding-top:4.4rem;padding-bottom:4.4rem}
+  .sec-head{margin-bottom:2.2rem}
+  .board-band .wrap{padding-top:3.6rem;padding-bottom:3.6rem}
+  .quick .wrap{padding-top:3.8rem;padding-bottom:3.8rem}
+}
+@media(max-width:640px){
+  .sec{padding-top:3.4rem;padding-bottom:3.4rem}
+  .stats .wrap{padding-top:2.4rem;padding-bottom:2.4rem}
+  .board-band .wrap{padding-top:2.8rem;padding-bottom:2.8rem}
+  .quick .wrap{padding-top:2.9rem;padding-bottom:2.9rem}
+  .mq{padding-top:2.6rem;padding-bottom:1.2rem}
+  /* 섹션 머리 — 「전체 보기」가 제목과 부딪혀 줄이 엉켰다. 아래 줄로 내린다 */
+  .sec-head{flex-wrap:wrap;align-items:center;gap:.9rem;margin-bottom:1.7rem}
+  .sidx{font-size:2.6rem}
+  .sec-head .more{order:3;flex:0 0 100%;text-align:right;padding:.3rem 0}
+  /* 목록 — 말줄임 대신 두 줄까지 */
+  .nrow{padding-top:1.3rem;padding-bottom:1.3rem}
+  .crow{padding-top:1.4rem;padding-bottom:1.4rem}
+  .brow{align-items:flex-start;padding:.85rem 0}
+  .bcat{margin-top:.15rem}
+  .bt{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+    line-height:1.45;text-overflow:clip}
+  .bd{align-self:flex-start;margin-top:.15rem}
+  .tab{padding:.45rem .8rem}
+  .ql{padding-top:1.15rem;padding-bottom:1.15rem}
+  /* 인스타 릴스 — 끊임없이 도는 마퀴는 휴대폰에서 배터리·읽기 모두 손해다.
+     애니메이션을 끄고, 이음매용 복제 한 벌을 감춘 뒤 손으로 넘기는 레일로 바꾼다
+     (복제본은 감추기만 한다 — DOM 에서 빼면 스튜디오의 원문↔화면 정렬이 어긋난다) */
+  .ig-track{animation:none;width:auto}
+  .ig-set[aria-hidden="true"]{display:none}
+  .ig-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;
+    scrollbar-width:none}
+  .ig-wrap::-webkit-scrollbar{display:none}
+  .ig-set blockquote{scroll-snap-align:start}
+}
+
 /* ── 푸터 ── */
 .ftr{background:var(--ink);color:#a9b8d2;font-size:.8rem}
 .ftr .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem;
@@ -1016,6 +1056,6 @@ img{display:block;max-width:100%}
 })();
 </script>
 <!-- 공용 헤더·사이트맵 푸터(서브페이지와 동일) 주입 -->
-<script src="assets/nav.js?v=38"></script>
+<script src="assets/nav.js?v=39"></script>
 </body>
 </html>

@@ -197,10 +197,26 @@ a{color:inherit;text-decoration:none}
   .duo{grid-template-columns:1fr}
 }
 @media (max-width:720px){
-  .ntable{table-layout:auto}
   .ntable .c-writer,.ntable .h-writer{display:none}
   .ntable .c-no,.ntable .h-no{display:none}
   .board-search{width:100%}
+}
+/* 휴대폰 — 표를 행 카드로 편다. 고정폭 표는 제목 한 줄이 칸을 밀어 가로 스크롤을 만든다 */
+@media (max-width:560px){
+  .ntable{display:block;width:100%;border-top-width:2px}
+  .ntable colgroup,.ntable thead{display:none}   /* col 고정폭이 살아 있으면 표가 오그라든다 */
+  .ntable tbody,.ntable tr,.ntable td{display:block;width:auto}
+  .ntable tr{padding:.95rem .1rem;border-bottom:1px solid var(--line-soft)}
+  .ntable td{padding:0;border:0;text-align:left}
+  .ntable td.c-cat{margin-bottom:.45rem}
+  .ntable td.c-title{margin:0}
+  .c-title a{display:block;white-space:normal;overflow:visible;text-overflow:clip;max-width:none;
+    font-size:.97rem;line-height:1.45}
+  .ntable td.c-date,.ntable td.c-att{display:inline-block;margin-top:.45rem;text-align:left;font-size:.8rem}
+  .ntable td.c-att{margin-right:.5rem}
+  .ntable td.c-att:empty{display:none}
+  .ntable .nempty{padding:2.4rem .6rem}
+  .pin{margin-right:.35rem}
 }
 </style>
 <style>.ynav-ph{position:fixed;top:0;left:0;right:0;height:3.7rem;background:rgba(255,255,255,.96);border-bottom:1px solid rgba(0,0,0,.08);z-index:39}</style>
@@ -515,7 +531,7 @@ a{color:inherit;text-decoration:none}
   boardRows('jobsRows', D.jobs, 'job');
 })();
 </script>
-<script src="assets/nav.js?v=38"></script>
+<script src="assets/nav.js?v=39"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--dimmer)">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

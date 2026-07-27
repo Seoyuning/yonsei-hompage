@@ -87,7 +87,9 @@ a{color:inherit;text-decoration:none}
 .subnav a:hover{color:var(--navy)}
 
 /* ── 섹션 골격 (흰 배경) ── */
-.section{padding:clamp(3rem,2rem + 3vw,4.5rem) 0}
+/* 위·아래만 준다 — shorthand 로 쓰면 같이 걸린 .wrap 의 좌우 여백이 0으로 지워져
+   휴대폰에서 글이 화면 끝에 붙는다(넓은 화면에선 max-width 덕에 안 보이던 문제) */
+.section{padding-block:clamp(3rem,2rem + 3vw,4.5rem)}
 .section + .section{border-top:1px solid var(--line-soft)}
 .sec-head{display:flex;justify-content:space-between;align-items:baseline;
   gap:1.5rem;flex-wrap:wrap;margin-bottom:clamp(1.6rem,1rem + 2vw,2.4rem)}
@@ -732,7 +734,7 @@ a{color:inherit;text-decoration:none}
 
 })();
 </script>
-<script src="assets/nav.js?v=38"></script>
+<script src="assets/nav.js?v=39"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--dimmer)">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

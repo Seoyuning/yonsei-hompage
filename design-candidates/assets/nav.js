@@ -75,6 +75,15 @@
     '.ysub-tab.cur{color:' + NAVY + ';border-bottom-color:' + NAVY + '}',
     '.ysub-hide{display:none!important}',
     '@media(max-width:920px){.ysub{top:3.7rem}.ysub-tab{font-size:.92rem;padding:.85rem .9rem .7rem}}',
+    /* 휴대폰 — 탭이 화면을 넘치므로 옆으로 밀리는 걸 눈에 보이게(오른쪽 페이드) + 손가락 크기 유지 */
+    '@media(max-width:640px){' +
+      '.ysub{overflow:hidden}' +   /* sticky 유지 — 위치는 그대로, 페이드만 얹는다 */
+      '.ysub::after{content:"";position:absolute;top:0;right:0;bottom:0;width:2.2rem;pointer-events:none;' +
+        'background:linear-gradient(90deg,rgba(255,255,255,0),#fff 72%)}' +
+      '.ysub-w{padding:0 .9rem;scroll-padding-inline:.9rem;scroll-snap-type:x proximity;' +
+        '-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}' +
+      '.ysub-tab{scroll-snap-align:start;font-size:.9rem;padding:.8rem .72rem .62rem;min-height:2.9rem}' +
+    '}',
     '@media(prefers-reduced-motion:reduce){.ysub-tab{transition:color .18s,border-color .18s,background .18s}}',
     /* 맨 위로 버튼 */
     '.ytop{position:fixed;right:1.4rem;bottom:1.4rem;z-index:45;width:2.9rem;height:2.9rem;border-radius:50%;' +
@@ -94,12 +103,38 @@
       'padding:.75rem clamp(1.2rem,.6rem + 2vw,2.6rem);border-bottom:1px solid ' + LINE + '}',
     '.ynv-ovl-close{width:44px;height:44px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;' +
       'background:none;border:0;padding:0;cursor:pointer;font-size:1.35rem;line-height:1;color:' + NAVY + '}',
-    '.ynv-ovl-body{display:flex;flex-direction:column;padding:.6rem clamp(1.2rem,.6rem + 2vw,2.6rem) 3rem}',
+    '.ynv-ovl-body{display:flex;flex-direction:column;' +
+      'padding:.6rem clamp(1.2rem,.6rem + 2vw,2.6rem) calc(3rem + env(safe-area-inset-bottom))}',
     '.ynv-ovl-top{display:block;font-family:' + KR + ';font-size:1.12rem;font-weight:800;color:' + NAVY + ';' +
       'padding:.85rem 0 .4rem;margin-top:.5rem;border-bottom:1px solid rgba(0,0,0,.06)}',
-    '.ynv-ovl-sub{display:block;font-family:' + KR + ';font-size:.95rem;color:' + MUTED + ';padding:.55rem 0 .55rem 1.1rem;text-decoration:none}',
+    /* 휴대폰 주내비라 손가락 크기(≈44px)로 — 줄 간격이 곧 탭 영역이다 */
+    '.ynv-ovl-sub{display:block;font-family:' + KR + ';font-size:.95rem;color:' + MUTED + ';' +
+      'padding:.66rem 0 .66rem 1.1rem;text-decoration:none}',
     '@media(max-width:920px){.ynv-menu{display:none}.ynv-burger{display:inline-flex}}',
     '@media(min-width:921px){.ynv-ovl{display:none!important}}',
+    /* 휴대폰 — 유틸 바가 두 줄로 접히고 링크가 손가락보다 작았다 */
+    '@media(max-width:640px){' +
+      '.ynv-top{max-height:2.6rem}' +
+      '.ynv-top .ynv-w{gap:.85rem;padding:0 .9rem;flex-wrap:nowrap;white-space:nowrap}' +
+      '.ynv-top a{display:inline-flex;align-items:center;min-height:2.4rem;font-size:.72rem}' +
+      '.ynv-lang{margin-left:.15rem}' +
+      '.ynv-lang button{padding:.3rem .6rem;min-height:1.9rem}' +
+      '.ynv-hdr .ynv-w{gap:.8rem;padding:.6rem .9rem}' +
+      '.ynv-brand img{height:2rem}' +
+      '.ynv-brand .bko{font-size:.95rem}' +
+      '.ynv-brand .ben{font-size:.55rem;letter-spacing:.1em}' +
+      '.ytop{right:.9rem;bottom:calc(.9rem + env(safe-area-inset-bottom));width:2.7rem;height:2.7rem}' +
+    '}',
+    /* 아주 좁은 화면(360 이하) — 영문 병기를 접어 브랜드 한 줄 유지 */
+    '@media(max-width:360px){.ynv-brand .ben{display:none}.ynv-top .ynv-w{gap:.6rem}}',
+    /* 서브페이지 히어로 윗여백은 이 고정 헤더를 비키려고 둔 값이라 여기서 맞춘다.
+       (페이지 인라인 CSS 뒤에 주입되므로 이 규칙이 이긴다)
+       휴대폰 헤더는 ~94px인데 데스크톱 기준 152px이 그대로 걸려 제목 위가 텅 비었다 */
+    '@media(max-width:640px){' +
+      '.phero .phero-in{padding-top:7.6rem;padding-bottom:2.1rem}' +
+      '.phero{min-height:0}' +
+      '.phero .phero-lead{font-size:.92rem;line-height:1.68}' +
+    '}',
     '@media(prefers-reduced-motion:reduce){.ynv-top,.ynv-d,.ynv-d a,.ynv-i>a::after{transition:none}}',
     /* ── 사이트맵 정보 푸터 (파란 CTA·간이 푸터 대체) ── */
     '.yft{background:' + INK + ';color:#c6d2e6;font-family:' + KR + '}',
@@ -122,7 +157,17 @@
     '.yft-base{border-top:1px solid rgba(255,255,255,.1);padding:1.25rem 1rem;font-size:.72rem;' +
       'letter-spacing:.03em;color:#7f90ad;text-align:center}',
     '.yft-base a{color:#93a2bd;text-decoration:none}.yft-base a:hover{color:#fff}',
-    '@media(max-width:720px){.yft-w{grid-template-columns:1fr;gap:2.4rem}}'
+    '@media(max-width:720px){.yft-w{grid-template-columns:1fr;gap:2.4rem}}',
+    /* 휴대폰 — 사이트맵이 길어 꼬리가 되므로 두 칸으로 촘촘히, 링크는 눌릴 만큼 */
+    '@media(max-width:640px){' +
+      '.yft-w{padding:2.2rem .9rem 1.6rem;gap:1.9rem}' +
+      '.yft-cols{grid-template-columns:repeat(2,minmax(0,1fr));gap:1.5rem 1rem}' +
+      '.yft-h{margin-bottom:.7rem;font-size:.88rem}' +
+      '.yft-col ul{gap:.15rem}' +
+      '.yft-col li a{display:block;padding:.42rem 0;font-size:.8rem}' +
+      '.yft-ext a{padding:.5rem .85rem}' +
+      '.yft-base{padding:1.1rem .9rem calc(1.1rem + env(safe-area-inset-bottom));line-height:1.7}' +
+    '}'
   ].join('');
   var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
 

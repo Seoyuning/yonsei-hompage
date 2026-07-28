@@ -24,7 +24,9 @@
    ═══════════════════════════════════════════════════════════ */
 :root{
   --navy:#1a3d75;
-  --coral:#1a3d75;--warm:#1a3d75;
+  --accent:#A56F63;      /* 포인트 색 — 테두리·칠·점 등 장식 */
+  --accent-soft:rgba(165,111,99,.14);
+  --coral:#8E5A4F;--warm:#1a3d75;
   --ink:#1a3d75;
   --body:#4a5a74;
   --sub:#5c6b85;
@@ -175,27 +177,38 @@ a.arrow:hover{gap:.7rem}
 /* ── 대학원 교과목 목록 (§03) — G-academics §04 학부 전공 교과의 .crs-* 패턴을 그대로 따랐다.
       학부는 이수구분이 있어 블록으로 나누지만, 대학원 데이터에는 이수구분 항목이 없어
       코드 순 단일 목록 + 검색 + 전체 보기로만 구성한다(분류를 지어내지 않는다). ── */
-.crs-search{position:relative;max-width:24rem;margin:0 0 1.4rem}
-.crs-search input{width:100%;font-family:var(--kr);font-size:.86rem;color:#2a3a56;
-  background:#fff;border:0;border-bottom:1px solid var(--line);padding:.55rem .3rem .55rem 1.7rem;transition:border-color .15s}
-.crs-search input::placeholder{color:var(--label)}
-.crs-search input:focus{outline:none;border-bottom-color:var(--navy)}
-.crs-search::before{content:"⌕";position:absolute;left:.15rem;top:50%;transform:translateY(-50%);color:var(--label);font-size:1rem;pointer-events:none}
-.crs-status{font-family:var(--kr);font-size:.78rem;color:var(--label);margin:0 0 1.2rem;
-  font-variant-numeric:tabular-nums;min-height:1.1em}
-.crs-list{border-top:1px solid var(--line-soft)}
-.crs-row{display:grid;grid-template-columns:5.4rem 1fr auto;gap:0 1.3rem;align-items:baseline;
-  padding:.95rem 0;border-bottom:1px solid var(--line-soft);scroll-margin-top:6.6rem}
+/* ── 교과목 검색 + 목록 ──
+   예전엔 검색칸이 밑줄 하나뿐이라 목록과 구분이 안 됐고, 행이 얇은 회색 글씨로
+   일정하게 이어져 어디까지가 한 과목인지 눈으로 끊기지 않았다.
+   (1) 검색칸을 테두리·배경이 있는 상자로 세워 목록과 분리하고
+   (2) 행을 두 줄씩 옅게 번갈아 칠해 시선이 가로로 미끄러지지 않게 하고
+   (3) 과목명·학점 글자색을 진하게 올린다. */
+.crs-search{position:relative;max-width:26rem;margin:0 0 1.1rem}
+.crs-search input{width:100%;font-family:var(--kr);font-size:.92rem;color:var(--ink);
+  background:#fff;border:1px solid var(--line);border-radius:.4rem;
+  padding:.7rem .8rem .7rem 2.3rem;transition:border-color .15s,box-shadow .15s}
+.crs-search input::placeholder{color:var(--muted)}
+.crs-search input:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(26,61,117,.1)}
+.crs-search::before{content:"⌕";position:absolute;left:.8rem;top:50%;transform:translateY(-50%);
+  color:var(--muted);font-size:1.15rem;pointer-events:none;line-height:1}
+.crs-status{font-family:var(--kr);font-size:.82rem;color:var(--sub);margin:0 0 1rem;line-height:1.7}
+.crs-list{border-top:2px solid var(--navy)}
+.crs-row{display:grid;grid-template-columns:6rem minmax(0,1fr) auto;gap:0 1.4rem;align-items:baseline;
+  padding:.85rem clamp(.5rem,.3rem + .5vw,.9rem);border-bottom:1px solid var(--line-soft);
+  transition:background .12s}
+/* 짝수 행만 아주 옅게 — 줄이 길어도 눈이 행을 놓치지 않는다 */
+.crs-row:nth-child(even){background:rgba(10,26,51,.022)}
+.crs-row:hover{background:var(--card-hover)}
 .crs-row.is-hidden{display:none}
-.crs-code{font-family:var(--mono);font-size:.68rem;letter-spacing:.04em;color:var(--label);
-  font-variant-numeric:tabular-nums;padding-top:.15em}
+.crs-code{font-variant-numeric:tabular-nums;font-size:.76rem;letter-spacing:.03em;
+  color:var(--navy);font-weight:700}
 .crs-main{min-width:0}
-.crs-name{font-family:var(--kr);font-weight:600;font-size:.98rem;color:var(--ink);line-height:1.3}
-.crs-en{font-family:var(--kr);font-size:.74rem;color:var(--label);margin-top:.24rem;line-height:1.45}
-.crs-credit{font-family:var(--mono);font-size:.74rem;color:var(--muted);
-  font-variant-numeric:tabular-nums;white-space:nowrap}
-.crs-empty{padding:2rem 0;font-family:var(--kr);font-size:.88rem;color:var(--muted)}
-.crs-more{margin-top:1.3rem;font-family:var(--kr);font-size:.85rem;font-weight:600;color:#2a3a56;
+.crs-name{font-family:var(--kr);font-weight:600;font-size:1rem;color:var(--ink);line-height:1.35}
+.crs-en{font-family:var(--kr);font-size:.78rem;color:var(--muted);margin-top:.25rem;line-height:1.5}
+.crs-credit{font-family:var(--kr);font-size:.82rem;color:var(--sub);white-space:nowrap;
+  font-variant-numeric:tabular-nums}
+.crs-empty{padding:2rem 0;font-family:var(--kr);font-size:.9rem;color:var(--sub)}
+.crs-more{margin-top:1.3rem;font-family:var(--kr);font-size:.88rem;font-weight:600;color:var(--navy);
   background:#fff;border:1px solid var(--line);padding:.55rem 1.1rem;cursor:pointer;
   transition:border-color .15s,color .15s}
 .crs-more:hover{border-color:var(--coral);color:var(--coral)}
@@ -239,64 +252,146 @@ table.greq-t td{color:var(--body)}
 @media (max-width:560px){ table.greq-t{min-width:30rem;font-size:.82rem} }
 
 /* ═══ 분야별 연구실 아코디언 (G-research 연구실 목록 이식) ═══ */
-.cluster{border:1px solid var(--line-soft);border-left:3px solid var(--cl-c,var(--coral));
-  background:var(--card);margin-bottom:1.4rem;scroll-margin-top:6.6rem;
-  transition:border-color .2s,box-shadow .3s}
-.cluster.cl-open{border-left-color:var(--navy);box-shadow:0 10px 30px rgba(15,27,48,.08)}
-.cluster.cl-flash{animation:clFlash 1.4s ease}
-@keyframes clFlash{0%,100%{box-shadow:0 0 0 0 rgba(26,61,117,0)}20%{box-shadow:0 0 0 3px rgba(26,61,117,.35)}}
+/* ── 분야 아코디언 ──
+   접힌 모습이 목록의 기본 상태다. 예전엔 [상자 + 좌측 3px 색막대 + 거대한 회색 숫자]라
+   카드 6장이 쌓인 것처럼 무거웠다. 상자를 없애고 헤어라인으로만 나눈 '차례' 형태로 바꾼다.
+   색은 분야를 가리키는 작은 점 하나로 줄이고, 개수는 큰 숫자 대신 우측의 작은 글자로 눕힌다. */
+.cluster{border-top:1px solid var(--line);background:transparent;margin:0;scroll-margin-top:6.6rem}
+.cluster:last-of-type{border-bottom:1px solid var(--line)}
 
-.cl-head{display:grid;grid-template-columns:auto 1fr auto auto;gap:1rem 1.2rem;align-items:start;
-  padding:1.25rem clamp(1rem,.6rem + 1.4vw,1.6rem) 1.1rem;border-bottom:1px solid var(--line);
-  cursor:pointer;position:relative;list-style:none;-webkit-tap-highlight-color:transparent}
-.cl-head::-webkit-details-marker{display:none}
-.cl-code{display:flex;align-items:center;padding-top:.4rem}
-.cl-code .cdot{width:9px;height:9px;border-radius:50%;background:var(--cl-c,var(--coral));flex:none}
-.cl-titles{min-width:0}
-.cl-titles .ko{font-family:var(--kr);font-weight:700;font-size:clamp(1.15rem,.9rem + 1vw,1.45rem);
-  color:var(--ink);line-height:1.25;letter-spacing:-.01em}
-.cl-titles .desc{font-family:var(--kr);font-size:.88rem;color:var(--sub);line-height:1.65;margin-top:.55rem;max-width:44rem}
-.cl-metric{text-align:right;white-space:nowrap;padding-top:.15rem}
-.cl-metric .num{font-family:var(--mono);font-weight:300;font-size:clamp(1.8rem,1.2rem + 2vw,2.4rem);
-  line-height:.9;color:var(--ink);font-variant-numeric:tabular-nums}
-.cl-metric .num .u{color:var(--cl-c,var(--coral));font-family:var(--kr);font-size:.42em;margin-left:.1em}
-.cl-metric .share{font-family:var(--kr);font-size:.72rem;color:var(--label);margin-top:.45rem}
-.cl-chev{grid-column:4;align-self:center;width:1.3rem;height:1.3rem;flex:none;color:var(--muted);
-  transition:transform .35s ease}
-.cluster.cl-open .cl-chev{transform:rotate(180deg);color:var(--navy)}
-.cluster:not(.cl-open) .lab-legend,.cluster:not(.cl-open) .lab-list{display:none}
+.cl-head{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;
+  gap:0 clamp(.9rem,.5rem + 1.2vw,1.5rem);align-items:center;
+  padding:clamp(1.3rem,1rem + 1.2vw,1.9rem) clamp(.2rem,.1rem + .4vw,.6rem);
+  border-bottom:0;transition:padding-left .25s}
+.cl-head:hover{padding-left:clamp(.6rem,.4rem + .8vw,1.1rem)}
+.cl-code{display:flex;align-items:center}
+.cl-code .cdot{width:7px;height:7px;border-radius:50%;background:var(--cl-c,var(--coral));flex:none;
+  transition:transform .25s}
+.cluster.cl-open .cl-code .cdot{transform:scale(1.45)}
+.cl-titles{min-width:0;display:flex;flex-wrap:wrap;align-items:baseline;
+  gap:.2rem clamp(.8rem,.5rem + 1vw,1.4rem)}
+.cl-titles .ko{font-family:var(--kr);font-weight:700;font-size:clamp(1.15rem,.95rem + .9vw,1.5rem);
+  color:var(--ink);line-height:1.3;letter-spacing:-.02em;transition:color .2s;
+  flex:none;min-width:9.5rem}   /* 분야명 폭을 맞춰야 옆의 설명 시작점이 가지런하다 */
+.cl-head:hover .cl-titles .ko,.cluster.cl-open .cl-titles .ko{color:var(--navy)}
+/* 설명은 제목 옆에 한 줄로 눕힌다 — 접힌 상태에서 줄 수가 들쭉날쭉하지 않게 */
+.cl-titles .desc{font-family:var(--kr);font-size:.86rem;color:var(--muted);line-height:1.6;
+  margin:0;min-width:0;flex:1 1 22rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cl-metric{white-space:nowrap;display:flex;align-items:baseline;gap:.35rem}
+.cl-metric .num{font-family:var(--kr);font-weight:700;font-size:.95rem;
+  color:var(--sub);font-variant-numeric:tabular-nums}
+.cl-metric .num .u{color:var(--muted);font-weight:400;font-size:.86em;margin-left:.05em}
+.cl-metric .share{font-family:var(--kr);font-size:.78rem;color:var(--label)}
 
 /* 연구실 행 목록 */
-.lab-legend{display:grid;
-  grid-template-columns:minmax(9rem,1.05fr) minmax(9rem,1.35fr) minmax(6.5rem,.7fr) 7.5rem;
-  gap:1rem;align-items:center;
-  padding:.55rem clamp(1rem,.6rem + 1.4vw,1.6rem);border-bottom:1px solid var(--line);
-  font-family:var(--kr);font-size:.7rem;color:var(--label)}
-.lab-legend .rt{text-align:right}
-.lab-row{display:grid;
-  grid-template-columns:minmax(9rem,1.05fr) minmax(9rem,1.35fr) minmax(6.5rem,.7fr) 7.5rem;
-  gap:1rem;align-items:center;
-  padding:.85rem clamp(1rem,.6rem + 1.4vw,1.6rem);border-bottom:1px solid var(--line-soft);
-  transition:background .12s}
+/* ── 연구실 목록 (서울대 컴퓨터공학부 「연구실 목록」의 읽기 리듬 참고) ──
+   그쪽은 색을 거의 안 쓰고 [고정 열 + 얇은 구분선 + 회색 보조정보]만으로 읽힌다.
+   우리도 분야 색은 아코디언 헤더에서만 쓰고, 행 안에서는 색을 뺀다.
+   열 5개: 연구실 | 지도교수 | 위치 | 전화 | 자료. --lcols 로 헤더와 행이 같은 격자를 쓴다. */
+.lab-list,.lab-legend{--lcols:minmax(11rem,1.6fr) minmax(7rem,.85fr) minmax(6.5rem,.8fr) 8.6rem 6.4rem 1.1rem;
+  --lpad:clamp(1rem,.6rem + 1.4vw,1.7rem)}
+.lab-legend{display:grid;grid-template-columns:var(--lcols);
+  gap:1.4rem;align-items:center;
+  padding:.7rem var(--lpad);border-bottom:1px solid var(--line);
+  font-family:var(--kr);font-size:.72rem;font-weight:600;letter-spacing:.02em;color:var(--label)}
+.lab-row{display:grid;grid-template-columns:var(--lcols);
+  gap:.2rem 1.4rem;align-items:baseline;
+  padding:clamp(.95rem,.8rem + .5vw,1.25rem) var(--lpad);
+  border-bottom:1px solid var(--line-soft);transition:background .12s}
 .lab-row:last-child{border-bottom:0}
 .lab-row:hover{background:var(--card-hover)}
+/* 연구실명 — 목록에서 가장 먼저 잡히도록 이 행에서 유일하게 진한 글자 */
 .l-name{min-width:0}
-.l-name .ko{font-family:var(--kr);font-weight:600;font-size:.96rem;color:var(--ink);line-height:1.3}
-.l-name .en{font-family:var(--kr);font-size:.74rem;color:var(--muted);margin-top:.22rem;line-height:1.5;
-  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
-.l-pi{min-width:0;font-size:.82rem;color:var(--body)}
-.l-pi .pi{font-family:var(--kr);color:#2a3a56;display:inline-flex;align-items:center;gap:.45rem}
-.l-pi .pi .cdot{width:6px;height:6px;border-radius:50%;background:var(--cl-c,var(--coral));flex:none}
+.l-name .ko{font-family:var(--kr);font-weight:600;font-size:clamp(.98rem,.93rem + .2vw,1.06rem);
+  color:var(--ink);line-height:1.4;letter-spacing:-.01em}
+.l-name .l-link{color:inherit;transition:color .15s}
+.lab-row:hover .l-name .l-link{color:var(--navy)}
+/* 보조 한 줄(짧은 한글 분야어) — 한 줄 넘으면 자른다. 원문 세부 주제는 펼침 패널로 */
+.l-sub{font-family:var(--kr);font-size:.78rem;color:var(--muted);line-height:1.5;margin-top:.3rem;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* 나머지 열 — 전부 같은 크기·같은 회색. 위계를 만들지 않는 게 읽기에 낫다 */
+.l-pi,.l-loc,.l-tel,.l-act{font-family:var(--kr);font-size:.85rem;color:var(--sub);
+  line-height:1.5;min-width:0;overflow-wrap:break-word}
+.l-pi .pi{color:var(--sub)}
 .l-pi a.pi{transition:color .15s}
-.l-pi a.pi:hover{color:var(--coral);text-decoration:underline;text-underline-offset:3px}
-.l-pi .role{font-family:var(--kr);font-size:.72rem;color:var(--label);margin-top:.2rem}
-.l-loc{min-width:0;font-family:var(--kr);font-size:.78rem;color:var(--sub);
-  display:inline-flex;align-items:center;gap:.4rem}
-.l-loc svg{flex:none;color:var(--label)}
-.l-act{text-align:right;font-family:var(--kr);font-size:.76rem;white-space:nowrap;line-height:1.8}
-.l-act a{color:var(--muted);transition:color .15s}
-.l-act a:hover{color:var(--cl-c,var(--coral))}
-.l-act a.ext{color:var(--coral)}
+.l-pi a.pi:hover{color:var(--navy);text-decoration:underline;text-underline-offset:3px}
+.l-pi .role{display:block;font-size:.72rem;color:var(--label);margin-top:.22rem}
+.l-tel{font-variant-numeric:tabular-nums;white-space:nowrap}
+.l-tel a{color:inherit}
+.l-tel a:hover{color:var(--navy)}
+.l-act{white-space:nowrap}
+.l-act a.ext{color:var(--muted);transition:color .15s}
+.l-act a.ext:hover{color:var(--navy);text-decoration:underline;text-underline-offset:3px}
+.l-act .sep{color:var(--line);margin:0 .4rem}
+.l-name .dim,.l-tel .dim,.l-act .dim{color:var(--line)}
+.lab-note{font-family:var(--kr);font-size:.8rem;color:var(--muted);margin-top:.4rem;line-height:1.6}
+
+/* ── 학부연구생(인턴) 모집 — 코랄 배지 + 접이식 상세 ── */
+.intern-sum{font-family:var(--kr);font-size:.88rem;color:var(--sub);margin-top:.85rem;line-height:1.65}
+.intern-sum b{color:var(--coral);font-weight:700}
+.i-badge{display:inline-block;font-family:var(--kr);font-size:.64rem;font-weight:600;letter-spacing:.02em;
+  color:var(--coral);background:rgba(226, 92, 74,.08);padding:.14rem .45rem;margin-left:.5rem;
+  vertical-align:2px;white-space:nowrap;border-radius:2px}
+.lab-item{border-bottom:1px solid var(--line-soft)}
+.lab-list>:last-child{border-bottom:0}
+.lab-item>summary.lab-row{border-bottom:0;cursor:pointer;list-style:none}
+.lab-item>summary.lab-row::-webkit-details-marker{display:none}
+.lab-item>summary.lab-row::marker{content:""}
+.lab-item[open]>summary.lab-row{background:var(--card-hover)}
+.lab-row,.lab-item{scroll-margin-top:6.6rem}
+/* 펼침 표시 — 행 오른쪽 끝 고정 열(빈 칸이면 아무것도 안 그린다) */
+.l-more{justify-self:end;align-self:center;width:1.1rem;height:1.1rem;position:relative;color:var(--label)}
+.l-more::before{content:"";position:absolute;left:.16rem;top:.3rem;width:.5rem;height:.5rem;
+  border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;
+  transform:rotate(45deg);transition:transform .2s}
+.lab-item[open] .l-more{color:var(--navy)}
+.lab-item[open] .l-more::before{transform:rotate(225deg);top:.42rem}
+/* 펼침 패널 — 행과 배경으로 구분하고, 안에서 블록을 세로로 쌓는다 */
+.lab-panel{background:var(--card-hover);border-top:1px solid var(--line-soft);
+  padding:clamp(1rem,.8rem + .6vw,1.35rem) var(--lpad,1.4rem) clamp(1.1rem,.9rem + .6vw,1.5rem);
+  display:grid;gap:1.1rem}
+.lp-h{font-family:var(--kr);font-size:.7rem;font-weight:700;letter-spacing:.08em;
+  color:var(--label);margin-bottom:.6rem}
+/* 세부 연구 주제 — 원문이 영문 장문이라 목록 대신 칩으로 흩어 놓으면 훑기 쉽다 */
+.lp-topics{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:.4rem .5rem}
+.lp-topics li{font-family:var(--kr);font-size:.8rem;color:var(--body);line-height:1.5;
+  background:#fff;border:1px solid var(--line-soft);padding:.3rem .6rem;border-radius:3px}
+.intern-panel{border-top:0;background:transparent;padding:0}
+.lab-panel .lp-block + .lp-block{border-top:1px solid var(--line-soft);padding-top:1.1rem}
+.intern-panel .ip-head{font-family:var(--kr);font-size:.7rem;font-weight:700;letter-spacing:.08em;
+  color:var(--coral);margin-bottom:.65rem}
+.ip-grid{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.5rem 1.2rem;
+  font-family:var(--kr);font-size:.85rem;color:var(--body);line-height:1.7}
+.ip-grid dt{font-size:.74rem;font-weight:600;color:var(--label);white-space:nowrap;padding-top:.15rem}
+.ip-grid dd{min-width:0}
+.ip-grid ul{margin:0;padding-left:1.1rem}
+.ip-grid li{margin:.18rem 0}
+.l-h{display:none}
+
+@media (max-width:860px){
+  .ip-grid{grid-template-columns:1fr;gap:.2rem}
+  .ip-grid dd{margin-bottom:.55rem}
+}
+
+/* ── 대학원 진학 CTA — 네이비 밴드 (메인 계승) ── */
+.cta{background:var(--navy);color:#fff;
+  padding:clamp(2.6rem,1.6rem + 3.5vw,4.2rem) clamp(1.4rem,.6rem + 2vw,3rem);
+  display:flex;justify-content:space-between;align-items:center;gap:2rem;flex-wrap:wrap;
+  max-width:1120px;margin:clamp(3rem,2rem + 3vw,4.5rem) auto;
+  margin-inline:clamp(1.2rem,.6rem + 2vw,2.6rem)}
+@media(min-width:1180px){.cta{margin-inline:auto}}
+.cta .cta-txt{max-width:34rem}
+.cta .cta-kick{font-family:var(--mono);font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:#9db4d8}
+.cta h2{font-family:var(--kr);font-weight:700;color:#fff;
+  font-size:clamp(1.4rem,1rem + 2vw,2.1rem);line-height:1.25;letter-spacing:-.01em;margin-top:.6rem}
+.cta p{font-family:var(--kr);color:#c6d2e4;margin-top:.8rem;line-height:1.6;font-size:.98rem}
+.cta .cta-btn{font-family:var(--kr);font-weight:600;font-size:1rem;
+  background:#fff;color:var(--navy);padding:.9rem 1.6rem;white-space:nowrap;
+  border:1px solid #fff;transition:background .15s,color .15s}
+.cta .cta-btn:hover{background:transparent;color:#fff;border-color:#fff}
+.cta .cta-btn .arr{color:var(--coral)}
+
+
 
 /* ── 학부연구생(인턴) 모집 — 코랄 배지 + 접이식 상세 ── */
 .i-badge{display:inline-block;font-family:var(--kr);font-size:.64rem;font-weight:600;letter-spacing:.02em;
@@ -328,11 +423,23 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
   .cl-metric{grid-column:1 / -1;text-align:left;display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap;padding-top:.2rem}
   .cl-metric .share{margin-top:0}
   .cl-chev{grid-column:3}
-  .lab-row{grid-template-columns:2.6rem 1fr;gap:.5rem 1rem;padding:.95rem clamp(.8rem,.5rem + 1vw,1.2rem);align-items:start}
-  .l-name{grid-column:2;grid-row:1}
-  .l-pi{grid-column:2;grid-row:2;margin-top:.4rem}
-  .l-loc{grid-column:2;grid-row:3;margin-top:.35rem}
-  .l-act{grid-column:2;grid-row:4;text-align:left;margin-top:.5rem}
+  /* 모바일 — 열 격자를 버리고 [연구실명] + [라벨 값] 줄들로 눕힌다.
+     라벨은 CSS content가 아니라 실제 <span>이라 영문 전환에서도 번역된다. */
+  .lab-row{grid-template-columns:minmax(0,1fr) 1.1rem;gap:.3rem 1rem;
+    padding:1rem clamp(.9rem,.5rem + 1.2vw,1.3rem);align-items:start}
+  .l-name{grid-column:1;grid-row:1}
+  .l-pi,.l-loc,.l-tel,.l-act{grid-column:1;display:flex;gap:.55rem;font-size:.82rem}
+  .l-pi{grid-row:2;margin-top:.45rem;flex-wrap:wrap}
+  .l-loc{grid-row:3}
+  .l-tel{grid-row:4}
+  .l-act{grid-row:5}
+  .l-pi .role{display:inline;margin-top:0}
+  .l-pi .role::before{content:"·";margin-right:.4rem;color:var(--line)}
+  .l-h{display:block;flex:none;width:3.4rem;color:var(--label);font-size:.74rem;line-height:1.55}
+  .l-act .sep{margin:0}   /* flex gap 과 겹쳐 간격이 두 배로 벌어진다 */
+  .l-more{grid-column:2;grid-row:1;align-self:start;margin-top:.15rem}
+  .l-sub{white-space:normal}
+  .lp-topics li{font-size:.78rem}
   .ip-grid{grid-template-columns:1fr;gap:.2rem}
   .ip-grid dd{margin-bottom:.55rem}
 }
@@ -521,50 +628,79 @@ html[lang="en"] .lab-en-only{display:none}
     return (t || b || a) ? { target:t, benefit:b, area:a } : null;
   }
 
+  /* ── 연구실 행 ──
+     서울대 컴퓨학부 「연구실 목록」의 읽기 방식을 참고했다: 한 줄 = 연구실 하나,
+     열은 [연구실 · 지도교수 · 위치 · 전화 · 자료]로 고정하고 부가 정보는 회색으로 눕힌다.
+     예전 행은 areaDetail(영문 150~190자)을 두 줄로 깔아 행 높이가 들쭉날쭉했다 —
+     그 긴 원문은 펼침 패널로 내리고, 행에는 짧은 한글 area만 남긴다. */
   function labRow(l){
     var prof = profByLab[l.id];
     var role = prof && prof.role ? prof.role : '';
     var info = internInfo(l);
-    var nameKo = l.site
-      ? '<a class="ext" style="color:inherit" href="'+esc(l.site)+'" target="_blank" rel="noopener">'+esc(l.ko)+'</a>'
-      : esc(l.ko);
     var badge = info ? '<span class="i-badge">학부연구생 모집</span>' : '';
-    var kw = '';
-    if(l.areaDetail){
-      var items = l.areaDetail.split('\n').map(function(s){ return s.trim(); }).filter(Boolean);
-      if(items.length) kw = '<div class="en" title="'+esc(items.join(' · '))+'">'+esc(items.join(' · '))+'</div>';
-    }
-    if(!kw && l.en) kw = '<div class="en lab-en-only">'+esc(l.en)+'</div>';   /* ENG 에서는 위 연구실명도 같은 영문으로 치환돼 두 번 나온다 → CSS 로 감춘다 */
-    var piInner = '<span class="cdot" aria-hidden="true"></span>'+esc(l.pi)+' 교수';
+
+    /* 연구실명 — 홈페이지가 있으면 바로 이동(행 펼침과 충돌하지 않게 링크로 분리) */
+    var nameKo = l.site
+      ? '<a class="l-link" href="'+esc(l.site)+'" target="_blank" rel="noopener">'+esc(l.ko)+'<span class="visually-hidden"> 연구실 홈페이지 (새 창)</span></a>'
+      : esc(l.ko);
+    /* 행에는 짧은 한글 분야어만. 없으면 영문명 (ENG 전환 시 연구실명과 중복돼 CSS로 감춘다) */
+    var sub = l.area ? '<div class="l-sub">'+esc(l.area)+'</div>'
+            : (l.en ? '<div class="l-sub lab-en-only">'+esc(l.en)+'</div>' : '');
+
+    var piInner = esc(l.pi)+' 교수';
     var piCell = prof
       ? '<a class="pi" href="G-people.html#'+esc(prof.id)+'">'+piInner+'<span class="visually-hidden"> 프로필 보기</span></a>'
       : '<span class="pi">'+piInner+'</span>';
+
+    var tel = realVal(l.labPhone).replace(/\s+/g,'');
+    var telCell = tel
+      ? '<a href="tel:'+esc(tel.replace(/-/g,''))+'">'+esc(tel)+'</a>'
+      : '<span class="dim" aria-hidden="true">—</span>';
+
+    /* 자료 열 — 홈페이지·소개영상을 아이콘 대신 짧은 글자 링크로 (아이콘만은 뜻이 흐리다) */
     var links = [];
-    if(l.site)  links.push('<a class="ext" href="'+esc(l.site)+'" target="_blank" rel="noopener">연구실 홈페이지 ↗<span class="visually-hidden"> (새 창)</span></a>');
-    if(l.video) links.push('<a class="ext" href="'+esc(l.video)+'" target="_blank" rel="noopener">소개 영상 ↗<span class="visually-hidden"> (새 창)</span></a>');
-    var act = links.length ? links.join('<br>') : '<span class="dim" aria-hidden="true">—</span>';
-    var cells = '<div class="l-name"><div class="ko">'+nameKo+badge+'</div>'+kw+'</div>'
-      + '<div class="l-pi">'+piCell
-        + (role ? '<div class="role">'+esc(role)+'</div>' : '') + '</div>'
-      + '<div class="l-loc">'+pin()+esc(l.loc)+'</div>'
-      + '<div class="l-act">'+act+'</div>';
-    if(!info){
-      return '<div class="lab-row" id="'+esc(l.id)+'" role="group" aria-label="'+esc(l.ko+' · '+l.pi)+'">'+cells+'</div>';
+    if(l.site)  links.push('<a class="ext" href="'+esc(l.site)+'" target="_blank" rel="noopener">홈페이지<span class="visually-hidden"> (새 창)</span></a>');
+    if(l.video) links.push('<a class="ext" href="'+esc(l.video)+'" target="_blank" rel="noopener">영상<span class="visually-hidden"> (새 창)</span></a>');
+    var act = links.length ? links.join('<span class="sep" aria-hidden="true">·</span>') : '<span class="dim" aria-hidden="true">—</span>';
+
+    var cells = '<div class="l-name"><div class="ko">'+nameKo+badge+'</div>'+sub+'</div>'
+      + '<div class="l-pi"><span class="l-h">지도교수</span>'+piCell
+        + (role ? '<span class="role">'+esc(role)+'</span>' : '') + '</div>'
+      + '<div class="l-loc"><span class="l-h">위치</span>'+esc(l.loc)+'</div>'
+      + '<div class="l-tel"><span class="l-h">전화</span>'+telCell+'</div>'
+      + '<div class="l-act"><span class="l-h">자료</span>'+act+'</div>';
+
+    /* 펼침 내용 — 세부 연구 주제(원문) + 학부연구생 모집. 둘 다 없으면 펼치지 않는다 */
+    var topicsHtml = '';
+    if(l.areaDetail){
+      var items = l.areaDetail.split('\n').map(function(s){ return s.trim(); }).filter(Boolean);
+      if(items.length) topicsHtml = '<div class="lp-block"><div class="lp-h">세부 연구 주제</div>'
+        + '<ul class="lp-topics">'+items.map(function(s){ return '<li>'+esc(s)+'</li>'; }).join('')+'</ul></div>';
     }
-    var dl = '';
-    if(info.target)  dl += '<dt>모집 대상</dt><dd>'+esc(info.target)+'</dd>';
-    if(info.benefit) dl += '<dt>혜택</dt><dd>'+esc(info.benefit)+'</dd>';
-    if(info.area){
-      var topics = info.area.split('\n').map(function(s){ return s.trim(); }).filter(Boolean);
-      dl += '<dt>연구 주제</dt><dd><ul>'+topics.map(function(s){ return '<li>'+esc(s)+'</li>'; }).join('')+'</ul></dd>';
-    }
-    var cnt = realVal(l.intern);
-    return '<details class="lab-item" id="'+esc(l.id)+'">'
-      + '<summary class="lab-row" aria-label="'+esc(l.ko+' · '+l.pi+' · 학부연구생 모집 상세 열기')+'">'+cells+'</summary>'
-      + '<div class="intern-panel">'
+    var internHtml = '';
+    if(info){
+      var dl = '';
+      if(info.target)  dl += '<dt>모집 대상</dt><dd>'+esc(info.target)+'</dd>';
+      if(info.benefit) dl += '<dt>혜택</dt><dd>'+esc(info.benefit)+'</dd>';
+      if(info.area){
+        var topics = info.area.split('\n').map(function(s){ return s.trim(); }).filter(Boolean);
+        dl += '<dt>연구 주제</dt><dd><ul>'+topics.map(function(s){ return '<li>'+esc(s)+'</li>'; }).join('')+'</ul></dd>';
+      }
+      var cnt = realVal(l.intern);
+      internHtml = '<div class="lp-block intern-panel">'
         + '<div class="ip-head">학부연구생 · 인턴 모집'+(cnt ? ' — '+esc(cnt) : '')+'</div>'
         + '<dl class="ip-grid">'+dl+'</dl>'
-      + '</div>'
+      + '</div>';
+    }
+
+    if(!topicsHtml && !internHtml){
+      return '<div class="lab-row" id="'+esc(l.id)+'" role="group" aria-label="'+esc(l.ko+' · '+l.pi)+'">'+cells+'<span></span></div>';
+    }
+    return '<details class="lab-item" id="'+esc(l.id)+'">'
+      + '<summary class="lab-row" aria-label="'+esc(l.ko+' · '+l.pi+' · 상세 열기')+'">'+cells
+        + '<span class="l-more" aria-hidden="true"></span>'
+      + '</summary>'
+      + '<div class="lab-panel">'+topicsHtml+internHtml+'</div>'
       + '</details>';
   }
 
@@ -584,7 +720,7 @@ html[lang="en"] .lab-en-only{display:none}
         + '<svg class="cl-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>'
       + '</div>'
       + '<div class="lab-legend" aria-hidden="true">'
-        + '<span>연구실</span><span>담당 교수</span><span>위치</span><span class="rt">링크</span>'
+        + '<span>연구실</span><span>지도교수</span><span>위치</span><span>전화</span><span>자료</span><span></span>'
       + '</div>'
       + '<div class="lab-list">'+rows+'</div>'
       + '</section>';

@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>[시안 G · 관제] 소식 — 연세대학교 기계공학부</title>
 <meta name="description" content="연세대학교 기계공학부의 학부·대학원 공지사항과 연구 뉴스, 세미나·행사 안내를 확인할 수 있습니다." />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" />
+<!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
+<link rel="preload" as="script" href="assets/js/data.js?v=d15" />
+<link rel="preload" as="script" href="assets/nav.js?v=64" />
 <style>
 /* 소식 — 흰 배경 · 네이비 제목 · 실제 학과식 풀폭 게시판(표) 목록.
    히어로: 이미지 배너 + 중앙 정렬 타이틀 + 브레드크럼.
@@ -24,8 +24,8 @@
   --line:rgba(10,26,51,.14);
   --line-soft:rgba(10,26,51,.08);
   --row:#f5f8fc;
-  --mono:"Apple SD Gothic Neo","Noto Sans KR","Pretendard Variable","Pretendard",system-ui,sans-serif;
-  --kr:"Apple SD Gothic Neo","Noto Sans KR","Pretendard Variable","Pretendard",system-ui,sans-serif;
+  --mono:"Apple SD Gothic Neo","Pretendard Variable","Pretendard",system-ui,sans-serif;
+  --kr:"Apple SD Gothic Neo","Pretendard Variable","Pretendard",system-ui,sans-serif;
   /* 분류 배지 색 */
   --cat-acad:#2b4a7a;
   --cat-sch:#b0742c;
@@ -242,7 +242,7 @@ a{color:inherit;text-decoration:none}
 }
 </style>
 <style>.ynav-ph{position:fixed;top:0;left:0;right:0;height:3.7rem;background:rgba(255,255,255,.96);border-bottom:1px solid rgba(0,0,0,.08);z-index:39}</style>
-<style>h1,h2,.sec-title,.phero h1{font-family:"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;letter-spacing:-.01em}</style>
+<style>h1,h2,.sec-title,.phero h1{font-family:"Apple SD Gothic Neo",system-ui,sans-serif;letter-spacing:-.01em}</style>
 <link rel="stylesheet" href="assets/transition.css">
 <script>/* 탭 해시 진입은 히어로부터 — 파싱 전에 해시를 떼어 앵커 점프·상단바 접힘 왕복을 원천 차단(nav.js가 탭 복원).
    scrollRestoration=manual: 뒤로가기·같은 주소 재방문 때 브라우저가 이전 스크롤을 되살려
@@ -362,7 +362,6 @@ a{color:inherit;text-decoration:none}
       <div>
         <p class="sec-kick">Thesis Defense</p>
         <h2 class="sec-title" id="t-thesis">학위논문심사</h2>
-        <p class="sec-sub">석·박사 학위논문 심사 공고 게시판입니다. 아래는 최근 공고이며, 전체 공고는 원본 게시판에서 볼 수 있습니다.</p>
       </div>
       <a class="sec-more" href="https://me.yonsei.ac.kr/me/community/degree_thesis_review.do" target="_blank" rel="noopener">전체 보기 ↗</a>
     </div>
@@ -386,7 +385,6 @@ a{color:inherit;text-decoration:none}
       <div>
         <p class="sec-kick">Resources</p>
         <h2 class="sec-title" id="t-archive">자료실</h2>
-        <p class="sec-sub">출석인정 신청서, 각종 양식 · 안내 자료를 내려받을 수 있는 게시판입니다. 첨부 파일은 원문에서 내려받습니다.</p>
       </div>
       <a class="sec-more" href="https://me.yonsei.ac.kr/me/community/information.do" target="_blank" rel="noopener">원본 게시판 ↗</a>
     </div>
@@ -403,7 +401,6 @@ a{color:inherit;text-decoration:none}
       <div>
         <p class="sec-kick">Careers</p>
         <h2 class="sec-title" id="t-jobs">취업 정보</h2>
-        <p class="sec-sub">기업 채용 · 인턴 · 연구인력 모집 등 학부에 접수된 취업 공고입니다. 구분은 제목 기반 자체 분류입니다.<br>학부 학생을 대상으로 채용 · 인턴 · 채용설명회를 안내하려는 기업은 학부 행정팀(02-2123-4426)으로 문의해 주세요.</p>
       </div>
       <a class="sec-more" href="https://me.yonsei.ac.kr/me/community/job.do" target="_blank" rel="noopener">전체 공고 ↗</a>
     </div>

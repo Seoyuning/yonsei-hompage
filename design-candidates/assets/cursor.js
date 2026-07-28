@@ -74,7 +74,7 @@
     '.ycur.is-down .ycur-ring-i{transform:scale(.88)}',
     '.ycur.is-target .ycur-dot{opacity:0}',
     '.ycur-dot{transition:opacity .16s ease}',
-    '.ycur-lb{font-family:"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;',
+    '.ycur-lb{font-family:"Apple SD Gothic Neo",system-ui,sans-serif;',
     'font-size:.72rem;font-weight:700;letter-spacing:-.01em;color:#12294f;white-space:nowrap;',
     'opacity:0;transform:translateY(3px);transition:opacity .16s ease .04s,transform .16s ease .04s}',
     '.ycur.is-target .ycur-lb{opacity:1;transform:none}',

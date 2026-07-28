@@ -8,11 +8,15 @@
 <title>[시안 H · 아카데믹] 연세대학교 기계공학부</title>
 <meta name="description" content="Design candidate H — Academic. KAIST ME·SNU ME 메인을 참고한 정갈한 화이트 아카데믹 레이아웃. 타이포 히어로 + 연구 뉴스 카드 + 공지/세미나 보드 + 분야 그리드." />
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/variable/woff2/SUIT-Variable.css" />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonts-archive/GmarketSans/GmarketSans.css" />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy.css" />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" />
+<!-- 본문 글꼴 — 렌더를 막지 않게 비동기로 받는다(media 트릭). 받기 전에는 시스템 글꼴로
+     그대로 보이고(font-display:swap), 받은 뒤 조용히 바뀐다. -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
+  media="print" onload="this.media='all'" />
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
+<!-- 스크립트를 미리 받아 둔다 — 파서가 해당 줄에 닿았을 때 이미 캐시에 있어 멈춤이 짧아진다 -->
+<link rel="preload" as="script" href="assets/js/data.js?v=d15" />
+<link rel="preload" as="script" href="assets/nav.js?v=64" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    시안 H · 아카데믹 (Reference: me.kaist.ac.kr / me.snu.ac.kr)
@@ -24,9 +28,9 @@
   --navy:#1a3d75; --navy-d:#12294f; --coral:#1a3d75; --accent-d:#8aa6d4;
   --ink:#0f1b30; --muted:#5e6b82; --dim:#8b96a9;
   --paper:#ffffff; --line:#e2ddd2; --soft:#f4f1ea; --bg:#ffffff;
-  --kr:"Apple SD Gothic Neo","Noto Sans KR","Pretendard Variable","Pretendard",system-ui,sans-serif;
+  --kr:"Apple SD Gothic Neo","Pretendard Variable","Pretendard",system-ui,sans-serif;
   /* 라벨·숫자도 본문과 같은 Pretendard — 모노스페이스는 AI 티가 나서 배제 */
-  --mono:"Apple SD Gothic Neo","Noto Sans KR","Pretendard Variable","Pretendard",system-ui,sans-serif;
+  --mono:"Apple SD Gothic Neo","Pretendard Variable","Pretendard",system-ui,sans-serif;
   --e:cubic-bezier(.16,1,.3,1);   /* expo-out — 모든 모션의 기준 이징 */
 }
 *,*::before,*::after{box-sizing:border-box;margin:0}
@@ -387,7 +391,7 @@ img{display:block;max-width:100%}
 .ftr .fl{line-height:1.9}
 .ftr a:hover{color:#fff}
 </style>
-<style>h1,h2,.sec-title,.phero h1,.hero h1,.hero-title,.club-name,.vt,.staff-head h2,.brand .bko,.ynv-brand .bko{font-family:"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;letter-spacing:-.01em}</style>
+<style>h1,h2,.sec-title,.phero h1,.hero h1,.hero-title,.club-name,.vt,.staff-head h2,.brand .bko,.ynv-brand .bko{font-family:"Apple SD Gothic Neo",system-ui,sans-serif;letter-spacing:-.01em}</style>
 <link rel="stylesheet" href="assets/transition.css">
 </head>
 <body>
@@ -556,8 +560,29 @@ img{display:block;max-width:100%}
 
 
 <script src="assets/js/data.js?v=d15"></script>
-<script async src="https://www.instagram.com/embed.js"></script>
-<script>window.addEventListener("load",function(){if(window.instgrm)window.instgrm.Embeds.process();});</script>
+<script>
+/* 인스타그램 임베드 — 예전엔 embed.js 를 무조건 받고 load 때 릴 10개를 한꺼번에 처리했다.
+   그 탓에 첫 화면과 아무 상관 없는 요청이 로드를 2초 가까이 끌었다(측정값 1.9s).
+   지금은 릴 묶음이 화면에 들어올 때 embed.js 를 처음 받는다. 첫 화면에서는 요청 0. */
+(function(){
+  var box = document.querySelector('.ig-strip') || document.querySelector('.instagram-media');
+  if(!box) return;
+  var target = box.closest('section') || box;
+  var loaded = false;
+  function load(){
+    if(loaded) return; loaded = true;
+    var sc = document.createElement('script');
+    sc.async = true; sc.src = 'https://www.instagram.com/embed.js';
+    sc.onload = function(){ if(window.instgrm) window.instgrm.Embeds.process(); };
+    document.body.appendChild(sc);
+  }
+  if(!('IntersectionObserver' in window)){ addEventListener('load', load); return; }
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ io.disconnect(); load(); } });
+  }, { rootMargin: '400px 0px' });   /* 조금 못 미쳐도 미리 받아 둔다 */
+  io.observe(target);
+})();
+</script>
 <script>
 /* 실데이터 렌더 + 한/영 전환 — window.YSME (뉴스·공지·세미나·분야·교수) */
 (function () {

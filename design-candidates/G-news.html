@@ -112,18 +112,25 @@ a{color:inherit;text-decoration:none}
 .board-meta{display:flex;align-items:center;justify-content:flex-end;padding:.2rem .1rem .9rem}
 /* ── 페이지 넘김 — 학부 공식 홈페이지와 같은 모양:
    현재 페이지만 네이비로 칠한 정사각, 나머지는 회색 숫자, 끝에 다음(›)·마지막(») ── */
-.pager{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.15rem;
-  margin-top:1.8rem;padding-top:.4rem}
-.pager button{min-width:2.5rem;height:2.5rem;padding:0 .45rem;border:0;background:none;cursor:pointer;
-  font-family:var(--kr);font-size:.95rem;font-weight:500;color:var(--muted);
+.pager{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.2rem;
+  margin-top:clamp(2rem,1.4rem + 2vw,3rem);padding-top:.4rem}
+.pager button{min-width:2.9rem;height:2.9rem;padding:0 .5rem;border:0;background:none;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;
+  font-family:var(--kr);font-size:1rem;font-weight:500;color:var(--muted);
   font-variant-numeric:tabular-nums;line-height:1;transition:color .15s,background .15s}
-.pager button:hover:not([disabled]):not(.cur){color:var(--navy)}
+.pager button:hover:not(.cur){color:var(--navy)}
 .pager button.cur{background:var(--navy);color:#fff;font-weight:700;cursor:default}
-.pager button[disabled]{color:var(--line);cursor:default}
-.pager .pg-arw{font-size:1.1rem;color:var(--label);letter-spacing:-.05em}
-.pager .pg-gap{min-width:1.4rem;text-align:center;color:var(--line);pointer-events:none}
+.pager button:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
+/* 화살표 — 얇은 선으로 직접 그린 셰브런(글꼴에 따라 굵기가 달라지지 않게) */
+.pager .pg-arw svg{width:1.15rem;height:1.15rem;fill:none;stroke:currentColor;
+  stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.pager .pg-arw{color:var(--label)}
+.pager .pg-arw:hover{color:var(--navy)}
+.pager .pg-arw:first-child{margin-right:.15rem}
 @media (max-width:560px){
-  .pager button{min-width:2.2rem;height:2.4rem;font-size:.9rem}
+  .pager{gap:.1rem}
+  .pager button{min-width:2.5rem;height:2.6rem;font-size:.92rem;padding:0 .3rem}
+  .pager .pg-arw svg{width:1.05rem;height:1.05rem}
 }
 
 /* ── 공지 표(게시판) ── */
@@ -466,6 +473,17 @@ a{color:inherit;text-decoration:none}
     /* ── 페이지 버튼 만들기 ──
        번호는 한 번에 열 개까지만 보여주고 현재 쪽이 그 가운데 오게 창을 민다.
        모양은 학부 공식 홈페이지와 같다 — 현재 쪽만 칠하고, 끝에 다음(›)·마지막(»). */
+    /* ── 페이지 넘김 ──
+       학부 공식 홈페이지 페이저를 그대로 옮겼다: 현재 쪽만 네이비 정사각으로 칠하고
+       나머지는 회색 숫자, 오른쪽 끝에 다음(›)·마지막(») 화살표.
+       화살표는 글자(&rsaquo;)로 두면 글꼴마다 굵기·크기가 제각각이라 얇은 선으로 직접 그린다.
+       번호는 한 번에 열 개까지만 보이고, 현재 쪽이 그 창의 가운데에 오도록 민다. */
+    var CHEV = {
+      prev: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>',
+      next: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>',
+      first: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 5l-7 7 7 7"/><path d="M11 5l-7 7 7 7"/></svg>',
+      last: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5l7 7-7 7"/><path d="M13 5l7 7-7 7"/></svg>'
+    };
     function renderPager(total){
       var pages = Math.max(1, Math.ceil(total / PER));
       if(pages <= 1){ pagerEl.innerHTML = ''; pagerEl.hidden = true; return; }
@@ -474,19 +492,20 @@ a{color:inherit;text-decoration:none}
       var from = Math.max(1, Math.min(page - Math.floor(WIN/2), pages - WIN + 1));
       var to = Math.min(pages, from + WIN - 1);
       var h = '';
-      function btn(p, label, cls, dis, aria){
-        return '<button type="button" class="'+cls+'"'+(dis?' disabled':'')+' data-p="'+p+'"'
-          + (aria?' aria-label="'+aria+'"':'')
-          + (cls.indexOf('cur')>=0?' aria-current="page"':'')+'>'+label+'</button>';
+      function btn(p, label, cls, aria){
+        return '<button type="button" class="'+cls+'" data-p="'+p+'"'
+          + (aria ? ' aria-label="'+aria+'"' : '')
+          + (cls.indexOf('cur') >= 0 ? ' aria-current="page"' : '') + '>' + label + '</button>';
       }
-      if(from > 1){
-        h += btn(1, '&laquo;', 'pg-arw', false, '첫 페이지');
-        h += btn(page-1, '&lsaquo;', 'pg-arw', false, '이전 페이지');
+      /* 화살표는 갈 곳이 있을 때만 — 첫 쪽에서 '이전'을 회색으로 남겨두면 누를 수 있는 척 보인다 */
+      if(page > 1){
+        h += btn(1, CHEV.first, 'pg-arw', '첫 페이지');
+        h += btn(page - 1, CHEV.prev, 'pg-arw', '이전 페이지');
       }
-      for(var i=from; i<=to; i++) h += btn(i, String(i), i===page ? 'cur' : '', false, i+'페이지');
-      if(to < pages){
-        h += btn(page+1, '&rsaquo;', 'pg-arw', false, '다음 페이지');
-        h += btn(pages, '&raquo;', 'pg-arw', false, '마지막 페이지');
+      for(var i = from; i <= to; i++) h += btn(i, String(i), i === page ? 'cur' : '', i + '페이지');
+      if(page < pages){
+        h += btn(page + 1, CHEV.next, 'pg-arw', '다음 페이지');
+        h += btn(pages, CHEV.last, 'pg-arw', '마지막 페이지');
       }
       pagerEl.innerHTML = h;
     }

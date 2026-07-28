@@ -98,7 +98,7 @@ a{color:inherit;text-decoration:none}
   gap:1.5rem;flex-wrap:wrap;margin-bottom:clamp(1.6rem,1rem + 2vw,2.4rem)}
 .sec-kick{font-family:var(--mono);font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--coral)}
 .sec-title{font-family:var(--kr);font-weight:700;color:var(--ink);
-  font-size:clamp(1.5rem,1rem + 2vw,2.1rem);line-height:1.24;letter-spacing:-.01em;margin-top:.5rem}
+  font-size:clamp(1.85rem,1.2rem + 2.8vw,2.85rem);line-height:1.24;letter-spacing:-.01em;margin-top:.5rem}
 .sec-sub{font-family:var(--kr);font-size:.92rem;color:var(--sub);margin-top:.7rem;max-width:52rem;line-height:1.7}
 
 /* ── §01 교육과정 개관 ── */
@@ -697,7 +697,7 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
 </section>
 
 <!-- 단일 데이터 소스 (window.YSME) -->
-<script src="assets/js/data.js?v=d14"></script>
+<script src="assets/js/data.js?v=d15"></script>
 <script>
 (function(){
   'use strict';
@@ -1236,6 +1236,7 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
       var h = location.hash || '';
       if(h.indexOf('#course-') !== 0) return;
       var id = h.slice(1);
+      if(window.ysRevealAll) window.ysRevealAll();   /* 등장 애니메이션 중이면 위치가 흔들린다 — 먼저 끝낸다 */
       var el = document.getElementById(id);
       if(el && el.classList.contains('is-hidden')){
         if(crsSearch) crsSearch.value = '';
@@ -1330,7 +1331,7 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
   });
 })();
 </script>
-<script src="assets/nav.js?v=62"></script>
+<script src="assets/nav.js?v=64"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--kr);font-size:.74rem;color:#7b8595">
   © 2026 연세대학교 기계공학부 &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

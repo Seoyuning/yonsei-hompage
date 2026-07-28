@@ -88,7 +88,7 @@ a{color:inherit;text-decoration:none}
   gap:1.5rem;flex-wrap:wrap;margin-bottom:clamp(1.6rem,1rem + 2vw,2.4rem)}
 .sec-kick{font-family:var(--mono);font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--coral)}
 .sec-title{font-family:var(--kr);font-weight:700;color:var(--ink);
-  font-size:clamp(1.5rem,1rem + 2vw,2.1rem);line-height:1.24;letter-spacing:-.01em;margin-top:.5rem}
+  font-size:clamp(1.85rem,1.2rem + 2.8vw,2.85rem);line-height:1.24;letter-spacing:-.01em;margin-top:.5rem}
 .sec-sub{font-family:var(--kr);font-size:.92rem;color:var(--sub);margin-top:.7rem;max-width:52rem;line-height:1.7}
 
 /* ── 연구 비전 (웅장한 리드 + 3개 축 · 편집형 절제) ── */
@@ -200,22 +200,36 @@ a{color:inherit;text-decoration:none}
 /* ── 분야별 연구실 (카드 블록 × 6) ── */
 .clusters{max-width:1120px;margin:0 auto;
   padding:clamp(2.8rem,2rem + 3vw,4.2rem) clamp(1.2rem,.6rem + 2vw,2.6rem) 1.6rem}
-.cluster{border:1px solid var(--line-soft);border-left:3px solid var(--cl-c,var(--coral));
-  background:var(--card);margin-bottom:1.4rem;scroll-margin-top:6.6rem}
+/* ── 분야 아코디언 ──
+   접힌 모습이 목록의 기본 상태다. 예전엔 [상자 + 좌측 3px 색막대 + 거대한 회색 숫자]라
+   카드 6장이 쌓인 것처럼 무거웠다. 상자를 없애고 헤어라인으로만 나눈 '차례' 형태로 바꾼다.
+   색은 분야를 가리키는 작은 점 하나로 줄이고, 개수는 큰 숫자 대신 우측의 작은 글자로 눕힌다. */
+.cluster{border-top:1px solid var(--line);background:transparent;margin:0;scroll-margin-top:6.6rem}
+.cluster:last-of-type{border-bottom:1px solid var(--line)}
 
-.cl-head{display:grid;grid-template-columns:auto 1fr auto;gap:1rem 1.2rem;align-items:start;
-  padding:1.25rem clamp(1rem,.6rem + 1.4vw,1.6rem) 1.1rem;border-bottom:1px solid var(--line)}
-.cl-code{display:flex;align-items:center;padding-top:.4rem}
-.cl-code .cdot{width:9px;height:9px;border-radius:50%;background:var(--cl-c,var(--coral));flex:none}
-.cl-titles{min-width:0}
-.cl-titles .ko{font-family:var(--kr);font-weight:700;font-size:clamp(1.15rem,.9rem + 1vw,1.45rem);
-  color:var(--ink);line-height:1.25;letter-spacing:-.01em}
-.cl-titles .desc{font-family:var(--kr);font-size:.88rem;color:var(--sub);line-height:1.65;margin-top:.55rem;max-width:44rem}
-.cl-metric{text-align:right;white-space:nowrap;padding-top:.15rem}
-.cl-metric .num{font-family:var(--mono);font-weight:300;font-size:clamp(1.8rem,1.2rem + 2vw,2.4rem);
-  line-height:.9;color:var(--ink);font-variant-numeric:tabular-nums}
-.cl-metric .num .u{color:var(--cl-c,var(--coral));font-family:var(--kr);font-size:.42em;margin-left:.1em}
-.cl-metric .share{font-family:var(--kr);font-size:.72rem;color:var(--label);margin-top:.45rem}
+.cl-head{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;
+  gap:0 clamp(.9rem,.5rem + 1.2vw,1.5rem);align-items:center;
+  padding:clamp(1.3rem,1rem + 1.2vw,1.9rem) clamp(.2rem,.1rem + .4vw,.6rem);
+  border-bottom:0;transition:padding-left .25s}
+.cl-head:hover{padding-left:clamp(.6rem,.4rem + .8vw,1.1rem)}
+.cl-code{display:flex;align-items:center}
+.cl-code .cdot{width:7px;height:7px;border-radius:50%;background:var(--cl-c,var(--coral));flex:none;
+  transition:transform .25s}
+.cluster.cl-open .cl-code .cdot{transform:scale(1.45)}
+.cl-titles{min-width:0;display:flex;flex-wrap:wrap;align-items:baseline;
+  gap:.2rem clamp(.8rem,.5rem + 1vw,1.4rem)}
+.cl-titles .ko{font-family:var(--kr);font-weight:700;font-size:clamp(1.15rem,.95rem + .9vw,1.5rem);
+  color:var(--ink);line-height:1.3;letter-spacing:-.02em;transition:color .2s;
+  flex:none;min-width:9.5rem}   /* 분야명 폭을 맞춰야 옆의 설명 시작점이 가지런하다 */
+.cl-head:hover .cl-titles .ko,.cluster.cl-open .cl-titles .ko{color:var(--navy)}
+/* 설명은 제목 옆에 한 줄로 눕힌다 — 접힌 상태에서 줄 수가 들쭉날쭉하지 않게 */
+.cl-titles .desc{font-family:var(--kr);font-size:.86rem;color:var(--muted);line-height:1.6;
+  margin:0;min-width:0;flex:1 1 22rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cl-metric{white-space:nowrap;display:flex;align-items:baseline;gap:.35rem}
+.cl-metric .num{font-family:var(--kr);font-weight:700;font-size:.95rem;
+  color:var(--sub);font-variant-numeric:tabular-nums}
+.cl-metric .num .u{color:var(--muted);font-weight:400;font-size:.86em;margin-left:.05em}
+.cl-metric .share{font-family:var(--kr);font-size:.78rem;color:var(--label)}
 
 /* 연구실 행 목록 */
 /* ── 연구실 목록 (서울대 컴퓨터공학부 「연구실 목록」의 읽기 리듬 참고) ──
@@ -414,13 +428,15 @@ html[lang="en"] .lab-en-only{display:none}
 /* ── 분야별 연구실 아코디언 ── */
 .cl-head{cursor:pointer;position:relative;list-style:none;-webkit-tap-highlight-color:transparent}
 .cl-head::-webkit-details-marker{display:none}
-.cl-chev{grid-column:4;align-self:center;width:1.3rem;height:1.3rem;flex:none;color:var(--muted);
+.cl-chev{grid-column:4;align-self:center;width:1.15rem;height:1.15rem;flex:none;color:var(--label);
   transition:transform .35s var(--e,ease)}
 .cluster.cl-open .cl-chev{transform:rotate(180deg);color:var(--navy)}
-.cl-head{grid-template-columns:auto 1fr auto auto}
+.cl-head:hover .cl-chev{color:var(--navy)}
+
 .cluster:not(.cl-open) .lab-legend,.cluster:not(.cl-open) .lab-list{display:none}
 .cluster{transition:border-color .2s,box-shadow .3s}
-.cluster.cl-open{border-left-color:var(--navy);box-shadow:0 10px 30px rgba(15,27,48,.08)}
+.cluster.cl-open{background:var(--card,#fff)}
+.cluster.cl-open .lab-legend{border-top:1px solid var(--line-soft)}
 .cluster.cl-flash{animation:clFlash 1.4s ease}
 @keyframes clFlash{0%,100%{box-shadow:0 0 0 0 rgba(26,61,117,0)}20%{box-shadow:0 0 0 3px rgba(26,61,117,.35)}}
 </style>
@@ -767,8 +783,6 @@ html[lang="en"] .lab-en-only{display:none}
       <div>
         <p class="sec-kick">연구 분야</p>
         <h2 class="sec-title">연구실 목록</h2>
-        <p class="sec-sub">여섯 분야로 나눈 연구실 목록입니다. 분야를 누르면 소속 연구실이 펼쳐지고, 연구실 행을 누르면 세부 연구 주제가 열립니다.</p>
-        <p class="intern-sum" id="internSum" hidden></p>
       </div>
     </div>
     <div id="clusterBlocks"></div>
@@ -799,7 +813,7 @@ html[lang="en"] .lab-en-only{display:none}
 </section>
 
 <!-- 공유 단일 데이터 소스 (window.YSME) -->
-<script src="assets/js/data.js?v=d14"></script>
+<script src="assets/js/data.js?v=d15"></script>
 <script>
 (function(){
   'use strict';
@@ -951,13 +965,6 @@ html[lang="en"] .lab-en-only{display:none}
       + '</section>';
   }).join('');
 
-  /* ── 학부연구생 모집 요약 1줄 (실값 있는 연구실만 집계) ── */
-  var internCount = labs.filter(function(l){ return !!internInfo(l); }).length;
-  var internSum = document.getElementById('internSum');
-  if(internSum && internCount){
-    internSum.hidden = false;
-    internSum.innerHTML = '현재 <b>학부연구생 모집 연구실 '+internCount+'곳</b> — 모집 배지가 붙은 행을 누르면 모집 대상·혜택·연구 주제가 열립니다.';
-  }
 
   /* ══ 아코디언: 분야 헤더 클릭 시 연구실 목록 토글(단일 열림) ══ */
   var clusterEls = {};
@@ -1313,7 +1320,7 @@ html[lang="en"] .lab-en-only{display:none}
   }
 })();
 </script>
-<script src="assets/nav.js?v=62"></script>
+<script src="assets/nav.js?v=64"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:#7b8595">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

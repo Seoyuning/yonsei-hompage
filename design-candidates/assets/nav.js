@@ -101,6 +101,25 @@
       '.ysub-tab{scroll-snap-align:start;font-size:.9rem;padding:.8rem .72rem .62rem;min-height:2.9rem}' +
     '}',
     '@media(prefers-reduced-motion:reduce){.ysub-tab{transition:color .18s,border-color .18s,background .18s}}',
+
+    /* ── 기본 등장 애니메이션 ──
+       한화 에어로스페이스 미디어 라이브러리의 모션을 참고했다. 그쪽 구현은
+       GSAP + ScrollTrigger + Locomotive(스크롤 하이재킹) + SplitText 조합인데,
+       그 조합 자체는 우리 사이트에 못 넣는다:
+         · Locomotive 는 스크롤 컨테이너에 transform 을 걸어 position:sticky 를 죽인다.
+           우리는 헤더 · 형제바(.ysub) · 바로가기바(.yjump) 가 전부 sticky 다.
+         · 라이브러리 4종이면 200KB 가 넘는다. 이 사이트는 의존성 0 · 빌드 0 이 원칙이다.
+       그래서 '모션 언어'만 가져왔다 — 아래에서 위로 떠오르며 서서히 나타나기,
+       Quart ease-out(cubic-bezier(.25,1,.5,1)), 형제끼리 0.13초 계단식.
+       구현은 IntersectionObserver + CSS transition 뿐이다.
+       숨김 상태는 반드시 html.ys-rv 아래에서만 걸린다 — JS 가 죽거나 모션 축소·
+       숨은 탭이면 클래스가 안 붙고, 그러면 처음부터 그냥 다 보인다(내용 유실 없음). */
+    'html.ys-rv [data-rv]{opacity:0;transform:translateY(2.6rem);' +
+      'transition:opacity .95s cubic-bezier(.22,1,.36,1),transform .95s cubic-bezier(.22,1,.36,1);' +
+      'transition-delay:var(--rv-d,0s)}',
+    'html.ys-rv [data-rv].rv-in{opacity:1;transform:none}',
+    '@media(prefers-reduced-motion:reduce){html.ys-rv [data-rv]{opacity:1;transform:none;transition:none}}',
+    '@media print{html.ys-rv [data-rv]{opacity:1;transform:none;transition:none}}',
     /* 맨 위로 버튼 */
     '.ytop{position:fixed;right:1.4rem;bottom:1.4rem;z-index:45;width:2.9rem;height:2.9rem;border-radius:50%;' +
       'background:#fff;border:1px solid rgba(10,26,51,.15);box-shadow:0 6px 18px rgba(10,26,51,.15);' +
@@ -349,6 +368,7 @@
         var a = e.target && e.target.closest ? e.target.closest('a[href^="#"]') : null;
         if (!a) return;
         e.preventDefault();
+        if (window.ysRevealAll) window.ysRevealAll();   /* 위치를 재기 전에 transform 을 걷어낸다 */
         var t = document.getElementById(a.getAttribute('href').slice(1));
         if (!t) return;
         var off = (hdr ? hdr.getBoundingClientRect().height : 62) +
@@ -486,12 +506,99 @@
     document.body.appendChild(ft);
   }
 
+  /* ── 기본 등장 애니메이션 (CSS 는 위 스타일 배열의 html.ys-rv 규칙) ──
+     대상은 페이지를 고치지 않고 런타임에 고른다: main 안 각 섹션의 직계 블록들.
+     그 블록이 그리드/플렉스이고 자식이 2~12개면 블록 대신 자식들을 골라
+     카드가 하나씩 계단식으로 올라오게 한다.
+     건드리면 안 되는 것 — transform 은 자손 sticky 의 기준 상자를 바꿔 sticky 를
+     죽인다. 그래서 sticky 요소를 품은 블록은 통째로 건너뛴다.
+     히어로도 제외한다: 탭 스크롤 위치를 히어로의 getBoundingClientRect() 로 재는데,
+     transform 이 그 값을 흔들면 착지 위치가 어긋난다. */
+  function setupReveal() {
+    var root = document.documentElement;
+    /* 숨은 탭(자동화·백그라운드)에서는 IntersectionObserver 가 안 돈다 →
+       아예 시작하지 않는다. 클래스가 안 붙으니 처음부터 다 보이는 상태 그대로다. */
+    if (!('IntersectionObserver' in window)) return;
+    if (document.visibilityState && document.visibilityState !== 'visible') return;
+    try { if (matchMedia('(prefers-reduced-motion: reduce)').matches) return; } catch (e) {}
+
+    var STICKY = '.ysub, .yjump, .filterbar, .crs-block-head, .cl-head';
+    var main = document.querySelector('main');
+    if (!main) return;
+
+    var picks = [];
+    [].forEach.call(main.children, function (sec) {
+      if (sec.tagName !== 'SECTION' && sec.tagName !== 'DIV') return;
+      [].forEach.call(sec.children, function (block, bi) {
+        if (block.querySelector && block.querySelector(STICKY)) return;   /* sticky 품은 블록은 손대지 않는다 */
+        if (block.matches && block.matches(STICKY)) return;
+        var kids = block.children ? [].filter.call(block.children, function (k) { return k.nodeType === 1; }) : [];
+        var disp = '';
+        try { disp = getComputedStyle(block).display; } catch (e) {}
+        var isGrid = disp.indexOf('grid') >= 0 || disp.indexOf('flex') >= 0;
+        if (isGrid && kids.length >= 2 && kids.length <= 12) {
+          kids.forEach(function (k, i) { if (!k.querySelector || !k.querySelector(STICKY)) picks.push([k, i]); });
+        } else {
+          picks.push([block, bi]);
+        }
+      });
+    });
+    if (!picks.length) return;
+
+    root.classList.add('ys-rv');
+    picks.forEach(function (pair) {
+      var el = pair[0], i = pair[1];
+      el.setAttribute('data-rv', '');
+      if (i > 0) el.style.setProperty('--rv-d', Math.min(i, 5) * 0.17 + 's');
+    });
+
+    /* IntersectionObserver 콜백은 브라우저의 렌더링 단계에 실려 온다. 렌더링이 멈춘
+       환경(백그라운드 탭·일부 헤드리스·크롤러)에서는 한 번도 안 올 수 있고, 그러면
+       내용이 opacity:0 인 채로 남는다. 그래서 IO 를 '주 엔진 + 3중 안전망' 으로 짠다. */
+    var ioWorks = false;
+    var io = new IntersectionObserver(function (entries) {
+      ioWorks = true;
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('rv-in');
+        io.unobserve(e.target);
+      });
+    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.01 });
+    picks.forEach(function (pair) { io.observe(pair[0]); });
+
+    /* 안전망 1 — IO 가 안 오면 스크롤·리사이즈 때 직접 위치를 재서 띄운다(rAF 안 씀) */
+    function sweep() {
+      if (ioWorks) return;
+      var vh = window.innerHeight || document.documentElement.clientHeight;
+      picks.forEach(function (pair) {
+        var el = pair[0];
+        if (el.classList.contains('rv-in')) return;
+        var r = el.getBoundingClientRect();
+        if (r.top < vh * 0.92 && r.bottom > 0) el.classList.add('rv-in');
+      });
+    }
+    addEventListener('scroll', sweep, { passive: true });
+    addEventListener('resize', sweep);
+    setTimeout(sweep, 900);
+    /* 안전망 2 — 5초가 지나도 단 하나도 안 떴으면 뭔가 고장 난 것이다. 전부 보여준다. */
+    setTimeout(function () {
+      if (!document.querySelector('[data-rv].rv-in') && window.ysRevealAll) window.ysRevealAll();
+    }, 5000);
+
+    /* 탭 전환·해시 이동처럼 우리가 직접 스크롤을 옮길 때는 애니메이션을 즉시 끝낸다.
+       숨은 탭에 있던 요소가 transform 이 남은 채로 측정되면 착지가 어긋나기 때문이다. */
+    window.ysRevealAll = function () {
+      picks.forEach(function (pair) { pair[0].classList.add('rv-in'); io.unobserve(pair[0]); });
+    };
+  }
+
   function mount() {
     var old = document.querySelector('.hud-top'); if (old) old.remove();
     var ph = document.querySelector('.ynav-ph'); if (ph) ph.remove();
     document.body.insertBefore(nav, document.body.firstChild);
     buildSubnav();
     buildFooter();
+    setupReveal();
 
     /* 스크롤 시 유틸바 접힘 */
     var min = false;

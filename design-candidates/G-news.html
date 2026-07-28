@@ -78,7 +78,7 @@ a{color:inherit;text-decoration:none}
 .sec-kick{font-family:var(--mono);font-size:.68rem;font-weight:600;letter-spacing:.22em;
   text-transform:uppercase;color:var(--coral);margin-bottom:.5rem}
 .sec-title{font-weight:800;color:var(--navy);
-  font-size:clamp(1.5rem,1rem + 2vw,2.1rem);line-height:1.2;letter-spacing:-.01em}
+  font-size:clamp(1.85rem,1.2rem + 2.8vw,2.85rem);line-height:1.2;letter-spacing:-.01em}
 .sec-sub{font-size:.94rem;color:var(--sub);line-height:1.7;max-width:52rem;margin-top:.6rem}
 .sec-more{font-size:.84rem;color:var(--muted);white-space:nowrap;transition:color .15s}
 .sec-more:hover{color:var(--coral)}
@@ -110,6 +110,21 @@ a{color:inherit;text-decoration:none}
   font-variant-numeric:tabular-nums}
 .board-status b{color:var(--coral);font-weight:700}
 .board-meta{display:flex;align-items:center;justify-content:flex-end;padding:.2rem .1rem .9rem}
+/* ── 페이지 넘김 — 학부 공식 홈페이지와 같은 모양:
+   현재 페이지만 네이비로 칠한 정사각, 나머지는 회색 숫자, 끝에 다음(›)·마지막(») ── */
+.pager{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.15rem;
+  margin-top:1.8rem;padding-top:.4rem}
+.pager button{min-width:2.5rem;height:2.5rem;padding:0 .45rem;border:0;background:none;cursor:pointer;
+  font-family:var(--kr);font-size:.95rem;font-weight:500;color:var(--muted);
+  font-variant-numeric:tabular-nums;line-height:1;transition:color .15s,background .15s}
+.pager button:hover:not([disabled]):not(.cur){color:var(--navy)}
+.pager button.cur{background:var(--navy);color:#fff;font-weight:700;cursor:default}
+.pager button[disabled]{color:var(--line);cursor:default}
+.pager .pg-arw{font-size:1.1rem;color:var(--label);letter-spacing:-.05em}
+.pager .pg-gap{min-width:1.4rem;text-align:center;color:var(--line);pointer-events:none}
+@media (max-width:560px){
+  .pager button{min-width:2.2rem;height:2.4rem;font-size:.9rem}
+}
 
 /* ── 공지 표(게시판) ── */
 .ntable{width:100%;border-collapse:collapse;border-top:2px solid var(--navy);table-layout:fixed}
@@ -268,6 +283,7 @@ a{color:inherit;text-decoration:none}
         <tbody></tbody>
       </table>
       <p class="nempty" hidden>조건에 맞는 공지가 없습니다. 검색어나 분류를 조정해 보세요.</p>
+      <nav class="pager" aria-label="공지 목록 페이지"></nav>
     </div>
   </section>
 
@@ -298,6 +314,7 @@ a{color:inherit;text-decoration:none}
         <tbody></tbody>
       </table>
       <p class="nempty" hidden>조건에 맞는 공지가 없습니다. 검색어나 분류를 조정해 보세요.</p>
+      <nav class="pager" aria-label="공지 목록 페이지"></nav>
     </div>
   </section>
 
@@ -391,7 +408,7 @@ a{color:inherit;text-decoration:none}
   </section>
 </main>
 
-<script src="assets/js/data.js?v=d14"></script>
+<script src="assets/js/data.js?v=d15"></script>
 <script>
 (function(){
   'use strict';
@@ -424,7 +441,9 @@ a{color:inherit;text-decoration:none}
     var statusEl = root.querySelector('.board-status');
     var emptyEl = root.querySelector('.nempty');
     var table = root.querySelector('.ntable');
+    var pagerEl = root.querySelector('.pager');
     var cat = 'all', q = '';
+    var PER = 10, page = 1;   /* 한 쪽 10건 — 학교 게시판의 일반적인 분량 */
 
     var counts = { all:list.length, acad:0, sch:0, recruit:0, etc:0 };
     list.forEach(function(x){ counts[classify(x.title)]++; });
@@ -444,6 +463,34 @@ a{color:inherit;text-decoration:none}
         + '<td class="c-date">'+esc(x.date)+'</td>'
         + '</tr>';
     }
+    /* ── 페이지 버튼 만들기 ──
+       번호는 한 번에 열 개까지만 보여주고 현재 쪽이 그 가운데 오게 창을 민다.
+       모양은 학부 공식 홈페이지와 같다 — 현재 쪽만 칠하고, 끝에 다음(›)·마지막(»). */
+    function renderPager(total){
+      var pages = Math.max(1, Math.ceil(total / PER));
+      if(pages <= 1){ pagerEl.innerHTML = ''; pagerEl.hidden = true; return; }
+      pagerEl.hidden = false;
+      var WIN = 10;
+      var from = Math.max(1, Math.min(page - Math.floor(WIN/2), pages - WIN + 1));
+      var to = Math.min(pages, from + WIN - 1);
+      var h = '';
+      function btn(p, label, cls, dis, aria){
+        return '<button type="button" class="'+cls+'"'+(dis?' disabled':'')+' data-p="'+p+'"'
+          + (aria?' aria-label="'+aria+'"':'')
+          + (cls.indexOf('cur')>=0?' aria-current="page"':'')+'>'+label+'</button>';
+      }
+      if(from > 1){
+        h += btn(1, '&laquo;', 'pg-arw', false, '첫 페이지');
+        h += btn(page-1, '&lsaquo;', 'pg-arw', false, '이전 페이지');
+      }
+      for(var i=from; i<=to; i++) h += btn(i, String(i), i===page ? 'cur' : '', false, i+'페이지');
+      if(to < pages){
+        h += btn(page+1, '&rsaquo;', 'pg-arw', false, '다음 페이지');
+        h += btn(pages, '&raquo;', 'pg-arw', false, '마지막 페이지');
+      }
+      pagerEl.innerHTML = h;
+    }
+
     function render(){
       var ql = q.trim().toLowerCase();
       var hits = list.filter(function(x){
@@ -451,21 +498,35 @@ a{color:inherit;text-decoration:none}
         if(ql && String(x.title).toLowerCase().indexOf(ql)<0) return false;
         return true;
       });
-      tbody.innerHTML = hits.map(rowHtml).join('');
+      var pages = Math.max(1, Math.ceil(hits.length / PER));
+      if(page > pages) page = pages;            /* 필터로 쪽 수가 줄면 마지막 쪽으로 당긴다 */
+      var slice = hits.slice((page-1)*PER, page*PER);
+      tbody.innerHTML = slice.map(rowHtml).join('');
       table.style.display = hits.length ? '' : 'none';
       emptyEl.hidden = hits.length>0;
       statusEl.innerHTML = (hits.length === list.length)
-        ? '전체 '+list.length+'건'
-        : '전체 '+list.length+'건 중 <b>'+hits.length+'</b>건';
+        ? '전체 '+list.length+'건 · '+page+'/'+pages+' 쪽'
+        : '전체 '+list.length+'건 중 <b>'+hits.length+'</b>건 · '+page+'/'+pages+' 쪽';
       catWrap.querySelectorAll('.bcat').forEach(function(b){
         b.setAttribute('aria-pressed', String(b.dataset.cat===cat));
       });
+      renderPager(hits.length);
     }
     catWrap.addEventListener('click', function(e){
       var b = e.target.closest('.bcat'); if(!b || b.dataset.cat===cat) return;
-      cat = b.dataset.cat; render();
+      cat = b.dataset.cat; page = 1; render();
     });
-    input.addEventListener('input', function(){ q = input.value; render(); });
+    input.addEventListener('input', function(){ q = input.value; page = 1; render(); });
+    /* 쪽을 넘기면 목록 맨 위가 보이게 — 표 아래쪽에 시선이 남아 있으면 바뀐 걸 못 느낀다 */
+    pagerEl.addEventListener('click', function(e){
+      var b = e.target.closest('button'); if(!b || b.disabled) return;
+      var p = parseInt(b.getAttribute('data-p'), 10);
+      if(!p || p === page) return;
+      page = p; render();
+      var top = root.getBoundingClientRect().top + (window.pageYOffset||0)
+              - (parseFloat(getComputedStyle(document.body).getPropertyValue('--ys-stick')) || 0) * 16 - 16;
+      try{ window.scrollTo({top:Math.max(0,top), behavior:'smooth'}); }catch(_e){ window.scrollTo(0, Math.max(0,top)); }
+    });
     render();
   }
   buildBoard('ug', D.noticesUG);
@@ -534,7 +595,7 @@ a{color:inherit;text-decoration:none}
   boardRows('jobsRows', D.jobs, 'job');
 })();
 </script>
-<script src="assets/nav.js?v=62"></script>
+<script src="assets/nav.js?v=64"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--dimmer)">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

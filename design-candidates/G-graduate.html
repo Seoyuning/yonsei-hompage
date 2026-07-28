@@ -97,7 +97,7 @@ a{color:inherit;text-decoration:none}
   gap:1.5rem;flex-wrap:wrap;margin-bottom:clamp(1.6rem,1rem + 2vw,2.4rem)}
 .sec-kick{font-family:var(--mono);font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--coral)}
 .sec-title{font-family:var(--kr);font-weight:700;color:var(--ink);
-  font-size:clamp(1.5rem,1rem + 2vw,2.1rem);line-height:1.24;letter-spacing:-.01em;margin-top:.5rem}
+  font-size:clamp(1.85rem,1.2rem + 2.8vw,2.85rem);line-height:1.24;letter-spacing:-.01em;margin-top:.5rem}
 .sec-sub{font-family:var(--kr);font-size:.92rem;color:var(--sub);margin-top:.7rem;max-width:52rem;line-height:1.7}
 
 /* ── 리드 + 본문 서술 (G-academics .overview 언어 재사용) ── */
@@ -207,6 +207,34 @@ a.arrow:hover{gap:.7rem}
   .crs-row{grid-template-columns:1fr;gap:.3rem}
   .crs-code{padding-top:0}
 }
+
+/* ── 대학원 졸업요건 — 공식 원문(graduate/graduation.do)을 그대로 옮긴 블록 ──
+   요건 문서는 '읽는 글'이 아니라 '확인하는 글'이다. 그래서 카드로 묶어 요약하지 않고
+   번호 붙은 항목을 헤어라인으로 끊어, 필요한 항목만 골라 볼 수 있게 세운다. */
+.greq{margin-top:clamp(1.6rem,1.2rem + 1.4vw,2.4rem);border-top:2px solid var(--navy)}
+.greq-sec{border-bottom:1px solid var(--line-soft);padding:clamp(1.5rem,1.2rem + 1.2vw,2.1rem) 0}
+.greq-h{display:flex;align-items:baseline;gap:.75rem;margin:0 0 .9rem;
+  font-family:var(--kr);font-weight:700;letter-spacing:-.01em;color:var(--ink);
+  font-size:clamp(1.08rem,.98rem + .5vw,1.28rem);line-height:1.35}
+.greq-no{flex:none;font-size:.72rem;font-weight:700;letter-spacing:.1em;
+  color:var(--navy);font-variant-numeric:tabular-nums}
+.greq-list{list-style:none;margin:0;padding:0;display:grid;gap:.55rem}
+.greq-list li{position:relative;padding-left:.95rem;font-family:var(--kr);
+  font-size:clamp(.9rem,.87rem + .15vw,.97rem);color:var(--body);line-height:1.78;overflow-wrap:break-word}
+.greq-list li::before{content:"";position:absolute;left:0;top:.78em;width:4px;height:1px;background:var(--muted)}
+.greq-list li.note{color:var(--sub);font-size:.88rem}
+/* 표 — 좁은 화면에서는 칸을 부수지 않고 가로로 밀어서 본다 */
+.greq-tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:.9rem 0 .2rem}
+table.greq-t{border-collapse:collapse;width:100%;min-width:34rem;
+  font-family:var(--kr);font-size:.88rem;line-height:1.6}
+table.greq-t th,table.greq-t td{border:1px solid var(--line-soft);padding:.6rem .8rem;
+  text-align:center;vertical-align:middle;white-space:pre-line}
+table.greq-t thead th{background:#f4f6fa;color:var(--navy);font-weight:700;font-size:.84rem}
+table.greq-t tbody th{background:#fafbfd;font-weight:600;color:var(--ink)}
+table.greq-t td{color:var(--body)}
+.greq-src{font-family:var(--kr);font-size:.8rem;color:var(--muted);margin-top:1.1rem;line-height:1.7}
+.greq-src a{color:var(--navy);text-underline-offset:3px}
+@media (max-width:560px){ table.greq-t{min-width:30rem;font-size:.82rem} }
 
 /* ═══ 분야별 연구실 아코디언 (G-research 연구실 목록 이식) ═══ */
 .cluster{border:1px solid var(--line-soft);border-left:3px solid var(--cl-c,var(--coral));
@@ -371,27 +399,10 @@ html[lang="en"] .lab-en-only{display:none}
       <div>
         <p class="sec-kick">Degree Requirements</p>
         <h2 id="req-h" class="sec-title">졸업 요건</h2>
-        <p class="sec-sub">학위 취득에 필요한 큰 틀만 간추렸습니다. 이수학점·논문·자격시험 등 세부 기준은 입학년도별 <b>대학원 학사요람</b>을 따릅니다.</p>
+        <p class="sec-sub">학부 공식 홈페이지의 대학원 졸업요건 원문입니다. 학점 · 시험 · 논문 심사 기준을 그대로 옮겼습니다.</p>
       </div>
     </div>
-    <div class="req-grid">
-      <div class="req-card">
-        <p class="req-lab">석사 과정</p>
-        <p class="req-val">이수학점 · 종합시험 · 학위논문</p>
-        <p class="req-desc">규정 학점 이상의 전공 교과를 이수하고 <b>학위논문 심사</b>를 통과해야 합니다. 지도교수의 지도 아래 연구를 수행하며 논문을 완성합니다. 종합시험은 석사과정에도 필수로, <b>2학기 종료시점 이내에 첫 종합시험을 응시</b>해야 합니다.</p>
-      </div>
-      <div class="req-card">
-        <p class="req-lab">박사 과정</p>
-        <p class="req-val">종합시험 · 학위논문</p>
-        <p class="req-desc">규정 학점 이수와 함께 <b>종합시험(자격시험)</b>에 합격하고, 독창적 연구 성과를 담은 <b>박사학위논문 심사</b>를 통과해야 합니다.</p>
-      </div>
-      <div class="req-card">
-        <p class="req-lab">공통 요건</p>
-        <p class="req-val">연구윤리 · 논문 심사</p>
-        <p class="req-desc">연구윤리 교육 이수, 논문 제출 자격 요건 충족, 논문 공개 발표·심사 등 대학원 공통 요건을 충족해야 학위가 수여됩니다.</p>
-      </div>
-    </div>
-    <p class="table-note">구체적인 이수학점, 외국어·종합시험 기준, 논문 제출 자격 및 심사 절차는 <b style="color:#2a3a56;font-weight:600">연세대학교 대학원 학사요람</b> 및 학부 내규 기준을 따르며, 입학년도별로 다를 수 있습니다.</p>
+    <div id="gradReq" class="greq"></div>
     <div class="link-row">
       <a href="https://me.yonsei.ac.kr/me/graduate/graduation.do" target="_blank" rel="noopener">공식 졸업요건 원문 <span aria-hidden="true">↗</span></a>
     </div>
@@ -478,7 +489,7 @@ html[lang="en"] .lab-en-only{display:none}
 </section>
 
 <!-- 공유 단일 데이터 소스 (window.YSME) -->
-<script src="assets/js/data.js?v=d14"></script>
+<script src="assets/js/data.js?v=d15"></script>
 <script>
 /* ═══ §04 대학원 연구실 — G-research '연구실 목록' 아코디언 이식 ═══ */
 (function(){
@@ -605,6 +616,49 @@ html[lang="en"] .lab-en-only{display:none}
   });
 })();
 
+/* ═══ §02 졸업 요건 — data.js 의 gradGraduation(공식 원문 전량)을 그대로 그린다 ═══
+   원문은 '읽는 글'이 아니라 '확인하는 글'이라, 요약하지 않고 항목·표를 그대로 옮긴다. */
+(function(){
+  'use strict';
+  var D = window.YSME || {};
+  var box = document.getElementById('gradReq');
+  var G = D.gradGraduation, SRC = D.gradGraduationSource;
+  if(!box || !G || !G.sections) return;
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function pad(n){ return (n<10?'0':'') + n; }
+
+  box.innerHTML = G.sections.map(function(sec, i){
+    var h = '<section class="greq-sec">'
+      + '<h3 class="greq-h"><span class="greq-no" aria-hidden="true">' + pad(i+1) + '</span>' + esc(sec.title) + '</h3>';
+    var items = (sec.paras || []).filter(function(t){ return t && t.trim(); });
+    if(items.length){
+      h += '<ul class="greq-list">' + items.map(function(t){
+        return '<li' + (/^※/.test(t.trim()) ? ' class="note"' : '') + '>' + esc(t) + '</li>';
+      }).join('') + '</ul>';
+    }
+    (sec.tables || []).forEach(function(t){
+      h += '<div class="greq-tw"><table class="greq-t">';
+      if(t.head && t.head.length){
+        h += '<thead><tr>' + t.head.map(function(c){ return '<th scope="col">' + esc(c) + '</th>'; }).join('') + '</tr></thead>';
+      }
+      h += '<tbody>' + (t.rows || []).map(function(r){
+        return '<tr>' + r.map(function(c, ci){
+          return ci === 0 ? '<th scope="row">' + esc(c) + '</th>' : '<td>' + esc(c) + '</td>';
+        }).join('') + '</tr>';
+      }).join('') + '</tbody></table></div>';
+    });
+    return h + '</section>';
+  }).join('');
+
+  if(SRC && SRC.source){
+    box.insertAdjacentHTML('beforeend',
+      '<p class="greq-src">출처 — <a href="' + esc(SRC.source) + '" target="_blank" rel="noopener">'
+      + esc(SRC.label || '학부 공식 홈페이지') + ' <span aria-hidden="true">↗</span></a>'
+      + (SRC.verifiedAt ? ' · ' + esc(SRC.verifiedAt) + ' 확인' : '') + '</p>');
+  }
+})();
+
 /* ═══ §03 교과목 소개 — coursesGrad(대학원 개설 183과목) 실데이터 렌더 ═══
    G-academics §04 학부 전공 교과의 검색·필터 관례를 그대로 따랐다.
    183과목을 한 번에 늘어놓으면 페이지가 지나치게 길어져,
@@ -673,7 +727,7 @@ html[lang="en"] .lab-en-only{display:none}
   render();
 })();
 </script>
-<script src="assets/nav.js?v=62"></script>
+<script src="assets/nav.js?v=64"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--kr);font-size:.74rem;color:#7b8595">
   © 2026 연세대학교 기계공학부 &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

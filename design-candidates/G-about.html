@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>[시안 G · 관제] 학부 소개 — 연세대학교 기계공학부</title>
-<meta name="description" content="연세대학교 기계공학부 소개 — 학부 개요, 비전과 교육철학, 조직과 행정, 주요 연혁. Since 1958." />
+<meta name="description" content="연세대학교 기계공학부 소개 — 학부 개요, 교육목표, 조직과 행정, 주요 연혁. Since 1958." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
@@ -91,36 +91,62 @@ a{color:inherit;text-decoration:none}
 .sec-more:hover{color:var(--coral)}
 .sec-more .arr{color:var(--coral)}
 
-/* §01 인사말용 초상·서명 CSS 는 인사말 섹션과 함께 제거했다(실재하지 않는 글이었다).
-   §01 학부 소개는 아래 .vision-grid · .goal-row 를 그대로 쓴다. */
+/* §01 인사말용 초상·서명 CSS 는 인사말 섹션과 함께 제거했다(실재하지 않는 글이었다). */
 
-/* §01 학부 소개 — 킥커 + 두 줄 제목 + 본문 한 단락. 사용자가 준 확정 문구만 싣는다 */
+/* §01 학부 소개 — 강조 킥커 + 두 줄 제목 + 본문·사진 2단.
+   .sec-kick(.66rem)은 §02~§05 가 함께 쓰는 값이라 손대지 않고,
+   이 섹션에서만 쓰는 .intro-kick 으로 분리해 크기·굵기를 올렸다.
+   'SINCE 1958' 을 크게, 학부 영문명을 그 아래 급의 부제로 둔다. */
+.intro-kick{display:flex;align-items:center;gap:.35rem .9rem;flex-wrap:wrap}
+.intro-kick .yr{font-weight:800;color:var(--navy);letter-spacing:.1em;line-height:1.1;
+  font-size:clamp(1.15rem, .9rem + 1.1vw, 1.6rem)}
+.intro-kick .sep{width:1px;height:1.15em;background:var(--line);flex:none}
+.intro-kick .unit{font-weight:600;color:var(--sub);letter-spacing:.2em;text-transform:uppercase;
+  font-size:clamp(.72rem, .66rem + .2vw, .84rem);line-height:1.4}
+@media (max-width:520px){.intro-kick .sep{display:none}.intro-kick{gap:.3rem 0}.intro-kick .unit{flex-basis:100%}}
+
+/* 본문 왼쪽 · 사진 오른쪽. 좁은 화면은 아래 860px 분기에서 1단으로 접혀 사진이 본문 밑으로 간다 */
+.intro-grid{display:grid;grid-template-columns:minmax(0,1.06fr) minmax(0,.94fr);
+  gap:clamp(1.6rem, 1rem + 2.4vw, 3rem);align-items:start}
 .intro-lead{max-width:52rem;font-size:1.02rem;line-height:1.95;color:var(--body)}
+/* 원본이 2000×3000(1.6MB)이라 폭·높이를 CSS 로 모두 확정해 로드 전후 레이아웃 이동(CLS)이 없게 한다 */
+.intro-photo{margin:0}
+.intro-photo img{display:block;width:100%;height:clamp(17rem, 11rem + 16vw, 25rem);
+  object-fit:cover;object-position:center;background:var(--card);border:1px solid var(--line-soft)}
 .section .sec-title br{display:block}
-@media (max-width:640px){.intro-lead{font-size:.96rem;line-height:1.85}}
+@media (max-width:640px){
+  .intro-lead{font-size:.96rem;line-height:1.85}
+  .intro-photo img{height:clamp(13rem, 8rem + 22vw, 17rem)}
+}
 
-/* ── §02 비전 — 대형 선언 + 목록 ── */
-.vision-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(1.8rem,1rem + 2.5vw,3rem);
-  align-items:start;margin-bottom:2.4rem}
-.declare{font-weight:700;font-size:clamp(1.35rem,1rem + 1.6vw,1.9rem);
-  color:var(--navy);line-height:1.4;letter-spacing:-.01em}
-.motto-note{font-size:.86rem;color:var(--muted);margin-top:1rem}
-.vision-desc{font-size:.96rem;color:var(--body);line-height:1.9}
-.vision-desc .overline{display:block;font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;
-  text-transform:uppercase;color:var(--coral);margin-bottom:.9rem}
-
-.goals-lab{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;
-  color:var(--coral);margin-bottom:1rem}
-.goal-row{display:grid;grid-template-columns:3.4rem 8.5rem 1fr;gap:1rem;align-items:baseline;
+/* ── §02 교육목표 — 공식 원문 3블록(소개 · 교육목적 · 세부교육) ──
+   삭제한 CSS 와 이유:
+   .vision-grid / .declare / .motto-note / .vision-desc(+ .overline)
+     — 교육목적 한 문장을 크게 세우고 옆에 해설을 붙이던 2단 레이아웃 전용.
+       원문 세 덩어리를 소제목 있는 세 블록으로 바꾸면서 쓰이지 않게 됐다.
+   .goals-lab — 소제목 h3 가 같은 말을 하므로 중복.
+   .goal-t   — 원문에 없던 요약 제목(공학실무·연구수행 등)을 담던 칸. 요약을 지어내지 않기로 해 제거.
+   (다섯 클래스 모두 저장소 전체 grep 결과 이 파일 §02 에서만 쓰였다.) */
+.edu-block + .edu-block{margin-top:clamp(2.2rem, 1.4rem + 2.4vw, 3.4rem)}
+.edu-h{font-weight:700;color:var(--navy);letter-spacing:-.01em;line-height:1.35;
+  font-size:clamp(1.08rem, .95rem + .6vw, 1.3rem);
+  padding-bottom:.7rem;border-bottom:1px solid var(--line)}
+.edu-body{margin-top:1.15rem;max-width:56rem;font-size:1rem;line-height:1.95;color:var(--body)}
+/* 교육목적 한 문장 — 왼쪽 네이비 선 + 옅은 판으로만 강조(글로우·그라데이션 없음) */
+.edu-lead{margin-top:1.2rem;max-width:52rem;font-weight:600;color:var(--navy);
+  font-size:clamp(1.05rem, .95rem + .8vw, 1.4rem);line-height:1.65;letter-spacing:-.01em;
+  border-left:3px solid var(--navy);background:var(--card);
+  padding:clamp(1rem, .8rem + .8vw, 1.4rem) clamp(1.1rem, .9rem + 1vw, 1.6rem)}
+.goal-list{margin-top:1.2rem}
+.goal-row{display:grid;grid-template-columns:2.8rem minmax(0,1fr);gap:.6rem;align-items:baseline;
   padding:.95rem .2rem;border-bottom:1px solid var(--line-soft);transition:background .12s}
 .goal-row:first-of-type{border-top:1px solid var(--line)}
 .goal-row:hover{background:var(--card)}
-.goal-n{font-family:var(--mono);font-size:.72rem;color:var(--faint);font-variant-numeric:tabular-nums}
-.goal-t{font-weight:600;font-size:.98rem;color:var(--navy)}
-.goal-d{font-size:.9rem;color:var(--sub);line-height:1.65}
+.goal-n{font-size:.92rem;color:var(--navy);font-variant-numeric:tabular-nums}
+.goal-d{font-size:.95rem;color:var(--sub);line-height:1.8}
 @media (max-width:640px){
-  .goal-row{grid-template-columns:3.2rem 1fr}
-  .goal-d{grid-column:1 / -1;margin-top:.15rem}
+  .goal-row{grid-template-columns:2.3rem minmax(0,1fr);gap:.45rem}
+  .goal-d{font-size:.92rem;line-height:1.75}
 }
 
 /* ── §03 조직 — 보직 카드 + 연락처 ── */
@@ -290,7 +316,10 @@ a{color:inherit;text-decoration:none}
 @media (max-width:860px){
   .greet-grid{grid-template-columns:1fr;gap:1.6rem}
   .portrait{max-width:14rem}
-  .vision-grid,.org-grid{grid-template-columns:1fr;gap:1.8rem}
+  /* .vision-grid 는 §02 개편으로 사라져 목록에서 뺐다 */
+  .org-grid{grid-template-columns:1fr;gap:1.8rem}
+  /* 사진은 숨기지 않고 본문 아래로 — 1단이 되면 소스 순서(본문 → 사진)대로 쌓인다 */
+  .intro-grid{grid-template-columns:minmax(0,1fr);gap:1.6rem}
 }
 </style>
 <style>.ynav-ph{position:fixed;top:0;left:0;right:0;height:3.7rem;background:rgba(255,255,255,.96);border-bottom:1px solid rgba(0,0,0,.08);z-index:39}</style>
@@ -321,47 +350,61 @@ a{color:inherit;text-decoration:none}
   <section class="section" id="intro" aria-labelledby="intro-h">
     <div class="sec-head">
       <div class="sec-top">
-        <p class="sec-kick">SINCE 1958 · YONSEI MECHANICAL ENGINEERING</p>
+        <!-- 킥커는 이 섹션 전용 .intro-kick — 연도를 크게, 영문 학부명을 부제 급으로 나눴다.
+             둘 다 영문이라 사전(en.json) 등록 대상이 아니다. -->
+        <p class="intro-kick"><span class="yr">SINCE 1958</span><span class="sep" aria-hidden="true"></span><span class="unit">YONSEI MECHANICAL ENGINEERING</span></p>
       </div>
       <h2 id="intro-h" class="sec-title">멈추지 않는 도전,<br>100년을 향한 연세 기계공학</h2>
     </div>
-    <p class="intro-lead">연세대학교 기계공학부는 역학·소재, 에너지·열유체, 로보틱스·제어, 설계·제조,
-      마이크로·나노, 바이오·포토닉스에 이르는 폭넓은 분야에서 세계적 수준의 교육과 연구를 수행합니다.
-      창의적 사고와 도전정신을 바탕으로 종합 설계 능력을 갖추고, 글로벌 사회에 유익한 가치를 창출하는 인재를 양성합니다.</p>
-    <!-- 링크를 문장 속에 끼우면 사전 키가 조각나 영문 어순에서 무너진다 — 링크 단위로 끊는다 -->
-    <p class="hist-more"><a href="G-research.html">분야별 연구실 보기 <span class="arr" aria-hidden="true">→</span></a>&nbsp; · &nbsp;<a href="G-people.html">교수진 보기 <span class="arr" aria-hidden="true">→</span></a></p>
+    <div class="intro-grid">
+      <div>
+        <p class="intro-lead">연세대학교 기계공학부는 역학·소재, 에너지·열유체, 로보틱스·제어, 설계·제조,
+          마이크로·나노, 바이오·포토닉스에 이르는 폭넓은 분야에서 세계적 수준의 교육과 연구를 수행합니다.
+          창의적 사고와 도전정신을 바탕으로 종합 설계 능력을 갖추고, 글로벌 사회에 유익한 가치를 창출하는 인재를 양성합니다.</p>
+        <!-- 링크를 문장 속에 끼우면 사전 키가 조각나 영문 어순에서 무너진다 — 링크 단위로 끊는다 -->
+        <p class="hist-more"><a href="G-research.html">분야별 연구실 보기 <span class="arr" aria-hidden="true">→</span></a>&nbsp; · &nbsp;<a href="G-people.html">교수진 보기 <span class="arr" aria-hidden="true">→</span></a></p>
+      </div>
+      <!-- 히어로 배경과 같은 파일이라 이미 캐시에 있다. 원본 2000×3000 · 1.6MB —
+           폭·높이를 CSS 로 확정하고 object-fit:cover 로 잘라 레이아웃 이동을 막는다. -->
+      <figure class="intro-photo">
+        <img src="assets/hero-about.jpg" alt="석재 패널과 유리창이 번갈아 놓인 공학관 건물 외벽"
+             width="2000" height="3000" loading="lazy" decoding="async">
+      </figure>
+    </div>
   </section>
 
-  <!-- ═══ §02 비전 · 교육철학 ═══ -->
+  <!-- ═══ §02 교육목표 ═══
+       학부 공식 페이지의 세 덩어리(소개 · 교육목적 · 세부교육)를 원문 그대로 싣는다.
+       요약·의역·제목 창작 금지 — 소제목만 원문의 항목명을 그대로 쓴다.
+       id=vision 과 aria-labelledby 는 nav.js 탭이 이 값으로 화면을 전환하므로 유지.
+       h3 의 edu-* id 는 nav.js buildJump 가 소제목 바로가기 줄을 만드는 데 쓴다. -->
   <section class="section" id="vision" aria-labelledby="vision-h">
     <div class="sec-head">
       <div class="sec-top">
-        <p class="sec-kick">비전</p>
+        <p class="sec-kick">교육</p>
       </div>
-      <h2 id="vision-h" class="sec-title">교육목적 · 교육목표</h2>
+      <h2 id="vision-h" class="sec-title">교육목표</h2>
       <p class="sec-sub">학부 공식 홈페이지에 게재된 교육목적과 세부교육목표입니다.</p>
     </div>
-    <!-- 예전에는 "기독교 정신에 기반한 … 세계 수준의 연구" 처럼 의역·증폭한 문장을 실었다.
-         공식 원문이 있는데 바꿔 쓸 이유가 없어 원문 그대로로 되돌린다. -->
-    <div class="vision-grid">
-      <div>
-        <p class="declare">창의적 사고와 도전정신을 바탕으로 종합 설계 능력을 갖추고
-          글로벌 사회에 유익한 가치를 창출할 수 있는 인재 양성</p>
-        <p class="motto-note">연세대학교 기계공학부 교육목적</p>
-      </div>
-      <div class="vision-desc">
-        <span class="overline">세부교육목표</span>
-        아래 다섯 항목은 학부가 공시한 세부교육목표이며, 공학교육인증(ABEEK) 프로그램 학습성과의 근거가 됩니다.
-      </div>
+
+    <div class="edu-block">
+      <h3 class="edu-h" id="edu-intro">기계공학부 소개</h3>
+      <p class="edu-body">기독교 정신에 기하여 학술의 심오한 이론과 광범 정치한 응용방법을 교수 연구하며 국가와 인류 사회 발전에 공헌할 지도적 인격을 도야함을 목적으로 한다.</p>
     </div>
-    <div>
-      <p class="goals-lab">세부교육목표</p>
-      <div class="goal-list" role="list" aria-label="세부교육목표 5">
-        <div class="goal-row" role="listitem"><span class="goal-n">01</span><span class="goal-t">공학실무·연구수행</span><span class="goal-d">창의적 사고방법과 설계기술을 익히고, 기계공학을 기반으로 여러 전문 분야에 걸친 종합적인 공학설계에 적용할 수 있는 공학실무능력, 연구수행능력을 계발한다.</span></div>
-        <div class="goal-row" role="listitem"><span class="goal-n">02</span><span class="goal-t">의사소통·리더십</span><span class="goal-d">자신의 생각을 효율적으로 전달하고 동료들과 팀워크를 할 수 있으며, 조직을 관리하고 경영할 줄 아는 리더십을 배양한다.</span></div>
-        <div class="goal-row" role="listitem"><span class="goal-n">03</span><span class="goal-t">신기술 도전</span><span class="goal-d">미래에 필요한 예측하기 어려운 기술에 도전하고 신기술을 개발하여 새로운 환경에 유익하게 적용할 수 있는 능력을 계발한다.</span></div>
-        <div class="goal-row" role="listitem"><span class="goal-n">04</span><span class="goal-t">자기계발·윤리</span><span class="goal-d">평생을 통해 자기계발을 할 줄 알며, 개방적인 마음과 비판적 의문을 가지고 자신의 연구결과 및 개발품에 대해 사회적, 윤리적 책임을 인식할 줄 아는 소양을 익힌다.</span></div>
-        <div class="goal-row" role="listitem"><span class="goal-n">05</span><span class="goal-t">국제적 역할</span><span class="goal-d">글로벌사회에서 공학인의 국제적 역할을 인식하고 산업체, 교육·연구기관, 공공기관의 리더로서 성장할 수 있는 역량을 계발한다.</span></div>
+
+    <div class="edu-block">
+      <h3 class="edu-h" id="edu-purpose">기계공학부 교육목적</h3>
+      <p class="edu-lead">창의적 사고와 도전정신을 바탕으로 종합 설계 능력을 갖추고 글로벌 사회에 유익한 가치를 창출 할 수 있는 인재 양성</p>
+    </div>
+
+    <div class="edu-block">
+      <h3 class="edu-h" id="edu-objectives">기계공학 프로그램의 세부교육</h3>
+      <div class="goal-list" role="list" aria-label="세부교육 5항목">
+        <div class="goal-row" role="listitem"><span class="goal-n">1)</span><span class="goal-d">창의적 사고방법과 설계기술을 익히고, 기계공학을 기반으로 여러 전문 분야에 걸친 종합적인 공학설계에 적용할 수 있는 공학실무능력, 연구수행능력을 계발한다.</span></div>
+        <div class="goal-row" role="listitem"><span class="goal-n">2)</span><span class="goal-d">자신의 생각을 효율적으로 전달하고 동료들과 팀워크를 할 수 있으며, 조직을 관리하고 경영할 줄 아는 리더십을 배양한다.</span></div>
+        <div class="goal-row" role="listitem"><span class="goal-n">3)</span><span class="goal-d">미래에 필요한 예측하기 어려운 기술에 도전하고 신기술을 개발하여 새로운 환경에 유익하게 적용할 수 있는 능력 계발한다.</span></div>
+        <div class="goal-row" role="listitem"><span class="goal-n">4)</span><span class="goal-d">평생을 통해 자기계발을 할 줄 알며, 개방적인 마음과 비판적 의문을 가지고 자신의 연구결과 및 개발품에 대해 사회적, 윤리적 책임을 인식할 줄 아는 소양을 익힌다.</span></div>
+        <div class="goal-row" role="listitem"><span class="goal-n">5)</span><span class="goal-d">글로벌사회에서 공학인의 국제적 역할을 인식하고 산업체, 교육·연구기관, 공공기관의 리더로서 성장할 수 있는 역량을 계발한다.</span></div>
       </div>
       <p class="hist-more">교육과정 상세는 <a href="G-academics.html">교육 페이지</a>를 참조하세요.</p>
     </div>
@@ -537,7 +580,7 @@ a{color:inherit;text-decoration:none}
   });
 })();
 </script>
-<script src="assets/nav.js?v=54"></script>
+<script src="assets/nav.js?v=57"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--dimmer)">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

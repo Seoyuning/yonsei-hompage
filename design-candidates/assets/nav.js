@@ -56,7 +56,7 @@
     '.ynv-d a:nth-child(4){transition-delay:.12s}.ynv-d a:nth-child(5){transition-delay:.16s}',
     '.ynv-d a:hover{color:' + NAVY + ';background:' + PAPER + ';padding-left:1.6rem}',
     '[id]{scroll-margin-top:5rem}',
-    'body.has-ysub [id]{scroll-margin-top:7.6rem}',
+    'body.has-ysub [id]{scroll-margin-top:var(--ys-stick,7.6rem)}',
     /* breadcrumb 링크 */
     '.bc a{color:rgba(255,255,255,.82);text-decoration:none;transition:color .15s}',
     '.bc a:hover{color:#fff}',
@@ -74,6 +74,22 @@
     '.ysub-tab:hover{color:' + NAVY + ';background:' + PAPER + '}',
     '.ysub-tab.cur{color:' + NAVY + ';border-bottom-color:' + NAVY + '}',
     '.ysub-hide{display:none!important}',
+    /* 소제목 바로가기 바 — 탭 바 바로 아래. 탭 바보다 한 단계 낮은 무게로 둔다 */
+    '.yjump{position:sticky;top:7.5rem;z-index:37;background:#fbfbfc;border-bottom:1px solid ' + LINE + '}',
+    '.yjump-w{max-width:72rem;margin:0 auto;padding:.5rem clamp(1.1rem,4vw,2rem);' +
+      'display:flex;gap:.15rem;align-items:center;overflow-x:auto;scrollbar-width:none}',
+    '.yjump-w::-webkit-scrollbar{display:none}',
+    '.yjump a{flex:0 0 auto;font-family:' + KR + ';font-size:.86rem;font-weight:600;color:' + MUTED + ';' +
+      'text-decoration:none;padding:.42rem .7rem;border-radius:2px;white-space:nowrap;transition:color .15s,background .15s}',
+    '.yjump a:hover{color:' + NAVY + ';background:' + PAPER + '}',
+    '@media(max-width:920px){.yjump{top:6.6rem}}',
+    '@media(max-width:640px){' +
+      '.yjump{overflow:hidden}' +
+      '.yjump::after{content:"";position:absolute;top:0;right:0;bottom:0;width:2rem;pointer-events:none;' +
+        'background:linear-gradient(90deg,rgba(251,251,252,0),#fbfbfc 72%)}' +
+      '.yjump-w{padding:.4rem .9rem;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}' +
+      '.yjump a{font-size:.82rem;padding:.5rem .6rem;min-height:2.5rem;display:flex;align-items:center}' +
+    '}',
     '@media(max-width:920px){.ysub{top:3.7rem}.ysub-tab{font-size:.92rem;padding:.85rem .9rem .7rem}}',
     /* 휴대폰 — 탭이 화면을 넘치므로 옆으로 밀리는 걸 눈에 보이게(오른쪽 페이드) + 손가락 크기 유지 */
     '@media(max-width:640px){' +
@@ -173,13 +189,13 @@
 
   /* ── 2. 메뉴 정의 (메인 H-academic 순서·라벨과 동일) ── */
   var MENU = [
-    { t: '학부소개', h: 'G-about.html', key: 'about', sub: [['학부 소개', 'G-about.html#intro', ['intro']], ['교육목적 · 교육목표', 'G-about.html#vision', ['vision']], ['조직 · 행정', 'G-about.html#organization', ['organization']], ['주요 연혁', 'G-about.html#history', ['history']], ['연락처 · 오시는 길', 'G-about.html#location', ['location']]] },
+    { t: '학부소개', h: 'G-about.html', key: 'about', sub: [['학부 소개', 'G-about.html#intro', ['intro']], ['교육목표', 'G-about.html#vision', ['vision']], ['조직 · 행정', 'G-about.html#organization', ['organization']], ['주요 연혁', 'G-about.html#history', ['history']], ['연락처 · 오시는 길', 'G-about.html#location', ['location']]] },
     { t: '구성원', h: 'G-people.html', key: 'people', sub: [['교수진', 'G-people.html#faculty', ['faculty', 'dir']], ['교직원', 'G-people.html#staff', ['staff']], ['동문', 'G-people.html#alumni', ['alumni']]] },
     { t: '연구', h: 'G-research.html', key: 'research', sub: [['연구 비전', 'G-research.html#vision', ['vision']], ['연구 분야', 'G-research.html#fields', ['fields', 'fieldsDetail']], ['연구실 전체', 'G-research.html#clusters', ['clusters']], ['연구실 홍보영상', 'G-research.html#labvideos', ['labvideos']]] },
     { t: '학사', h: 'G-academics.html', key: 'academics', sub: [['교육과정 개관', 'G-academics.html#curriculum', ['curriculum', 'requirements', 'abeek']], ['이수 체계도', 'G-academics.html#roadmap', ['roadmap']], ['졸업 요건', 'G-academics.html#graduation', ['graduation']], ['전공 교과', 'G-academics.html#courses', ['mechanics', 'courses']], ['동아리·학생활동', 'G-academics.html#clubs', ['clubs']]] },
     { t: '대학원', h: 'G-graduate.html', key: 'graduate', sub: [['입학 안내', 'G-graduate.html#grad-admission', ['grad-admission']], ['졸업 요건', 'G-graduate.html#grad-req', ['grad-req']], ['교과목 소개', 'G-graduate.html#grad-courses', ['grad-courses']], ['대학원 연구실', 'G-graduate.html#grad-labs', ['grad-labs']], ['BK21 FOUR', 'G-graduate.html#bk21', ['bk21']]] },
     { t: '소식', h: 'G-news.html', key: 'news', sub: [['학부 공지', 'G-news.html#notice-ug', ['notice-ug']], ['대학원 공지', 'G-news.html#notice-grad', ['notice-grad']], ['뉴스 · 연구성과', 'G-news.html#hi', ['hi']], ['세미나 · 행사', 'G-news.html#sched', ['sched']], ['학위논문심사', 'G-news.html#thesis', ['thesis']], ['자료실', 'G-news.html#archive', ['archive']], ['취업 정보', 'G-news.html#jobs', ['jobs']]] },
-    { t: '입학', h: 'G-admissions.html', key: 'admissions', sub: [['학부 입학', 'G-admissions.html#undergraduate', ['undergraduate']], ['대학원 진학', 'G-admissions.html#graduate', ['graduate']], ['장학 안내', 'G-admissions.html#scholarships', ['scholarships']], ['진로 · 취업', 'G-admissions.html#careers', ['careers']], ['자주 묻는 질문', 'G-admissions.html#faq', ['faq']]] }
+    { t: '입학', h: 'G-admissions.html', key: 'admissions', sub: [['학부 입학', 'G-admissions.html#undergraduate', ['undergraduate']], ['대학원 진학', 'G-admissions.html#graduate', ['graduate']], ['장학 안내', 'G-admissions.html#scholarships', ['scholarships']], ['자주 묻는 질문', 'G-admissions.html#faq', ['faq']]] }
   ];
   var path = (location.pathname.split('/').pop() || '').toLowerCase();
   var curKey = null;
@@ -247,7 +263,19 @@
 
     /* sticky top = 흰 헤더 높이(유틸바 접힘 후 nav 높이) 동적 */
     var hdr = nav.querySelector('.ynv-hdr');
-    function fitTop() { if (hdr) { var h = Math.round(hdr.getBoundingClientRect().height); if (h > 20) bar.style.top = h + 'px'; } }
+    /* sticky 층을 실제 높이로 쌓는다: 헤더 → 탭 바 → 소제목 바로가기 바.
+       CSS 로 고정값을 주면 글자 크기 조절·줄바꿈에 어긋나므로 매번 재계산한다.
+       앵커 이동 시 가려지지 않게 scroll-margin-top 도 같은 값으로 맞춘다. */
+    function fitTop() {
+      if (!hdr) return;
+      var h = Math.round(hdr.getBoundingClientRect().height);
+      if (h <= 20) return;
+      bar.style.top = h + 'px';
+      var barH = Math.round(bar.getBoundingClientRect().height);
+      if (jump) jump.style.top = (h + barH) + 'px';
+      var jumpH = jump ? Math.round(jump.getBoundingClientRect().height) : 0;
+      document.documentElement.style.setProperty('--ys-stick', (h + barH + jumpH + 12) + 'px');
+    }
     fitTop(); addEventListener('resize', fitTop); addEventListener('load', fitTop);
 
     /* 각 탭이 제어하는 섹션(managed = 어느 탭이든 제어하는 모든 섹션). 비관리 콘텐츠(히어로·CTA)는 항상 표시 */
@@ -261,6 +289,51 @@
                   (탭 바가 고정 헤더 바로 아래 붙는 위치 = 그 형제 페이지의 상단)
          'top'  : 상단 메뉴·드롭다운·푸터의 같은 페이지 링크. 그 페이지의 **히어로**부터.
          false  : 스크롤하지 않음(초기 렌더). */
+    /* ── 소제목 바로가기 바 ──
+       한 탭 안에 소제목이 여러 개인 화면(동문·교육목표 등)은 위아래로 길어서
+       무엇이 들어 있는지 한눈에 안 보인다. 활성 탭 안의 소제목(h2/h3 중 id 가 있는 것)을
+       모아 탭 바 바로 아래에 바로가기 줄로 깐다. 소제목이 2개 미만이면 아예 만들지 않는다. */
+    var jump = null, jumpSeq = 0;
+    function buildJump(ids) {
+      var heads = [];
+      ids.forEach(function (id) {
+        var sec = document.getElementById(id);
+        if (!sec) return;
+        /* 소제목은 h3 기준. 섹션 제목(h2)은 탭 이름과 겹쳐 빼고, h4 는 항목이라 너무 잘다.
+           id 가 없는 소제목이 대부분이라 없으면 그 자리에서 만들어 준다 —
+           각 페이지 HTML 을 일일이 고치지 않아도 모든 화면에서 동작한다. */
+        [].forEach.call(sec.querySelectorAll('h3'), function (h) {
+          if (h.closest('.ysub-hide')) return;
+          var label = (h.getAttribute('data-jump') || h.textContent || '').replace(/\s+/g, ' ').trim();
+          if (!label || label.length > 24) return;
+          if (!h.id) h.id = 'yj-' + (++jumpSeq);
+          heads.push({ id: h.id, label: label });
+        });
+      });
+      if (jump) { jump.remove(); jump = null; fitTop(); }
+      if (heads.length < 2) return;
+      jump = document.createElement('nav');
+      jump.className = 'yjump';
+      jump.setAttribute('aria-label', '이 화면의 소제목');
+      jump.innerHTML = '<div class="yjump-w">' + heads.map(function (h) {
+        return '<a href="#' + esc(h.id) + '">' + esc(h.label) + '</a>';
+      }).join('') + '</div>';
+      bar.parentNode.insertBefore(jump, bar.nextSibling);
+      fitTop();
+      jump.addEventListener('click', function (e) {
+        var a = e.target && e.target.closest ? e.target.closest('a[href^="#"]') : null;
+        if (!a) return;
+        e.preventDefault();
+        var t = document.getElementById(a.getAttribute('href').slice(1));
+        if (!t) return;
+        var off = (hdr ? hdr.getBoundingClientRect().height : 62) +
+                  bar.getBoundingClientRect().height + jump.getBoundingClientRect().height + 12;
+        var y = t.getBoundingClientRect().top + (pageYOffset || 0) - off;
+        try { scrollTo({ top: Math.max(0, y), behavior: (reduce || document.hidden) ? 'instant' : 'smooth' }); }
+        catch (_) { scrollTo(0, Math.max(0, y)); }
+      });
+    }
+
     function show(idx, mode) {
       var s = m.sub[idx]; if (!s) return;
       var ids = s[2] || [];
@@ -268,6 +341,7 @@
       managed.forEach(function (el) { el.classList.toggle('ysub-hide', ids.indexOf(el.id) < 0); });
       tabs.forEach(function (t, i) { t.classList.toggle('cur', i === idx); t.setAttribute('aria-selected', i === idx ? 'true' : 'false'); });
       setBreadcrumb(s[0]);
+      buildJump(ids);
       try { history.replaceState(null, '', '#' + (s[1].split('#')[1] || '')); } catch (_) {}
       if (mode) {
         var y = 0;
@@ -305,7 +379,12 @@
 
     /* 메뉴로 페이지에 들어올 때(탭 해시)는 앵커 위치가 아니라 맨 위(히어로 화면)에서 시작.
        탭이 아닌 깊은 앵커(연구실 id 등)는 기존 스크롤 유지 */
-    if (isTabHash) {
+    /* 메뉴로 들어온 진입은 히어로부터 — 해시가 있든(탭 해시) 없든(최상위 메뉴) 같아야 한다.
+       예전에는 isTabHash 일 때만 맨 위로 올렸다. 그래서 새로고침(해시 있음)은 히어로가 보이는데
+       상단 메뉴 클릭(해시 없음)은 로드 뒤 무언가가 스크롤을 옮겨도 되돌리지 못했다.
+       진짜 깊은 앵커(#kang-keonwook 같은 교수 딥링크)로 들어온 경우에만 브라우저에 맡긴다. */
+    var deepAnchor = location.hash && location.hash.length > 1 && !isTabHash;
+    if (!deepAnchor) {
       var toTop = function () { try { scrollTo({ top: 0, behavior: 'instant' }); } catch (_) { scrollTo(0, 0); } };
       toTop();
       addEventListener('load', function () { setTimeout(toTop, 0); });

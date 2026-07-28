@@ -1201,7 +1201,6 @@ window.YSME = {
    "phone": "02-2123-4465"
   }
  ],
- /* 대학원 졸업요건 — graduate/graduation.do 원문 전량(표 3개 포함). 표현·오탈자까지 원문 그대로 */
  "gradGraduation": {
  "sections": [
   {
@@ -1373,6 +1372,7 @@ window.YSME = {
  "gradGraduationSource": {
  "source": "https://me.yonsei.ac.kr/me/graduate/graduation.do",
  "label": "연세대학교 기계공학부 대학원 졸업요건",
+  "note": "graduate/graduation.do 원문 전량(표 3개 포함). 표현·오탈자까지 원문 그대로 보존.",
  "verifiedAt": "2026-07-28"
 },
  "labsSource": {

@@ -601,19 +601,51 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
 .crs-status{font-family:var(--kr);font-size:.78rem;color:var(--label);margin:-1.4rem 0 1.6rem;font-variant-numeric:tabular-nums;min-height:1.1em}
 
 /* 영역 블록 — 넉넉한 여백·좌측 제목, 우측 과목 나열 */
-.crs-block{padding:2.2rem 0;border-top:1px solid var(--line-soft)}
-.crs-block:first-of-type{border-top:0;padding-top:.4rem}
+/* ── 교과 묶음 = 접었다 펴는 카테고리 ──
+   여덟 묶음이 모두 펼쳐져 있으면 묶어 놓고도 40행이 한 줄기로 이어져 읽히지 않는다.
+   묶음 머리만 늘어놓고 누른 것만 연다(연구실 목록과 같은 방식). */
+.crs-blocks{border-top:2px solid var(--navy);margin-top:clamp(1rem,.8rem + .8vw,1.6rem)}
+.crs-block{border-bottom:1px solid var(--line-soft)}
 .crs-block.is-empty{display:none}
-.crs-block-grid{display:grid;grid-template-columns:minmax(11rem,15rem) 1fr;gap:clamp(1.4rem,1rem + 3vw,3.2rem);align-items:start}
-.crs-block-head{position:sticky;top:5rem}
-.crs-block-kick{font-family:var(--mono);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--crs-c,var(--muted))}
-.crs-block-title{font-family:var(--kr);font-weight:700;font-size:1.28rem;color:var(--ink);line-height:1.25;margin-top:.55rem}
-.crs-block-count{font-family:var(--mono);font-size:.76rem;color:var(--muted);margin-top:.6rem;font-variant-numeric:tabular-nums}
-.crs-block-desc{font-family:var(--kr);font-size:.82rem;color:var(--sub);line-height:1.65;margin-top:.85rem;max-width:16rem}
-.crs-block-rule{width:2rem;height:2px;background:var(--crs-c,var(--navy));margin-top:1rem;opacity:.55}
+.crs-bhead{display:grid;grid-template-columns:2.6rem minmax(0,1fr) auto 1.2rem;
+  gap:0 clamp(.8rem,.5rem + 1vw,1.4rem);align-items:center;width:100%;
+  background:none;border:0;cursor:pointer;text-align:left;
+  padding:clamp(1.1rem,.9rem + .8vw,1.6rem) clamp(.4rem,.2rem + .5vw,.9rem);
+  transition:background .15s}
+.crs-bhead:hover{background:rgba(10,26,51,.025)}
+.crs-bhead:focus-visible{outline:2px solid var(--navy);outline-offset:-2px}
+.crs-bno{font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.06em;
+  color:var(--label);font-variant-numeric:tabular-nums}
+.crs-block.is-open .crs-bno{color:var(--accent)}
+.crs-btitles{min-width:0;display:flex;flex-wrap:wrap;align-items:baseline;
+  gap:.15rem clamp(.7rem,.4rem + .9vw,1.2rem)}
+.crs-btitle{font-family:var(--kr);font-weight:700;color:var(--ink);line-height:1.3;letter-spacing:-.02em;
+  font-size:clamp(1.05rem,.95rem + .5vw,1.3rem);flex:none;transition:color .15s}
+.crs-bhead:hover .crs-btitle,.crs-block.is-open .crs-btitle{color:var(--navy)}
+/* 설명은 제목 옆 한 줄로 눕힌다 — 접힌 상태에서 줄 수가 들쭉날쭉하지 않게 */
+.crs-bdesc{font-family:var(--kr);font-size:.84rem;color:var(--muted);line-height:1.6;
+  min-width:0;flex:1 1 20rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.crs-bcount{font-family:var(--kr);font-size:.82rem;color:var(--label);white-space:nowrap}
+.crs-bcount b{color:var(--sub);font-weight:700;font-variant-numeric:tabular-nums}
+.crs-bmk{justify-self:end;width:1.1rem;height:1.1rem;position:relative;color:var(--label)}
+.crs-bmk::before{content:"";position:absolute;left:.16rem;top:.3rem;width:.5rem;height:.5rem;
+  border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;
+  transform:rotate(45deg);transition:transform .2s}
+.crs-block.is-open .crs-bmk{color:var(--accent)}
+.crs-block.is-open .crs-bmk::before{transform:rotate(225deg);top:.42rem}
+/* 닫힌 묶음의 과목 목록은 감춘다 */
+.crs-block:not(.is-open) .crs-list{display:none}
+.crs-list{border-top:1px solid var(--line-soft);padding-bottom:.4rem}
+@media (max-width:640px){
+  .crs-bhead{grid-template-columns:2.2rem minmax(0,1fr) 1.1rem;
+    gap:.2rem .7rem;padding:1rem .2rem}
+  .crs-bno{grid-column:1;grid-row:1}
+  .crs-btitles{grid-column:2;grid-row:1}
+  .crs-bdesc{display:none}          /* 좁은 화면에선 제목·개수만 */
+  .crs-bcount{grid-column:2;grid-row:2;font-size:.78rem}
+  .crs-bmk{grid-column:3;grid-row:1}
+}
 
-/* 과목 행 — 표가 아닌 정돈된 리스트, 코드/이름/영문/개요 위계 */
-.crs-list{border-top:2px solid var(--navy)}
 /* 과목 행 — 접힘이 기본. summary 가 격자를 만든다 */
 .crs-row{border-bottom:1px solid var(--line-soft);transition:background .12s}
 .crs-row > summary,.crs-row:not(details){display:grid;
@@ -659,9 +691,6 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
 @media (max-width:900px){
   .overview{grid-template-columns:1fr;gap:1.8rem}
   .req-grid{grid-template-columns:1fr}
-  .crs-block-grid{grid-template-columns:1fr;gap:1.2rem}
-  .crs-block-head{position:static}
-  .crs-block-desc{max-width:none}
 }
 @media (max-width:680px){
     .ug-toolbar{flex-direction:column;align-items:stretch}
@@ -856,7 +885,7 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
       <input type="search" id="crsSearch" placeholder="코드 · 과목명 · 영문명 검색" autocomplete="off" />
     </label>
     <p class="crs-status" id="crsStatus" role="status" aria-live="polite"></p>
-    <div id="crsBlocks">
+    <div id="crsBlocks" class="crs-blocks">
       <noscript><p class="crs-empty">전공 교과 목록은 JavaScript 활성 시 표시됩니다.</p></noscript>
     </div>
     <p class="table-note">전공필수는 이수 순서에 따라, 전공선택은 관련 연구 분야에 따라 묶어 정리했습니다 · 학점은 입학연도별로 달라 본 목록에서는 표기를 생략했습니다.</p>
@@ -1483,24 +1512,35 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
         + '<p class="crs-desc">' + esc(c.desc) + '</p>'
       + '</details>';
     }
-    /* 블록 HTML — 좌 제목(sticky) / 우 과목 리스트 */
-    var blocksHtml = BLOCKS.map(function(b){
+    /* 카테고리 = 접었다 펴는 묶음 (연구실 목록과 같은 방식).
+       예전엔 여덟 묶음이 전부 펼쳐져 있어 40행이 한 줄기로 이어졌다 — 묶어 놓고도
+       '일자로 나열'로 읽힌 이유다. 지금은 묶음 머리만 늘어놓고, 누른 것만 연다.
+       전공필수는 학부 이수의 골격이라 처음부터 열어 둔다. */
+    var blocksHtml = BLOCKS.map(function(b, i){
       var items = byBlock[b.id]; if(!items.length) return '';
-      var rows = items.map(rowHtml).join('');
-      return '<section class="crs-block" data-block="'+b.id+'" style="--crs-c:var('+b.cvar+')">'
-        + '<div class="crs-block-grid">'
-          + '<header class="crs-block-head">'
-            + '<p class="crs-block-kick">'+esc(b.kick)+'</p>'
-            + '<h3 class="crs-block-title">'+esc(b.title)+'</h3>'
-            + '<p class="crs-block-count">'+items.length+'과목</p>'
-            + '<p class="crs-block-desc">'+esc(b.desc)+'</p>'
-            + '<div class="crs-block-rule" aria-hidden="true"></div>'
-          + '</header>'
-          + '<div class="crs-list">'+rows+'</div>'
-        + '</div>'
+      var open = (b.id === 'req');
+      return '<section class="crs-block' + (open ? ' is-open' : '') + '" data-block="' + b.id + '">'
+        + '<button type="button" class="crs-bhead" aria-expanded="' + (open ? 'true' : 'false') + '">'
+          + '<span class="crs-bno" aria-hidden="true">' + (i < 9 ? '0' : '') + (i + 1) + '</span>'
+          + '<span class="crs-btitles">'
+            + '<span class="crs-btitle">' + esc(b.title) + '</span>'
+            + '<span class="crs-bdesc">' + esc(b.desc) + '</span>'
+          + '</span>'
+          + '<span class="crs-bcount"><b>' + items.length + '</b>과목</span>'
+          + '<span class="crs-bmk" aria-hidden="true"></span>'
+        + '</button>'
+        + '<div class="crs-list">' + items.map(rowHtml).join('') + '</div>'
       + '</section>';
     }).join('');
     crsBlocks.innerHTML = blocksHtml;
+
+    /* 묶음 열고 닫기 — 여러 개를 동시에 열어 둘 수 있다(비교하며 볼 수 있게) */
+    crsBlocks.addEventListener('click', function(e){
+      var h = e.target.closest('.crs-bhead'); if(!h) return;
+      var sec = h.parentNode;
+      var open = sec.classList.toggle('is-open');
+      h.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
 
     /* 검색 — 행 단위 필터, 빈 블록 접기. 앵커(#course-<code>)는 항상 DOM에 유지. */
     var crsRows = Array.prototype.slice.call(crsBlocks.querySelectorAll('.crs-row'));
@@ -1516,6 +1556,12 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
       crsBlockEls.forEach(function(bl){
         var any = bl.querySelector('.crs-row:not(.is-hidden)');
         bl.classList.toggle('is-empty', !any);
+        /* 검색 중에는 맞는 묶음을 열어 준다 — 닫힌 채로 두면 찾았는데 안 보인다.
+           검색어를 지우면 처음 상태(전공필수만 열림)로 되돌린다. */
+        if(q){ if(any) bl.classList.add('is-open'); }
+        else bl.classList.toggle('is-open', bl.getAttribute('data-block') === 'req');
+        var hd = bl.querySelector('.crs-bhead');
+        if(hd) hd.setAttribute('aria-expanded', bl.classList.contains('is-open') ? 'true' : 'false');
       });
       if(crsStatus){
         crsStatus.textContent = q
@@ -1612,7 +1658,12 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
         crsRender();
       }
       el = document.getElementById(id);
-      if(el && el.tagName === 'DETAILS') el.open = true;   /* 링크로 들어왔으면 그 과목은 펼쳐 준다 */
+      if(el){
+        var own = el.closest('.crs-block');                 /* 그 과목이 든 묶음을 먼저 연다 */
+        if(own){ own.classList.add('is-open');
+          var hd = own.querySelector('.crs-bhead'); if(hd) hd.setAttribute('aria-expanded','true'); }
+        if(el.tagName === 'DETAILS') el.open = true;        /* 과목 개요도 펼쳐 준다 */
+      }
       if(el && (initial || el.classList.contains('is-hidden'))) el.scrollIntoView();
     }
     window.addEventListener('hashchange', function(){ revealCourseHash(false); });
@@ -1666,9 +1717,24 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
            (bar ? bar.getBoundingClientRect().height : 0) + 14;
   }
 
+  /* 과목이 접힌 카테고리 안에 있으면 그 카테고리부터 연다.
+     이 핸들러가 preventDefault 로 해시 변경을 막기 때문에 hashchange 쪽 처리가
+     돌지 않는다 — 닫힌 묶음으로 이동하면 대상이 display:none 이라 스크롤이 헛돈다. */
+  function openOwner(el) {
+    if (!el) return;
+    var blk = el.closest ? el.closest('.crs-block') : null;
+    if (blk && !blk.classList.contains('is-open')) {
+      blk.classList.add('is-open');
+      var hd = blk.querySelector('.crs-bhead');
+      if (hd) hd.setAttribute('aria-expanded', 'true');
+    }
+    if (el.tagName === 'DETAILS') el.open = true;   /* 교과 개요까지 펼쳐 준다 */
+  }
+
   function goTo(id) {
     var t = document.getElementById(id);
     if (!t) return;
+    openOwner(t);
     var y = t.getBoundingClientRect().top + (pageYOffset || 0) - offsetTop();
     try { scrollTo({ top: Math.max(0, y), behavior: (REDUCE || document.hidden) ? 'instant' : 'smooth' }); }
     catch (e) { scrollTo(0, Math.max(0, y)); }
@@ -1693,6 +1759,7 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
            다만 show() 자신도 스크롤을 한 번 하므로, 그 뒤에 오도록 태스크를 한 번 넘긴다.
            (rAF 는 숨은 탭에서 멈춰 검증이 불가능해 쓰지 않는다) */
         tab.click();
+        openOwner(el);
         setTimeout(function () { goTo(id); }, 0);
         return;
       }

@@ -154,6 +154,74 @@ a{color:inherit;text-decoration:none}
 .btn--coral .arr{color:#fff}
 .btn--coral:hover{background:#12294f;border-color:#12294f;color:#fff}
 
+/* 화면에는 안 보이고 스크린리더에만 읽히는 텍스트 — 이 페이지엔 정의가 없었다 */
+.visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+/* ── 학부 입학 (서울대 생명과학부 「대학입학」 짜임 참고) ──
+   전형은 입학처가 주관하므로, 우리 페이지는 (1) 그 사실을 알리는 안내 덩어리와
+   (2) 전형별로 입학처의 정확한 위치로 보내는 카드 격자를 갖는다.
+   그쪽은 사진 카드지만 우리에겐 전형 사진이 없다 — 지어낸 이미지를 쓰는 대신
+   번호·제목·한 줄 설명의 활자 카드로 옮기고, 포인트 색을 모서리와 화살표에 쓴다. */
+.adm-note{display:flex;gap:clamp(.8rem,.6rem + .6vw,1.1rem);align-items:flex-start;
+  background:var(--accent-soft);border-left:3px solid var(--accent);border-radius:.4rem;
+  padding:clamp(1rem,.85rem + .6vw,1.35rem) clamp(1rem,.85rem + .8vw,1.5rem);
+  margin-top:clamp(1.2rem,1rem + 1vw,1.9rem)}
+.adm-note-i{flex:none;width:1.35rem;height:1.35rem;border-radius:50%;background:var(--accent);
+  color:#fff;font-family:var(--kr);font-weight:700;font-size:.8rem;line-height:1.35rem;
+  text-align:center;margin-top:.15rem}
+.adm-note p{font-family:var(--kr);font-size:clamp(.9rem,.87rem + .18vw,.98rem);
+  color:var(--body);line-height:1.8;margin:0}
+.adm-note p + p{margin-top:.5rem;color:var(--sub);font-size:.88rem}
+.adm-note b{color:var(--ink);font-weight:700}
+
+.adm-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:clamp(.7rem,.5rem + .7vw,1.05rem);margin-top:clamp(1.3rem,1rem + 1.2vw,2rem)}
+.adm-card{position:relative;display:flex;flex-direction:column;gap:.5rem;
+  background:var(--card,#fff);border:1px solid var(--line-soft);border-radius:.55rem;
+  box-shadow:0 1px 3px rgba(15,27,48,.05);
+  padding:clamp(1.2rem,1rem + .7vw,1.7rem) clamp(1rem,.85rem + .6vw,1.35rem) clamp(1.3rem,1.1rem + .7vw,1.8rem);
+  overflow:hidden;transition:border-color .18s,box-shadow .22s,transform .22s}
+.adm-card::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;
+  background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .25s}
+.adm-card:hover{border-color:var(--accent);box-shadow:0 8px 20px rgba(165,111,99,.16);transform:translateY(-3px)}
+.adm-card:hover::after{transform:scaleX(1)}
+.adm-card:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
+.adm-no{font-family:var(--mono);font-weight:600;font-size:.74rem;letter-spacing:.06em;
+  color:var(--accent);font-variant-numeric:tabular-nums}
+.adm-t{font-family:var(--kr);font-weight:700;color:var(--ink);line-height:1.35;letter-spacing:-.01em;
+  font-size:clamp(1rem,.94rem + .3vw,1.14rem)}
+.adm-d{font-family:var(--kr);font-size:.84rem;color:var(--muted);line-height:1.65}
+.adm-go{position:absolute;top:clamp(1.2rem,1rem + .7vw,1.7rem);right:clamp(1rem,.85rem + .6vw,1.35rem);
+  color:var(--line);font-size:.95rem;transition:color .18s}
+.adm-card:hover .adm-go{color:var(--accent)}
+
+.adm-links{display:flex;flex-wrap:wrap;gap:.6rem 1.4rem;margin-top:1.2rem}
+.adm-links a{font-family:var(--kr);font-size:.88rem;font-weight:600;color:var(--navy);
+  text-underline-offset:3px;transition:color .15s}
+.adm-links a:hover{color:var(--accent);text-decoration:underline}
+
+.adm-row{display:grid;grid-template-columns:minmax(11rem,1fr) 2.8fr;
+  gap:clamp(1rem,.8rem + 1.6vw,2.4rem);align-items:start;
+  margin-top:clamp(2rem,1.5rem + 2vw,3.2rem);padding-top:clamp(1.3rem,1rem + 1.2vw,2rem);
+  border-top:1px solid var(--line)}
+.adm-rh-t{font-family:var(--kr);font-weight:700;color:var(--navy);margin:0;
+  font-size:clamp(1.05rem,.96rem + .5vw,1.28rem);line-height:1.3;letter-spacing:-.01em}
+.adm-items{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(.7rem,.5rem + .6vw,1rem)}
+.adm-item{display:flex;flex-direction:column;gap:.45rem;
+  border:1px solid var(--line-soft);border-radius:.5rem;background:var(--card,#fff);
+  padding:clamp(1rem,.85rem + .55vw,1.3rem);transition:border-color .18s,transform .2s}
+.adm-item:hover{border-color:var(--accent);transform:translateY(-2px)}
+.adm-it{font-family:var(--kr);font-weight:700;color:var(--ink);font-size:1rem;line-height:1.35}
+.adm-id{font-family:var(--kr);font-size:.83rem;color:var(--muted);line-height:1.65}
+
+@media (max-width:860px){
+  .adm-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .adm-row{grid-template-columns:1fr;gap:1rem}
+  .adm-items{grid-template-columns:1fr}
+}
+@media (max-width:460px){ .adm-grid{grid-template-columns:1fr} }
+
 /* ── 대학원 진학 3단계 ── */
 .step{border:1px solid var(--line-soft);background:var(--card);
   padding:1.5rem 1.5rem 1.6rem;display:flex;flex-direction:column}
@@ -328,37 +396,75 @@ a{color:inherit;text-decoration:none}
       </div>
       <a class="sec-more" href="G-about.html">문의 · 오시는 길 <span class="arr" aria-hidden="true">→</span></a>
     </div>
-    <div class="duo">
-      <article class="card">
-        <span class="overline">지원 방법</span>
-        <p>학부 신입생 선발(수시 · 정시 등 전형별 일정 · 방법)은 <b>연세대학교 입학처의 해당 연도 모집요강</b>에 따라 진행됩니다. 기계공학부 교육과정 · 전공 관련 문의는 학부 행정팀 <span class="kbd">02-2123-4426</span>으로 연락해 주세요.</p>
-        <ol class="num-list">
-          <li><span class="n">01</span><span>모집요강 확인 — <a href="https://admission.yonsei.ac.kr" target="_blank" rel="noopener">연세대학교 입학처</a> 공지 기준</span></li>
-          <li><span class="n">02</span><span>전공 미리보기 — <a href="G-academics.html">교육과정</a>에서 4대 역학과 이수 체계로 4년을 조망</span></li>
-          <li><span class="n">03</span><span>연구 분야 탐색 — <a href="G-research.html">여섯 개 연구 분야</a></span></li>
-        </ol>
-        <p class="gloss"><b>모집요강</b> — 전형 일정 · 방법 · 제출 서류가 담긴 공식 안내문. <b>수시</b> — 학생부 · 서류 중심 전형, <b>정시</b> — 수능 성적 중심 전형입니다.</p>
-        <div class="btns">
-          <a class="btn btn--coral" href="https://admission.yonsei.ac.kr" target="_blank" rel="noopener">연세대학교 입학처 <span class="arr" aria-hidden="true">↗</span></a>
-          <a class="btn" href="G-academics.html">교육과정 미리보기 <span class="arr" aria-hidden="true">→</span></a>
-          <a class="btn" href="G-about.html">문의 · 오시는 길</a>
-        </div>
-      </article>
-      <article class="card card--soft">
-        <span class="overline">학부 개요</span>
-        <h3>1958년 설립</h3>
-        <p>4대 역학부터 종합설계까지 설계 중심 교육과정을 운영합니다.</p>
-        <div class="def" style="margin-top:1.1rem">
-          <div class="drow"><span class="k">창립</span><span class="v tnum">1958</span></div>
-          <div class="drow"><span class="k">전임 교수</span><span class="v tnum">33</span></div>
-          <div class="drow"><span class="k">ABEEK 공학교육인증 가입</span><span class="v tnum">2003</span></div>
-          <div class="drow"><span class="k">학부 분리 독립</span><span class="v tnum">2002</span></div>
-          <div class="drow"><span class="k">4단계 BK21 선정</span><span class="v hl tnum">2020</span></div>
-        </div>
-        <div class="btns">
-          <a class="btn" href="G-about.html">학부 연혁 보기 <span class="arr" aria-hidden="true">→</span></a>
-        </div>
-      </article>
+    <!-- 서울대 생명과학부 「대학입학」 페이지의 짜임을 참고했다:
+         (1) '입학 전형은 본부(입학처)가 주관한다'는 안내 한 덩어리,
+         (2) 전형 종류별 카드 격자 — 각 카드는 입학처의 해당 안내로 나간다.
+         우리 학부는 전형을 직접 운영하지 않으므로 이 구조가 사실관계와도 맞다.
+         카드 주소는 연세대 입학처에서 실제로 열리는 것만 넣었다(2026-07-28 확인). -->
+    <div class="adm-note" role="note">
+      <span class="adm-note-i" aria-hidden="true">i</span>
+      <div>
+        <p>기계공학부 학부 신입생 선발은 <b>연세대학교 입학처</b>가 주관합니다.
+          전형 일정 · 방법 · 제출 서류는 해당 연도 <b>모집요강</b>이 기준입니다.</p>
+        <p>기계공학부 교육과정 · 전공 관련 문의는 학부 행정팀 <span class="kbd">02-2123-4426</span>으로 연락해 주세요.</p>
+      </div>
+    </div>
+
+    <div class="adm-grid">
+      <a class="adm-card" href="https://admission.yonsei.ac.kr/seoul/admission/html/rolling/guide.asp" target="_blank" rel="noopener">
+        <span class="adm-no" aria-hidden="true">01</span>
+        <span class="adm-t">수시모집 안내</span>
+        <span class="adm-d">학생부 · 서류 중심 전형</span>
+        <span class="adm-go" aria-hidden="true">↗</span>
+        <span class="visually-hidden">연세대학교 입학처에서 열림 (새 창)</span>
+      </a>
+      <a class="adm-card" href="https://admission.yonsei.ac.kr/seoul/admission/html/regular/guide.asp" target="_blank" rel="noopener">
+        <span class="adm-no" aria-hidden="true">02</span>
+        <span class="adm-t">정시모집 안내</span>
+        <span class="adm-d">수능 성적 중심 전형</span>
+        <span class="adm-go" aria-hidden="true">↗</span>
+        <span class="visually-hidden">연세대학교 입학처에서 열림 (새 창)</span>
+      </a>
+      <a class="adm-card" href="https://admission.yonsei.ac.kr/seoul/admission/html/transfer/guide.asp" target="_blank" rel="noopener">
+        <span class="adm-no" aria-hidden="true">03</span>
+        <span class="adm-t">편입학 안내</span>
+        <span class="adm-d">일반 · 학사 편입학</span>
+        <span class="adm-go" aria-hidden="true">↗</span>
+        <span class="visually-hidden">연세대학교 입학처에서 열림 (새 창)</span>
+      </a>
+      <a class="adm-card" href="https://admission.yonsei.ac.kr/seoul/admission/html/abroad/guide.asp" target="_blank" rel="noopener">
+        <span class="adm-no" aria-hidden="true">04</span>
+        <span class="adm-t">재외국민 · 외국인 전형</span>
+        <span class="adm-d">국외 학력 지원자 대상</span>
+        <span class="adm-go" aria-hidden="true">↗</span>
+        <span class="visually-hidden">연세대학교 입학처에서 열림 (새 창)</span>
+      </a>
+    </div>
+
+    <div class="adm-links">
+      <a href="https://admission.yonsei.ac.kr/seoul/admission/html/counsel/calendar.asp" target="_blank" rel="noopener">입학 캘린더 <span aria-hidden="true">↗</span></a>
+      <a href="https://admission.yonsei.ac.kr" target="_blank" rel="noopener">연세대학교 입학처 <span aria-hidden="true">↗</span></a>
+    </div>
+
+    <!-- 입학처 링크만 있으면 '우리 학부가 어떤 곳인지'를 못 전한다. 학부 쪽 정보를 붙인다. -->
+    <div class="adm-row">
+      <div class="adm-rh">
+        <p class="adm-rh-t">기계공학부 미리 보기</p>
+      </div>
+      <div class="adm-items">
+        <a class="adm-item" href="G-academics.html#curriculum">
+          <span class="adm-it">교육과정</span>
+          <span class="adm-id">기초 과학에서 4대 역학, 종합설계까지 4년의 이수 흐름</span>
+        </a>
+        <a class="adm-item" href="G-research.html#fields">
+          <span class="adm-it">연구 분야</span>
+          <span class="adm-id">여섯 개 분야와 소속 연구실</span>
+        </a>
+        <a class="adm-item" href="G-about.html#history">
+          <span class="adm-it">학부 연혁</span>
+          <span class="adm-id">1958년 설립부터 오늘까지</span>
+        </a>
+      </div>
     </div>
   </section>
 

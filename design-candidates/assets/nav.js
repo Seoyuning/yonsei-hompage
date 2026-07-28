@@ -191,7 +191,7 @@
   var MENU = [
     { t: '학부소개', h: 'G-about.html', key: 'about', sub: [['학부 소개', 'G-about.html#intro', ['intro']], ['교육목표', 'G-about.html#vision', ['vision']], ['조직 · 행정', 'G-about.html#organization', ['organization']], ['주요 연혁', 'G-about.html#history', ['history']], ['연락처 · 오시는 길', 'G-about.html#location', ['location']]] },
     { t: '구성원', h: 'G-people.html', key: 'people', sub: [['교수진', 'G-people.html#faculty', ['faculty', 'dir']], ['교직원', 'G-people.html#staff', ['staff']], ['동문', 'G-people.html#alumni', ['alumni']]] },
-    { t: '연구', h: 'G-research.html', key: 'research', sub: [['연구 비전', 'G-research.html#vision', ['vision']], ['연구 분야', 'G-research.html#fields', ['fields', 'fieldsDetail']], ['연구실 전체', 'G-research.html#clusters', ['clusters']], ['연구실 홍보영상', 'G-research.html#labvideos', ['labvideos']]] },
+    { t: '연구', h: 'G-research.html', key: 'research', sub: [['연구 비전', 'G-research.html#vision', ['vision']], ['연구 분야', 'G-research.html#fields', ['fields', 'fieldsDetail']], ['연구실 목록', 'G-research.html#clusters', ['clusters']], ['연구실 홍보영상', 'G-research.html#labvideos', ['labvideos']]] },
     { t: '학사', h: 'G-academics.html', key: 'academics', sub: [['교육과정 개관', 'G-academics.html#curriculum', ['curriculum', 'requirements', 'abeek']], ['이수 체계도', 'G-academics.html#roadmap', ['roadmap']], ['졸업 요건', 'G-academics.html#graduation', ['graduation']], ['전공 교과', 'G-academics.html#courses', ['mechanics', 'courses']], ['동아리·학생활동', 'G-academics.html#clubs', ['clubs']]] },
     { t: '대학원', h: 'G-graduate.html', key: 'graduate', sub: [['입학 안내', 'G-graduate.html#grad-admission', ['grad-admission']], ['졸업 요건', 'G-graduate.html#grad-req', ['grad-req']], ['교과목 소개', 'G-graduate.html#grad-courses', ['grad-courses']], ['대학원 연구실', 'G-graduate.html#grad-labs', ['grad-labs']], ['BK21 FOUR', 'G-graduate.html#bk21', ['bk21']]] },
     { t: '소식', h: 'G-news.html', key: 'news', sub: [['학부 공지', 'G-news.html#notice-ug', ['notice-ug']], ['대학원 공지', 'G-news.html#notice-grad', ['notice-grad']], ['뉴스 · 연구성과', 'G-news.html#hi', ['hi']], ['세미나 · 행사', 'G-news.html#sched', ['sched']], ['학위논문심사', 'G-news.html#thesis', ['thesis']], ['자료실', 'G-news.html#archive', ['archive']], ['취업 정보', 'G-news.html#jobs', ['jobs']]] },
@@ -295,21 +295,46 @@
        모아 탭 바 바로 아래에 바로가기 줄로 깐다. 소제목이 2개 미만이면 아예 만들지 않는다. */
     var jump = null, jumpSeq = 0;
     function buildJump(ids) {
-      var heads = [];
-      ids.forEach(function (id) {
-        var sec = document.getElementById(id);
-        if (!sec) return;
-        /* 소제목은 h3 기준. 섹션 제목(h2)은 탭 이름과 겹쳐 빼고, h4 는 항목이라 너무 잘다.
-           id 가 없는 소제목이 대부분이라 없으면 그 자리에서 만들어 준다 —
-           각 페이지 HTML 을 일일이 고치지 않아도 모든 화면에서 동작한다. */
-        [].forEach.call(sec.querySelectorAll('h3'), function (h) {
-          if (h.closest('.ysub-hide')) return;
-          var label = (h.getAttribute('data-jump') || h.textContent || '').replace(/\s+/g, ' ').trim();
-          if (!label || label.length > 24) return;
-          if (!h.id) h.id = 'yj-' + (++jumpSeq);
-          heads.push({ id: h.id, label: label });
+      /* 어느 단계를 「중제목」으로 볼지는 탭마다 다르다.
+           · 탭이 섹션 여러 개를 묶고 있으면  → 각 섹션의 제목(h2)이 중제목
+             (전공 교과 = 4대 역학 / 학부 전공 교과. 그 안의 h3 는 과목 이름이라 너무 잘다)
+           · 탭이 섹션 하나면            → 그 섹션 안의 h3 가 중제목
+             (동문 = 동문 연혁 / 인터뷰 / 대외협력 / 발전기금)
+         id 가 없으면 그 자리에서 만들어 붙여, 페이지 HTML 을 고치지 않아도 되게 한다. */
+      var secs = ids.map(function (id) { return document.getElementById(id); }).filter(Boolean);
+      var pick = [];
+      if (secs.length > 1) {
+        secs.forEach(function (sec) { var h = sec.querySelector('h2'); if (h) pick.push(h); });
+      } else if (secs.length === 1) {
+        /* 반복 컴포넌트(절차 단계 카드·목록 항목·아코디언) 안의 h3 는 중제목이 아니라
+           카드 이름이다. 대학원 「입학 안내」의 01~04 단계가 그 예 — 바로가기로 세우면
+           '모집요강 확인 · 지원서 접수 …' 처럼 절차가 목차인 척 돼서 오히려 헷갈린다. */
+        pick = [].slice.call(secs[0].querySelectorAll('h3')).filter(function (h) {
+          return !h.closest('.step, .steps, li, details, summary, .card, [class*="-card"]');
         });
+      }
+      var heads = [];
+      pick.forEach(function (h) {
+        if (h.closest('.ysub-hide')) return;
+        /* 제목 안의 개수 배지(세미나<span class="cnt">20건</span>) 같은 장식은 라벨에서 뺀다 */
+        var label = h.getAttribute('data-jump');
+        if (!label) {
+          var t = '';
+          [].forEach.call(h.childNodes, function (n) {
+            if (n.nodeType === 3) { t += n.nodeValue; return; }
+            if (n.nodeType !== 1) return;
+            if (n.classList.contains('cnt') || n.classList.contains('count')
+                || n.getAttribute('aria-hidden') === 'true') return;
+            t += n.textContent;
+          });
+          label = t;
+        }
+        label = label.replace(/\s+/g, ' ').trim();
+        if (!label || label.length > 24) return;
+        if (!h.id) h.id = 'yj-' + (++jumpSeq);
+        heads.push({ id: h.id, label: label });
       });
+      if (heads.length > 8) heads = [];   /* 너무 많으면 오히려 안 읽힌다 — 아예 만들지 않는다 */
       if (jump) { jump.remove(); jump = null; fitTop(); }
       if (heads.length < 2) return;
       jump = document.createElement('nav');
@@ -375,21 +400,32 @@
        탭 해시는 각 페이지 head 스니펫이 앵커 점프 차단을 위해 미리 떼어 window.__ysTab 에 보관 */
     var initial = 0, hash = window.__ysTab || (location.hash || '').slice(1), isTabHash = false;
     if (hash) m.sub.forEach(function (s, i) { if ((s[2] || []).indexOf(hash) >= 0 || s[1].split('#')[1] === hash) { initial = i; isTabHash = true; } });
+
+    /* 깊은 앵커 판정은 show() 를 부르기 **전에** 해 둔다.
+       show() 가 replaceState 로 '#intro' 같은 탭 해시를 주소에 써 넣기 때문에,
+       나중에 location.hash 를 읽으면 우리가 방금 쓴 값을 사용자가 준 앵커로 착각한다.
+       그러면 최상위 메뉴로 들어온 진입에서 맨 위로 올리는 보정이 통째로 건너뛰어진다
+       — "새로고침하면 히어로가 보이는데 메뉴를 누르면 안 보인다"가 정확히 이 증상이었다. */
+    var rawHash = (location.hash || '').slice(1);
+    var deepAnchor = !!rawHash && !isTabHash && !window.__ysTab;
+
     show(initial, false);
 
-    /* 메뉴로 페이지에 들어올 때(탭 해시)는 앵커 위치가 아니라 맨 위(히어로 화면)에서 시작.
-       탭이 아닌 깊은 앵커(연구실 id 등)는 기존 스크롤 유지 */
-    /* 메뉴로 들어온 진입은 히어로부터 — 해시가 있든(탭 해시) 없든(최상위 메뉴) 같아야 한다.
-       예전에는 isTabHash 일 때만 맨 위로 올렸다. 그래서 새로고침(해시 있음)은 히어로가 보이는데
-       상단 메뉴 클릭(해시 없음)은 로드 뒤 무언가가 스크롤을 옮겨도 되돌리지 못했다.
-       진짜 깊은 앵커(#kang-keonwook 같은 교수 딥링크)로 들어온 경우에만 브라우저에 맡긴다. */
-    var deepAnchor = location.hash && location.hash.length > 1 && !isTabHash;
-    if (!deepAnchor) {
-      var toTop = function () { try { scrollTo({ top: 0, behavior: 'instant' }); } catch (_) { scrollTo(0, 0); } };
-      toTop();
-      addEventListener('load', function () { setTimeout(toTop, 0); });
-      setTimeout(toTop, 120);
-    }
+    /* 진입 지점은 **무엇을 눌러서 왔느냐**에 따라 다르다.
+         · 최상위 메뉴 이름(해시 없음)  → 히어로부터. 그 메뉴의 첫 화면을 보여 준다
+         · 드롭다운 하위 항목(탭 해시)  → 그 하위 뷰의 상단부터. 히어로는 건너뛴다
+         · 깊은 앵커(#kang-keonwook)   → 브라우저에 맡긴다
+       로드 직후 한 번으로는 다른 스크립트·이미지 로드에 밀릴 수 있어 세 번 보정한다. */
+    function settle(fn) { fn(); addEventListener('load', function () { setTimeout(fn, 0); }); setTimeout(fn, 120); }
+    var toTop = function () { try { scrollTo({ top: 0, behavior: 'instant' }); } catch (_) { scrollTo(0, 0); } };
+    var toView = function () {
+      var prev = bar.previousElementSibling;
+      var nat = prev ? prev.getBoundingClientRect().bottom + (pageYOffset || 0)
+                     : bar.getBoundingClientRect().top + (pageYOffset || 0);
+      var y = Math.max(0, Math.round(nat) - Math.round(hdr ? hdr.getBoundingClientRect().height : 62));
+      try { scrollTo({ top: y, behavior: 'instant' }); } catch (_) { scrollTo(0, y); }
+    };
+    if (!deepAnchor) settle(isTabHash ? toView : toTop);
 
     /* 같은 페이지를 가리키는 메뉴·드롭다운·푸터·모바일메뉴 링크 — 리로드 없이 처리한다.
        주의: 지금 URL 은 show() 가 replaceState 로 써 넣은 '#<탭>' 을 달고 있다.
@@ -414,9 +450,9 @@
       }
       e.preventDefault();
       if (h) { try { history.replaceState(null, '', '#' + h); } catch (_) {} }
-      /* 메뉴·푸터로 들어온 것이므로 히어로부터 — 다른 페이지에서 메뉴로 진입했을 때와 같은 감각.
-         (형제 탭 바 클릭만 'view' 로 그 탭 내용의 상단에 선다) */
-      show(idx, 'top');
+      /* 최상위 메뉴 이름(해시 없음)은 히어로부터, 드롭다운 하위 항목(해시 있음)은 그 뷰 상단부터.
+         다른 페이지에서 같은 링크를 눌러 들어왔을 때와 착지 지점이 같아야 한다. */
+      show(idx, h ? 'view' : 'top');
     });
   }
 

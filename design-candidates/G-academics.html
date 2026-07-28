@@ -12,7 +12,7 @@
   media="print" onload="this.media='all'" />
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
-<link rel="preload" as="script" href="assets/js/data.js?v=d15" />
+<link rel="preload" as="script" href="assets/js/data.js?v=d16" />
 <link rel="preload" as="script" href="assets/nav.js?v=64" />
 <style>
 /* ═══════════════════════════════════════════════════════════
@@ -218,6 +218,37 @@ a{color:inherit;text-decoration:none}
 .pick-panel[hidden]{display:none}
 
 /* ── §02 4대 역학 ── */
+/* ── 동아리 패널 — 글은 왼쪽, 포스터는 오른쪽 ── */
+.cl-panel{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);
+  gap:clamp(1.4rem,1rem + 2vw,2.8rem);align-items:start}
+.cl-body{min-width:0}
+.cl-sub{font-family:var(--kr);font-weight:700;color:var(--navy);margin:1.5rem 0 .6rem;
+  font-size:clamp(.95rem,.9rem + .25vw,1.05rem);line-height:1.4;letter-spacing:-.01em}
+.cl-body > .pick-desc:first-child + .cl-sub,.cl-body > .cl-sub:first-child{margin-top:0}
+.cl-ul{list-style:none;margin:0;padding:0;display:grid;gap:.42rem}
+.cl-ul li{position:relative;padding-left:.95rem;font-family:var(--kr);
+  font-size:.9rem;color:var(--body);line-height:1.75;overflow-wrap:break-word}
+.cl-ul li::before{content:"";position:absolute;left:0;top:.8em;width:5px;height:1px;background:var(--accent)}
+.cl-links{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.3rem}
+.cl-link{display:inline-flex;align-items:center;gap:.3rem;font-family:var(--kr);font-size:.82rem;
+  font-weight:600;color:var(--coral);background:var(--accent-soft);border-radius:.35rem;
+  padding:.4rem .7rem;transition:background .15s,color .15s}
+.cl-link:hover{background:var(--accent);color:#fff}
+.cl-link.is-plain{color:var(--sub);background:#f2f4f8;font-weight:500}
+.cl-hd{font-weight:500;opacity:.85}
+/* 포스터 — 원본이 최대 9MB 라 폭 1400px 로 줄여 실었다. 세로가 길어 화면 높이를 넘지 않게 제한 */
+.cl-fig{margin:0;position:sticky;top:calc(var(--ys-stick,7.6rem) + 1rem)}
+.cl-fig img{display:block;width:100%;height:auto;max-height:34rem;object-fit:contain;object-position:top;
+  border:1px solid var(--line-soft);border-radius:.5rem;background:#fff}
+.cl-fig figcaption{font-family:var(--kr);font-size:.76rem;color:var(--muted);margin-top:.6rem;line-height:1.6}
+.cl-src{font-family:var(--kr);font-size:.8rem;color:var(--muted);margin-top:1.4rem}
+.cl-src a{color:var(--navy);text-underline-offset:3px}
+@media (max-width:860px){
+  .cl-panel{grid-template-columns:1fr;gap:1.3rem}
+  .cl-fig{position:static}
+  .cl-fig img{max-height:26rem}
+}
+
 /* 4대 역학 패널 — 과목 코드·영문명은 회색 한 줄로 눕히고, 본문은 공식 교과 개요 원문 */
 .mech-meta{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem .9rem;margin:0 0 .8rem;
   font-family:var(--kr);font-size:.82rem}
@@ -763,51 +794,9 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
         <h2 id="clubs-h" class="sec-title">동아리 · 학생활동</h2>
       </div>
     </div>
-    <!-- 동아리 4곳 — 예전엔 카드 4장을 나란히 놓고 각 카드에 200자 넘는 설명을 넣었다.
-         한 칸이 270px 남짓이라 글이 세로로 길게 늘어져 읽기 어려웠다.
-         버튼 4개(가로 한 줄)로 고르고, 고른 동아리 설명만 아래 한 폭으로 펼친다. -->
-    <div class="pick-wrap">
-      <div class="pick-tabs" role="tablist" aria-label="동아리 고르기">
-        <button type="button" class="pick-btn is-on" role="tab" id="clubtab-drone"
-          aria-selected="true" aria-controls="clubpanel-drone" tabindex="0">
-          <span class="pick-idx" aria-hidden="true">01</span>
-          <span class="pick-name">연세드론</span>
-        </button>
-        <button type="button" class="pick-btn" role="tab" id="clubtab-mecar"
-          aria-selected="false" aria-controls="clubpanel-mecar" tabindex="-1">
-          <span class="pick-idx" aria-hidden="true">02</span>
-          <span class="pick-name">메카 (MECar)</span>
-        </button>
-        <button type="button" class="pick-btn" role="tab" id="clubtab-roboin"
-          aria-selected="false" aria-controls="clubpanel-roboin" tabindex="-1">
-          <span class="pick-idx" aria-hidden="true">03</span>
-          <span class="pick-name">로보인</span>
-        </button>
-        <button type="button" class="pick-btn" role="tab" id="clubtab-spacey"
-          aria-selected="false" aria-controls="clubpanel-spacey" tabindex="-1">
-          <span class="pick-idx" aria-hidden="true">04</span>
-          <span class="pick-name">SPACE Y</span>
-        </button>
-      </div>
-      <div class="pick-panels">
-        <div class="pick-panel" id="clubpanel-drone" role="tabpanel"
-          aria-labelledby="clubtab-drone">
-          <p class="pick-desc">무인비행체(드론·고정익·VTOL 등)를 직접 제작하고 비행하는 동아리로, 기체를 제작하는 하드웨어팀과 자율비행 알고리즘을 개발하는 소프트웨어팀으로 나뉘어 활동합니다. 제21·22·23회 한국로봇항공기 경연대회 본선에 진출했고(제21회 2등), 2024 현대모비스 모빌리티 SW 해커톤 1위(대상), 2025 전국 대학(원)생 우주항공 Makerthon 경진대회 수직이착륙기(VTOL) 부문 대상을 받았습니다.</p>
-        </div>
-        <div class="pick-panel" id="clubpanel-mecar" role="tabpanel"
-          aria-labelledby="clubtab-mecar" hidden>
-          <p class="pick-desc">차량 설계부터 부품 발주·제작까지 직접 수행하는 연세대학교 유일의 자작 자동차 동아리입니다. 기계팀·전기팀·기계설계팀·마케팅팀 4개 팀으로 구성되어 매년 KSAE 대학생 자작자동차 대회 오프로드 E-BAJA 부문과 EV 영광대회를 목표로 활동합니다. 2020 KSAE BAJA 부문 장려상과 베스트 팀워크상을 받았고, 2024 KSAE BAJA 내구력 경기를 완주했습니다.</p>
-        </div>
-        <div class="pick-panel" id="clubpanel-roboin" role="tabpanel"
-          aria-labelledby="clubtab-roboin" hidden>
-          <p class="pick-desc">기계공학과 로봇 학술 동아리입니다. 로봇을 배우고 싶은 학생을 위한 ‘로보인 커리큘럼’ 프로그램에서 아두이노·라즈베리 파이·3D 캐드·AI 활용 등 다양한 주제의 세미나와 실습을 진행하고, 로봇팔·드론·4족보행 로봇·자율주행 자동차 등 제작 프로젝트를 수행합니다. 에디슨 전산설계 대회, KU 메디컬 해커톤, 로보마스터 대회 등에 참가해 수상했습니다.</p>
-        </div>
-        <div class="pick-panel" id="clubpanel-spacey" role="tabpanel"
-          aria-labelledby="clubtab-spacey" hidden>
-          <p class="pick-desc">연세대학교 유일의 항공우주 동아리로 로켓·인공위성·항공·컨버전스 4개 팀으로 구성되어 있습니다. 로켓팀은 발사체 설계와 연료 실험, 인공위성팀은 캔위성 제작과 대회 참가, 항공팀은 항공기 모델 설계·제작, 컨버전스팀은 세미나와 카드뉴스 제작을 맡습니다. 2024 NURA 학술대회 2등(금상), 2023·2024 국내 캔위성 경연대회 우수상을 받았습니다.</p>
-        </div>
-      </div>
-    </div>
+    <!-- 동아리 — 학부 공식 「동아리 소개」 원문(clubsInfo)을 그대로 그린다.
+         원문은 [소제목] · - 항목 · ● SNS 로 짜여 있어 그 구조를 살려 옮긴다. -->
+    <div class="pick-wrap" id="clubWrap"></div>
     <p class="table-note">동아리 상세 소개와 모집 안내는 학부 공식 홈페이지 <a href="https://me.yonsei.ac.kr/me/community/circles.do" target="_blank" rel="noopener" style="color:var(--navy);font-weight:600">동아리 소개</a>에서 확인할 수 있습니다.</p>
   </section>
 </main>
@@ -823,7 +812,7 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
 </section>
 
 <!-- 단일 데이터 소스 (window.YSME) -->
-<script src="assets/js/data.js?v=d15"></script>
+<script src="assets/js/data.js?v=d16"></script>
 <script>
 (function(){
   'use strict';
@@ -832,6 +821,33 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
 
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){
     return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+  /* ── 고르기 버튼 묶음 — 버튼 = 탭, 고른 것만 아래에 펼친다 (동아리·4대 역학 공용) ── */
+  function bindPicker(root){
+    var tabs = [].slice.call((root || document).querySelectorAll('.pick-tabs .pick-btn'));
+    if(!tabs.length) return;
+    function select(i){
+      tabs.forEach(function(t, k){
+        var on = (k === i);
+        t.classList.toggle('is-on', on);
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        t.tabIndex = on ? 0 : -1;
+        var panel = document.getElementById(t.getAttribute('aria-controls'));
+        if(panel) panel.hidden = !on;
+      });
+    }
+    tabs.forEach(function(t, i){
+      t.addEventListener('click', function(){ select(i); });
+      /* 좌우 화살표로도 옮겨 다닐 수 있게 — 탭 묶음의 접근성 관례 */
+      t.addEventListener('keydown', function(e){
+        var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+        if(!d) return;
+        e.preventDefault();
+        var n = (i + d + tabs.length) % tabs.length;
+        select(n); tabs[n].focus();
+      });
+    });
+  }
 
   /* ── 공유 데이터 참조 ── */
   /* curriculum(49) 참조는 §03 이수 체계도가 curriculumTree 기반으로 바뀌면서 쓰이지 않아 뺐다 */
@@ -1371,33 +1387,79 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
     if(crsSearch) crsSearch.addEventListener('input', crsRender);
     crsRender();
 
-    /* ── 고르기 버튼 묶음 — 버튼 = 탭, 고른 것만 아래에 펼친다 (동아리·4대 역학 공용) ── */
-  function bindPicker(root){
-    var tabs = [].slice.call((root || document).querySelectorAll('.pick-tabs .pick-btn'));
-    if(!tabs.length) return;
-    function select(i){
-      tabs.forEach(function(t, k){
-        var on = (k === i);
-        t.classList.toggle('is-on', on);
-        t.setAttribute('aria-selected', on ? 'true' : 'false');
-        t.tabIndex = on ? 0 : -1;
-        var panel = document.getElementById(t.getAttribute('aria-controls'));
-        if(panel) panel.hidden = !on;
+    /* ── 동아리 — 공식 원문(clubsInfo) 렌더 ──
+     원문 문단은 세 가지 꼴이다: 「[소제목]」 / 「- 항목」 / 「● 이름: 값」.
+     그 꼴을 그대로 살려 소제목·목록·링크로 옮긴다. 문장은 손대지 않는다. */
+  (function(){
+    var wrap = document.getElementById('clubWrap');
+    var CI = (window.YSME || {}).clubsInfo;
+    if(!wrap || !CI || !CI.clubs) return;
+    var SRC = (window.YSME || {}).clubsInfoSource || {};
+
+    function body(paras){
+      var h = '', open = false;
+      function closeList(){ if(open){ h += '</ul>'; open = false; } }
+      var links = [];
+      paras.forEach(function(raw){
+        var t = String(raw).trim();
+        if(!t) return;
+        var m;
+        if((m = t.match(/^●\s*([^:]+):\s*(.+)$/))){ links.push([m[1].trim(), m[2].trim()]); return; }
+        if((m = t.match(/^\[(.+)\]$/))){ closeList(); h += '<h4 class="cl-sub">' + esc(m[1]) + '</h4>'; return; }
+        if(t.charAt(0) === '-'){
+          if(!open){ h += '<ul class="cl-ul">'; open = true; }
+          h += '<li>' + esc(t.replace(/^-\s*/, '')) + '</li>';
+          return;
+        }
+        closeList(); h += '<p class="pick-desc">' + esc(t) + '</p>';
       });
+      closeList();
+      if(links.length){
+        h += '<div class="cl-links">' + links.map(function(p){
+          /* 원문은 세 꼴로 적혀 있다: 전체 주소 / 도메인만 / @핸들.
+             @핸들은 어느 서비스인지 라벨을 보고 주소를 만든다(임의 추측이 아니라 라벨 근거). */
+          var HANDLE = { instagram:'https://www.instagram.com/', youtube:'https://www.youtube.com/',
+                         twitter:'https://x.com/', facebook:'https://www.facebook.com/' };
+          var url = p[1].match(/https?:\/\/\S+/);
+          if(!url){ var bare = p[1].match(/[\w.-]+\.[a-z]{2,}\S*/i); url = bare ? ['https://' + bare[0]] : null; }
+          if(!url && p[1].charAt(0) === '@'){
+            var base = HANDLE[p[0].trim().toLowerCase()];
+            if(base) url = [base + p[1].slice(1).trim()];
+          }
+          var label = esc(p[0]) + (p[1].charAt(0) === '@' ? ' <span class="cl-hd">' + esc(p[1]) + '</span>' : '');
+          return url
+            ? '<a class="cl-link" href="' + esc(url[0]) + '" target="_blank" rel="noopener">' + label
+              + ' <span aria-hidden="true">↗</span><span class="visually-hidden"> (새 창)</span></a>'
+            : '<span class="cl-link is-plain">' + label + ' ' + esc(p[1]) + '</span>';
+        }).join('') + '</div>';
+      }
+      return h;
     }
-    tabs.forEach(function(t, i){
-      t.addEventListener('click', function(){ select(i); });
-      /* 좌우 화살표로도 옮겨 다닐 수 있게 — 탭 묶음의 접근성 관례 */
-      t.addEventListener('keydown', function(e){
-        var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
-        if(!d) return;
-        e.preventDefault();
-        var n = (i + d + tabs.length) % tabs.length;
-        select(n); tabs[n].focus();
-      });
+
+    var tabs = '', panels = '';
+    CI.clubs.forEach(function(c, i){
+      var on = (i === 0);
+      tabs += '<button type="button" class="pick-btn' + (on ? ' is-on' : '') + '" role="tab"'
+        + ' id="clubtab-' + esc(c.key) + '" aria-controls="clubpanel-' + esc(c.key) + '"'
+        + ' aria-selected="' + (on ? 'true' : 'false') + '" tabindex="' + (on ? '0' : '-1') + '">'
+        + '<span class="pick-idx" aria-hidden="true">0' + (i+1) + '</span>'
+        + '<span class="pick-name">' + esc(c.name) + '</span>'
+      + '</button>';
+      panels += '<div class="pick-panel cl-panel" id="clubpanel-' + esc(c.key) + '" role="tabpanel"'
+        + ' aria-labelledby="clubtab-' + esc(c.key) + '"' + (on ? '' : ' hidden') + '>'
+        + '<div class="cl-body">' + body(c.paras || []) + '</div>'
+        + (c.image
+            ? '<figure class="cl-fig"><img src="' + esc(c.image) + '" alt="' + esc(c.imageAlt || '') + '" loading="lazy" decoding="async" />'
+              + '<figcaption>' + esc(c.name) + ' 소개 포스터 · 학부 공식 홈페이지</figcaption></figure>'
+            : '')
+      + '</div>';
     });
-  }
-  bindPicker(document.getElementById('clubs'));
+    wrap.innerHTML = '<div class="pick-tabs" role="tablist" aria-label="동아리 고르기">' + tabs + '</div>'
+      + '<div class="pick-panels">' + panels + '</div>'
+      + (SRC.source ? '<p class="cl-src">출처 — <a href="' + esc(SRC.source) + '" target="_blank" rel="noopener">'
+          + esc(SRC.label || '학부 공식 홈페이지') + ' <span aria-hidden="true">↗</span></a></p>' : '');
+    bindPicker(wrap);
+  })();
 
   /* ── #course-<code> 해시 이동 — 검색으로 숨어 있으면 검색 해제 후 스크롤 ── */
     function revealCourseHash(initial){

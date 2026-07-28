@@ -294,6 +294,9 @@
       if (jump) jump.style.top = (h + barH) + 'px';
       var jumpH = jump ? Math.round(jump.getBoundingClientRect().height) : 0;
       document.documentElement.style.setProperty('--ys-stick', (h + barH + jumpH + 12) + 'px');
+      /* 페이지 쪽 sticky 요소(예: 교수진 필터바)가 이 바들 바로 아래에 붙도록 —
+         --ys-stick 은 앵커 여백(+12)이 섞여 있어 sticky top 으로 쓰면 틈이 생긴다. */
+      document.documentElement.style.setProperty('--ys-bars', (h + barH + jumpH) + 'px');
     }
     fitTop(); addEventListener('resize', fitTop); addEventListener('load', fitTop);
 

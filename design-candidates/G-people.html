@@ -13,7 +13,7 @@
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d16" />
-<link rel="preload" as="script" href="assets/nav.js?v=64" />
+<link rel="preload" as="script" href="assets/nav.js?v=65" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    교수진 디렉토리 — 아이보리 배경 · 네이비 제목 · 헤어라인 · 연회색 행
@@ -80,11 +80,13 @@ a{color:inherit;text-decoration:none}
 .phero .bc{margin:0 0 1.05rem;font-size:.82rem;letter-spacing:.02em;color:rgba(255,255,255,.82)}
 
 /* ── 분야 서브내비 (sticky · 칩 필터) ── */
-.filterbar{position:sticky;top:3.6rem;z-index:20;
+/* 형제바(.ysub) 바로 아래에 붙는다. 값을 3.6rem 으로 박아 두면 형제바가 생긴 뒤로는
+   그 아래로 파묻혀 「전임교수 / 명예·퇴임교수」 줄이 가려진다(nav.js 가 --ys-bars 로 실측). */
+.filterbar{position:sticky;top:var(--ys-bars,3.6rem);z-index:20;
   background:#ffffff;
   border-bottom:1px solid var(--line-soft);
   padding:.9rem 0;
-  scroll-margin-top:4.5rem}
+  scroll-margin-top:var(--ys-stick,4.5rem)}
 /* 위 형제바(.ysub-w, nav.js)와 같은 상자를 써야 「전임교수」가 「교수진」과 같은 지점에서 시작한다.
    폭·좌우 여백을 그쪽 값과 똑같이 맞춘다 — 한쪽만 바뀌면 다시 어긋난다. */
 .filter-wrap{max-width:72rem;margin:0 auto;padding:0 clamp(1.1rem,4vw,2rem)}
@@ -118,16 +120,29 @@ a{color:inherit;text-decoration:none}
 /* display:flex 가 hidden 속성의 display:none 을 이겨서 숨겨지지 않는다 */
 .fchips[hidden]{display:none}
 .fchips-label{font-size:.78rem;color:var(--label);margin-right:.55rem;flex:none;letter-spacing:.02em}
-/* 분야 필터 — 예전엔 칩마다 분야색 점을 찍어 여섯 색이 한 줄에 늘어섰다.
-   무지개 띠가 국내 학부 사이트에서는 잘 안 쓰는 모양이라 눈에 띄게 튀었다.
-   서울대·KAIST 기계공학부처럼 색을 빼고 네이비 하나로 정돈한다(색은 카드에만 남긴다). */
-.fchip{display:inline-flex;align-items:center;cursor:pointer;
-  border:1px solid var(--line);background:#fff;color:var(--sub);
-  font-family:var(--kr);font-size:.88rem;font-weight:600;
-  padding:.52rem 1rem;transition:border-color .15s,color .15s,background .15s;white-space:nowrap}
-.fchip:hover{color:var(--navy);border-color:var(--navy)}
+/* ── 분야 필터 ──
+   색은 쓰지 않는다: 예전에 칩마다 분야색 점을 찍었더니 여섯 색이 한 줄에 늘어서
+   무지개 띠처럼 튀었다(서울대·KAIST 기계공학부도 색을 쓰지 않는다).
+   테두리도 없앤다: 같은 굵기의 네모 일곱 개가 늘어서면 어느 것이 지금 상태인지
+   보려고 색 대비에 기대게 되고, 그래서 활성 칩을 네이비로 꽉 채워야 했다.
+   지금은 글자만 두고 활성 표시는 글자 밑 포인트색 선 하나로 한다 —
+   위의 신분 구분(.kseg, 굵은 네이비 밑줄 + 개수)과 격이 자연스럽게 갈린다. */
+.fchip{position:relative;display:inline-flex;align-items:center;cursor:pointer;
+  border:0;background:none;color:var(--muted);
+  font-family:var(--kr);font-size:.86rem;font-weight:500;
+  padding:.5rem .1rem .55rem;margin-right:.35rem;
+  transition:color .16s;white-space:nowrap}
+.fchip::after{content:"";position:absolute;left:0;right:0;bottom:.15rem;height:2px;
+  background:var(--accent);transform:scaleX(0);transform-origin:left;
+  transition:transform .22s cubic-bezier(.22,.61,.36,1)}
+.fchip:hover{color:var(--navy)}
+.fchip:focus-visible{outline:2px solid var(--navy);outline-offset:3px;border-radius:2px}
 .fchip .cdot{display:none}
-.fchip[aria-pressed="true"]{color:#fff;background:var(--navy);border-color:var(--navy)}
+.fchip[aria-pressed="true"]{color:var(--navy);font-weight:700}
+.fchip[aria-pressed="true"]::after{transform:scaleX(1)}
+/* 칩 사이는 여백으로만 나눈다 — 구분선을 넣으면 다시 상자처럼 보인다 */
+.fchips{gap:0 .9rem}
+@media (prefers-reduced-motion:reduce){ .fchip::after{transition:none} }
 
 /* ── 교수진 사진 그리드 (한양대 member_01 레이아웃: 사진 위 · 정보 패널 아래) ── */
 .dir{max-width:1320px;margin:0 auto;padding:1.4rem clamp(1.2rem,.6rem + 2vw,2.6rem) 3rem}
@@ -1154,7 +1169,7 @@ html[lang="en"] .ppos{display:none}
   }
 })();
 </script>
-<script src="assets/nav.js?v=64"></script>
+<script src="assets/nav.js?v=65"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--dimmer)">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

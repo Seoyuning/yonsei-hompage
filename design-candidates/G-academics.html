@@ -250,74 +250,81 @@ a{color:inherit;text-decoration:none}
 }
 
 /* ── 4대 역학 = 「네 기둥」 ──
-   4과목 모두 공식 이수 체계도상 2학년에 놓인 관문 과목이다. 그 사실을 형태로 옮겼다:
-   네이비 판 위에 네 개의 세로 기둥을 세우고, 아래로 갈래 선을 내려 전공 교과가
-   여기서 갈라져 나온 것처럼 읽히게 한다. 색은 기둥 밑선의 포인트색 하나만 쓴다. */
-.pillars{background:var(--navy);border-radius:.6rem;overflow:hidden;
-  margin-top:clamp(1.2rem,1rem + 1vw,1.9rem)}
-.pil-head{padding:clamp(1.5rem,1.2rem + 1.4vw,2.4rem) clamp(1.3rem,1rem + 1.4vw,2.4rem) 0}
-.pil-kick{font-family:var(--kr);font-size:.72rem;font-weight:700;letter-spacing:.2em;
-  color:rgba(255,255,255,.6);margin:0 0 .8rem;padding-bottom:.65rem;position:relative}
-.pil-kick::after{content:"";position:absolute;left:0;bottom:0;width:2.2rem;height:2px;background:var(--accent)}
-.pil-lead{font-family:var(--kr);color:rgba(255,255,255,.9);margin:0;line-height:1.55;
-  font-size:clamp(1rem,.92rem + .45vw,1.25rem);letter-spacing:-.01em}
-.pil-lead b{color:#fff;font-weight:700}
+   4과목 모두 공식 이수 체계도상 2학년에 놓인 관문 과목이다. 그 사실을 형태로 옮긴다.
+   처음엔 큰 네이비 판 위에 4칸을 올렸는데, 칸이 가로로 넓고 세로로 짧아 기둥으로 안 읽혔고
+   큰 색 덩어리가 이 사이트의 흰 바탕·헤어라인 톤과 따로 놀았다.
+   지금은 색 덩어리를 걷어내고 세로 막대와 활자로 기둥을 세운다 —
+   막대 높이가 곧 기둥이고, 고른 기둥만 포인트색으로 찬다. */
+.pillars{margin-top:clamp(1.2rem,1rem + 1vw,1.9rem)}
+.pil-lead{font-family:var(--kr);color:var(--sub);margin:0 0 clamp(1.4rem,1.1rem + 1.2vw,2.2rem);
+  font-size:clamp(.95rem,.9rem + .35vw,1.1rem);line-height:1.7;max-width:44rem}
+.pil-lead b{color:var(--navy);font-weight:700}
 
-/* 기둥 넷 — 세로로 긴 칸. 사이는 1px 틈으로만 나눈다(선이 아니라 틈) */
-.pil-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;
-  margin-top:clamp(1.4rem,1.1rem + 1.2vw,2.2rem);background:rgba(255,255,255,.13)}
-.pil{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:.45rem;
-  background:var(--navy);border:0;cursor:pointer;text-align:left;
-  padding:clamp(1.2rem,1rem + .8vw,1.8rem) clamp(.9rem,.7rem + .7vw,1.35rem) clamp(1.5rem,1.2rem + 1vw,2.1rem);
-  transition:background .2s}
-.pil:hover{background:#16345f}
-.pil[data-on]{background:#16345f}
-/* 고른 기둥만 바닥에 포인트색 밑선 — 어느 기둥을 보고 있는지 */
-.pil::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--accent);
-  transform:scaleX(0);transform-origin:center;transition:transform .25s}
-.pil[data-on]::after{transform:scaleX(1)}
-.pil:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+/* 기둥 넷 — 위쪽 2px 네이비 룰 하나로 묶고, 칸은 세로 헤어라인으로만 나눈다 */
+.pil-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  border-top:2px solid var(--navy)}
+/* 막대는 흐름에서 빼서 절대 배치한다 — 길이가 변해도 아래 글자가 밀리지 않아야
+   네 칸의 번호·이름 줄이 같은 높이에 선다(밀리면 그것만으로 망가져 보인다). */
+.pil{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:.3rem;
+  background:none;border:0;border-left:1px solid var(--line-soft);cursor:pointer;text-align:left;
+  padding:clamp(3.4rem,2.6rem + 3vw,5rem) clamp(.9rem,.7rem + .7vw,1.4rem) clamp(1.3rem,1rem + .9vw,1.9rem);
+  transition:background .18s}
+.pil:first-child{border-left:0}
+.pil:hover{background:rgba(10,26,51,.03)}
+.pil[data-on]{background:rgba(165,111,99,.05)}
+.pil:focus-visible{outline:2px solid var(--navy);outline-offset:-2px}
+/* 막대 = 기둥. 평소엔 얇은 회색, 고르면 포인트색으로 굵고 길게 찬다 */
+.pil-bar{position:absolute;left:clamp(.9rem,.7rem + .7vw,1.4rem);top:clamp(1.1rem,.9rem + .8vw,1.7rem);
+  display:block;width:3px;height:clamp(1.3rem,1rem + 1.2vw,2rem);
+  background:var(--line);transform-origin:top;
+  transition:background .2s,height .26s cubic-bezier(.22,.61,.36,1),width .2s}
+.pil:hover .pil-bar{background:var(--muted)}
+.pil[data-on] .pil-bar{background:var(--accent);width:5px;
+  height:clamp(2.1rem,1.6rem + 2vw,3.1rem)}
 .pil-no{font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.08em;
-  color:rgba(255,255,255,.45);font-variant-numeric:tabular-nums}
-.pil-ko{font-family:var(--kr);font-weight:700;color:#fff;line-height:1.25;letter-spacing:-.02em;
-  font-size:clamp(1.15rem,.95rem + .95vw,1.7rem)}
-.pil-en{font-family:var(--kr);font-size:.76rem;color:rgba(255,255,255,.55);line-height:1.45}
-.pil-cd{font-variant-numeric:tabular-nums;font-size:.72rem;letter-spacing:.04em;
-  color:rgba(255,255,255,.4);margin-top:.15rem}
+  color:var(--muted);font-variant-numeric:tabular-nums}
 .pil[data-on] .pil-no{color:var(--accent)}
+.pil-ko{font-family:var(--kr);font-weight:700;color:var(--sub);line-height:1.25;letter-spacing:-.02em;
+  font-size:clamp(1.1rem,.92rem + .85vw,1.55rem);transition:color .18s}
+.pil:hover .pil-ko{color:var(--navy)}
+.pil[data-on] .pil-ko{color:var(--ink)}
+.pil-en{font-family:var(--kr);font-size:.76rem;color:var(--muted);line-height:1.45;margin-top:.1rem}
+.pil-cd{font-variant-numeric:tabular-nums;font-size:.72rem;letter-spacing:.04em;color:var(--label)}
+.pil[data-on] .pil-cd{color:var(--navy);font-weight:700}
 
-/* 고른 기둥의 교과 개요 — 판 안에서 한 폭으로 */
-.pil-panels{padding:clamp(1.3rem,1.1rem + 1vw,2rem) clamp(1.3rem,1rem + 1.4vw,2.4rem) clamp(1.6rem,1.3rem + 1.2vw,2.4rem);
-  border-top:1px solid rgba(255,255,255,.13)}
+/* 고른 기둥의 교과 개요 — 기둥 줄 바로 아래, 글 폭을 묶어 오른쪽이 비지 않게 */
+.pil-panels{border-top:1px solid var(--line);
+  padding:clamp(1.3rem,1.1rem + 1vw,2rem) 0 0}
 .pil-panel[hidden]{display:none}
-.pil-meta{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;margin:0 0 .8rem;
-  font-family:var(--kr);font-size:.8rem}
-.pil-at{color:rgba(255,255,255,.72)}
-.pil-sep{color:rgba(255,255,255,.3)}
-.pil-req{color:var(--accent);font-weight:700}
-.pil-desc{font-family:var(--kr);color:rgba(255,255,255,.88);margin:0;max-width:56rem;
-  font-size:clamp(.94rem,.9rem + .28vw,1.05rem);line-height:1.85}
-.pil-more{display:inline-flex;align-items:center;gap:.35rem;margin-top:1.1rem;
-  font-family:var(--kr);font-size:.85rem;font-weight:600;color:var(--accent);transition:gap .15s}
+.pil-meta{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;margin:0 0 .7rem;
+  font-family:var(--kr);font-size:.82rem}
+.pil-at{color:var(--sub)}
+.pil-sep{color:var(--line)}
+.pil-req{color:var(--coral);font-weight:700}
+.pil-desc{font-family:var(--kr);color:var(--body);margin:0;max-width:46rem;
+  font-size:clamp(.96rem,.92rem + .3vw,1.08rem);line-height:1.85}
+.pil-more{display:inline-flex;align-items:center;gap:.35rem;margin-top:1rem;
+  font-family:var(--kr);font-size:.85rem;font-weight:600;color:var(--coral);transition:gap .15s}
 .pil-more:hover{gap:.65rem}
 
-/* 갈래 — 기둥 넷에서 아래 목록으로 내려가는 선. 순수 장식이라 스크린리더에서 감춘다 */
-.pil-fan{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));height:2.6rem}
-.pil-fan span{position:relative}
-.pil-fan span::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;
-  background:linear-gradient(180deg,var(--accent),rgba(165,111,99,0))}
-
-@media (max-width:860px){
+@media (max-width:760px){
   .pil-row{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .pil-fan{height:1.6rem;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pil{border-left:0;border-top:1px solid var(--line-soft)}
+  .pil:nth-child(-n+2){border-top:0}
+  .pil:nth-child(even){border-left:1px solid var(--line-soft)}
 }
 @media (max-width:420px){
   .pil-row{grid-template-columns:1fr}
-  .pil{flex-direction:row;align-items:baseline;flex-wrap:wrap;gap:.5rem .7rem;
-    padding-top:1rem;padding-bottom:1.2rem}
-  .pil-en{width:100%}
-  .pil-fan{grid-template-columns:1fr}
+  .pil{flex-direction:row;align-items:center;flex-wrap:wrap;gap:.4rem .8rem;
+    padding:.95rem .2rem 1.05rem;border-left:0}
+  .pil:nth-child(even){border-left:0}
+  .pil:not(:first-child){border-top:1px solid var(--line-soft)}
+  .pil-bar{position:static;width:3px;height:1.6rem;flex:none}
+  .pil[data-on] .pil-bar{height:2rem;width:4px}
+  .pil-no{margin-top:0}
+  .pil-en,.pil-cd{width:100%;margin-left:calc(3px + .8rem)}
 }
+@media (prefers-reduced-motion:reduce){ .pil-bar{transition:none} }
 
 /* ── 구분 뱃지 — 라이트 컬러칩 ── */
 .cur-badge{display:inline-block;font-family:var(--kr);font-size:.7rem;font-weight:600;letter-spacing:.02em;
@@ -967,6 +974,7 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
         + ' id="piltab-' + esc(p.code) + '" aria-controls="pilpanel-' + esc(p.code) + '"'
         + ' aria-selected="' + (i===0 ? 'true' : 'false') + '" tabindex="' + (i===0 ? '0' : '-1') + '"'
         + (i===0 ? ' data-on="1"' : '') + '>'
+        + '<span class="pil-bar" aria-hidden="true"></span>'
         + '<span class="pil-no" aria-hidden="true">0' + (i+1) + '</span>'
         + '<span class="pil-ko">' + esc(c.ko || '') + '</span>'
         + '<span class="pil-en">' + esc(c.en || '') + '</span>'
@@ -986,14 +994,10 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
     }).join('');
     mechGrid.innerHTML =
       '<div class="pillars">'
-        + '<div class="pil-head">'
-          + '<p class="pil-kick">MECHANICS</p>'
-          + '<p class="pil-lead">2학년에 이수하는 <b>네 개의 관문</b>. 이후 모든 전공 교과가 여기서 갈라집니다.</p>'
-        + '</div>'
+        + '<p class="pil-lead">2학년에 이수하는 <b>네 개의 관문</b>. 이후 모든 전공 교과가 여기서 갈라집니다.</p>'
         + '<div class="pil-row" role="tablist" aria-label="4대 역학 고르기">' + cols + '</div>'
         + '<div class="pil-panels">' + pans + '</div>'
-      + '</div>'
-      + '<div class="pil-fan" aria-hidden="true"><span></span><span></span><span></span><span></span></div>';
+      + '</div>';
 
     /* 기둥 고르기 — pick 과 같은 규칙이지만 클래스가 달라 따로 묶는다 */
     (function(){

@@ -249,14 +249,75 @@ a{color:inherit;text-decoration:none}
   .cl-fig img{max-height:26rem}
 }
 
-/* 4대 역학 패널 — 과목 코드·영문명은 회색 한 줄로 눕히고, 본문은 공식 교과 개요 원문 */
-.mech-meta{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem .9rem;margin:0 0 .8rem;
-  font-family:var(--kr);font-size:.82rem}
-.mech-cd{font-variant-numeric:tabular-nums;letter-spacing:.03em;color:var(--navy);font-weight:700}
-.mech-en{color:var(--muted)}
-.mech-more{display:inline-flex;align-items:center;gap:.35rem;margin-top:1rem;
-  font-family:var(--kr);font-size:.85rem;font-weight:600;color:var(--coral);transition:gap .15s}
-.mech-more:hover{gap:.65rem}
+/* ── 4대 역학 = 「네 기둥」 ──
+   4과목 모두 공식 이수 체계도상 2학년에 놓인 관문 과목이다. 그 사실을 형태로 옮겼다:
+   네이비 판 위에 네 개의 세로 기둥을 세우고, 아래로 갈래 선을 내려 전공 교과가
+   여기서 갈라져 나온 것처럼 읽히게 한다. 색은 기둥 밑선의 포인트색 하나만 쓴다. */
+.pillars{background:var(--navy);border-radius:.6rem;overflow:hidden;
+  margin-top:clamp(1.2rem,1rem + 1vw,1.9rem)}
+.pil-head{padding:clamp(1.5rem,1.2rem + 1.4vw,2.4rem) clamp(1.3rem,1rem + 1.4vw,2.4rem) 0}
+.pil-kick{font-family:var(--kr);font-size:.72rem;font-weight:700;letter-spacing:.2em;
+  color:rgba(255,255,255,.6);margin:0 0 .8rem;padding-bottom:.65rem;position:relative}
+.pil-kick::after{content:"";position:absolute;left:0;bottom:0;width:2.2rem;height:2px;background:var(--accent)}
+.pil-lead{font-family:var(--kr);color:rgba(255,255,255,.9);margin:0;line-height:1.55;
+  font-size:clamp(1rem,.92rem + .45vw,1.25rem);letter-spacing:-.01em}
+.pil-lead b{color:#fff;font-weight:700}
+
+/* 기둥 넷 — 세로로 긴 칸. 사이는 1px 틈으로만 나눈다(선이 아니라 틈) */
+.pil-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;
+  margin-top:clamp(1.4rem,1.1rem + 1.2vw,2.2rem);background:rgba(255,255,255,.13)}
+.pil{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:.45rem;
+  background:var(--navy);border:0;cursor:pointer;text-align:left;
+  padding:clamp(1.2rem,1rem + .8vw,1.8rem) clamp(.9rem,.7rem + .7vw,1.35rem) clamp(1.5rem,1.2rem + 1vw,2.1rem);
+  transition:background .2s}
+.pil:hover{background:#16345f}
+.pil[data-on]{background:#16345f}
+/* 고른 기둥만 바닥에 포인트색 밑선 — 어느 기둥을 보고 있는지 */
+.pil::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--accent);
+  transform:scaleX(0);transform-origin:center;transition:transform .25s}
+.pil[data-on]::after{transform:scaleX(1)}
+.pil:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.pil-no{font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.08em;
+  color:rgba(255,255,255,.45);font-variant-numeric:tabular-nums}
+.pil-ko{font-family:var(--kr);font-weight:700;color:#fff;line-height:1.25;letter-spacing:-.02em;
+  font-size:clamp(1.15rem,.95rem + .95vw,1.7rem)}
+.pil-en{font-family:var(--kr);font-size:.76rem;color:rgba(255,255,255,.55);line-height:1.45}
+.pil-cd{font-variant-numeric:tabular-nums;font-size:.72rem;letter-spacing:.04em;
+  color:rgba(255,255,255,.4);margin-top:.15rem}
+.pil[data-on] .pil-no{color:var(--accent)}
+
+/* 고른 기둥의 교과 개요 — 판 안에서 한 폭으로 */
+.pil-panels{padding:clamp(1.3rem,1.1rem + 1vw,2rem) clamp(1.3rem,1rem + 1.4vw,2.4rem) clamp(1.6rem,1.3rem + 1.2vw,2.4rem);
+  border-top:1px solid rgba(255,255,255,.13)}
+.pil-panel[hidden]{display:none}
+.pil-meta{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;margin:0 0 .8rem;
+  font-family:var(--kr);font-size:.8rem}
+.pil-at{color:rgba(255,255,255,.72)}
+.pil-sep{color:rgba(255,255,255,.3)}
+.pil-req{color:var(--accent);font-weight:700}
+.pil-desc{font-family:var(--kr);color:rgba(255,255,255,.88);margin:0;max-width:56rem;
+  font-size:clamp(.94rem,.9rem + .28vw,1.05rem);line-height:1.85}
+.pil-more{display:inline-flex;align-items:center;gap:.35rem;margin-top:1.1rem;
+  font-family:var(--kr);font-size:.85rem;font-weight:600;color:var(--accent);transition:gap .15s}
+.pil-more:hover{gap:.65rem}
+
+/* 갈래 — 기둥 넷에서 아래 목록으로 내려가는 선. 순수 장식이라 스크린리더에서 감춘다 */
+.pil-fan{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));height:2.6rem}
+.pil-fan span{position:relative}
+.pil-fan span::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;
+  background:linear-gradient(180deg,var(--accent),rgba(165,111,99,0))}
+
+@media (max-width:860px){
+  .pil-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pil-fan{height:1.6rem;grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:420px){
+  .pil-row{grid-template-columns:1fr}
+  .pil{flex-direction:row;align-items:baseline;flex-wrap:wrap;gap:.5rem .7rem;
+    padding-top:1rem;padding-bottom:1.2rem}
+  .pil-en{width:100%}
+  .pil-fan{grid-template-columns:1fr}
+}
 
 /* ── 구분 뱃지 — 라이트 컬러칩 ── */
 .cur-badge{display:inline-block;font-family:var(--kr);font-size:.7rem;font-weight:600;letter-spacing:.02em;
@@ -546,21 +607,45 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
 
 /* 과목 행 — 표가 아닌 정돈된 리스트, 코드/이름/영문/개요 위계 */
 .crs-list{border-top:2px solid var(--navy)}
-.crs-row{display:grid;grid-template-columns:6rem minmax(0,1fr);gap:0 1.4rem;align-items:baseline;
-  padding:.85rem clamp(.5rem,.3rem + .5vw,.9rem);border-bottom:1px solid var(--line-soft);
-  transition:background .12s}
+/* 과목 행 — 접힘이 기본. summary 가 격자를 만든다 */
+.crs-row{border-bottom:1px solid var(--line-soft);transition:background .12s}
+.crs-row > summary,.crs-row:not(details){display:grid;
+  grid-template-columns:6rem minmax(0,1fr) 1.1rem;gap:0 1.3rem;align-items:baseline;
+  padding:.8rem clamp(.5rem,.3rem + .5vw,.9rem);cursor:pointer;list-style:none}
+.crs-row:not(details){cursor:default}
+.crs-row > summary::-webkit-details-marker{display:none}
+.crs-row > summary::marker{content:""}
 .crs-row:nth-child(even){background:rgba(10,26,51,.022)}
 .crs-row:hover{background:var(--card-hover)}
+.crs-row[open]{background:var(--card-hover)}
 .crs-row.is-hidden{display:none}
-.crs-row:target{background:linear-gradient(90deg,rgba(26,61,117,.06),transparent 60%);
-  box-shadow:inset 3px 0 0 var(--navy);padding-left:.9rem;margin-left:-.9rem}
-.crs-code{font-variant-numeric:tabular-nums;font-size:.76rem;letter-spacing:.03em;color:var(--navy);font-weight:700;
-  font-variant-numeric:tabular-nums;padding-top:.15em}
-.crs-main{min-width:0}
-.crs-name-row{display:flex;align-items:baseline;gap:.55rem;flex-wrap:wrap}
-.crs-name{font-family:var(--kr);font-weight:700;font-size:1.02rem;color:var(--ink);line-height:1.3}
-.crs-en{font-family:var(--kr);font-size:.78rem;color:var(--muted);margin-top:.25rem;line-height:1.5}
-.crs-desc{font-family:var(--kr);font-size:.84rem;color:var(--sub);line-height:1.72;margin-top:.55rem;max-width:44rem}
+/* 4대 역학 4과목 — 왼쪽에 포인트색 기둥 자국. 위 밴드와 같은 색이라 이어져 보인다 */
+.crs-row.is-pil{box-shadow:inset 3px 0 0 var(--accent)}
+.crs-pil{display:inline-block;margin-left:.55rem;font-family:var(--kr);font-size:.66rem;
+  font-weight:700;color:var(--coral);background:var(--accent-soft);
+  padding:.12rem .4rem;border-radius:2px;vertical-align:2px;white-space:nowrap}
+.crs-main{min-width:0;display:block}
+.crs-name{font-family:var(--kr);font-weight:700;font-size:1.02rem;color:var(--ink);line-height:1.35}
+.crs-en{display:block;font-family:var(--kr);font-size:.78rem;color:var(--muted);
+  margin-top:.25rem;line-height:1.5}
+/* 펼침 표시 */
+.crs-mk{justify-self:end;align-self:center;width:1.1rem;height:1.1rem;position:relative;color:var(--label)}
+.crs-mk::before{content:"";position:absolute;left:.16rem;top:.3rem;width:.5rem;height:.5rem;
+  border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;
+  transform:rotate(45deg);transition:transform .2s}
+.crs-mk--none::before{display:none}
+.crs-row[open] .crs-mk{color:var(--accent)}
+.crs-row[open] .crs-mk::before{transform:rotate(225deg);top:.42rem}
+.crs-desc{font-family:var(--kr);font-size:.9rem;color:var(--body);line-height:1.85;
+  margin:0;padding:0 clamp(.5rem,.3rem + .5vw,.9rem) 1.1rem calc(6rem + 1.3rem + clamp(.5rem,.3rem + .5vw,.9rem));
+  max-width:60rem}
+@media (max-width:640px){
+  .crs-row > summary,.crs-row:not(details){grid-template-columns:minmax(0,1fr) 1.1rem;gap:.25rem .8rem}
+  .crs-code{grid-column:1;grid-row:1}
+  .crs-main{grid-column:1;grid-row:2}
+  .crs-mk{grid-column:2;grid-row:1}
+  .crs-desc{padding-left:clamp(.5rem,.3rem + .5vw,.9rem)}
+}
 .crs-empty{padding:2rem 0;font-family:var(--kr);font-size:.88rem;color:var(--muted)}
 
 /* ── 반응형 ── */
@@ -870,32 +955,70 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
   ];
   var mechGrid = document.getElementById('mechGrid');
   if (mechGrid) {
-    /* 4대 역학 — 동아리와 같은 방식: 버튼 넷으로 고르고 설명은 아래 한 폭으로.
-       설명은 학부 공식 교과 개요 원문(coursesUG.desc)이라 손대지 않고 그대로 싣는다. */
-    var mechBtns = PILLARS.map(function(p,i){
+    /* ── 4대 역학 = 「네 기둥」 ──
+       4과목 모두 공식 이수 체계도상 2학년(2-1·2-2)에 놓인 관문 과목이다. 그 사실이
+       이 화면의 근거다 — 네 개의 세로 기둥으로 세우고, 그 아래 전공 교과가 기둥에서
+       갈라져 나온 것처럼 보이게 한다. 설명은 학부 공식 교과 개요 원문 그대로. */
+    var AT = { MEU2600:'2학년 1학기', MEU2610:'2학년 1학기',
+               MEU2640:'2학년 2학기', MEU2650:'2학년 2학기' };
+    var cols = PILLARS.map(function(p, i){
       var c = ugByCode[p.code] || {};
-      return '<button type="button" class="pick-btn' + (i===0 ? ' is-on' : '') + '" role="tab"'
-        + ' id="mechtab-' + esc(p.code) + '" aria-controls="mechpanel-' + esc(p.code) + '"'
-        + ' aria-selected="' + (i===0 ? 'true' : 'false') + '" tabindex="' + (i===0 ? '0' : '-1') + '">'
-        + '<span class="pick-idx" aria-hidden="true">0' + (i+1) + '</span>'
-        + '<span class="pick-name">' + esc(c.ko || '') + '</span>'
+      return '<button type="button" class="pil" role="tab"'
+        + ' id="piltab-' + esc(p.code) + '" aria-controls="pilpanel-' + esc(p.code) + '"'
+        + ' aria-selected="' + (i===0 ? 'true' : 'false') + '" tabindex="' + (i===0 ? '0' : '-1') + '"'
+        + (i===0 ? ' data-on="1"' : '') + '>'
+        + '<span class="pil-no" aria-hidden="true">0' + (i+1) + '</span>'
+        + '<span class="pil-ko">' + esc(c.ko || '') + '</span>'
+        + '<span class="pil-en">' + esc(c.en || '') + '</span>'
+        + '<span class="pil-cd">' + esc(p.code) + '</span>'
       + '</button>';
     }).join('');
-    var mechPanels = PILLARS.map(function(p,i){
+    var pans = PILLARS.map(function(p, i){
       var c = ugByCode[p.code] || {};
-      return '<div class="pick-panel" id="mechpanel-' + esc(p.code) + '" role="tabpanel"'
-        + ' aria-labelledby="mechtab-' + esc(p.code) + '"' + (i===0 ? '' : ' hidden') + '>'
-        + '<p class="mech-meta"><span class="mech-cd">' + esc(p.code) + '</span>'
-          + '<span class="mech-en">' + esc(c.en || '') + '</span></p>'
-        + (c.desc ? '<p class="pick-desc">' + esc(c.desc) + '</p>' : '')
-        + '<a class="mech-more" href="#course-' + esc(p.code) + '">교과 상세 보기 <span aria-hidden="true">→</span></a>'
+      return '<div class="pil-panel" id="pilpanel-' + esc(p.code) + '" role="tabpanel"'
+        + ' aria-labelledby="piltab-' + esc(p.code) + '"' + (i===0 ? '' : ' hidden') + '>'
+        + '<p class="pil-meta"><span class="pil-at">' + esc(AT[p.code] || '') + '</span>'
+          + '<span class="pil-sep" aria-hidden="true">·</span>'
+          + '<span class="pil-req">전공필수</span></p>'
+        + (c.desc ? '<p class="pil-desc">' + esc(c.desc) + '</p>' : '')
+        + '<a class="pil-more" href="#course-' + esc(p.code) + '">아래 목록에서 보기 <span aria-hidden="true">↓</span></a>'
       + '</div>';
     }).join('');
-    mechGrid.innerHTML = '<div class="pick-wrap">'
-      + '<div class="pick-tabs" role="tablist" aria-label="4대 역학 고르기">' + mechBtns + '</div>'
-      + '<div class="pick-panels">' + mechPanels + '</div>'
-    + '</div>';
-    bindPicker(mechGrid);
+    mechGrid.innerHTML =
+      '<div class="pillars">'
+        + '<div class="pil-head">'
+          + '<p class="pil-kick">MECHANICS</p>'
+          + '<p class="pil-lead">2학년에 이수하는 <b>네 개의 관문</b>. 이후 모든 전공 교과가 여기서 갈라집니다.</p>'
+        + '</div>'
+        + '<div class="pil-row" role="tablist" aria-label="4대 역학 고르기">' + cols + '</div>'
+        + '<div class="pil-panels">' + pans + '</div>'
+      + '</div>'
+      + '<div class="pil-fan" aria-hidden="true"><span></span><span></span><span></span><span></span></div>';
+
+    /* 기둥 고르기 — pick 과 같은 규칙이지만 클래스가 달라 따로 묶는다 */
+    (function(){
+      var tabs = [].slice.call(mechGrid.querySelectorAll('.pil'));
+      function sel(i){
+        tabs.forEach(function(t, k){
+          var on = (k === i);
+          t.toggleAttribute('data-on', on);
+          t.setAttribute('aria-selected', on ? 'true' : 'false');
+          t.tabIndex = on ? 0 : -1;
+          var pn = document.getElementById(t.getAttribute('aria-controls'));
+          if(pn) pn.hidden = !on;
+        });
+      }
+      tabs.forEach(function(t, i){
+        t.addEventListener('click', function(){ sel(i); });
+        t.addEventListener('keydown', function(e){
+          var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+          if(!d) return;
+          e.preventDefault();
+          var n = (i + d + tabs.length) % tabs.length;
+          sel(n); tabs[n].focus();
+        });
+      });
+    })();
   }
 
   /* ── §03 이수 체계도 — 공식 「기계공학부 교과목 트리」(curriculumTree) 재현.
@@ -1333,16 +1456,28 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
     BLOCKS.forEach(function(b){ byBlock[b.id]=[]; });
     ug.forEach(function(c){ (byBlock[clusterIdOf(c)] || byBlock.other).push(c); });
 
+    /* 과목 한 줄 — 행에는 코드·이름·영문만 두고, 교과 개요는 눌러야 펼친다.
+       40과목의 개요를 모두 펼쳐 두면 글 벽이 돼 훑을 수가 없다.
+       4대 역학 4과목은 왼쪽에 포인트색 기둥 표시를 달아 위 밴드와 이어 준다. */
+    var PILLAR_CODES = { MEU2600:1, MEU2610:1, MEU2640:1, MEU2650:1 };
     function rowHtml(c){
-      var enHtml = c.en ? '<p class="crs-en">'+esc(c.en)+'</p>' : '';
-      var descHtml = c.desc ? '<p class="crs-desc">'+esc(c.desc)+'</p>' : '';
-      return '<div class="crs-row" id="course-'+esc(c.code)+'" data-code="'+esc(c.code)+'">'
-        + '<span class="crs-code">'+esc(c.code)+'</span>'
-        + '<div class="crs-main">'
-          + '<div class="crs-name-row"><span class="crs-name">'+esc(c.ko)+'</span></div>'
-          + enHtml + descHtml
-        + '</div>'
-      + '</div>';
+      var enHtml = c.en ? '<span class="crs-en">' + esc(c.en) + '</span>' : '';
+      var isPil = !!PILLAR_CODES[c.code];
+      var head = '<span class="crs-code">' + esc(c.code) + '</span>'
+        + '<span class="crs-main">'
+          + '<span class="crs-name">' + esc(c.ko) + '</span>'
+          + (isPil ? '<span class="crs-pil" title="4대 역학">4대 역학</span>' : '')
+          + enHtml
+        + '</span>';
+      if(!c.desc){
+        return '<div class="crs-row' + (isPil ? ' is-pil' : '') + '" id="course-' + esc(c.code) + '" data-code="' + esc(c.code) + '">'
+          + head + '<span class="crs-mk crs-mk--none" aria-hidden="true"></span></div>';
+      }
+      return '<details class="crs-row' + (isPil ? ' is-pil' : '') + '" id="course-' + esc(c.code) + '" data-code="' + esc(c.code) + '">'
+        + '<summary>' + head + '<span class="crs-mk" aria-hidden="true"></span>'
+          + '<span class="visually-hidden">교과 개요 펼치기</span></summary>'
+        + '<p class="crs-desc">' + esc(c.desc) + '</p>'
+      + '</details>';
     }
     /* 블록 HTML — 좌 제목(sticky) / 우 과목 리스트 */
     var blocksHtml = BLOCKS.map(function(b){
@@ -1473,6 +1608,7 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
         crsRender();
       }
       el = document.getElementById(id);
+      if(el && el.tagName === 'DETAILS') el.open = true;   /* 링크로 들어왔으면 그 과목은 펼쳐 준다 */
       if(el && (initial || el.classList.contains('is-hidden'))) el.scrollIntoView();
     }
     window.addEventListener('hashchange', function(){ revealCourseHash(false); });

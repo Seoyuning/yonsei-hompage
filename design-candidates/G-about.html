@@ -87,6 +87,23 @@ a{color:inherit;text-decoration:none}
 .sec-top{display:flex;justify-content:space-between;align-items:baseline;gap:1.5rem;flex-wrap:wrap}
 .sec-kick{font-family:var(--mono);font-size:.66rem;letter-spacing:.24em;
   text-transform:uppercase;color:var(--coral)}
+/* ── 섹션 머리 (대학원 페이지에서 시작해 전 페이지 공통) ──
+   큰 인덱스 번호를 포인트색으로 옅게 깔고, 제목 아래에 슬래시로 이어붙인 요약 줄을 둔다.
+   요약은 그 화면이 이미 담고 있는 사실만 적는다 — 새 주장을 만들지 않는다. */
+.sec-head{position:relative}
+.sec-no{position:absolute;right:0;top:-.35em;margin:0;
+  font-family:var(--mono);font-weight:600;line-height:1;
+  font-size:clamp(3.4rem,2rem + 6vw,7rem);color:var(--accent);opacity:.16;
+  font-variant-numeric:tabular-nums;letter-spacing:-.04em;pointer-events:none;user-select:none}
+.sec-meta{font-family:var(--kr);font-size:clamp(.82rem,.79rem + .15vw,.9rem);
+  color:var(--muted);line-height:1.7;margin:.85rem 0 0;letter-spacing:.01em;
+  padding-top:.8rem;border-top:1px solid var(--line-soft);max-width:44rem}
+@media (max-width:640px){
+  .sec-head{padding-top:2.6rem}
+  .sec-no{font-size:2.9rem;top:0;right:0;opacity:.2}
+  .sec-meta{max-width:none}
+}
+
 .sec-title{font-weight:700;color:var(--navy);letter-spacing:-.01em;
   font-size:clamp(1.85rem,1.2rem + 2.8vw,2.85rem);line-height:1.24;margin-top:.5rem}
 .sec-sub{font-size:.94rem;color:var(--muted);line-height:1.7;max-width:44rem;margin-top:.55rem}
@@ -352,7 +369,7 @@ a{color:inherit;text-decoration:none}
        실존 학부장 명의의 창작 발언을 싣지 않고, 확인되는 사실만으로 학부를 소개한다. -->
   <section class="section" id="intro" aria-labelledby="intro-h">
     <div class="sec-head">
-      <div class="sec-top">
+      <p class="sec-no" aria-hidden="true">01</p><div class="sec-top">
         <!-- 킥커는 이 섹션 전용 .intro-kick — 연도를 크게, 영문 학부명을 부제 급으로 나눴다.
              둘 다 영문이라 사전(en.json) 등록 대상이 아니다. -->
         <p class="intro-kick"><span class="yr">SINCE 1958</span><span class="sep" aria-hidden="true"></span><span class="unit">YONSEI MECHANICAL ENGINEERING</span></p>
@@ -387,6 +404,7 @@ a{color:inherit;text-decoration:none}
         <p class="sec-kick">교육</p>
       </div>
       <h2 id="vision-h" class="sec-title">교육목표</h2>
+      <p class="sec-meta">학부 공식 교육목적 / 세부 교육목표</p>
     </div>
 
     <div class="edu-block">
@@ -419,7 +437,8 @@ a{color:inherit;text-decoration:none}
         <p class="sec-kick">조직</p>
         <a class="sec-more" href="G-people.html">교수진 전체 <span class="arr" aria-hidden="true">→</span></a>
       </div>
-      <h2 id="org-h" class="sec-title">조직 · 행정</h2>
+      <p class="sec-no" aria-hidden="true">02</p><h2 id="org-h" class="sec-title">조직 · 행정</h2>
+        <p class="sec-meta">학부장 · 학부주임교수 / 행정팀 연락처</p>
     </div>
     <div class="org">
       <!-- ── 조직도: 학부장 → 학부주임교수 → 행정 (공식 표기 그대로) ── -->
@@ -491,7 +510,8 @@ a{color:inherit;text-decoration:none}
         <p class="sec-kick">연혁</p>
         <a class="sec-more" href="G-news.html">전체 연혁 <span class="arr" aria-hidden="true">→</span></a>
       </div>
-      <h2 id="hist-h" class="sec-title">주요 연혁</h2>
+      <p class="sec-no" aria-hidden="true">03</p><h2 id="hist-h" class="sec-title">주요 연혁</h2>
+        <p class="sec-meta">1958 건설공학과 신설 / 오늘의 기계공학부까지</p>
     </div>
     <div class="timeline" role="list" aria-label="주요 연혁">
       <div class="tl-row" role="listitem"><span class="tl-year">1958</span><span class="tl-body">건설공학과 신설.</span></div>
@@ -510,7 +530,8 @@ a{color:inherit;text-decoration:none}
       <div class="sec-top">
         <p class="sec-kick">연락처</p>
       </div>
-      <h2 id="loc-h" class="sec-title">연락처 · 오시는 길</h2>
+      <p class="sec-no" aria-hidden="true">04</p><h2 id="loc-h" class="sec-title">연락처 · 오시는 길</h2>
+        <p class="sec-meta">제3공학관 / 학부 02-2123-4426 · 대학원 02-2123-2810</p>
     </div>
     <div class="org-grid">
       <div>

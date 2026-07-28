@@ -304,6 +304,10 @@ table.greq-t td{color:var(--body)}
   color:var(--ink);line-height:1.3;letter-spacing:-.02em;transition:color .2s;
   flex:none;min-width:9.5rem}   /* 분야명 폭을 맞춰야 옆의 설명 시작점이 가지런하다 */
 .cl-head:hover .cl-titles .ko,.cluster.cl-open .cl-titles .ko{color:var(--navy)}
+/* 열린 분야 — 연구실 목록(G-research)과 같은 표시 */
+.cluster.cl-open{background:var(--card,#fff);box-shadow:inset 3px 0 0 var(--accent)}
+.cluster.cl-open .lab-legend{border-top:1px solid var(--line-soft)}
+.cl-head:hover .cl-chev{color:var(--navy)}
 /* 설명은 제목 옆에 한 줄로 눕힌다 — 접힌 상태에서 줄 수가 들쭉날쭉하지 않게 */
 .cl-titles .desc{font-family:var(--kr);font-size:.86rem;color:var(--muted);line-height:1.6;
   margin:0;min-width:0;flex:1 1 22rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}

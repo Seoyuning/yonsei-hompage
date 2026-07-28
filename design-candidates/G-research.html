@@ -91,6 +91,23 @@ a{color:inherit;text-decoration:none}
 .sec-head{display:flex;justify-content:space-between;align-items:baseline;
   gap:1.5rem;flex-wrap:wrap;margin-bottom:clamp(1.6rem,1rem + 2vw,2.4rem)}
 .sec-kick{font-family:var(--mono);font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--coral)}
+/* ── 섹션 머리 (대학원 페이지에서 시작해 전 페이지 공통) ──
+   큰 인덱스 번호를 포인트색으로 옅게 깔고, 제목 아래에 슬래시로 이어붙인 요약 줄을 둔다.
+   요약은 그 화면이 이미 담고 있는 사실만 적는다 — 새 주장을 만들지 않는다. */
+.sec-head{position:relative}
+.sec-no{position:absolute;right:0;top:-.35em;margin:0;
+  font-family:var(--mono);font-weight:600;line-height:1;
+  font-size:clamp(3.4rem,2rem + 6vw,7rem);color:var(--accent);opacity:.16;
+  font-variant-numeric:tabular-nums;letter-spacing:-.04em;pointer-events:none;user-select:none}
+.sec-meta{font-family:var(--kr);font-size:clamp(.82rem,.79rem + .15vw,.9rem);
+  color:var(--muted);line-height:1.7;margin:.85rem 0 0;letter-spacing:.01em;
+  padding-top:.8rem;border-top:1px solid var(--line-soft);max-width:44rem}
+@media (max-width:640px){
+  .sec-head{padding-top:2.6rem}
+  .sec-no{font-size:2.9rem;top:0;right:0;opacity:.2}
+  .sec-meta{max-width:none}
+}
+
 .sec-title{font-family:var(--kr);font-weight:700;color:var(--ink);
   font-size:clamp(1.85rem,1.2rem + 2.8vw,2.85rem);line-height:1.24;letter-spacing:-.01em;margin-top:.5rem}
 .sec-sub{font-family:var(--kr);font-size:.92rem;color:var(--sub);margin-top:.7rem;max-width:52rem;line-height:1.7}
@@ -695,8 +712,9 @@ html[lang="en"] .lab-en-only{display:none}
   <section class="vision" id="vision" aria-labelledby="vision-h">
     <div class="sec-head">
       <div>
-        <p class="sec-kick">Research Vision</p>
+        <p class="sec-no" aria-hidden="true">01</p><p class="sec-kick">Research Vision</p>
         <h2 class="sec-title" id="vision-h">연구 비전</h2>
+        <p class="sec-meta">대학원 기계공학과 원문 / 공과대학 비전과 교육목표</p>
       </div>
     </div>
     <div class="vision-quote">
@@ -785,8 +803,9 @@ html[lang="en"] .lab-en-only{display:none}
   <section class="clusters" id="clusters" aria-label="연구 분야별 연구실">
     <div class="sec-head">
       <div>
-        <p class="sec-kick">연구 분야</p>
+        <p class="sec-no" aria-hidden="true">02</p><p class="sec-kick">연구 분야</p>
         <h2 class="sec-title">연구실 목록</h2>
+        <p class="sec-meta">여섯 개 연구 분야 / 연구실별 지도교수 · 위치 · 자료</p>
       </div>
     </div>
     <div id="clusterBlocks"></div>
@@ -797,8 +816,9 @@ html[lang="en"] .lab-en-only{display:none}
   <section class="labvideos" id="labvideos" aria-labelledby="lv-title">
     <div class="sec-head">
       <div>
-        <p class="sec-kick">Lab Videos</p>
+        <p class="sec-no" aria-hidden="true">03</p><p class="sec-kick">Lab Videos</p>
         <h2 class="sec-title" id="lv-title">연구실 홍보영상</h2>
+        <p class="sec-meta">연구실이 직접 소개하는 연구 주제 · 성과</p>
       </div>
     </div>
     <div id="lvGroups"></div>

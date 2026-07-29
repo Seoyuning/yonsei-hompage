@@ -108,6 +108,62 @@ a{color:inherit;text-decoration:none}
   opacity:calc(1 - var(--p,0) * 2)}
 #twHero .bc a{color:rgba(255,255,255,.8)}
 #twHero .bc a:hover{color:#fff}
+/* 히어로 보조 줄 — 학술 표기(영문 과정명)와 한 줄 부제 */
+.tw-kick{font-family:var(--mono);font-size:clamp(.62rem,.58rem + .2vw,.74rem);font-weight:600;
+  letter-spacing:.26em;text-transform:uppercase;color:rgba(200,218,245,.8);
+  margin:0 0 clamp(.7rem,1.6vh,1.1rem);
+  opacity:calc(1 - max(0, var(--p,0) - .5) / .3)}
+.tw-sub{font-family:var(--kr);font-size:clamp(.9rem,.84rem + .3vw,1.08rem);color:rgba(226,235,247,.86);
+  letter-spacing:-.005em;margin:clamp(.9rem,2vh,1.4rem) 0 0;max-width:44rem;
+  transform:translate3d(0,calc(var(--p,0) * -10vh),0);
+  opacity:calc(1 - max(0, var(--p,0) - .45) / .3)}
+
+/* ── 확대 구간 ── 작게 있던 그림이 스크롤을 따라 화면을 채운다 */
+.tw-scene.is-zoom{height:220vh;height:220svh;background:#0d1c38}
+.is-zoom .tw-pin{background:#0d1c38;padding:0}
+.tw-zoom{position:relative;margin:0 auto;overflow:hidden;
+  width:calc(50% + var(--p,0) * 50%);
+  height:calc(46vh + var(--p,0) * 54vh);
+  border-radius:calc((1 - var(--p,0)) * .6rem);
+  box-shadow:0 30px 70px rgba(0,0,0,calc(.35 * (1 - var(--p,0))))}
+.tw-zoom img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  filter:grayscale(1) contrast(1.12) brightness(calc(.62 + var(--p,0) * .18))}
+.tw-zoom figcaption{position:absolute;left:0;right:0;bottom:0;z-index:1;
+  padding:clamp(1rem,3vh,2rem) clamp(1.2rem,3vw,2.6rem);
+  background:linear-gradient(180deg,rgba(8,17,34,0),rgba(8,17,34,.82));
+  font-family:var(--kr);font-size:clamp(.82rem,.78rem + .25vw,1rem);font-weight:600;
+  color:rgba(255,255,255,.9);letter-spacing:-.01em;
+  opacity:calc(min(1, max(0, var(--p,0) - .35) / .25))}
+
+/* ── 번호 목록 ── 스크롤을 따라 한 구분씩 짙어진다 */
+.tw-scene.is-list{height:340vh;height:340svh;background:#fff}
+.is-list .tw-pin{background:#fff}
+.tl-wrap{width:100%;max-width:1240px;margin:0 auto;padding:0 clamp(1.2rem,.6rem + 2vw,3rem);
+  display:grid;grid-template-columns:9rem minmax(0,1fr) minmax(0,15rem);
+  gap:clamp(1.4rem,3vw,3rem);align-items:start}
+.tl-label{font-family:var(--mono);font-size:.68rem;font-weight:600;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--muted);padding-top:.5rem}
+.tl-list{list-style:none;margin:0;padding:0}
+.tl-list li{display:flex;align-items:baseline;gap:clamp(.8rem,2vw,1.6rem);
+  font-family:var(--kr);font-weight:800;letter-spacing:-.03em;line-height:1.28;
+  font-size:clamp(1.25rem,.8rem + 2.2vw,2.5rem);
+  color:rgba(26,61,117,.17);transition:color .32s ease}
+.tl-list li .n{font-family:var(--mono);font-weight:600;font-size:.5em;
+  color:rgba(26,61,117,.17);transition:color .32s ease;min-width:1.2em}
+.tl-list li.on{color:var(--navy)}
+.tl-list li.on .n{color:var(--accent)}
+.tl-side{font-family:var(--kr);font-size:.88rem;color:var(--sub);line-height:1.75;
+  padding-top:.6rem;min-height:9rem}
+.tl-side .h{display:block;font-family:var(--mono);font-size:.64rem;font-weight:600;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--accent-ink,#8E5A4F);margin-bottom:.5rem}
+.tl-side a{display:inline-block;margin-top:.7rem;font-weight:700;color:var(--navy)}
+.tl-side a:hover{color:var(--accent-ink,#8E5A4F)}
+@media (max-width:860px){
+  .tw-scene.is-list{height:300vh;height:300svh}
+  .tl-wrap{grid-template-columns:1fr;gap:.9rem}
+  .tl-label{padding-top:0}
+  .tl-side{min-height:7rem;font-size:.84rem}
+}
 .tw-title{display:block;margin:0;font-weight:800;letter-spacing:-.04em;line-height:.9;
   font-size:clamp(3rem,1rem + 10vw,9rem)}
 .tw-l{display:block;color:#fff;text-shadow:0 8px 40px rgba(6,14,30,.5);
@@ -142,7 +198,10 @@ a{color:inherit;text-decoration:none}
 @media (prefers-reduced-motion:reduce){
   .tw-scene#twHero,.tw-scene.is-say{height:auto}
   .tw-pin{position:relative;height:auto;padding:7rem 0}
-  .tw-l,.tw-r,.tw-stats,#twHero .bc{transform:none;opacity:1}
+  .tw-l,.tw-r,.tw-stats,#twHero .bc,.tw-kick,.tw-sub{transform:none;opacity:1}
+  .tw-zoom{width:100%;height:60vh}
+  .tw-zoom figcaption{opacity:1}
+  .tl-list li{color:var(--navy)}.tl-list li .n{color:var(--accent)}
   .tw-wipe{display:none}
   .tw-say{color:var(--navy,#1a3d75)}
 }
@@ -835,17 +894,31 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
   <div class="tw-pin">
     <div class="tw-in">
       <p class="bc">홈 › 학사</p>
+      <p class="tw-kick">Undergraduate Curriculum · School of Mechanical Engineering</p>
       <h1 class="tw-title" id="tw-h">
         <span class="tw-l">학사</span>
         <span class="tw-r">ACADEMICS</span>
       </h1>
+      <p class="tw-sub">기계공학 학사 교육과정 — 1958년 개설 이래 이어 온 이수 체계</p>
     </div>
     <div class="tw-stats" aria-hidden="true">
-      <span>학부 전공 교과 8구분</span>
+      <span>전공 교과 8구분</span>
       <span>4대 역학</span>
       <span>공학교육인증 ABEEK</span>
+      <span>1958년 개설</span>
     </div>
     <span class="tw-wipe" aria-hidden="true"></span>
+  </div>
+</section>
+
+<!-- 확대 구간 — 화면 가운데 작게 있던 그림이 스크롤을 따라 화면을 꽉 채운다.
+     다 채운 뒤에야 다음 구간으로 넘어간다(그 사이 화면은 고정되어 있다). -->
+<section class="tw-scene is-zoom" aria-label="교육과정 이미지">
+  <div class="tw-pin">
+    <figure class="tw-zoom">
+      <img src="assets/hero-academics.jpg" alt="설계 도면과 제도 도구가 놓인 책상" loading="lazy" decoding="async">
+      <figcaption>도면에서 시작해 실험과 설계로 — 학부 4년의 이수 흐름</figcaption>
+    </figure>
   </div>
 </section>
 
@@ -853,6 +926,27 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
 <section class="tw-scene is-say" id="twSay" aria-label="학부 교육 요약">
   <div class="tw-pin">
     <p class="tw-say" id="twSayText">4대 역학을 중심에 두고, 여덟 구분의 전공 교과와 공학교육인증 과정으로 학부 교육을 운영합니다.</p>
+  </div>
+</section>
+
+<!-- 번호 목록 — 스크롤을 따라 한 구분씩 짙어진다. 여덟 구분은 아래 「전공 교과」의
+     구분과 같은 목록이다(같은 파일 BLOCKS 정의와 제목이 일치한다). -->
+<section class="tw-scene is-list" id="twList" aria-label="전공 교과 구분">
+  <div class="tw-pin">
+    <div class="tl-wrap">
+      <p class="tl-label">전공 교과 구분</p>
+      <ol class="tl-list" id="twListItems">
+        <li data-b="req"><span class="n">1</span><span class="t">전공필수</span></li>
+        <li data-b="solid"><span class="n">2</span><span class="t">역학·소재</span></li>
+        <li data-b="thermal"><span class="n">3</span><span class="t">에너지·열유체</span></li>
+        <li data-b="dynamics"><span class="n">4</span><span class="t">로보틱스·제어</span></li>
+        <li data-b="manufacturing"><span class="n">5</span><span class="t">설계·제조</span></li>
+        <li data-b="micro"><span class="n">6</span><span class="t">마이크로·나노</span></li>
+        <li data-b="optics"><span class="n">7</span><span class="t">바이오·포토닉스</span></li>
+        <li data-b="seminar"><span class="n">8</span><span class="t">연구·세미나</span></li>
+      </ol>
+      <div class="tl-side" id="twListSide" aria-live="polite"></div>
+    </div>
   </div>
 </section>
 
@@ -1990,6 +2084,23 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
     say.textContent = ''; say.appendChild(frag);
   }
 
+  /* 번호 목록 — 여덟 구분의 설명은 아래 「전공 교과」의 BLOCKS 설명과 같은 문장이다 */
+  var listSec = document.getElementById('twList');
+  var items = listSec ? [].slice.call(listSec.querySelectorAll('.tl-list li')) : [];
+  var side = document.getElementById('twListSide'), cur = -1;
+  var DESC = {
+    req: '졸업하려면 반드시 이수하는 과목입니다. 실험·설계·4대 역학·연구논문으로 이어지는 학부 이수의 골격입니다.',
+    solid: '재료의 거동과 구조 해석을 다루는 심화 역학·재료 과목입니다.',
+    thermal: '열·유체와 에너지 변환을 다루는 응용 과목입니다.',
+    dynamics: '기계 시스템의 운동·진동과 제어를 다룹니다.',
+    manufacturing: '설계 방법론과 생산·해석 기반 설계를 다룹니다.',
+    micro: '미세 기계 시스템과 나노 스케일 공학을 다룹니다.',
+    optics: '생체역학·의료기계와 광공학 응용을 다룹니다.',
+    seminar: '연구 입문과 세미나, 논문 지도로 이어지는 과목입니다.'
+  };
+  function esc(v){ return String(v).replace(/[&<>"]/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
   var t = 0;
   function run() {
     t = 0;
@@ -2004,6 +2115,18 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
         var q = Math.min(1, Math.max(0, (p - .15) / .7));
         var n = Math.round(q * words.length);
         for (var k = 0; k < words.length; k++) words[k].classList.toggle('on', k < n);
+      }
+      if (sc.id === 'twList' && items.length) {
+        /* 앞뒤 10% 여유. 활성 하나만 짙게 두고 옆 칸에 그 구분의 설명을 쓴다 */
+        var r2 = Math.min(.999, Math.max(0, (p - .1) / .8));
+        var idx = Math.floor(r2 * items.length);
+        if (idx !== cur) {
+          cur = idx;
+          items.forEach(function (li, k) { li.classList.toggle('on', k === idx); });
+          var b = items[idx].getAttribute('data-b'), t = items[idx].querySelector('.t').textContent;
+          if (side) side.innerHTML = '<span class="h">' + esc(t) + '</span>' + esc(DESC[b] || '')
+            + '<br><a href="#courses">전공 교과에서 보기 →</a>';
+        }
       }
     });
   }

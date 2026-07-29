@@ -227,7 +227,7 @@ a{color:inherit;text-decoration:none}
      좌우 카드의 아랫단이 어긋나지 않는다(전엔 짧은 쪽 밑에 흰 여백이 남았다) */
   flex:1 1 auto;
   padding:1rem 1.15rem 1.1rem;display:flex;flex-direction:column;gap:.55rem}
-.pbody-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.6rem}
+.pbody-top{display:block}
 .pnamebx{min-width:0}
 .pname{display:flex;align-items:baseline;gap:.45rem;flex-wrap:wrap}
 .pname .ko{font-family:var(--kr);font-weight:800;font-size:1.18rem;letter-spacing:-.01em;line-height:1.25}
@@ -237,13 +237,23 @@ a{color:inherit;text-decoration:none}
 .ppos{font-family:var(--kr);font-size:.8rem;font-weight:500;color:rgba(255,255,255,.85);margin-top:.24rem;line-height:1.42;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 html[lang="en"] .ppos{display:none}
-/* 우측 아이콘 버튼(홈페이지·상세) */
-.pbtns{flex:none;display:flex;gap:.4rem}
-.pbtn{display:grid;place-items:center;width:2rem;height:2rem;border-radius:50%;
-  background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.28);color:#fff;cursor:pointer;
-  transition:background .15s,border-color .15s}
-.pbtn:hover{background:rgba(255,255,255,.26);border-color:rgba(255,255,255,.6)}
-.pbtn svg{width:15px;height:15px;display:block}
+/* 패널 맨 아래 두 칸 — 메인 화면 교수진 카드와 같은 짜임.
+   예전엔 이름 오른쪽에 동그란 아이콘 두 개가 붙어 있어, 이름이 두 줄인 카드에서
+   버튼 자리가 위아래로 흔들렸다. 칠 없이 헤어라인으로만 나눈 줄로 바닥에 붙인다. */
+.pbtns{margin:auto -1.15rem -1.1rem;display:grid;
+  /* 칸 수에 맞춰 폭을 나눈다 — 명예·퇴임 교수는 공식 프로필도 메일도 없어
+     「자세히」한 칸뿐인데, 두 칸으로 고정하면 오른쪽이 빈 채로 남는다 */
+  grid-auto-flow:column;grid-auto-columns:1fr;
+  border-top:1px solid rgba(255,255,255,.2)}
+.pbtn{display:flex;align-items:center;justify-content:center;gap:.32rem;
+  padding:.72rem .3rem;background:none;border:0;border-radius:0;color:rgba(255,255,255,.9);
+  font-family:var(--kr);font-size:.74rem;font-weight:700;letter-spacing:.03em;
+  text-decoration:none;white-space:nowrap;cursor:pointer;
+  transition:background .18s ease,color .18s ease}
+.pbtn + .pbtn{border-left:1px solid rgba(255,255,255,.2)}
+.pbtn:hover{background:rgba(255,255,255,.13);color:#fff}
+.pbtn svg{width:13px;height:13px;display:block;opacity:.85}
+.pbtn:hover svg{opacity:1}
 .pbtn.more .ic-plus{display:grid;transition:transform .3s}
 .pcard.open .pbtn.more .ic-plus{transform:rotate(45deg)}
 /* 연구분야 라인 (패널 하단) */
@@ -296,7 +306,8 @@ html[lang="en"] .ppos{display:none}
   .pname .ko{font-size:1rem}
   .pname .rk{font-size:.7rem}
   .ppos{font-size:.72rem;white-space:normal;overflow:visible;text-overflow:clip;line-height:1.35}
-  .pbtns{gap:.3rem}
+  .pbtns{margin:auto -.75rem -.8rem}
+  .pbtn{padding:.6rem .25rem;font-size:.7rem;gap:.26rem}
   .pfieldline{font-size:.74rem;padding-top:.45rem}
   .pdetail .rows{gap:.42rem}
   .pdetail{padding:.75rem .8rem}
@@ -985,10 +996,12 @@ html[lang="en"] .ppos{display:none}
     var homeHref = p.detail || (p.email ? 'mailto:'+p.email : '');
     var homeBtn = homeHref
       ? '<a class="pbtn home" href="'+esc(homeHref)+'"'+(p.detail?' target="_blank" rel="noopener"':'')
-        + ' aria-label="'+esc(p.ko)+' '+(p.detail?'프로필':'이메일')+'" title="'+(p.detail?'프로필 · 홈페이지':'이메일')+'">'+ICON_HOME+'</a>'
+        + ' aria-label="'+esc(p.ko)+' '+(p.detail?'프로필':'이메일')+'" title="'+(p.detail?'프로필 · 홈페이지':'이메일')+'">'
+        + ICON_HOME + '<span class="lb">'+(p.detail?'프로필':'메일')+'</span></a>'
       : '';
     var moreBtn = '<button type="button" class="pbtn more" aria-expanded="false"'
-      + ' aria-label="'+esc(p.ko)+' 상세 정보 펼치기" title="상세 정보"><span class="ic-plus">'+ICON_PLUS+'</span></button>';
+      + ' aria-label="'+esc(p.ko)+' 상세 정보 펼치기" title="상세 정보">'
+      + '<span class="ic-plus">'+ICON_PLUS+'</span><span class="lb">자세히</span></button>';
 
     /* 상세(+ 토글) 행 — 이메일 · 사무실 · 연락처 · 프로필 */
     /* 직위는 카드 표면이 아니라 여기(자세히 보기)에서 보여 준다 */
@@ -1006,13 +1019,13 @@ html[lang="en"] .ppos{display:none}
         + '<div class="pbody-top">'
           + '<div class="pnamebx"><p class="pname"><span class="ko">'+esc(p.ko)+'</span>'
             + (p.role ? '<span class="rk">'+esc(p.role)+'</span>' : '') + '</p>'+pos+'</div>'
-          + '<div class="pbtns">'+homeBtn+moreBtn
-            + '<div class="pdetail" role="dialog" aria-label="'+esc(p.ko)+' 상세 정보">'
-              + '<div class="rows">'+det+'</div>'
-            + '</div>'
-          + '</div>'
         + '</div>'
         + '<div class="pfieldline"><span class="lb">연구분야 :</span> '+esc(cl.ko||'')+'</div>'
+        + '<div class="pbtns">'+homeBtn+moreBtn
+          + '<div class="pdetail" role="dialog" aria-label="'+esc(p.ko)+' 상세 정보">'
+            + '<div class="rows">'+det+'</div>'
+          + '</div>'
+        + '</div>'
       + '</div>'
       + '</article>';
   }

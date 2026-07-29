@@ -13,7 +13,7 @@
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d16" />
-<link rel="preload" as="script" href="assets/nav.js?v=66" />
+<link rel="preload" as="script" href="assets/nav.js?v=68" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    연구 — 연세대학교 기계공학부 (기관형 · 아이보리)
@@ -427,11 +427,26 @@ html[lang="en"] .lab-en-only{display:none}
 .elabel .en{font-family:var(--kr);font-size:.58rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--label,#8b96a9)}
 .elabel .ko{font-family:var(--kr);font-weight:800;font-size:1rem;color:var(--cl-c,var(--navy));line-height:1.16;margin-top:.16rem;letter-spacing:-.01em}
 .elabel .ko .n{font-family:var(--kr);font-weight:600;font-size:.7rem;color:var(--muted);margin-left:.35rem;letter-spacing:0}
-.elabel .edesc{font-family:var(--kr);font-size:.78rem;color:var(--sub);line-height:1.55;
-  max-height:0;opacity:0;overflow:hidden;transition:max-height .45s var(--e,ease),opacity .35s ease,margin .3s}
-.elabel.on .edesc{max-height:9rem;opacity:1;margin-top:.5rem}
-.elabel .more{display:block;font-family:var(--kr);font-size:.7rem;font-weight:700;color:var(--cl-c,var(--navy));margin-top:.35rem;opacity:0;max-height:0;overflow:hidden;transition:opacity .3s,max-height .3s}
-.elabel.on .more{opacity:1;max-height:1.4rem}
+/* ── 설명 판독대 ──
+   설명이 라벨 안에서 펼쳐지면 라벨이 커지며 제 부위를 덮는다(머리가 특히 심했다).
+   그림 밖 고정 자리로 내려, 어느 부위를 짚어도 그림이 가려지지 않게 한다.
+   높이를 미리 잡아 두어 글이 바뀌어도 아래 내용이 밀리지 않는다. */
+.eagle-read{max-width:600px;margin:1.1rem auto 0;min-height:8.2rem;
+  border-top:1px solid var(--line);padding-top:.95rem;position:relative}
+.eagle-read::before{content:"";position:absolute;left:0;top:-1px;width:3.2rem;height:2px;
+  background:var(--cl-c,var(--line));transition:background .3s}
+.er-empty{font-family:var(--kr);font-size:.84rem;color:var(--label,#8b96a9);line-height:1.7}
+.er-part{font-family:var(--kr);font-size:.62rem;font-weight:600;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--label,#8b96a9)}
+.er-ko{font-family:var(--kr);font-weight:800;font-size:1.18rem;color:var(--cl-c,var(--navy));
+  line-height:1.2;letter-spacing:-.01em;margin-top:.24rem}
+.er-ko .n{font-family:var(--kr);font-weight:600;font-size:.74rem;color:var(--muted);margin-left:.5rem;letter-spacing:0}
+.er-desc{font-family:var(--kr);font-size:.88rem;color:var(--sub);line-height:1.65;margin-top:.45rem;max-width:38rem}
+.er-more{font-family:var(--kr);font-size:.76rem;font-weight:700;color:var(--cl-c,var(--navy));
+  background:none;border:0;padding:.4rem 0 0;cursor:pointer;letter-spacing:-.01em}
+.er-more:hover{text-decoration:underline;text-underline-offset:3px}
+@media (max-width:1000px){.elabel{min-width:8.4rem;max-width:11rem;padding:.6rem .7rem}
+  .elabel .ko{font-size:.9rem}}
 /* 모바일 대체 — 다이어그램 숨기고 6개 버튼 리스트 */
 .eagle-list{display:none;max-width:34rem;margin:1.4rem auto 0;gap:.5rem;flex-direction:column}
 .eagle-list button{display:flex;align-items:baseline;gap:.6rem;width:100%;text-align:left;
@@ -441,7 +456,7 @@ html[lang="en"] .lab-en-only{display:none}
 .eagle-list button span{font-size:.8rem;color:var(--sub)}
 .eagle-list button i{margin-left:auto;font-style:normal;color:var(--muted);font-size:.78rem}
 @media (max-width:760px){
-  .eagle-stage,.eagle-arrows{display:none}
+  .eagle-stage,.eagle-arrows,.eagle-read{display:none}
   .eagle-list{display:flex}
 }
 @media (prefers-reduced-motion:reduce){
@@ -675,7 +690,7 @@ html[lang="en"] .lab-en-only{display:none}
 @media(prefers-reduced-motion:reduce){.lvm-back,.lvm-frame{transition:none}}
 </style>
 <style>h1,h2,.sec-title,.phero h1,.hero h1,.hero-title,.club-name,.vt,.staff-head h2,.brand .bko,.ynv-brand .bko{font-family:"Apple SD Gothic Neo",system-ui,sans-serif;letter-spacing:-.01em}</style>
-<link rel="stylesheet" href="assets/transition.css">
+<link rel="stylesheet" href="assets/transition.css?v=2">
 <script>/* 탭 해시 진입은 히어로부터 — 파싱 전에 해시를 떼어 앵커 점프·상단바 접힘 왕복을 원천 차단(nav.js가 탭 복원).
    scrollRestoration=manual: 뒤로가기·같은 주소 재방문 때 브라우저가 이전 스크롤을 되살려
    히어로를 건너뛰고 첫 탭 중간부터 보이는 것을 막는다(깊은 앵커 #id 이동에는 영향 없음). */
@@ -704,6 +719,11 @@ html[lang="en"] .lab-en-only{display:none}
     </div>
     <div class="eagle-stage" id="eagleStage" role="img" aria-label="연세대학교 기계공학부 마스코트 독수리 — 부위별 연구 분야">
       <svg class="eagle-arrows" id="eagleArrows" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
+    </div>
+    <!-- 설명 판독대 — 예전에는 설명이 라벨 안에서 펼쳐져 부위를 덮었다(머리가 특히 심했다).
+         설명을 그림 밖 고정 자리로 내리면 어느 부위를 짚어도 그림이 가려지지 않는다. -->
+    <div class="eagle-read" id="eagleRead" aria-live="polite">
+      <p class="er-empty">부위를 짚으면 그 분야 설명이 여기 나타납니다.</p>
     </div>
     <div class="eagle-list" id="eagleList" aria-label="연구 분야 목록"></div>
   </section>
@@ -1038,12 +1058,16 @@ html[lang="en"] .lab-en-only{display:none}
   var cById = {}; clusters.forEach(function(c){ cById[c.id]=c; });
   /* 부위↔분야 매핑. png=사전에 잘라낸 조각 이미지, hot=호버 히트영역 폴리곤(분할 폴리곤), cx/cy=부위중심(화살표), lift=떠오름 방향, lx/ly=라벨 위치. 좌표 0~100% */
   var PARTS = [
-    { cid:'thermal',       png:'lw',     hot:'polygon(45% 26%,43% 14%,31% 8%,10% 9%,2% 16%,2% 42%,13% 51%,26% 57%,40% 57%,44% 46%)', cx:23, cy:32, lift:'translate(-6%,-7%)', lx:16, ly:9,  part:'왼쪽 날개' },
-    { cid:'micro',         png:'rw',     hot:'polygon(71% 33%,69% 29%,74% 15%,99% 10%,99% 50%,88% 57%,80% 54%,78% 47%,74% 40%)', cx:87, cy:30, lift:'translate(6%,-6%)',  lx:87, ly:9,  part:'오른쪽 날개' },
-    { cid:'dynamics',      png:'head',   hot:'polygon(64% 50%,68% 44%,78% 44%,82% 52%,82% 66%,80% 71%,72% 72%,66% 70%,64% 60%)', cx:74, cy:56, lift:'translate(7%,-4%)',  lx:93, ly:58, part:'머리' },
+    { cid:'thermal',       png:'lw',     hot:'polygon(45% 26%,43% 14%,31% 8%,10% 9%,2% 16%,2% 42%,13% 51%,26% 57%,40% 57%,44% 46%)', cx:23, cy:32, lift:'translate(-6%,-7%)', lx:16, ly:2.5,  part:'왼쪽 날개' },
+    /* 오른쪽 날개 — 날개 밑동의 둥근 관절 원반까지 포함한다.
+       예전엔 이 원반이 머리 조각에 들어가 있어, 눈처럼 보이는 원반이 머리와 함께
+       떠오르고 히트영역도 머리 몫이었다. 원반은 날개가 감싸는 고리(rw)의 안쪽이라
+       날개에 속한다 — 조각 이미지(png)에서도 옮겼다. */
+    { cid:'micro',         png:'rw',     hot:'polygon(74% 15%,99% 10%,99% 50%,88% 58%,81% 57%,70% 56%,69% 45%,73% 38%,71% 33%,69% 29%)', cx:87, cy:30, lift:'translate(6%,-6%)',  lx:87, ly:2.5,  part:'오른쪽 날개' },
+    { cid:'dynamics',      png:'head',   hot:'polygon(64% 57%,68% 55%,81% 55%,83% 61%,82% 69%,78% 76%,70% 77%,64% 70%)', cx:73, cy:65, lift:'translate(-3%,6%)',  lx:94, ly:61, part:'머리' },
     { cid:'solid',         png:'body',   hot:'polygon(35% 45%,66% 45%,71% 58%,66% 74%,46% 74%,40% 60%,33% 52%)',                         cx:49, cy:57, lift:'translate(-3%,-5%)', lx:8,  ly:52, part:'몸통' },
-    { cid:'manufacturing', png:'tail',   hot:'polygon(50% 58%,30% 60%,12% 66%,18% 80%,30% 88%,46% 76%,52% 64%)',                         cx:29, cy:74, lift:'translate(-7%,7%)',  lx:15, ly:91, part:'꼬리' },
-    { cid:'optics',        png:'talons', hot:'polygon(54% 70%,74% 69%,85% 79%,82% 95%,64% 98%,53% 86%)',                                 cx:68, cy:84, lift:'translate(4%,8%)',   lx:86, ly:92, part:'발톱' }
+    { cid:'manufacturing', png:'tail',   hot:'polygon(50% 58%,30% 60%,12% 66%,18% 80%,30% 88%,46% 76%,52% 64%)',                         cx:29, cy:74, lift:'translate(-7%,7%)',  lx:10, ly:97, part:'꼬리' },
+    { cid:'optics',        png:'talons', hot:'polygon(54% 70%,74% 69%,85% 79%,82% 95%,64% 98%,53% 86%)',                                 cx:68, cy:84, lift:'translate(4%,8%)',   lx:92, ly:97, part:'발톱' }
   ];
   var stage = document.getElementById('eagleStage');
   var arrows = document.getElementById('eagleArrows');
@@ -1066,7 +1090,7 @@ html[lang="en"] .lab-en-only{display:none}
       dot.style.setProperty('--cl-c',col);
       arrows.appendChild(dot);
       /* 사전에 잘라낸 조각 이미지(투명 배경). 6개가 겹쳐 독수리 완성, 하나 들어올리면 그 자리는 빈다 */
-      var part=new Image(); part.src='assets/eagle-p-'+p.png+'.png?v=11'; part.alt=''; part.className='epart';
+      var part=new Image(); part.src='assets/eagle-p-'+p.png+'.png?v=12'; part.alt=''; part.className='epart';
       part.style.setProperty('--lift',p.lift);
       part.setAttribute('data-cid',p.cid);
       stage.appendChild(part);
@@ -1081,12 +1105,27 @@ html[lang="en"] .lab-en-only{display:none}
       lab.style.setProperty('--cl-c',col);
       lab.setAttribute('aria-label', c.ko+' 분야 · '+c.count+'개 연구실 · 목록 열기');
       lab.innerHTML = '<div class="en">'+esc(p.part)+'</div>'
-        + '<div class="ko">'+esc(c.ko)+'<span class="n">'+c.count+'개</span></div>'
-        + '<div class="edesc">'+esc(c.desc)+'</div>'
-        + '<span class="more">더보기 →</span>';
+        + '<div class="ko">'+esc(c.ko)+'<span class="n">'+c.count+'개</span></div>';
       stage.appendChild(lab);
     });
+    /* 판독대 — 짚은 부위의 설명을 그림 밖 고정 자리에 쓴다 */
+    var readBox = document.getElementById('eagleRead');
+    var PART_BY_CID = {}; PARTS.forEach(function(p){ PART_BY_CID[p.cid] = p; });
+    function setRead(cid){
+      if(!readBox) return;
+      var c = cid && cById[cid], p = cid && PART_BY_CID[cid];
+      if(!c){ readBox.innerHTML = '<p class="er-empty">부위를 짚으면 그 분야 설명이 여기 나타납니다.</p>'; return; }
+      readBox.style.setProperty('--cl-c', clColor(cid));
+      readBox.innerHTML = '<p class="er-part">'+esc(p ? p.part : '')+'</p>'
+        + '<p class="er-ko">'+esc(c.ko)+'<span class="n">연구실 '+c.count+'개</span></p>'
+        + '<p class="er-desc">'+esc(c.desc)+'</p>'
+        + '<button type="button" class="er-more" data-cid="'+esc(cid)+'">연구실 보기 <span aria-hidden="true">→</span></button>';
+    }
+    if(readBox) readBox.addEventListener('click', function(e){
+      var b = e.target.closest('.er-more'); if(b) openCluster(b.getAttribute('data-cid'), true);
+    });
     function setActive(cid){
+      setRead(cid);
       stage.classList.toggle('dim-others', !!cid);
       [].forEach.call(stage.querySelectorAll('.epart,.elabel'), function(el){ el.classList.toggle('on', el.getAttribute('data-cid')===cid); });
       [].forEach.call(arrows.querySelectorAll('.earrow,.edot'), function(el){ el.classList.toggle('on', el.getAttribute('data-cid')===cid); });
@@ -1348,7 +1387,7 @@ html[lang="en"] .lab-en-only{display:none}
   }
 })();
 </script>
-<script src="assets/nav.js?v=66"></script>
+<script src="assets/nav.js?v=68"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:#7b8595">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

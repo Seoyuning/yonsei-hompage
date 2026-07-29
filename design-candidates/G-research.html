@@ -13,7 +13,7 @@
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d16" />
-<link rel="preload" as="script" href="assets/nav.js?v=68" />
+<link rel="preload" as="script" href="assets/nav.js?v=69" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    연구 — 연세대학교 기계공학부 (기관형 · 아이보리)
@@ -28,6 +28,7 @@
   --navy:#1a3d75;
   --accent:#A56F63;      /* 포인트 색 — 테두리·칠·점 등 장식 */
   --accent-soft:rgba(165,111,99,.14);
+  --accent-ink:#8E5A4F;  /* 글자에 쓰는 포인트 색 — 본문 대비 5.6:1 */
   --coral:#8E5A4F;--warm:#1a3d75;
   --ink:#1a3d75;
   --body:#4a5a74;
@@ -1064,7 +1065,7 @@ html[lang="en"] .lab-en-only{display:none}
        떠오르고 히트영역도 머리 몫이었다. 원반은 날개가 감싸는 고리(rw)의 안쪽이라
        날개에 속한다 — 조각 이미지(png)에서도 옮겼다. */
     { cid:'micro',         png:'rw',     hot:'polygon(74% 15%,99% 10%,99% 50%,88% 58%,81% 57%,70% 56%,69% 45%,73% 38%,71% 33%,69% 29%)', cx:87, cy:30, lift:'translate(6%,-6%)',  lx:87, ly:2.5,  part:'오른쪽 날개' },
-    { cid:'dynamics',      png:'head',   hot:'polygon(64% 57%,68% 55%,81% 55%,83% 61%,82% 69%,78% 76%,70% 77%,64% 70%)', cx:73, cy:65, lift:'translate(-3%,6%)',  lx:94, ly:61, part:'머리' },
+    { cid:'dynamics',      png:'head',   hot:'polygon(64% 57%,68% 55%,81% 55%,83% 61%,82% 69%,78% 76%,70% 77%,64% 70%)', cx:73, cy:65, lift:'translate(3%,-3.5%)',  lx:98, ly:58, part:'머리' },
     { cid:'solid',         png:'body',   hot:'polygon(35% 45%,66% 45%,71% 58%,66% 74%,46% 74%,40% 60%,33% 52%)',                         cx:49, cy:57, lift:'translate(-3%,-5%)', lx:8,  ly:52, part:'몸통' },
     { cid:'manufacturing', png:'tail',   hot:'polygon(50% 58%,30% 60%,12% 66%,18% 80%,30% 88%,46% 76%,52% 64%)',                         cx:29, cy:74, lift:'translate(-7%,7%)',  lx:10, ly:97, part:'꼬리' },
     { cid:'optics',        png:'talons', hot:'polygon(54% 70%,74% 69%,85% 79%,82% 95%,64% 98%,53% 86%)',                                 cx:68, cy:84, lift:'translate(4%,8%)',   lx:92, ly:97, part:'발톱' }
@@ -1387,7 +1388,7 @@ html[lang="en"] .lab-en-only{display:none}
   }
 })();
 </script>
-<script src="assets/nav.js?v=68"></script>
+<script src="assets/nav.js?v=69"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:#7b8595">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

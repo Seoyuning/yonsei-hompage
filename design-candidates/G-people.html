@@ -13,7 +13,7 @@
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d16" />
-<link rel="preload" as="script" href="assets/nav.js?v=68" />
+<link rel="preload" as="script" href="assets/nav.js?v=69" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    교수진 디렉토리 — 아이보리 배경 · 네이비 제목 · 헤어라인 · 연회색 행
@@ -22,6 +22,7 @@
   --navy:#1a3d75;
   --accent:#A56F63;      /* 포인트 색 — 테두리·칠·점 등 장식 */
   --accent-soft:rgba(165,111,99,.14);
+  --accent-ink:#8E5A4F;  /* 글자에 쓰는 포인트 색 — 본문 대비 5.6:1 */
   --coral:#8E5A4F;
   --body:#4a5a74;
   --sub:#5c6b85;
@@ -149,12 +150,19 @@ a{color:inherit;text-decoration:none}
 /* 분야별 그룹 — 각 분야 헤더 + 그 분야 카드 그리드, 그룹 간 상하 여백 */
 .fgroup{padding:2.4rem 0}
 .fgroup + .fgroup{border-top:1px solid var(--line-soft)}
-.fg-head{display:flex;align-items:baseline;gap:.65rem;margin-bottom:1.5rem;flex-wrap:wrap}
-.fg-head .fg-dot{width:11px;height:11px;border-radius:50%;background:var(--fg-c,var(--navy));flex:none;align-self:center}
+/* 분야 머리 — 가운데로 모으고 영문은 아랫줄에 (예전엔 한 줄에 점·한글·영문·인원수가
+   나란히 서고 인원수만 오른쪽 끝으로 밀려 축이 둘로 갈렸다) */
+.fg-head{display:flex;flex-direction:column;align-items:center;text-align:center;
+  gap:.34rem;margin-bottom:1.5rem}
+.fg-line{display:flex;align-items:center;justify-content:center;gap:.6rem;flex-wrap:wrap}
+.fg-head .fg-dot{width:11px;height:11px;border-radius:50%;background:var(--fg-c,var(--navy));flex:none}
 .fg-head h2{font-size:clamp(1.5rem,1.1rem + 1.7vw,2.15rem);font-weight:800;color:var(--navy);letter-spacing:-.01em;line-height:1.2}
-.fg-head .fg-en{font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--label)}
-.fg-head .fg-cnt{margin-left:auto;font-size:.82rem;font-weight:600;color:var(--muted);letter-spacing:.01em}
-.fg-head .fg-unit{margin-left:.15rem}
+.fg-head .fg-en{font-family:var(--mono);font-size:.7rem;font-weight:600;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--label);line-height:1.5}
+.fg-head .fg-cnt{font-size:.8rem;font-weight:600;color:var(--muted);letter-spacing:.01em;
+  padding:.16rem .5rem;box-shadow:inset 0 0 0 1px var(--line-soft);border-radius:999px;
+  font-variant-numeric:tabular-nums}
+.fg-head .fg-unit{margin-left:.1rem;font-weight:400;color:var(--label)}
 /* 사진 소스가 240×240라 4열(≈290px)·정사각 비율로 과확대(픽셀 깨짐) 최소화 */
 /* 가로 배치는 flex — grid 는 마지막 줄에 남은 카드를 가운데로 모을 수 없다.
    열 수(--cols)는 JS(fitCols)가 정한다: 마지막 줄에 카드가 1장만 남지 않도록
@@ -1028,10 +1036,12 @@ html[lang="en"] .ppos{display:none}
       if(!members.length) return '';
       return '<section class="fgroup" id="fg-'+esc(c.id)+'" style="--fg-c:var('+CVAR[c.id]+')" aria-label="'+esc(c.ko)+' 분야 교수진">'
         + '<div class="fg-head">'
-          + '<span class="fg-dot" aria-hidden="true"></span>'
-          + '<h2>'+esc(c.ko)+'</h2>'
-          + (c.en ? '<span class="fg-en">'+esc(c.en)+'</span>' : '')
-          + '<span class="fg-cnt">'+members.length+'<span class="fg-unit">명</span></span>'
+          + '<div class="fg-line">'
+            + '<span class="fg-dot" aria-hidden="true"></span>'
+            + '<h2>'+esc(c.ko)+'</h2>'
+            + '<span class="fg-cnt">'+members.length+'<span class="fg-unit">명</span></span>'
+          + '</div>'
+          + (c.en ? '<p class="fg-en">'+esc(c.en)+'</p>' : '')
         + '</div>'
         + '<div class="dir-list">'+members.map(cardHtml).join('')+'</div>'
       + '</section>';
@@ -1190,7 +1200,7 @@ html[lang="en"] .ppos{display:none}
   }
 })();
 </script>
-<script src="assets/nav.js?v=68"></script>
+<script src="assets/nav.js?v=69"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--dimmer)">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

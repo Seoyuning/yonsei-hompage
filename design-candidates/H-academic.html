@@ -255,41 +255,28 @@ img{display:block;max-width:100%}
 @media(max-width:640px){.cdesc,.cen{display:none}}
 
 /* ── 스크롤 구간 (학사와 같은 짜임) ──
-   배경·색은 우리 것(사진을 흑백 네이비로 눌러 깔고 이중 그라디언트)을 그대로 쓰고,
-   그 위에 초대형 타이포와 스크롤 진행만 참고 화면에서 가져왔다.
-   .tw-scene 은 몇 화면 높이의 빈 통, .tw-pin 이 그 안에서 화면에 고정된다. */
+   .tw-scene 은 몇 화면 높이의 빈 통, .tw-pin 이 그 안에서 화면에 고정된다.
+   스크롤이 통을 지나가는 동안 고정된 화면 안에서 내용이 진행된다. */
 .tw-scene{position:relative}
 .tw-scene.is-say{height:230vh;height:230svh;background:#fff}
 .tw-pin{position:sticky;top:0;height:100vh;height:100svh;
   display:flex;flex-direction:column;justify-content:center;overflow:hidden}
-/* 히어로 판 — 페이지 히어로와 같은 사진·베일 */
-  filter:grayscale(1) contrast(1.2) brightness(.55);
-  transform:scale(calc(1 + var(--p,0) * .08));transform-origin:50% 45%}
-  radial-gradient(125% 95% at 50% 52%,rgba(10,22,44,.42) 0%,rgba(10,22,44,.68) 52%,rgba(8,17,34,.92) 100%),
-  linear-gradient(180deg,rgba(18,41,79,.66) 0%,rgba(16,35,68,.42) 38%,rgba(10,22,44,.84) 100%)}
-/* 마지막 구간에서 흰 판이 아래에서 차올라 본문으로 넘어간다 */
-  height:calc(max(0%, (var(--p,0) - .66) / .34 * 100%))}
-  padding:0 clamp(1.2rem,.6rem + 2vw,3rem)}
-  opacity:calc(1 - var(--p,0) * 2)}
-/* 히어로 보조 줄 — 학술 표기(영문 과정명)와 한 줄 부제 */
-  letter-spacing:.26em;text-transform:uppercase;color:rgba(200,218,245,.8);
-  margin:0 0 clamp(1.6rem,3.4vh,2.6rem);
-  opacity:calc(1 - max(0, var(--p,0) - .5) / .3)}
-  letter-spacing:-.005em;margin:clamp(.9rem,2vh,1.4rem) 0 0;max-width:44rem;
-  transform:translate3d(0,calc(var(--p,0) * -10vh),0);
-  opacity:calc(1 - max(0, var(--p,0) - .45) / .3)}
-
 /* ── 확대 구간 ── 작게 있던 그림이 스크롤을 따라 화면을 채운다 */
 .tw-scene.is-zoom{height:220vh;height:220svh;background:#0d1c38}
 .is-zoom .tw-pin{background:#0d1c38;padding:0}
-.tw-zoom{position:relative;margin:0 auto;overflow:hidden;
-  width:calc(50% + var(--p,0) * 50%);
-  height:calc(46vh + var(--p,0) * 54vh);
-  border-radius:calc((1 - var(--p,0)) * .6rem);
-  box-shadow:0 30px 70px rgba(0,0,0,calc(.35 * (1 - var(--p,0))))}
+/* 폭·높이를 같이 늘리면 잘리는 자리가 계속 바뀌어 그림이 미끄러지듯 어색해진다.
+   상자는 처음부터 화면 크기로 두고 통째로 키우기만 한다(잘림이 변하지 않는다). */
+.tw-zoom{position:relative;margin:0 auto;overflow:hidden;width:100%;height:100vh;height:100svh;
+  transform:scale(calc(.54 + min(1, var(--p,0) / .8) * .46));
+  transform-origin:50% 50%;
+  border-radius:calc((1 - min(1, var(--p,0) / .8)) * 1.4rem);
+  box-shadow:0 40px 90px rgba(0,0,0,calc(.42 * (1 - min(1, var(--p,0) / .8))))}
 .tw-zoom img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
   filter:grayscale(1) contrast(1.12) brightness(calc(.62 + var(--p,0) * .18))}
+.tw-zoom figcaption .cred{display:block;margin-top:.35rem;font-weight:500;font-size:.72em;
+  color:rgba(255,255,255,.62);letter-spacing:0}
 .tw-zoom figcaption{position:absolute;left:0;right:0;bottom:0;z-index:1;
+  transform:scale(calc(1 / (.54 + min(1, var(--p,0) / .8) * .46)));transform-origin:50% 100%;
   padding:clamp(1rem,3vh,2rem) clamp(1.2rem,3vw,2.6rem);
   background:linear-gradient(180deg,rgba(8,17,34,0),rgba(8,17,34,.82));
   font-family:var(--kr);font-size:clamp(.82rem,.78rem + .25vw,1rem);font-weight:600;
@@ -300,10 +287,18 @@ img{display:block;max-width:100%}
 .tw-scene.is-list{height:340vh;height:340svh;background:#fff}
 .is-list .tw-pin{background:#fff}
 .tl-wrap{width:100%;max-width:1240px;margin:0 auto;padding:0 clamp(1.2rem,.6rem + 2vw,3rem);
-  display:grid;grid-template-columns:9rem minmax(0,1fr) minmax(0,15rem);
+  display:grid;grid-template-columns:12rem minmax(0,1fr) minmax(0,15rem);
   gap:clamp(1.4rem,3vw,3rem);align-items:start}
 .tl-label{font-family:var(--mono);font-size:.68rem;font-weight:600;letter-spacing:.2em;
   text-transform:uppercase;color:var(--muted);padding-top:.5rem}
+/* 목록 머리 — 섹션 번호·킥커·제목·전체 링크를 왼쪽 칸에 세운다 */
+.tl-head{display:flex;flex-direction:column;gap:.3rem;padding-top:.2rem}
+.tl-head .sidx{font-family:var(--mono);font-size:1.6rem;font-weight:700;color:var(--line);line-height:1}
+.tl-head .kick{font-family:var(--mono);font-size:.64rem;font-weight:600;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--coral);margin-top:.5rem}
+.tl-head .sec-title{margin-top:.1rem;font-size:clamp(1.5rem,1.1rem + 1.4vw,2.1rem);line-height:1.2}
+.tl-head .more{margin-top:.7rem;font-size:.84rem;color:var(--muted)}
+.tl-head .more:hover{color:var(--navy)}
 .tl-list{list-style:none;margin:0;padding:0}
 .tl-list li{display:flex;align-items:baseline;gap:clamp(.8rem,2vw,1.6rem);
   font-family:var(--kr);font-weight:800;letter-spacing:-.03em;line-height:1.28;
@@ -352,7 +347,7 @@ img{display:block;max-width:100%}
 @media (prefers-reduced-motion:reduce){
   .tw-scene{height:auto}
   .tw-pin{position:relative;height:auto;padding:7rem 0}
-  .tw-zoom{width:100%;height:60vh}
+  .tw-zoom{transform:none;height:60vh}
   .tw-zoom figcaption{opacity:1}
   .tl-list li{color:var(--navy)}.tl-list li .n{color:var(--accent)}
   .tw-say{color:var(--navy,#1a3d75)}
@@ -591,8 +586,9 @@ img{display:block;max-width:100%}
 <section class="tw-scene is-zoom" aria-label="학부 전경">
   <div class="tw-pin">
     <figure class="tw-zoom">
-      <img src="assets/hero-about.jpg" alt="연세대학교 공과대학 건물 외벽" loading="lazy" decoding="async">
-      <figcaption>연세대학교 공과대학 · 기계공학부</figcaption>
+      <img src="assets/yonsei-engineering.jpg" alt="연세대학교 공과대학 건물" loading="lazy" decoding="async">
+      <figcaption>연세대학교 공과대학 · 기계공학부
+        <span class="cred">사진 Striker9498 · Wikimedia Commons · CC BY-SA 4.0</span></figcaption>
     </figure>
   </div>
 </section>
@@ -649,11 +645,18 @@ img{display:block;max-width:100%}
 
   <!-- ═══ 공지 · 세미나 보드 ═══ -->
   <!-- ═══ 연구 분야 (SNU 6분야 그리드 스타일) ═══ -->
-  <!-- 번호 목록 — 스크롤을 따라 한 분야씩 짙어진다. 여섯 분야는 연구 페이지와 같은 목록이다. -->
-  <section class="tw-scene is-list" id="twList" aria-label="연구 분야">
+  <!-- 연구 분야 — 카드 격자를 걷고 번호 목록 하나로 합쳤다.
+       스크롤을 따라 한 분야씩 짙어지고, 옆 칸에 그 분야 설명과 연구실 링크가 뜬다.
+       같은 내용을 두 벌로 보여 주던 중복을 없앤다. -->
+  <section class="tw-scene is-list" id="twList" aria-labelledby="h-research">
     <div class="tw-pin">
       <div class="tl-wrap">
-        <p class="tl-label">연구 분야</p>
+        <div class="tl-head">
+          <span class="sidx" aria-hidden="true">02</span>
+          <p class="kick">Research Areas</p>
+          <h2 class="sec-title" id="h-research" data-i18n="areasTitle">연구 분야</h2>
+          <a class="more" href="G-research.html" data-i18n="moreLabs">연구실 목록 →</a>
+        </div>
         <ol class="tl-list" id="twListItems">
           <li data-b="solid"><span class="n">1</span><span class="t">역학·소재</span></li>
           <li data-b="thermal"><span class="n">2</span><span class="t">에너지·열유체</span></li>
@@ -667,17 +670,6 @@ img{display:block;max-width:100%}
     </div>
   </section>
 
-  <section class="wrap sec" id="research" aria-labelledby="h-research">
-    <div class="sec-head">
-      <span class="sidx" aria-hidden="true">02</span>
-      <div>
-        <p class="kick">Research Areas</p>
-        <h2 class="sec-title" id="h-research" data-i18n="areasTitle">연구 분야</h2>
-      </div>
-      <a class="more" href="G-research.html" data-i18n="moreLabs">연구실 목록 →</a>
-    </div>
-    <div class="clist" id="areaGrid" data-cursor-zone></div>
-  </section>
 
   <section class="wrap sec sec-navy" aria-labelledby="h-people">
     <div class="sec-head">

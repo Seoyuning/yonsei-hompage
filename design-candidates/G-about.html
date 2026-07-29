@@ -227,35 +227,50 @@ a{color:inherit;text-decoration:none}
 .org-sub .k{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--label)}
 .org-sub::after{content:"";flex:1;height:1px;background:var(--line-soft)}
 
-/* 보직 세 칸 — 학부장은 2칸 폭 */
+/* 보직 세 칸 — 메인·구성원의 교수 카드와 같은 짜임
+   (사진이 카드 끝까지 → 흰 본문 → 헤어라인으로만 나눈 두 칸) */
 .org-posts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
   gap:clamp(.9rem,.6rem + 1vw,1.4rem);margin-bottom:clamp(2.4rem,1.6rem + 2.4vw,3.6rem)}
-.opost{background:#fff;box-shadow:inset 0 0 0 1px var(--line-soft);
-  padding:clamp(1.15rem,.9rem + 1vw,1.6rem);display:flex;flex-direction:column;
-  transition:box-shadow .22s,transform .22s;scroll-margin-top:7rem}
-.opost:hover{box-shadow:inset 0 0 0 1px rgba(165,111,99,.4),0 10px 24px rgba(15,27,48,.08);transform:translateY(-2px)}
-.opost.is-lead{box-shadow:inset 3px 0 0 var(--accent),inset 0 0 0 1px var(--line-soft)}
-.opost.is-lead .op-name b{font-size:clamp(1.35rem,1.1rem + 1vw,1.75rem)}
-.opost.is-lead:hover{box-shadow:inset 3px 0 0 var(--accent),inset 0 0 0 1px rgba(165,111,99,.4),0 10px 24px rgba(15,27,48,.08)}
-.op-role{font-family:var(--mono);font-size:.66rem;font-weight:600;letter-spacing:.16em;
+.opost{display:flex;flex-direction:column;overflow:hidden;background:#fff;
+  border:1px solid var(--line-soft);border-radius:.35rem;scroll-margin-top:7rem;
+  transition:transform .5s var(--e,cubic-bezier(.16,1,.3,1)),box-shadow .5s var(--e,cubic-bezier(.16,1,.3,1)),border-color .3s}
+.opost:hover{transform:translateY(-5px);box-shadow:0 16px 36px rgba(15,27,48,.13);
+  border-color:rgba(165,111,99,.4)}
+.opost.is-lead{box-shadow:inset 3px 0 0 var(--accent)}
+.opost.is-lead:hover{box-shadow:inset 3px 0 0 var(--accent),0 16px 36px rgba(15,27,48,.13)}
+.op-top{display:block;text-decoration:none;color:inherit}
+.op-ph{display:block;aspect-ratio:1/1.02;position:relative;overflow:hidden;
+  background:linear-gradient(160deg,#e8e3d8,#d6d0c2)}
+.op-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;
+  transition:transform .8s var(--e,cubic-bezier(.16,1,.3,1))}
+.opost:hover .op-ph img{transform:scale(1.05)}
+.op-in{display:block;padding:.9rem .95rem 1rem}
+.op-role{font-family:var(--mono);font-size:.64rem;font-weight:600;letter-spacing:.16em;
   text-transform:uppercase;color:var(--accent-ink,#8E5A4F)}
-.op-role .en{color:var(--label);margin-left:.5rem;letter-spacing:.14em}
-.op-name{display:flex;align-items:baseline;gap:.55rem;flex-wrap:wrap;margin-top:.6rem}
-.op-name b{font-weight:800;font-size:clamp(1.25rem,1.05rem + .8vw,1.6rem);color:var(--navy);letter-spacing:-.02em}
-.op-name .en{font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-.op-rank{font-size:.86rem;color:var(--sub);margin-top:.32rem}
-.op-meta{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.34rem .8rem;
-  margin-top:.95rem;padding-top:.85rem;border-top:1px solid var(--line-soft);
-  font-size:.83rem;line-height:1.6}
-.op-meta dt{color:var(--label);font-size:.74rem;white-space:nowrap;padding-top:.12rem}
+.op-role .en{color:var(--faint,#9aa3b0);margin-left:.45rem;letter-spacing:.14em}
+.op-name{display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap;margin-top:.5rem}
+.op-name b{font-weight:800;font-size:clamp(1.15rem,1rem + .7vw,1.42rem);color:var(--navy);letter-spacing:-.02em}
+.op-name .en{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.op-rank{font-size:.84rem;color:var(--sub);margin-top:.28rem}
+.op-meta{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.3rem .75rem;
+  margin-top:.85rem;padding-top:.8rem;border-top:1px solid var(--line-soft);
+  font-size:.8rem;line-height:1.55}
+.op-meta dt{color:var(--label,#9aa3b0);font-size:.72rem;white-space:nowrap;padding-top:.1rem}
 .op-meta dd{margin:0;color:var(--sub);min-width:0;overflow-wrap:anywhere}
 .op-meta a{color:var(--sub);text-decoration:underline;text-decoration-color:var(--line);
   text-underline-offset:3px;transition:color .15s,text-decoration-color .15s}
 .op-meta a:hover{color:var(--navy);text-decoration-color:var(--accent)}
-.op-links{margin-top:auto;padding-top:1rem}
-.op-links a{font-size:.84rem;font-weight:600;color:var(--navy);transition:color .15s}
-.op-links a:hover{color:var(--accent-ink,#8E5A4F)}
-.op-links .arr{color:var(--accent);margin-left:.3rem}
+/* 아래 두 칸 — 칠 없이 헤어라인으로만 나눈다(교수 카드와 같다) */
+.op-btns{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;margin-top:auto;
+  border-top:1px solid var(--line)}
+.op-btn{display:flex;align-items:center;justify-content:center;
+  font-family:var(--kr);font-size:.74rem;font-weight:700;letter-spacing:.04em;
+  padding:.76rem .3rem;color:var(--muted);text-decoration:none;white-space:nowrap;
+  transition:color .18s ease,background .18s ease}
+.op-btn + .op-btn{border-left:1px solid var(--line)}
+.op-btn:hover{color:var(--navy);background:var(--soft,#f4f1ea)}
+.op-btn:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+
 /* 행정실 — 세 창구를 통째로 누를 수 있는 칸으로 */
 .admin-lines{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
   gap:clamp(.9rem,.6rem + 1vw,1.4rem)}
@@ -464,7 +479,12 @@ a{color:inherit;text-decoration:none}
       </div>
       <div class="org-posts" role="group" aria-label="학부 보직">
         <article class="opost is-lead" id="kim-woochul">
-          <p class="op-role">학부장 <span class="en">Chair</span></p>
+        <a class="op-top" href="G-people.html#kim-woochul">
+          <span class="op-ph"><img src="assets/faculty/kim-woochul.jpg" alt="김우철 교수" loading="lazy" decoding="async"
+            onerror="this.style.display='none'"></span>
+        </a>
+        <div class="op-in">
+          <p class="op-role">학부장 <span class="en">CHAIR</span></p>
           <p class="op-name"><b>김우철</b><span class="en">Woochul Kim</span></p>
           <p class="op-rank">교수 · 에너지·열유체</p>
           <dl class="op-meta">
@@ -472,10 +492,19 @@ a{color:inherit;text-decoration:none}
             <dt>전화</dt><dd><a href="tel:0221235816">02-2123-5816</a></dd>
             <dt>메일</dt><dd><a href="mailto:woochul@yonsei.ac.kr">woochul@yonsei.ac.kr</a></dd>
           </dl>
-          <p class="op-links"><a href="G-people.html#kim-woochul">프로필 <span class="arr" aria-hidden="true">→</span></a></p>
-        </article>
-        <article class="opost" id="kim-wonjung">
-          <p class="op-role">학부주임교수 <span class="en">Head Professor</span></p>
+        </div>
+        <div class="op-btns">
+          <a class="op-btn" href="G-people.html#kim-woochul">프로필</a>
+          <a class="op-btn" href="G-research.html#atel">연구실</a>
+        </div>
+      </article>
+      <article class="opost" id="kim-wonjung">
+        <a class="op-top" href="G-people.html#kim-wonjung">
+          <span class="op-ph"><img src="assets/faculty/kim-wonjung.jpg" alt="김원정 부교수" loading="lazy" decoding="async"
+            onerror="this.style.display='none'"></span>
+        </a>
+        <div class="op-in">
+          <p class="op-role">학부주임교수 <span class="en">HEAD PROFESSOR</span></p>
           <p class="op-name"><b>김원정</b><span class="en">Wonjung Kim</span></p>
           <p class="op-rank">부교수 · 에너지·열유체</p>
           <dl class="op-meta">
@@ -483,10 +512,19 @@ a{color:inherit;text-decoration:none}
             <dt>전화</dt><dd><a href="tel:0221234471">02-2123-4471</a></dd>
             <dt>메일</dt><dd><a href="mailto:wjk@yonsei.ac.kr">wjk@yonsei.ac.kr</a></dd>
           </dl>
-          <p class="op-links"><a href="G-people.html#kim-wonjung">프로필 <span class="arr" aria-hidden="true">→</span></a></p>
-        </article>
-        <article class="opost" id="min-kyoungmin">
-          <p class="op-role">대회 담당 <span class="en">Competition</span></p>
+        </div>
+        <div class="op-btns">
+          <a class="op-btn" href="G-people.html#kim-wonjung">프로필</a>
+          <a class="op-btn" href="G-research.html#ssfl">연구실</a>
+        </div>
+      </article>
+      <article class="opost" id="min-kyoungmin">
+        <a class="op-top" href="G-people.html#min-kyoungmin">
+          <span class="op-ph"><img src="assets/faculty/min-kyoungmin.jpg" alt="민경민 부교수" loading="lazy" decoding="async"
+            onerror="this.style.display='none'"></span>
+        </a>
+        <div class="op-in">
+          <p class="op-role">대회 담당 <span class="en">COMPETITION</span></p>
           <p class="op-name"><b>민경민</b><span class="en">Kyoungmin Min</span></p>
           <p class="op-rank">부교수 · 역학·소재</p>
           <dl class="op-meta">
@@ -494,8 +532,12 @@ a{color:inherit;text-decoration:none}
             <dt>전화</dt><dd><a href="tel:0221234464">02-2123-4464</a></dd>
             <dt>메일</dt><dd><a href="mailto:kmin.min@yonsei.ac.kr">kmin.min@yonsei.ac.kr</a></dd>
           </dl>
-          <p class="op-links"><a href="G-people.html#min-kyoungmin">프로필 <span class="arr" aria-hidden="true">→</span></a></p>
-        </article>
+        </div>
+        <div class="op-btns">
+          <a class="op-btn" href="G-people.html#min-kyoungmin">프로필</a>
+          <a class="op-btn" href="G-research.html#csai">연구실</a>
+        </div>
+      </article>
       </div>
 
       <!-- ── 행정실 ── -->

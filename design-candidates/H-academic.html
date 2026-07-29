@@ -16,7 +16,7 @@
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트를 미리 받아 둔다 — 파서가 해당 줄에 닿았을 때 이미 캐시에 있어 멈춤이 짧아진다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d17" />
-<link rel="preload" as="script" href="assets/nav.js?v=70" />
+<link rel="preload" as="script" href="assets/nav.js?v=71" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    시안 H · 아카데믹 (Reference: me.kaist.ac.kr / me.snu.ac.kr)
@@ -274,7 +274,7 @@ img{display:block;max-width:100%}
    호 위에 카드를 세운다. 각 카드에 perspective() 를 직접 걸어 부모의 overflow 스크롤을
    깨지 않는다(부모에 transform-style:preserve-3d 를 주면 가로 스크롤이 죽는다).
    각도·깊이는 JS(coilRail)가 스크롤 위치로 매 프레임 다시 계산한다. */
-.prail{display:flex;gap:1.3rem;overflow-x:auto;scroll-snap-type:x proximity;
+.prail{display:flex;gap:0;overflow-x:auto;scroll-snap-type:x proximity;
   padding:2.4rem 0 3rem;cursor:grab;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .prail::-webkit-scrollbar{display:none}
 .prail.drag{cursor:grabbing;scroll-snap-type:none}
@@ -282,7 +282,7 @@ img{display:block;max-width:100%}
    받는다(네이비 밴드 위에서 정보 칸이 또렷하게 떠오른다).
    이름·소속은 왼쪽 정렬 — 여러 장이 늘어서도 시선이 한 축으로 흐른다.
    맨 아래 두 칸은 칠하지 않고 헤어라인으로만 나눈 조용한 줄로 둔다. */
-.pc{flex:0 0 clamp(196px,23vw,248px);scroll-snap-align:start;
+.pc{flex:0 0 clamp(158px,15.5vw,208px);margin-inline:clamp(-1.1rem,-.7rem - .5vw,-.45rem);scroll-snap-align:center;
   display:flex;flex-direction:column;overflow:hidden;
   background:#fff;border-radius:.35rem;
   transition:box-shadow .45s var(--e)}
@@ -295,11 +295,11 @@ img{display:block;max-width:100%}
 .pc .pph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
   transition:transform .8s var(--e)}
 .pc:hover .pph img{transform:scale(1.06)}
-.pc .pin{display:block;padding:.85rem .9rem .95rem}
-.pc .pko{display:block;font-size:1.06rem;font-weight:800;color:var(--ink);
+.pc .pin{display:block;padding:.7rem .75rem .8rem}
+.pc .pko{display:block;font-size:.98rem;font-weight:800;color:var(--ink);
   letter-spacing:-.015em;line-height:1.25}
-.pc .prk{display:flex;align-items:center;gap:.32rem;flex-wrap:wrap;
-  margin-top:.32rem;font-size:.75rem;color:var(--muted);line-height:1.45}
+.pc .prk{display:flex;align-items:center;gap:.3rem;flex-wrap:wrap;
+  margin-top:.28rem;font-size:.7rem;color:var(--muted);line-height:1.45}
 .pc .prk .duty{color:var(--coral);font-weight:700}
 /* 분야 육각 배지 — 구성원 페이지의 분야 레일과 같은 글리프·같은 색 */
 .fbadge{flex:none;width:15px;height:17px;display:grid;place-items:center;color:#fff;
@@ -309,9 +309,9 @@ img{display:block;max-width:100%}
 /* 아래 두 칸 — 칠 없이 헤어라인으로만 나눈다 */
 .pc-btns{display:grid;grid-template-columns:1fr 1fr;margin-top:auto;
   border-top:1px solid var(--line)}
-.pbtn{display:flex;align-items:center;justify-content:center;gap:.32rem;
-  font-family:var(--kr);font-size:.72rem;font-weight:700;letter-spacing:.04em;
-  padding:.78rem .3rem;text-decoration:none;white-space:nowrap;
+.pbtn{display:flex;align-items:center;justify-content:center;gap:.28rem;
+  font-family:var(--kr);font-size:.66rem;font-weight:700;letter-spacing:.02em;
+  padding:.66rem .2rem;text-decoration:none;white-space:nowrap;
   color:var(--muted);transition:color .18s ease,background .18s ease}
 .pbtn + .pbtn{border-left:1px solid var(--line)}
 .pbtn svg{width:12px;height:12px;flex:none;opacity:.7}
@@ -489,28 +489,24 @@ img{display:block;max-width:100%}
 <main>
   <!-- 교수진을 히어로·지표 바로 뒤로 올렸다 — 어두운 화면 셋이 이어져 도입이 묵직해진다.
        예전에는 흰 섹션 사이에 어두운 교수진이 끼어 명암이 줄무늬처럼 번갈았다. -->
-  <section class="wrap sec sec-navy" aria-labelledby="h-people">
+  <!-- 공지·세미나도 원래 짙은 밴드라, 흰 섹션 사이에 두면 명암이 다시 줄무늬가 된다.
+       앞쪽 어두운 덩어리에 붙여 [히어로·지표·교수진·공지] 를 한 묶음으로 만든다. -->
+  <!-- ═══ 연구 뉴스 (KAIST 뉴스 하이라이트 스타일) ═══ -->
+  <section class="wrap sec" aria-labelledby="h-news" id="secNews">
     <div class="sec-head">
       <span class="sidx" aria-hidden="true">01</span>
       <div>
-        <p class="kick">People</p>
-        <h2 class="sec-title" id="h-people" data-i18n="peopleTitle">교수진</h2>
+        <p class="kick">Research &amp; News</p>
+        <h2 class="sec-title" id="h-news" data-i18n="newsTitle">연구 소식</h2>
       </div>
-      <a class="more" href="G-people.html" data-i18n="morePeople">교수진 전체 →</a>
+      <a class="more" href="G-news.html" data-i18n="moreAll">전체 보기 →</a>
     </div>
-    <div class="prail-wrap">
-      <button type="button" class="prail-nav is-prev" aria-label="이전 교수 보기" aria-controls="pGrid">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
-      </button>
-      <div class="prail" id="pGrid"></div>
-      <button type="button" class="prail-nav is-next" aria-label="다음 교수 보기" aria-controls="pGrid">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
-      </button>
+    <div class="nlist" id="newsGrid">
+      <a class="nrow" href="G-news.html"><span class="nt2">학부 뉴스 보기</span><i>→</i></a>
     </div>
+    <img id="newsPrev" src="" alt="" aria-hidden="true" />
   </section>
 
-  <!-- 공지·세미나도 원래 짙은 밴드라, 흰 섹션 사이에 두면 명암이 다시 줄무늬가 된다.
-       앞쪽 어두운 덩어리에 붙여 [히어로·지표·교수진·공지] 를 한 묶음으로 만든다. -->
   <section class="board-band" aria-label="공지 및 세미나">
     <div class="wrap">
       <div>
@@ -534,28 +530,11 @@ img{display:block;max-width:100%}
     </div>
   </section>
 
-
-  <!-- ═══ 연구 뉴스 (KAIST 뉴스 하이라이트 스타일) ═══ -->
-  <section class="wrap sec" aria-labelledby="h-news" id="secNews">
-    <div class="sec-head">
-      <span class="sidx" aria-hidden="true">02</span>
-      <div>
-        <p class="kick">Research &amp; News</p>
-        <h2 class="sec-title" id="h-news" data-i18n="newsTitle">연구 소식</h2>
-      </div>
-      <a class="more" href="G-news.html" data-i18n="moreAll">전체 보기 →</a>
-    </div>
-    <div class="nlist" id="newsGrid">
-      <a class="nrow" href="G-news.html"><span class="nt2">학부 뉴스 보기</span><i>→</i></a>
-    </div>
-    <img id="newsPrev" src="" alt="" aria-hidden="true" />
-  </section>
-
   <!-- ═══ 공지 · 세미나 보드 ═══ -->
   <!-- ═══ 연구 분야 (SNU 6분야 그리드 스타일) ═══ -->
   <section class="wrap sec" id="research" aria-labelledby="h-research">
     <div class="sec-head">
-      <span class="sidx" aria-hidden="true">03</span>
+      <span class="sidx" aria-hidden="true">02</span>
       <div>
         <p class="kick">Research Areas</p>
         <h2 class="sec-title" id="h-research" data-i18n="areasTitle">연구 분야</h2>
@@ -563,6 +542,26 @@ img{display:block;max-width:100%}
       <a class="more" href="G-research.html" data-i18n="moreLabs">연구실 목록 →</a>
     </div>
     <div class="clist" id="areaGrid" data-cursor-zone></div>
+  </section>
+
+  <section class="wrap sec sec-navy" aria-labelledby="h-people">
+    <div class="sec-head">
+      <span class="sidx" aria-hidden="true">03</span>
+      <div>
+        <p class="kick">People</p>
+        <h2 class="sec-title" id="h-people" data-i18n="peopleTitle">교수진</h2>
+      </div>
+      <a class="more" href="G-people.html" data-i18n="morePeople">교수진 전체 →</a>
+    </div>
+    <div class="prail-wrap">
+      <button type="button" class="prail-nav is-prev" aria-label="이전 교수 보기" aria-controls="pGrid">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <div class="prail" id="pGrid"></div>
+      <button type="button" class="prail-nav is-next" aria-label="다음 교수 보기" aria-controls="pGrid">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+      </button>
+    </div>
   </section>
 
   <!-- ═══ 교수진 ═══ -->
@@ -1055,7 +1054,7 @@ img{display:block;max-width:100%}
     var flat = false;
     try { flat = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
     if (flat) return;
-    var MAX_ROT = 38, MAX_Z = 210, MAX_SC = .1, PERSP = 1500;
+    var MAX_ROT = 74, MAX_Z = 110, MAX_SC = .05, PERSP = 1150;
     var tick = 0;
     function coilRail() {
       tick = 0;
@@ -1065,10 +1064,10 @@ img{display:block;max-width:100%}
       [].forEach.call(railC.children, function (c) {
         var b = c.getBoundingClientRect();
         var d = ((b.left + b.width / 2) - cx) / half;      /* -1(왼쪽 끝) ~ 1(오른쪽 끝) */
-        if (d < -1.4) d = -1.4; if (d > 1.4) d = 1.4;
+        if (d < -1.05) d = -1.05; if (d > 1.05) d = 1.05;   /* 90도를 넘기면 카드 뒷면이 보인다 */
         var ad = Math.abs(d);
         c.style.transform = 'perspective(' + PERSP + 'px) rotateY(' + (-d * MAX_ROT).toFixed(2) + 'deg)'
-          + ' translateZ(' + (-ad * MAX_Z).toFixed(1) + 'px) scale(' + (1 - ad * MAX_SC).toFixed(3) + ')';
+          + ' translateZ(' + (-ad * MAX_Z).toFixed(1) + 'px) scale(' + (1.06 - ad * MAX_SC).toFixed(3) + ')';
         c.style.zIndex = String(90 - Math.round(ad * 40));
       });
     }
@@ -1208,6 +1207,6 @@ img{display:block;max-width:100%}
 })();
 </script>
 <!-- 공용 헤더·사이트맵 푸터(서브페이지와 동일) 주입 -->
-<script src="assets/nav.js?v=70"></script>
+<script src="assets/nav.js?v=71"></script>
 </body>
 </html>

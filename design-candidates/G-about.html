@@ -93,19 +93,12 @@ a{color:inherit;text-decoration:none}
    제목 아래에 슬래시로 이어붙인 요약 줄을 둔다.
    요약은 그 화면이 이미 담고 있는 사실만 적는다 — 새 주장을 만들지 않는다. */
 .sec-head{position:relative}
-.sec-meta{font-family:var(--kr);font-size:clamp(.82rem,.79rem + .15vw,.9rem);
-  color:var(--muted);line-height:1.7;margin:.85rem 0 0;letter-spacing:.01em;
-  padding-top:.8rem;border-top:1px solid var(--line-soft);max-width:44rem}
 @media (max-width:640px){
-    .sec-meta{max-width:none}
-}
+    }
 
 .sec-title{font-weight:700;color:var(--navy);letter-spacing:-.01em;
   font-size:clamp(1.85rem,1.2rem + 2.8vw,2.85rem);line-height:1.24;margin-top:.5rem}
 .sec-sub{font-size:.94rem;color:var(--muted);line-height:1.7;max-width:44rem;margin-top:.55rem}
-.sec-more{font-size:.9rem;color:var(--muted);white-space:nowrap;transition:color .15s}
-.sec-more:hover{color:var(--coral)}
-.sec-more .arr{color:var(--coral)}
 
 /* §01 인사말용 초상·서명 CSS 는 인사말 섹션과 함께 제거했다(실재하지 않는 글이었다). */
 
@@ -123,16 +116,22 @@ a{color:inherit;text-decoration:none}
 
 /* 본문 왼쪽 · 사진 오른쪽. 좁은 화면은 아래 860px 분기에서 1단으로 접혀 사진이 본문 밑으로 간다 */
 .intro-grid{display:grid;grid-template-columns:minmax(0,1.06fr) minmax(0,.94fr);
-  gap:clamp(1.6rem, 1rem + 2.4vw, 3rem);align-items:start}
-.intro-lead{max-width:52rem;font-size:1.02rem;line-height:1.95;color:var(--body)}
-/* 원본이 2000×3000(1.6MB)이라 폭·높이를 CSS 로 모두 확정해 로드 전후 레이아웃 이동(CLS)이 없게 한다 */
-.intro-photo{margin:0}
-.intro-photo img{display:block;width:100%;height:clamp(17rem, 11rem + 16vw, 25rem);
-  object-fit:cover;object-position:center;background:var(--card);border:1px solid var(--line-soft)}
+  gap:clamp(1.6rem, 1rem + 2.4vw, 3rem);align-items:stretch}
+#intro .sec-head{margin-bottom:clamp(.9rem,.7rem + .6vw,1.3rem)}
+#intro .sec-title{margin-top:0}
+.intro-lead{max-width:52rem;font-size:1.02rem;line-height:1.95;color:var(--body);margin-top:1.1rem}
+/* 사진은 왼쪽 칸(제목~본문)의 높이를 그대로 받는다.
+   사진을 절대 배치로 띄워야 원본 비율(2000×3000)이 칸 높이를 밀어 올리지 않는다.
+   최소 높이는 글이 아주 짧을 때를 위한 바닥값일 뿐이다. */
+.intro-photo{margin:0;position:relative;overflow:hidden;height:100%;
+  min-height:clamp(13rem, 9rem + 10vw, 17rem);
+  background:var(--card);border:1px solid var(--line-soft)}
+.intro-photo img{position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:center}
 .section .sec-title br{display:block}
 @media (max-width:640px){
   .intro-lead{font-size:.96rem;line-height:1.85}
-  .intro-photo img{height:clamp(13rem, 8rem + 22vw, 17rem)}
+  .intro-photo{min-height:clamp(12rem, 8rem + 20vw, 16rem)}
 }
 
 /* ── §02 교육목표 — 공식 원문 3블록(소개 · 교육목적 · 세부교육) ──
@@ -288,7 +287,7 @@ a{color:inherit;text-decoration:none}
 
 /* ── §04 주요 연혁 — 타임라인 ── */
 .timeline{border-top:1px solid var(--line)}
-.tl-row{display:grid;grid-template-columns:6.5rem 1fr;gap:1.4rem;align-items:baseline;
+.tl-row{display:grid;grid-template-columns:7.4rem 1fr;gap:1.4rem;align-items:baseline;
   padding:1.05rem .5rem 1.05rem .8rem;border-bottom:1px solid var(--line-soft);transition:background .12s}
 .tl-row:hover{background:var(--card)}
 .tl-row:hover .tl-year{color:var(--coral)}
@@ -301,7 +300,8 @@ a{color:inherit;text-decoration:none}
 .hist-more{margin-top:1.6rem;font-size:.9rem;color:var(--muted)}
 .hist-more a{color:var(--navy);text-decoration:underline;text-underline-offset:2px;transition:color .15s}
 .hist-more a:hover{color:var(--coral)}
-@media (max-width:640px){.tl-row{grid-template-columns:4.6rem 1fr}}
+@media (max-width:640px){.tl-row{grid-template-columns:5.6rem 1fr;gap:.9rem}
+  .tl-year{font-size:.86rem}.tl-body{font-size:.88rem}}
 
 /* 캠퍼스 스냅 자리 (사진 준비 중 — <img> 교체 예정) */
 .photo-slot{margin-top:1.3rem;border:1px solid var(--line-soft);background:var(--card);
@@ -375,15 +375,18 @@ a{color:inherit;text-decoration:none}
        실존 학부장 명의의 창작 발언을 싣지 않고, 확인되는 사실만으로 학부를 소개한다. -->
   <section class="section" id="intro" aria-labelledby="intro-h">
     <div class="sec-head">
-        <div class="sec-top">
+      <div class="sec-top">
         <!-- 킥커는 이 섹션 전용 .intro-kick — 연도를 크게, 영문 학부명을 부제 급으로 나눴다.
              둘 다 영문이라 사전(en.json) 등록 대상이 아니다. -->
         <p class="intro-kick"><span class="yr">SINCE 1958</span><span class="sep" aria-hidden="true"></span><span class="unit">YONSEI MECHANICAL ENGINEERING</span></p>
       </div>
-      <h2 id="intro-h" class="sec-title">멈추지 않는 도전,<br>100년을 향한 연세 기계공학</h2>
     </div>
+    <!-- 사진의 위아래를 제목 첫 줄과 본문 끝에 맞춘다 — 제목을 격자 안으로 들여
+         왼쪽 칸(제목+본문)과 오른쪽 칸(사진)이 같은 높이를 쓰게 한다.
+         예전에는 제목이 격자 밖에 있어 사진이 본문 높이에만 맞았다. -->
     <div class="intro-grid">
       <div>
+        <h2 id="intro-h" class="sec-title">멈추지 않는 도전,<br>100년을 향한 연세 기계공학</h2>
         <p class="intro-lead">연세대학교 기계공학부는 역학·소재, 에너지·열유체, 로보틱스·제어, 설계·제조,
           마이크로·나노, 바이오·포토닉스에 이르는 폭넓은 분야에서 세계적 수준의 교육과 연구를 수행합니다.
           창의적 사고와 도전정신을 바탕으로 종합 설계 능력을 갖추고, 글로벌 사회에 유익한 가치를 창출하는 인재를 양성합니다.</p>
@@ -410,7 +413,6 @@ a{color:inherit;text-decoration:none}
         <p class="sec-kick">교육</p>
       </div>
       <h2 id="vision-h" class="sec-title">교육목표</h2>
-      <p class="sec-meta">학부 공식 교육목적 / 세부 교육목표</p>
     </div>
 
     <div class="edu-block">
@@ -441,10 +443,8 @@ a{color:inherit;text-decoration:none}
     <div class="sec-head">
       <div class="sec-top">
         <p class="sec-kick">조직</p>
-        <a class="sec-more" href="G-people.html">교수진 전체 <span class="arr" aria-hidden="true">→</span></a>
       </div>
         <h2 id="org-h" class="sec-title">조직 · 행정</h2>
-        <p class="sec-meta">학부장 · 학부주임교수 / 행정팀 연락처</p>
     </div>
     <div class="org">
       <!-- ── 학부 규모 ──
@@ -531,20 +531,31 @@ a{color:inherit;text-decoration:none}
     <div class="sec-head">
       <div class="sec-top">
         <p class="sec-kick">연혁</p>
-        <a class="sec-more" href="G-news.html">전체 연혁 <span class="arr" aria-hidden="true">→</span></a>
       </div>
         <h2 id="hist-h" class="sec-title">주요 연혁</h2>
-        <p class="sec-meta">1958 건설공학과 신설 / 오늘의 기계공학부까지</p>
     </div>
+    <!-- 학부 공식 연혁(faculty/history.do) 17줄을 연월·문장 그대로 옮겼다.
+         1972.01 과 1974.01 은 원문에 같은 문장이 두 번 적혀 있어 그대로 둔다. -->
     <div class="timeline" role="list" aria-label="주요 연혁">
-      <div class="tl-row" role="listitem"><span class="tl-year">1958</span><span class="tl-body">건설공학과 신설.</span></div>
-      <div class="tl-row key" role="listitem"><span class="tl-year">1962</span><span class="tl-body"><b>기계공학과로 독립.</b></span></div>
-      <div class="tl-row" role="listitem"><span class="tl-year">1964</span><span class="tl-body">첫 졸업생 배출.</span></div>
-      <div class="tl-row key" role="listitem"><span class="tl-year">2010</span><span class="tl-body"><b>창립 50주년.</b></span></div>
-      <div class="tl-row" role="listitem"><span class="tl-year">2016</span><span class="tl-body">3단계 BK21 플러스 사업단 협약.</span></div>
-      <div class="tl-row key" role="listitem"><span class="tl-year">2020</span><span class="tl-body"><b>4단계 BK21(FOUR) 사업 선정.</b></span></div>
+      <div class="tl-row" role="listitem"><span class="tl-year">1958. 12.</span><span class="tl-body">이공대학 건설공학과 신설</span></div>
+      <div class="tl-row" role="listitem"><span class="tl-year">1960. 03.</span><span class="tl-body">이공대학 건설공학과 첫 신입생 입학</span></div>
+      <div class="tl-row key" role="listitem"><span class="tl-year">1962. 12.</span><span class="tl-body"><b>이공대학 공학부 기계공학과로 분리</b></span></div>
+      <div class="tl-row" role="listitem"><span class="tl-year">1963. 02.</span><span class="tl-body">이공대학 공학부 기계공학과 첫 신입생 입학</span></div>
+      <div class="tl-row" role="listitem"><span class="tl-year">1964. 02.</span><span class="tl-body">이공대학 공학부 기계공학과 첫 졸업생 졸업</span></div>
+      <div class="tl-row" role="listitem"><span class="tl-year">1971. 03.</span><span class="tl-body">본과 대학원 석사과정 신설</span></div>
+      <div class="tl-row" role="listitem"><span class="tl-year">1972. 01.</span><span class="tl-body">산업대학원에 산업기계 전공 신설</span></div>
+      <div class="tl-row" role="listitem"><span class="tl-year">1972. 03.</span><span class="tl-body">본과 대학원 박사과정 신설</span></div>
+      <div class="tl-row" role="listitem"><span class="tl-year">1974. 01.</span><span class="tl-body">산업대학원에 산업기계 전공 신설</span></div>
+      <div class="tl-row" role="listitem"><span class="tl-year">1980. 03.</span><span class="tl-body">산업대학원 산업기계전공이 기계공학 전공으로 전공명칭 변경</span></div>
+      <div class="tl-row" role="listitem"><span class="tl-year">1996. 03.</span><span class="tl-body">기전 공학부로 통합</span></div>
+      <div class="tl-row" role="listitem"><span class="tl-year">1999. 03.</span><span class="tl-body">기계공학과와 기계설계학과를 기계공학전공으로 통합</span></div>
+      <div class="tl-row key" role="listitem"><span class="tl-year">2002. 03.</span><span class="tl-body"><b>기계전자공학부에서 기계공학부로 분리 독립 (현 입학정원 180명)</b></span></div>
+      <div class="tl-row" role="listitem"><span class="tl-year">2003. 03.</span><span class="tl-body">ABEEK 인증 프로그램 가입</span></div>
+      <div class="tl-row key" role="listitem"><span class="tl-year">2010. 11.</span><span class="tl-body"><b>기계공학과 창립 50주년</b></span></div>
+      <div class="tl-row" role="listitem"><span class="tl-year">2016. 03.</span><span class="tl-body">3단계 BK21 플러스 사업단 협약 체결</span></div>
+      <div class="tl-row key" role="listitem"><span class="tl-year">2020. 08.</span><span class="tl-body"><b>4단계 BK21 사업 선정</b></span></div>
     </div>
-    <p class="hist-more">동문·대외협력 소식은 <a href="G-news.html">소식</a>에서, 입학·진로는 <a href="G-admissions.html">입학 안내</a>에서 이어집니다.</p>
+    <p class="hist-more">학부 공식 홈페이지 연혁을 그대로 옮겼습니다.</p>
   </section>
 
   <!-- ═══ §05 연락처 · 오시는 길 ═══ -->
@@ -554,7 +565,6 @@ a{color:inherit;text-decoration:none}
         <p class="sec-kick">연락처</p>
       </div>
         <h2 id="loc-h" class="sec-title">연락처 · 오시는 길</h2>
-        <p class="sec-meta">제3공학관 / 학부 02-2123-4426 · 대학원 02-2123-2810</p>
     </div>
     <div class="org-grid">
       <div>

@@ -12,7 +12,7 @@
   media="print" onload="this.media='all'" />
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
-<link rel="preload" as="script" href="assets/js/data.js?v=d16" />
+<link rel="preload" as="script" href="assets/js/data.js?v=d17" />
 <link rel="preload" as="script" href="assets/nav.js?v=70" />
 <style>
 /* ═══════════════════════════════════════════════════════════
@@ -96,12 +96,8 @@ a{color:inherit;text-decoration:none}
    제목 아래에 슬래시로 이어붙인 요약 줄을 둔다.
    요약은 그 화면이 이미 담고 있는 사실만 적는다 — 새 주장을 만들지 않는다. */
 .sec-head{position:relative}
-.sec-meta{font-family:var(--kr);font-size:clamp(.82rem,.79rem + .15vw,.9rem);
-  color:var(--muted);line-height:1.7;margin:.85rem 0 0;letter-spacing:.01em;
-  padding-top:.8rem;border-top:1px solid var(--line-soft);max-width:44rem}
 @media (max-width:640px){
-    .sec-meta{max-width:none}
-}
+    }
 
 .sec-title{font-family:var(--kr);font-weight:700;color:var(--ink);
   font-size:clamp(1.85rem,1.2rem + 2.8vw,2.85rem);line-height:1.24;letter-spacing:-.01em;margin-top:.5rem}
@@ -388,7 +384,8 @@ html[lang="en"] .lab-en-only{display:none}
 <style>
 /* ═══ 독수리 해부도 — 6부위 = 6연구분야 (호버 시 부위 떠오름 + 설명, 클릭 시 아코디언) ═══ */
 .eagle-sec{max-width:1120px;margin:0 auto;padding:clamp(2.4rem,1.6rem + 3vw,4rem) clamp(1.2rem,.6rem + 2vw,2.6rem) 0}
-.eagle-intro{font-family:var(--kr);font-size:clamp(.9rem,.86rem + .2vw,1rem);color:var(--muted);line-height:1.75;max-width:44rem;margin:0 0 1.4rem}
+.eagle-intro{font-family:var(--kr);font-size:clamp(.9rem,.86rem + .2vw,1rem);color:var(--muted);
+  line-height:1.75;max-width:44rem;margin:0 0 clamp(2.2rem,1.4rem + 2.6vw,3.6rem)}
 .eagle-intro b{color:var(--ink);font-weight:700}
 .eagle-stage{position:relative;width:100%;max-width:600px;margin:0 auto;aspect-ratio:1/1}
 /* 6개 조각 PNG가 겹쳐 독수리를 이룸(서로 안 겹침·틈 없음). 하나 들어올리면 그 자리는 비어 배경이 드러남 */
@@ -705,11 +702,10 @@ html[lang="en"] .lab-en-only{display:none}
     <div class="sec-head">
       <div>
         <p class="sec-kick">Six Research Fields</p>
-        <h2 class="sec-title" id="fd-title">여섯 개의 연구 분야</h2>
-        <p class="sec-meta">기초 역학에서 에너지·로봇·제조·바이오까지 / 독수리의 여섯 부위가 곧 여섯 분야</p>
+        <h2 class="sec-title" id="fd-title">연구 분야</h2>
       </div>
     </div>
-    <p class="eagle-intro">부위에 올리면 그 분야 설명이 그림 아래에 나타나고, <b>연구실 보기</b>를 누르면 그 분야 연구실 목록으로 이어집니다.</p>
+    <p class="eagle-intro">각 부위에 마우스를 올리면 그 분야 설명이 나타나고, <b>연구실 보기</b>를 누르면 해당 분야 연구실로 이동합니다.</p>
     <div class="eagle-stage" id="eagleStage" role="img" aria-label="연세대학교 기계공학부 마스코트 독수리 — 부위별 연구 분야">
       <svg class="eagle-arrows" id="eagleArrows" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
     </div>
@@ -732,7 +728,6 @@ html[lang="en"] .lab-en-only{display:none}
       <div>
         <p class="sec-kick">Research Vision</p>
         <h2 class="sec-title" id="vision-h">연구 비전</h2>
-        <p class="sec-meta">대학원 기계공학과 원문 / 공과대학 비전과 교육목표</p>
       </div>
     </div>
     <div class="vision-quote">
@@ -823,7 +818,6 @@ html[lang="en"] .lab-en-only{display:none}
       <div>
         <p class="sec-kick">연구 분야</p>
         <h2 class="sec-title">연구실 목록</h2>
-        <p class="sec-meta">여섯 개 연구 분야 / 연구실별 지도교수 · 위치 · 자료</p>
       </div>
     </div>
     <div id="clusterBlocks"></div>
@@ -836,7 +830,6 @@ html[lang="en"] .lab-en-only{display:none}
       <div>
         <p class="sec-kick">Lab Videos</p>
         <h2 class="sec-title" id="lv-title">연구실 홍보영상</h2>
-        <p class="sec-meta">연구실이 직접 소개하는 연구 주제 · 성과</p>
       </div>
     </div>
     <div id="lvGroups"></div>
@@ -854,7 +847,7 @@ html[lang="en"] .lab-en-only{display:none}
   </section>
 
 <!-- 공유 단일 데이터 소스 (window.YSME) -->
-<script src="assets/js/data.js?v=d16"></script>
+<script src="assets/js/data.js?v=d17"></script>
 <script>
 (function(){
   'use strict';

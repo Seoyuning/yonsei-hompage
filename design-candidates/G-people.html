@@ -12,7 +12,7 @@
   media="print" onload="this.media='all'" />
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
-<link rel="preload" as="script" href="assets/js/data.js?v=d16" />
+<link rel="preload" as="script" href="assets/js/data.js?v=d17" />
 <link rel="preload" as="script" href="assets/nav.js?v=70" />
 <style>
 /* ═══════════════════════════════════════════════════════════
@@ -148,12 +148,14 @@ a{color:inherit;text-decoration:none}
 /* ── 교수진 사진 그리드 (한양대 member_01 레이아웃: 사진 위 · 정보 패널 아래) ── */
 .dir{max-width:1320px;margin:0 auto;padding:1.4rem clamp(1.2rem,.6rem + 2vw,2.6rem) 3rem}
 /* 분야별 그룹 — 각 분야 헤더 + 그 분야 카드 그리드, 그룹 간 상하 여백 */
-.fgroup{padding:2.4rem 0}
+/* 분야 사이를 넉넉히 — 여섯 덩이가 붙어 있으면 어디서 분야가 바뀌는지 안 보인다 */
+.fgroup{padding:clamp(3.2rem,2rem + 4vw,5.2rem) 0}
+.fgroup:first-child{padding-top:clamp(1.6rem,1rem + 2vw,2.6rem)}
 .fgroup + .fgroup{border-top:1px solid var(--line-soft)}
 /* 분야 머리 — 가운데로 모으고 영문은 아랫줄에 (예전엔 한 줄에 점·한글·영문·인원수가
    나란히 서고 인원수만 오른쪽 끝으로 밀려 축이 둘로 갈렸다) */
 .fg-head{display:flex;flex-direction:column;align-items:center;text-align:center;
-  gap:.34rem;margin-bottom:1.5rem}
+  gap:.34rem;margin-bottom:clamp(1.8rem,1.3rem + 1.6vw,2.6rem)}
 .fg-line{display:flex;align-items:center;justify-content:center;gap:.6rem;flex-wrap:wrap}
 .fg-head .fg-dot{width:11px;height:11px;border-radius:50%;background:var(--fg-c,var(--navy));flex:none}
 .fg-head h2{font-size:clamp(1.5rem,1.1rem + 1.7vw,2.15rem);font-weight:800;color:var(--navy);letter-spacing:-.01em;line-height:1.2}
@@ -341,12 +343,8 @@ html[lang="en"] .ppos{display:none}
    제목 아래 슬래시 요약 줄을 둔다.
    요약은 그 화면이 이미 담고 있는 사실만 적는다. */
 .staff-head,.al-head{position:relative}
-.sec-meta{font-family:var(--kr);font-size:clamp(.82rem,.79rem + .15vw,.9rem);
-  color:var(--muted);line-height:1.7;margin:.85rem 0 0;letter-spacing:.01em;
-  padding-top:.8rem;border-top:1px solid var(--line-soft);max-width:44rem}
 @media (max-width:640px){
-    .sec-meta{max-width:none}
-}
+    }
 
 .staff-head h2{font-size:clamp(1.6rem,1.15rem + 2vw,2.4rem);font-weight:800;color:var(--navy);letter-spacing:-.01em}
 .staff-head .lead{margin-top:.7rem;font-size:.92rem;color:var(--sub);max-width:46rem;line-height:1.7}
@@ -554,7 +552,6 @@ html[lang="en"] .ppos{display:none}
   <section class="staff" id="staff" aria-labelledby="staff-title">
     <div class="staff-head">
       <h2 id="staff-title">교직원</h2>
-      <p class="sec-meta">학부 행정 · 대학원 학사 · BK21 교육연구단 담당</p>
       <p class="lead">학부 행정과 대학원 학사, BK21 교육연구단 업무를 담당하는 행정 직원입니다.</p>
     </div>
     <!-- 예전에는 「학사·행정 / 대학원 / 연구·회계 / 총무·시설」이라는 4직무 카드와
@@ -613,7 +610,6 @@ html[lang="en"] .ppos{display:none}
   <section class="al" id="alumni" aria-labelledby="al-title">
     <div class="al-head">
       <h2 id="al-title">동문</h2>
-      <p class="sec-meta">동문 연혁 / 인터뷰 · 대외협력 · 발전기금</p>
       <p class="al-lead">동문은 학부의 또 다른 구성원입니다. 졸업생과 재학생, 학부를 잇는 연혁과 인터뷰, 대외협력과 발전기금 안내를 모았습니다.</p>
     </div>
 
@@ -846,7 +842,7 @@ html[lang="en"] .ppos{display:none}
   </section>
   </main>
 
-<script src="assets/js/data.js?v=d16"></script>
+<script src="assets/js/data.js?v=d17"></script>
 <script>
 (function(){
   'use strict';

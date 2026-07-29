@@ -13,7 +13,7 @@
   media="print" onload="this.media='all'" />
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
-<link rel="preload" as="script" href="assets/js/data.js?v=d16" />
+<link rel="preload" as="script" href="assets/js/data.js?v=d17" />
 <link rel="preload" as="script" href="assets/nav.js?v=70" />
 <style>
 /* ───────────────────────────────────────────────
@@ -101,19 +101,12 @@ a{color:inherit;text-decoration:none}
    제목 아래에 슬래시로 이어붙인 요약 줄을 둔다.
    요약은 그 화면이 이미 담고 있는 사실만 적는다 — 새 주장을 만들지 않는다. */
 .sec-head{position:relative}
-.sec-meta{font-family:var(--kr);font-size:clamp(.82rem,.79rem + .15vw,.9rem);
-  color:var(--muted);line-height:1.7;margin:.85rem 0 0;letter-spacing:.01em;
-  padding-top:.8rem;border-top:1px solid var(--line-soft);max-width:44rem}
 @media (max-width:640px){
-    .sec-meta{max-width:none}
-}
+    }
 
 .sec-title{font-weight:700;color:var(--navy);letter-spacing:-.01em;
   font-size:clamp(1.85rem,1.2rem + 2.8vw,2.85rem);line-height:1.24;margin-top:.5rem}
 .sec-sub{font-size:.94rem;color:var(--sub);line-height:1.7;max-width:44rem;margin-top:.55rem}
-.sec-more{font-size:.9rem;color:var(--muted);white-space:nowrap;transition:color .15s}
-.sec-more:hover{color:var(--coral)}
-.sec-more .arr{color:var(--coral)}
 
 /* ── 카드 (공통 패널) ── */
 .card{border:1px solid var(--line-soft);background:var(--card);padding:1.6rem 1.6rem 1.7rem}
@@ -405,9 +398,7 @@ a{color:inherit;text-decoration:none}
       <div>
         <p class="sec-kick">입학</p>
         <h2 id="ug-h" class="sec-title">학부 입학</h2>
-        <p class="sec-meta">수시 · 정시 · 편입학 · 재외국민 / 전형은 연세대학교 입학처 주관</p>
       </div>
-      <a class="sec-more" href="G-about.html">문의 · 오시는 길 <span class="arr" aria-hidden="true">→</span></a>
     </div>
     <!-- 서울대 생명과학부 「대학입학」 페이지의 짜임을 참고했다:
          (1) '입학 전형은 본부(입학처)가 주관한다'는 안내 한 덩어리,
@@ -487,9 +478,7 @@ a{color:inherit;text-decoration:none}
       <div>
         <p class="sec-kick">대학원</p>
         <h2 id="grad-h" class="sec-title">대학원 진학</h2>
-        <p class="sec-meta">석사 · 박사 · 석박사통합 / 전형은 대학원 모집요강 기준</p>
       </div>
-      <a class="sec-more" href="G-research.html">연구 분야 보기 <span class="arr" aria-hidden="true">→</span></a>
     </div>
 
     <div class="grid grid--3" style="margin-bottom:1.6rem">
@@ -541,9 +530,7 @@ a{color:inherit;text-decoration:none}
       <div>
         <p class="sec-kick">장학</p>
         <h2 id="sch-h" class="sec-title">장학 안내</h2>
-        <p class="sec-meta">교내 · 교외 기금 / 학부 · 대학원 구분</p>
       </div>
-      <a class="sec-more" href="G-about.html">문의 · 학부 행정 <span class="arr" aria-hidden="true">→</span></a>
     </div>
 
     <div class="sch-block">
@@ -575,7 +562,6 @@ a{color:inherit;text-decoration:none}
       <div>
         <p class="sec-kick">FAQ</p>
         <h2 id="faq-h" class="sec-title">자주 묻는 질문</h2>
-        <p class="sec-meta">입학 · 진학에서 자주 받는 질문</p>
       </div>
     </div>
     <div class="faq" id="faqList">
@@ -621,7 +607,7 @@ a{color:inherit;text-decoration:none}
 
 </main>
 
-<script src="assets/js/data.js?v=d16"></script>
+<script src="assets/js/data.js?v=d17"></script>
 <script>
 (function(){
   'use strict';

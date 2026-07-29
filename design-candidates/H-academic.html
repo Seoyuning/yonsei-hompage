@@ -104,14 +104,6 @@ img{display:block;max-width:100%}
    참고한 짜임: 층마다 다른 주기로 무한히 흐르게 두면(20~50초) 정지 화면이 살아난다.
    여기서는 기계 도면의 격자와 마스코트 독수리를 층으로 쓴다. */
 .hero-layers{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
-.hl-grid{position:absolute;left:-140px;right:-140px;top:0;bottom:0;opacity:.14;
-  background:repeating-linear-gradient(90deg,rgba(255,255,255,.55) 0 1px,transparent 1px 92px);
-  -webkit-mask-image:linear-gradient(180deg,transparent,#000 22%,#000 74%,transparent);
-          mask-image:linear-gradient(180deg,transparent,#000 22%,#000 74%,transparent);
-  animation:hlSlideX 32s linear infinite}
-.hl-grid.is-y{opacity:.09;left:0;right:0;top:-140px;bottom:-140px;
-  background:repeating-linear-gradient(0deg,rgba(255,255,255,.55) 0 1px,transparent 1px 124px);
-  animation:hlSlideY 52s linear infinite}
 @keyframes hlSlideX{from{transform:translateX(0)}to{transform:translateX(-92px)}}
 @keyframes hlSlideY{from{transform:translateY(0)}to{transform:translateY(-124px)}}
 .hl-eagle{position:absolute;right:-6%;top:6%;width:min(62vw,760px);aspect-ratio:1/1;
@@ -121,11 +113,6 @@ img{display:block;max-width:100%}
 @keyframes hlFloat{from{transform:translate3d(0,0,0) scale(1)}
   to{transform:translate3d(-3.5%,-3%,0) scale(1.07)}}
 
-/* 화면만 한 컨셉 글자 — 배경 워터마크 */
-.hero-mark{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);z-index:1;
-  font-family:var(--kr);font-weight:800;font-size:min(44vw,40rem);line-height:.78;
-  color:#fff;opacity:.055;letter-spacing:-.05em;white-space:nowrap;
-  pointer-events:none;user-select:none}
 
 /* 아래쪽 흐름 띠 */
 .hero-band{position:absolute;left:0;right:0;bottom:0;z-index:2;overflow:hidden;
@@ -462,15 +449,11 @@ img{display:block;max-width:100%}
 <section class="hero" aria-label="연세대학교 기계공학부">
   <div class="hero-bg" aria-hidden="true"></div>
   <div class="hero-veil" aria-hidden="true"></div>
-  <!-- 느리게 흐르는 층 — 도면 격자 둘(가로 32초 · 세로 52초)과 마스코트 독수리(46초).
-       속도를 서로 다르게 두면 층이 겹쳐 보이며 깊이가 생긴다. 가만히 있어도 화면이 숨 쉰다. -->
+  <!-- 느리게 흐르는 층 — 마스코트 독수리 하나(46초). 격자와 한자를 함께 두니
+       화면이 어수선해져 층을 하나로 줄였다. -->
   <div class="hero-layers" aria-hidden="true">
-    <span class="hl-grid"></span>
-    <span class="hl-grid is-y"></span>
     <span class="hl-eagle"></span>
   </div>
-  <!-- 학부 컨셉(機制)을 화면만 한 크기로 깔아 둔다 — 우리만 쓸 수 있는 글자 -->
-  <p class="hero-mark" aria-hidden="true">機制</p>
   <div class="hero-in">
     <p class="hero-kick" data-i18n="heroKick">School of Mechanical Engineering</p>
     <h1 data-i18n="heroTitle">연세대학교 기계공학부</h1>

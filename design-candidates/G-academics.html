@@ -82,6 +82,42 @@ a{color:inherit;text-decoration:none}
 .phero::after{content:"";position:absolute;inset:0;background:
   radial-gradient(125% 95% at 50% 58%,rgba(10,22,44,.50) 0%,rgba(10,22,44,.70) 52%,rgba(8,17,34,.90) 100%),
   linear-gradient(180deg,rgba(18,41,79,.62) 0%,rgba(16,35,68,.50) 40%,rgba(10,22,44,.78) 100%)}
+/* ── 학사 히어로 — 초대형 타이포 · 검정 판 ──
+   참고한 화면(tinywins)의 문법: 화면 폭을 꽉 채우는 큰 글자를 좌우로 갈라 놓고,
+   아래에 얇은 사실 줄을 깐 뒤 다음 구간에서 흑↔백을 뒤집는다.
+   글자는 단어 상자 안에서 아래로부터 밀려 올라온다. */
+.phero-tw{min-height:min(88vh,52rem);background:#0b0b0c;display:block;text-align:left;overflow:hidden}
+.phero-tw::before,.phero-tw::after{display:none}
+.tw-in{position:relative;z-index:1;max-width:1400px;margin:0 auto;
+  padding:clamp(9rem,7rem + 4vw,11rem) clamp(1.2rem,.6rem + 2vw,3rem) 0}
+.phero-tw .bc{color:rgba(255,255,255,.5);font-size:.8rem;letter-spacing:.04em;margin:0 0 clamp(1.4rem,3vh,2.6rem)}
+.phero-tw .bc a{color:rgba(255,255,255,.7)}
+.phero-tw .bc a:hover{color:#fff}
+.phero-tw .tw-title{display:block;margin:0;color:#fff;font-weight:800;letter-spacing:-.045em;line-height:.86;
+  font-size:clamp(3.4rem,1rem + 12vw,11rem)}
+.phero-tw .tw-l{display:block}
+.phero-tw .tw-r{display:block;text-align:right;color:transparent;-webkit-text-stroke:1.5px rgba(255,255,255,.5)}
+.tw-w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.12em;margin-bottom:-.12em}
+.tw-w > i{display:inline-block;font-style:normal;transform:translateY(112%);
+  animation:twRise 1.15s cubic-bezier(.22,1,.36,1) .12s forwards}
+.tw-r .tw-w > i{animation-delay:.3s}
+@keyframes twRise{to{transform:none}}
+.tw-stats{position:relative;z-index:1;max-width:1400px;
+  margin:clamp(2.6rem,6vh,5rem) auto 0;padding:1.05rem clamp(1.2rem,.6rem + 2vw,3rem);
+  border-top:1px solid rgba(255,255,255,.22);
+  display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+  font-family:var(--kr);font-size:clamp(.76rem,.72rem + .2vw,.92rem);font-weight:600;
+  color:rgba(255,255,255,.72);letter-spacing:.02em;
+  opacity:0;animation:twFade .9s ease .75s forwards}
+@keyframes twFade{to{opacity:1}}
+@media (max-width:640px){
+  .tw-stats{justify-content:flex-start;gap:.4rem 1.2rem}
+  .tw-r{text-align:left;-webkit-text-stroke-width:1px}
+}
+@media (prefers-reduced-motion:reduce){
+  .tw-w > i{animation:none;transform:none}
+  .tw-stats{animation:none;opacity:1}
+}
 .phero-in{position:relative;z-index:1;padding:clamp(9.5rem,7rem + 4vw,11.5rem) 1.2rem clamp(2.6rem,5vh,4rem);max-width:60rem}
 .phero h1{font-size:clamp(1.9rem,1.2rem + 2.6vw,3rem);font-weight:800;letter-spacing:-.01em;line-height:1.16;color:#fff}
 .phero .bc{margin-top:.9rem;font-size:.82rem;letter-spacing:.02em;color:rgba(255,255,255,.82)}
@@ -763,12 +799,21 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
 <a class="skip" href="#roadmap">본문(이수체계도) 바로가기</a>
 
 <!-- 페이지 히어로 -->
-<header class="phero">
-  <div class="phero-in">
-    <h1>학사</h1>
+<header class="phero phero-tw">
+  <div class="tw-in">
     <p class="bc">홈 › 학사</p>
+    <h1 class="tw-title">
+      <span class="tw-l"><span class="tw-w"><i>학사</i></span></span>
+      <span class="tw-r"><span class="tw-w"><i>ACADEMICS</i></span></span>
+    </h1>
   </div>
-  </header>
+  <!-- 아래 줄은 이 화면이 이미 담고 있는 사실만 적는다 -->
+  <div class="tw-stats" aria-hidden="true">
+    <span>학부 전공 교과 8구분</span>
+    <span>4대 역학</span>
+    <span>공학교육인증 ABEEK</span>
+  </div>
+</header>
 
 <main>
   <!-- §01 교육과정 개관 -->

@@ -81,17 +81,6 @@ a{color:inherit;text-decoration:none}
 .phero::after{content:"";position:absolute;inset:0;background:
   radial-gradient(125% 95% at 50% 58%,rgba(10,22,44,.50) 0%,rgba(10,22,44,.70) 52%,rgba(8,17,34,.90) 100%),
   linear-gradient(180deg,rgba(18,41,79,.62) 0%,rgba(16,35,68,.50) 40%,rgba(10,22,44,.78) 100%)}
-/* ── 히어로 고정 + 스크롤 진행 ──
-   히어로를 화면에 붙여 두고 그 위로 본문이 올라와 덮게 한다. 스크롤이 지나가는 동안
-   히어로 글자는 뒤로 물러나며 옅어진다(스크롤 진행률을 --p 로 받아 쓴다).
-   탭 바(.ysub)는 z-38, 고정 헤더는 z-50 이라 히어로(z-0) 위에 그대로 뜬다. */
-@media (min-width:861px) and (prefers-reduced-motion:no-preference){
-  .phero{position:sticky;top:0;z-index:0}
-  .phero-in{will-change:transform,opacity;
-    transform:translate3d(0,calc(var(--p,0) * -3.2rem),0) scale(calc(1 - var(--p,0) * .06));
-    opacity:calc(1 - var(--p,0) * 1.15)}
-  .phero::before{transform:scale(calc(1 + var(--p,0) * .07));transform-origin:50% 45%}
-}
 .phero-in{position:relative;z-index:1;padding:clamp(9.5rem,7rem + 4vw,11.5rem) 1.2rem clamp(2.6rem,5vh,4rem);max-width:60rem}
 .phero h1{font-size:clamp(1.9rem,1.2rem + 2.6vw,3rem);font-weight:800;letter-spacing:-.01em;line-height:1.16;color:#fff}
 .phero .bc{margin-top:.9rem;font-size:.82rem;letter-spacing:.02em;color:rgba(255,255,255,.82)}
@@ -882,29 +871,6 @@ html[lang="en"] .lab-en-only{display:none}
 })();
 </script>
 <script src="assets/nav.js?v=71"></script>
-<script>
-/* 히어로 스크롤 진행률 — 0(맨 위) ~ 1(히어로가 화면에서 완전히 밀려남).
-   rAF 로 묶어 프레임마다 한 번만 쓴다. 모션 최소화·좁은 화면에서는 아예 돌리지 않는다. */
-(function () {
-  'use strict';
-  var hero = document.querySelector('.phero'); if (!hero) return;
-  var reduce = false;
-  try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
-  if (reduce) return;
-  var t = 0;
-  function run() {
-    t = 0;
-    if (innerWidth < 861) { hero.style.removeProperty('--p'); return; }
-    var h = hero.offsetHeight || 1;
-    var p = Math.min(1, Math.max(0, (pageYOffset || 0) / h));
-    hero.style.setProperty('--p', p.toFixed(4));
-  }
-  function tick() { if (!t) { t = 1; requestAnimationFrame(run); } }
-  addEventListener('scroll', tick, { passive: true });
-  addEventListener('resize', run);
-  run();
-})();
-</script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--kr);font-size:.74rem;color:#7b8595">
   © 2026 연세대학교 기계공학부 &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

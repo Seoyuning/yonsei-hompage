@@ -98,15 +98,52 @@ img{display:block;max-width:100%}
 .hero-veil{position:absolute;inset:0;background:
   radial-gradient(ellipse 68% 62% at 50% 46%,rgba(10,19,38,.14),rgba(10,19,38,.62) 84%),
   linear-gradient(180deg,rgba(10,19,38,.58),rgba(10,19,38,.16) 34%,rgba(10,19,38,.14) 60%,rgba(13,29,56,.78))}
-.hero-in{position:relative;padding:5.5rem 1.2rem 6rem;max-width:62rem;will-change:transform,opacity}
+.hero-in{position:relative;z-index:2;padding:5.5rem 1.2rem 7.5rem;max-width:66rem;will-change:transform,opacity}
+
+/* ── 히어로의 느린 층 ──
+   참고한 짜임: 층마다 다른 주기로 무한히 흐르게 두면(20~50초) 정지 화면이 살아난다.
+   여기서는 기계 도면의 격자와 마스코트 독수리를 층으로 쓴다. */
+.hero-layers{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.hl-grid{position:absolute;left:-140px;right:-140px;top:0;bottom:0;opacity:.14;
+  background:repeating-linear-gradient(90deg,rgba(255,255,255,.55) 0 1px,transparent 1px 92px);
+  -webkit-mask-image:linear-gradient(180deg,transparent,#000 22%,#000 74%,transparent);
+          mask-image:linear-gradient(180deg,transparent,#000 22%,#000 74%,transparent);
+  animation:hlSlideX 32s linear infinite}
+.hl-grid.is-y{opacity:.09;left:0;right:0;top:-140px;bottom:-140px;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.55) 0 1px,transparent 1px 124px);
+  animation:hlSlideY 52s linear infinite}
+@keyframes hlSlideX{from{transform:translateX(0)}to{transform:translateX(-92px)}}
+@keyframes hlSlideY{from{transform:translateY(0)}to{transform:translateY(-124px)}}
+.hl-eagle{position:absolute;right:-6%;top:6%;width:min(62vw,760px);aspect-ratio:1/1;
+  background:url("assets/me-eagle.png") center/contain no-repeat;
+  opacity:.11;filter:brightness(0) invert(1);
+  animation:hlFloat 46s ease-in-out infinite alternate}
+@keyframes hlFloat{from{transform:translate3d(0,0,0) scale(1)}
+  to{transform:translate3d(-3.5%,-3%,0) scale(1.07)}}
+
+/* 화면만 한 컨셉 글자 — 배경 워터마크 */
+.hero-mark{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);z-index:1;
+  font-family:var(--kr);font-weight:800;font-size:min(44vw,40rem);line-height:.78;
+  color:#fff;opacity:.055;letter-spacing:-.05em;white-space:nowrap;
+  pointer-events:none;user-select:none}
+
+/* 아래쪽 흐름 띠 */
+.hero-band{position:absolute;left:0;right:0;bottom:0;z-index:2;overflow:hidden;
+  padding:.72rem 0;border-top:1px solid rgba(255,255,255,.16);
+  background:linear-gradient(180deg,rgba(10,19,38,0),rgba(10,19,38,.55))}
+.hb-track{display:flex;width:max-content;animation:hbRun 42s linear infinite}
+.hb-track span{font-family:var(--mono);font-size:.7rem;font-weight:600;letter-spacing:.32em;
+  color:rgba(255,255,255,.6);white-space:nowrap}
+@keyframes hbRun{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(max-width:640px){.hero-band{padding:.55rem 0}.hb-track span{font-size:.6rem;letter-spacing:.24em}}
 /* 대형 타이틀 — 단어별 마스크 리빌 */
 .hero h1 .tw{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em}
 .hero h1 .ti{display:inline-block;transform:translateY(114%);transition:transform 1.15s var(--e)}
 .hero.ttl-on h1 .ti{transform:none}
 .hero-kick{font-size:clamp(.72rem,.66rem + .3vw,.88rem);font-weight:600;letter-spacing:.34em;
   text-transform:uppercase;color:#e3ebf7;opacity:.94}
-.hero h1{margin-top:1.05rem;font-weight:800;letter-spacing:.015em;line-height:1.16;
-  font-size:clamp(2.2rem,1.1rem + 4.8vw,4.3rem);color:#fff}
+.hero h1{margin-top:1.15rem;font-weight:800;letter-spacing:-.005em;line-height:1.08;
+  font-size:clamp(2.6rem,1.2rem + 6.6vw,6.2rem);color:#fff}
 .hero .sub{margin:1.35rem auto 0;max-width:37rem;font-size:clamp(.94rem,.86rem + .3vw,1.08rem);color:#ccd8ea}
 .hero-btns{margin-top:2.1rem;display:flex;gap:.8rem;flex-wrap:wrap;justify-content:center}
 .btn{display:inline-block;padding:.74rem 1.6rem;border-radius:.2rem;font-weight:700;font-size:.92rem;
@@ -115,7 +152,7 @@ img{display:block;max-width:100%}
 .btn-white:hover{background:#fff;box-shadow:0 14px 34px rgba(0,0,0,.35)}
 .btn-ghost{border:1px solid rgba(255,255,255,.62);color:#fff}
 .btn-ghost:hover{background:rgba(255,255,255,.14);box-shadow:0 14px 34px rgba(0,0,0,.28)}
-.hero-scroll{position:absolute;left:50%;bottom:calc(1.3rem + env(safe-area-inset-bottom));transform:translateX(-50%);
+.hero-scroll{position:absolute;z-index:2;left:50%;bottom:calc(3.6rem + env(safe-area-inset-bottom));transform:translateX(-50%);
   font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.72)}
 .hero-scroll::after{content:"";display:block;width:1px;height:2rem;margin:.45rem auto 0;
   background:linear-gradient(rgba(255,255,255,.8),transparent)}
@@ -425,6 +462,15 @@ img{display:block;max-width:100%}
 <section class="hero" aria-label="연세대학교 기계공학부">
   <div class="hero-bg" aria-hidden="true"></div>
   <div class="hero-veil" aria-hidden="true"></div>
+  <!-- 느리게 흐르는 층 — 도면 격자 둘(가로 32초 · 세로 52초)과 마스코트 독수리(46초).
+       속도를 서로 다르게 두면 층이 겹쳐 보이며 깊이가 생긴다. 가만히 있어도 화면이 숨 쉰다. -->
+  <div class="hero-layers" aria-hidden="true">
+    <span class="hl-grid"></span>
+    <span class="hl-grid is-y"></span>
+    <span class="hl-eagle"></span>
+  </div>
+  <!-- 학부 컨셉(機制)을 화면만 한 크기로 깔아 둔다 — 우리만 쓸 수 있는 글자 -->
+  <p class="hero-mark" aria-hidden="true">機制</p>
   <div class="hero-in">
     <p class="hero-kick" data-i18n="heroKick">School of Mechanical Engineering</p>
     <h1 data-i18n="heroTitle">연세대학교 기계공학부</h1>
@@ -436,6 +482,13 @@ img{display:block;max-width:100%}
     </div>
   </div>
   <div class="hero-scroll" aria-hidden="true">Scroll</div>
+  <!-- 아래쪽 흐름 띠 — 같은 문구 두 벌을 이어 붙여 -50% 만큼 밀면 끊김 없이 돈다 -->
+  <div class="hero-band" aria-hidden="true">
+    <div class="hb-track">
+      <span>機制 · MECHANISM IN MOTION · SINCE 1958 · SCHOOL OF MECHANICAL ENGINEERING · YONSEI UNIVERSITY · </span>
+      <span>機制 · MECHANISM IN MOTION · SINCE 1958 · SCHOOL OF MECHANICAL ENGINEERING · YONSEI UNIVERSITY · </span>
+    </div>
+  </div>
 </section>
 <div class="stats">
   <div class="wrap">

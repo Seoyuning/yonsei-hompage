@@ -388,6 +388,39 @@ html[lang="en"] .lab-en-only{display:none}
   line-height:1.75;max-width:44rem;margin:0 0 clamp(2.2rem,1.4rem + 2.6vw,3.6rem)}
 .eagle-intro b{color:var(--ink);font-weight:700}
 .eagle-stage{position:relative;width:100%;max-width:600px;margin:0 auto;aspect-ratio:1/1}
+/* 고른 분야의 색 글로우 — 무대 뒤에서 번진다 */
+.eg-tint{position:absolute;left:8%;right:8%;top:10%;bottom:10%;z-index:0;border-radius:50%;
+  background-color:transparent;opacity:0;filter:blur(56px);pointer-events:none;
+  transition:background-color 1s ease,opacity 1s ease}
+/* 흐르는 도면 층 — 주기를 다르게 둬야 층이 겹쳐 보인다 */
+.eg-drift{position:absolute;inset:-14%;z-index:0;pointer-events:none;opacity:.5;
+  background:repeating-linear-gradient(90deg,rgba(26,61,117,.16) 0 1px,transparent 1px 76px);
+  -webkit-mask-image:radial-gradient(58% 58% at 50% 50%,#000 40%,transparent 78%);
+          mask-image:radial-gradient(58% 58% at 50% 50%,#000 40%,transparent 78%);
+  animation:egDriftX 28s linear infinite}
+.eg-drift.is-2{opacity:.36;
+  background:repeating-linear-gradient(0deg,rgba(26,61,117,.16) 0 1px,transparent 1px 104px);
+  animation:egDriftY 44s linear infinite}
+@keyframes egDriftX{from{transform:translateX(0)}to{transform:translateX(-76px)}}
+@keyframes egDriftY{from{transform:translateY(0)}to{transform:translateY(-104px)}}
+/* 장면 넘김 막대 */
+.eagle-nav{display:flex;align-items:center;justify-content:center;gap:clamp(.9rem,.6rem + 1vw,1.6rem);
+  margin:clamp(.6rem,.4rem + .6vw,1.1rem) auto 0;max-width:600px}
+.eg-arrow{width:2.5rem;height:2.5rem;display:grid;place-items:center;flex:none;cursor:pointer;
+  background:none;border:1px solid var(--line);border-radius:50%;color:var(--sub);
+  transition:border-color .2s,color .2s,background .2s}
+.eg-arrow svg{width:17px;height:17px;display:block}
+.eg-arrow:hover{border-color:var(--accent);color:var(--navy);background:#fff}
+.eg-arrow:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.eg-dots{display:flex;align-items:center;gap:.45rem}
+.eg-dot{width:auto;height:1.6rem;padding:0 .1rem;background:none;border:0;cursor:pointer;
+  display:grid;place-items:center}
+.eg-dot i{display:block;width:7px;height:7px;border-radius:50%;font-style:normal;
+  background:var(--line);transition:background .25s,transform .25s,width .25s}
+.eg-dot:hover i{background:var(--muted)}
+.eg-dot[aria-selected="true"] i{background:var(--dc,var(--navy));width:22px;border-radius:99px}
+.eg-dot:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:.2rem}
+@media (prefers-reduced-motion:reduce){.eg-drift{animation:none}}
 /* 6개 조각 PNG가 겹쳐 독수리를 이룸(서로 안 겹침·틈 없음). 하나 들어올리면 그 자리는 비어 배경이 드러남 */
 .epart{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none;z-index:1;
   transform:translate(0,0) scale(1);
@@ -448,7 +481,7 @@ html[lang="en"] .lab-en-only{display:none}
 .eagle-list button span{font-size:.8rem;color:var(--sub)}
 .eagle-list button i{margin-left:auto;font-style:normal;color:var(--muted);font-size:.78rem}
 @media (max-width:760px){
-  .eagle-stage,.eagle-arrows,.eagle-read{display:none}
+  .eagle-stage,.eagle-arrows,.eagle-read,.eagle-nav{display:none}
   .eagle-list{display:flex}
 }
 @media (prefers-reduced-motion:reduce){
@@ -707,7 +740,22 @@ html[lang="en"] .lab-en-only{display:none}
     </div>
     <p class="eagle-intro">각 부위에 마우스를 올리면 그 분야 설명이 나타나고, <b>연구실 보기</b>를 누르면 해당 분야 연구실로 이동합니다.</p>
     <div class="eagle-stage" id="eagleStage" role="img" aria-label="연세대학교 기계공학부 마스코트 독수리 — 부위별 연구 분야">
+      <!-- 고른 분야의 색이 번지는 글로우. background-color 는 전환이 되므로 색이 부드럽게 넘어간다 -->
+      <span class="eg-tint" id="eagleTint" aria-hidden="true"></span>
+      <!-- 느리게 흐르는 도면 층 둘(28초 · 44초) — 가만히 있어도 무대가 숨 쉰다 -->
+      <span class="eg-drift" aria-hidden="true"></span>
+      <span class="eg-drift is-2" aria-hidden="true"></span>
       <svg class="eagle-arrows" id="eagleArrows" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
+    </div>
+    <!-- 장면 넘김 — 좌우 화살표와 여섯 점. 마우스가 없어도 분야를 하나씩 볼 수 있다 -->
+    <div class="eagle-nav" id="eagleNav">
+      <button type="button" class="eg-arrow" data-dir="-1" aria-label="이전 분야">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <div class="eg-dots" id="eagleDots" role="tablist" aria-label="연구 분야 넘기기"></div>
+      <button type="button" class="eg-arrow" data-dir="1" aria-label="다음 분야">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+      </button>
     </div>
     <!-- 설명 판독대 — 예전에는 설명이 라벨 안에서 펼쳐져 부위를 덮었다(머리가 특히 심했다).
          설명을 그림 밖 고정 자리로 내리면 어느 부위를 짚어도 그림이 가려지지 않는다. -->
@@ -1110,14 +1158,58 @@ html[lang="en"] .lab-en-only{display:none}
     if(readBox) readBox.addEventListener('click', function(e){
       var b = e.target.closest('.er-more'); if(b) openCluster(b.getAttribute('data-cid'), true);
     });
+    /* ── 장면 넘김 ──
+       마우스를 올리면 그 부위가 잠깐 살아나고, 화살표·점으로 고르면 그 분야가 「고정」된다.
+       고정된 뒤에는 마우스를 치워도 그 장면이 남는다 — 마우스가 없는 화면에서도
+       여섯 분야를 하나씩 볼 수 있어야 하기 때문이다. */
+    var tint = document.getElementById('eagleTint');
+    var dotsBox = document.getElementById('eagleDots');
+    var ORDER = PARTS.map(function(p){ return p.cid; });
+    var pinned = null;
+    function paint(cid){
+      if(!tint) return;
+      tint.style.backgroundColor = cid ? clColor(cid) : 'transparent';
+      tint.style.opacity = cid ? '.4' : '0';
+    }
+    function syncDots(cid){
+      if(!dotsBox) return;
+      [].forEach.call(dotsBox.children, function(b){
+        b.setAttribute('aria-selected', String(b.getAttribute('data-cid') === cid));
+      });
+    }
     function setActive(cid){
       setRead(cid);
+      paint(cid);
+      syncDots(cid);
       stage.classList.toggle('dim-others', !!cid);
       [].forEach.call(stage.querySelectorAll('.epart,.elabel'), function(el){ el.classList.toggle('on', el.getAttribute('data-cid')===cid); });
       [].forEach.call(arrows.querySelectorAll('.earrow,.edot'), function(el){ el.classList.toggle('on', el.getAttribute('data-cid')===cid); });
     }
+    function pin(cid){ pinned = cid; setActive(cid); }
+    function step(dir){
+      var i = pinned ? ORDER.indexOf(pinned) : -1;
+      pin(ORDER[(i + dir + ORDER.length) % ORDER.length]);
+    }
+    if(dotsBox){
+      dotsBox.innerHTML = PARTS.map(function(p){
+        var c = cById[p.cid] || {};
+        return '<button type="button" class="eg-dot" role="tab" data-cid="'+esc(p.cid)+'"'
+          + ' style="--dc:'+clColor(p.cid)+'" aria-selected="false"'
+          + ' aria-label="'+esc((c.ko||'')+' 분야 보기')+'"><i aria-hidden="true"></i></button>';
+      }).join('');
+      dotsBox.addEventListener('click', function(e){
+        var b = e.target.closest('.eg-dot'); if(!b) return;
+        var cid = b.getAttribute('data-cid');
+        pin(pinned === cid ? null : cid);
+      });
+    }
+    var navBox = document.getElementById('eagleNav');
+    if(navBox) navBox.addEventListener('click', function(e){
+      var a = e.target.closest('.eg-arrow'); if(!a) return;
+      step(parseInt(a.getAttribute('data-dir'), 10) || 1);
+    });
     stage.addEventListener('mouseover', function(e){ var t=e.target.closest('[data-cid]'); if(t) setActive(t.getAttribute('data-cid')); });
-    stage.addEventListener('mouseleave', function(){ setActive(null); });
+    stage.addEventListener('mouseleave', function(){ setActive(pinned); });
     stage.addEventListener('focusin', function(e){ var t=e.target.closest('[data-cid]'); if(t) setActive(t.getAttribute('data-cid')); });
     stage.addEventListener('click', function(e){ var t=e.target.closest('.ehot,.elabel'); if(t) openCluster(t.getAttribute('data-cid'), true); });
     stage.addEventListener('keydown', function(e){ var t=e.target.closest('.ehot'); if(t && (e.key==='Enter'||e.key===' '||e.key==='Spacebar')){ e.preventDefault(); openCluster(t.getAttribute('data-cid'), true); } });

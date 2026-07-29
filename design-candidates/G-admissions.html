@@ -14,7 +14,7 @@
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d16" />
-<link rel="preload" as="script" href="assets/nav.js?v=69" />
+<link rel="preload" as="script" href="assets/nav.js?v=70" />
 <style>
 /* ───────────────────────────────────────────────
    입학 · 진로 (라이트 테마)
@@ -98,20 +98,14 @@ a{color:inherit;text-decoration:none}
 .sec-kick{font-family:var(--mono);font-size:.66rem;letter-spacing:.24em;
   text-transform:uppercase;color:var(--coral)}
 /* ── 섹션 머리 (대학원 페이지에서 시작해 전 페이지 공통) ──
-   큰 인덱스 번호를 포인트색으로 옅게 깔고, 제목 아래에 슬래시로 이어붙인 요약 줄을 둔다.
+   제목 아래에 슬래시로 이어붙인 요약 줄을 둔다.
    요약은 그 화면이 이미 담고 있는 사실만 적는다 — 새 주장을 만들지 않는다. */
 .sec-head{position:relative}
-.sec-no{position:absolute;right:0;top:-.35em;margin:0;
-  font-family:var(--mono);font-weight:600;line-height:1;
-  font-size:clamp(3.4rem,2rem + 6vw,7rem);color:var(--accent);opacity:.16;
-  font-variant-numeric:tabular-nums;letter-spacing:-.04em;pointer-events:none;user-select:none}
 .sec-meta{font-family:var(--kr);font-size:clamp(.82rem,.79rem + .15vw,.9rem);
   color:var(--muted);line-height:1.7;margin:.85rem 0 0;letter-spacing:.01em;
   padding-top:.8rem;border-top:1px solid var(--line-soft);max-width:44rem}
 @media (max-width:640px){
-  .sec-head{padding-top:2.6rem}
-  .sec-no{font-size:2.9rem;top:0;right:0;opacity:.2}
-  .sec-meta{max-width:none}
+    .sec-meta{max-width:none}
 }
 
 .sec-title{font-weight:700;color:var(--navy);letter-spacing:-.01em;
@@ -409,7 +403,7 @@ a{color:inherit;text-decoration:none}
   <section class="wrap section" id="undergraduate" aria-labelledby="ug-h">
     <div class="sec-head">
       <div>
-        <p class="sec-no" aria-hidden="true">01</p><p class="sec-kick">입학</p>
+        <p class="sec-kick">입학</p>
         <h2 id="ug-h" class="sec-title">학부 입학</h2>
         <p class="sec-meta">수시 · 정시 · 편입학 · 재외국민 / 전형은 연세대학교 입학처 주관</p>
       </div>
@@ -491,7 +485,7 @@ a{color:inherit;text-decoration:none}
   <section class="wrap section" id="graduate" aria-labelledby="grad-h">
     <div class="sec-head">
       <div>
-        <p class="sec-no" aria-hidden="true">02</p><p class="sec-kick">대학원</p>
+        <p class="sec-kick">대학원</p>
         <h2 id="grad-h" class="sec-title">대학원 진학</h2>
         <p class="sec-meta">석사 · 박사 · 석박사통합 / 전형은 대학원 모집요강 기준</p>
       </div>
@@ -545,7 +539,7 @@ a{color:inherit;text-decoration:none}
   <section class="wrap section" id="scholarships" aria-labelledby="sch-h">
     <div class="sec-head">
       <div>
-        <p class="sec-no" aria-hidden="true">03</p><p class="sec-kick">장학</p>
+        <p class="sec-kick">장학</p>
         <h2 id="sch-h" class="sec-title">장학 안내</h2>
         <p class="sec-meta">교내 · 교외 기금 / 학부 · 대학원 구분</p>
       </div>
@@ -579,7 +573,7 @@ a{color:inherit;text-decoration:none}
   <section class="wrap section" id="faq" aria-labelledby="faq-h">
     <div class="sec-head">
       <div>
-        <p class="sec-no" aria-hidden="true">04</p><p class="sec-kick">FAQ</p>
+        <p class="sec-kick">FAQ</p>
         <h2 id="faq-h" class="sec-title">자주 묻는 질문</h2>
         <p class="sec-meta">입학 · 진학에서 자주 받는 질문</p>
       </div>
@@ -745,7 +739,7 @@ a{color:inherit;text-decoration:none}
 
 })();
 </script>
-<script src="assets/nav.js?v=69"></script>
+<script src="assets/nav.js?v=70"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--dimmer)">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

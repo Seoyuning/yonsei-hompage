@@ -327,27 +327,6 @@
     m.sub.forEach(function (s) { (s[2] || []).forEach(function (id) { var el = document.getElementById(id); if (el && managed.indexOf(el) < 0) managed.push(el); }); });
     var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    /* ── 섹션 머리 번호 = 형제 탭의 차례 ──
-       번호를 파일 안 순서로 매기면 탭이 섹션을 묶는 순간 어긋난다.
-       「교육과정 개관」이 개관·졸업요건·공학인증 셋을 담는 바람에 화면에는 01 다음이
-       바로 07이었다. 읽는 사람에게 보이는 차례는 탭 바뿐이니 번호도 거기에 맞춘다 —
-       탭 순서대로 01…N, 한 탭에 한 번호. 한 탭이 섹션을 여럿 담으면 첫 머리만 번호를
-       갖는다(같은 화면이므로 같은 번호를 두 번 찍지 않는다).
-       머리가 아예 없는 탭(구성원 「교수진」)은 번호를 건너뛰고 다음 탭이 이어받는다 —
-       빈 화면에 번호를 지어 붙이지 않으면서도 보이는 번호는 끊기지 않는다. */
-    var secNo = 0;
-    m.sub.forEach(function (s) {
-      var taken = false;
-      (s[2] || []).forEach(function (id) {
-        var el = document.getElementById(id);
-        var no = el && el.querySelector ? el.querySelector('.sec-no') : null;
-        if (!no) return;
-        if (taken) { no.remove(); return; }
-        taken = true; secNo++;
-        no.textContent = (secNo < 10 ? '0' : '') + secNo;
-      });
-    });
-
     /* mode — 어디를 화면 맨 위로 올릴지. 누른 것이 무엇이냐에 따라 목적지가 다르다.
          'view' : 형제 탭 바 클릭. 히어로는 위로 넘기고 **그 탭 내용의 첫 줄**을 맨 위로.
                   (탭 바가 고정 헤더 바로 아래 붙는 위치 = 그 형제 페이지의 상단)
@@ -592,7 +571,7 @@
 
     /* 대제목 — 블록에 실려 같이 뜨기만 하던 것을, 제 몫의 움직임을 갖게 한다.
        h1(히어로)은 transition.css 가 로드 즉시 재생하므로 여기서는 제외한다. */
-    var TITLE = '.sec-title, .staff-head > h2, .al-head > h2, .fd-title, .vision-tag';
+    var TITLE = '.sec-title, .staff-head > h2, .al-head > h2, .vision-tag';
     root.classList.add('ys-rv');
     picks.forEach(function (pair) {
       var el = pair[0], i = pair[1];
@@ -651,26 +630,12 @@
     };
   }
 
-  /* ── 배경 인덱스 번호의 기준 상자 고정 ──
-     번호(.sec-no)는 머리 상자 오른쪽 끝에 붙는 absolute 요소다. 그런데 화면에 따라
-     번호가 머리 상자 안쪽 <div> 에 들어 있고, 등장 애니메이션이 그 <div> 에 transform 을
-     걸면 그 순간 <div> 가 번호의 기준 상자가 된다 — right:0 이 글줄 끝(화면 가운데쯤)으로
-     바뀌어, 번호가 가운데 있다가 애니메이션이 끝나며 오른쪽으로 튀었다.
-     번호를 머리 상자의 직계로 올려 기준 상자를 뺏기지 않게 한다(그리기 위치는 그대로). */
-  function fixSecNoAnchor() {
-    [].forEach.call(document.querySelectorAll('.sec-no'), function (n) {
-      var host = n.closest ? n.closest('.sec-head, .staff-head, .al-head') : null;
-      if (host && n.parentNode !== host) host.appendChild(n);
-    });
-  }
-
   function mount() {
     var old = document.querySelector('.hud-top'); if (old) old.remove();
     var ph = document.querySelector('.ynav-ph'); if (ph) ph.remove();
     document.body.insertBefore(nav, document.body.firstChild);
     buildSubnav();
     buildFooter();
-    fixSecNoAnchor();
     setupReveal();
 
     /* 스크롤 시 유틸바 접힘 */

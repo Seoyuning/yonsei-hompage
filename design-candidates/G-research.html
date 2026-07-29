@@ -13,7 +13,7 @@
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d16" />
-<link rel="preload" as="script" href="assets/nav.js?v=65" />
+<link rel="preload" as="script" href="assets/nav.js?v=66" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    연구 — 연세대학교 기계공학부 (기관형 · 아이보리)
@@ -364,7 +364,9 @@ a{color:inherit;text-decoration:none}
 /* ── 반응형 ── */
 @media (max-width:860px){
   .lab-legend{display:none}
-  .cl-head{grid-template-columns:auto 1fr;gap:.7rem 1rem}
+  /* 모바일에서도 화살표는 제 칸을 갖는다 — 2열로 접으면 데스크톱의 grid-column:4 가
+     빈 칸을 만들어 화살표가 제목에서 멀어진다 */
+  .cl-head{grid-template-columns:auto 1fr auto}
   .cl-metric{grid-column:1 / -1;text-align:left;display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap;padding-top:.2rem}
   .cl-metric .share{margin-top:0}
   /* 모바일 — 열 격자를 버리고 [연구실명] + [라벨 값] 줄들로 눕힌다.
@@ -453,6 +455,9 @@ html[lang="en"] .lab-en-only{display:none}
   transition:transform .35s var(--e,ease)}
 .cluster.cl-open .cl-chev{transform:rotate(180deg);color:var(--navy)}
 .cl-head:hover .cl-chev{color:var(--navy)}
+/* 모바일은 헤더가 3열로 접히므로 화살표 칸도 3번으로 — 위쪽 반응형 블록에 두면
+   이 규칙(grid-column:4)이 나중에 나와 이겨 버려, 여기서 다시 덮는다 */
+@media (max-width:860px){.cl-chev{grid-column:3}}
 
 .cluster:not(.cl-open) .lab-legend,.cluster:not(.cl-open) .lab-list{display:none}
 .cluster{transition:border-color .2s,box-shadow .3s}
@@ -1343,7 +1348,7 @@ html[lang="en"] .lab-en-only{display:none}
   }
 })();
 </script>
-<script src="assets/nav.js?v=65"></script>
+<script src="assets/nav.js?v=66"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:#7b8595">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

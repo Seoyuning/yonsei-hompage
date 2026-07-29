@@ -13,7 +13,7 @@
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d16" />
-<link rel="preload" as="script" href="assets/nav.js?v=65" />
+<link rel="preload" as="script" href="assets/nav.js?v=66" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    시안 G — 대학원 (라이트)
@@ -304,10 +304,20 @@ table.greq-t td{color:var(--body)}
   color:var(--ink);line-height:1.3;letter-spacing:-.02em;transition:color .2s;
   flex:none;min-width:9.5rem}   /* 분야명 폭을 맞춰야 옆의 설명 시작점이 가지런하다 */
 .cl-head:hover .cl-titles .ko,.cluster.cl-open .cl-titles .ko{color:var(--navy)}
+/* ── 접힘·펼침 (연구실 목록 G-research 와 같은 규칙) ──
+   지난번 이식에서 이 네 줄이 빠져 목록이 늘 펼쳐진 채였다. 헤더를 눌러도 아무 일이
+   없어 보였던 것은 스크립트가 아니라 이 CSS 가 없어서였다. */
+.cl-head{cursor:pointer;position:relative;list-style:none;-webkit-tap-highlight-color:transparent}
+.cl-head::-webkit-details-marker{display:none}
+.cl-chev{grid-column:4;align-self:center;width:1.15rem;height:1.15rem;flex:none;color:var(--label);
+  transition:transform .35s var(--e,ease)}
+.cluster.cl-open .cl-chev{transform:rotate(180deg);color:var(--navy)}
+.cl-head:hover .cl-chev{color:var(--navy)}
+.cluster:not(.cl-open) .lab-legend,.cluster:not(.cl-open) .lab-list{display:none}
+.cluster{transition:border-color .2s,box-shadow .3s}
 /* 열린 분야 — 연구실 목록(G-research)과 같은 표시 */
 .cluster.cl-open{background:var(--card,#fff);box-shadow:inset 3px 0 0 var(--accent)}
 .cluster.cl-open .lab-legend{border-top:1px solid var(--line-soft)}
-.cl-head:hover .cl-chev{color:var(--navy)}
 /* 설명은 제목 옆에 한 줄로 눕힌다 — 접힌 상태에서 줄 수가 들쭉날쭉하지 않게 */
 .cl-titles .desc{font-family:var(--kr);font-size:.86rem;color:var(--muted);line-height:1.6;
   margin:0;min-width:0;flex:1 1 22rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -427,30 +437,7 @@ table.greq-t td{color:var(--body)}
 
 
 
-/* ── 학부연구생(인턴) 모집 — 코랄 배지 + 접이식 상세 ── */
-.i-badge{display:inline-block;font-family:var(--kr);font-size:.64rem;font-weight:600;letter-spacing:.02em;
-  color:var(--coral);border:1px solid var(--coral);padding:.14rem .45rem;margin-left:.55rem;
-  vertical-align:2px;white-space:nowrap}
-summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
-.lab-item[open] summary .i-badge::after{content:"▴"}
-.lab-item{border-bottom:1px solid var(--line-soft)}
-.lab-list>:last-child{border-bottom:0}
-.lab-item>summary.lab-row{border-bottom:0;cursor:pointer;list-style:none}
-.lab-item>summary.lab-row::-webkit-details-marker{display:none}
-.lab-item>summary.lab-row::marker{content:""}
-.lab-item[open]>summary.lab-row{background:var(--card-hover)}
-.lab-row,.lab-item{scroll-margin-top:6.6rem}
-.intern-panel{border-top:1px dashed var(--line);background:rgba(26, 61, 117,.04);
-  padding:1.05rem clamp(1rem,.6rem + 1.4vw,1.6rem) 1.25rem}
-.intern-panel .ip-head{font-family:var(--kr);font-size:.7rem;font-weight:700;letter-spacing:.08em;
-  color:var(--coral);margin-bottom:.65rem}
-.ip-grid{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.5rem 1.2rem;
-  font-family:var(--kr);font-size:.85rem;color:var(--body);line-height:1.7}
-.ip-grid dt{font-size:.74rem;font-weight:600;color:var(--label);white-space:nowrap;padding-top:.15rem}
-.ip-grid dd{min-width:0}
-.ip-grid ul{margin:0;padding-left:1.1rem}
-.ip-grid li{margin:.18rem 0}
-
+/* ── 반응형 ── */
 @media (max-width:860px){
   .lab-legend{display:none}
   .cl-head{grid-template-columns:auto 1fr auto}
@@ -474,8 +461,6 @@ summary .i-badge::after{content:"▾";margin-left:.35rem;font-size:.85em}
   .l-more{grid-column:2;grid-row:1;align-self:start;margin-top:.15rem}
   .l-sub{white-space:normal}
   .lp-topics li{font-size:.78rem}
-  .ip-grid{grid-template-columns:1fr;gap:.2rem}
-  .ip-grid dd{margin-bottom:.55rem}
 }
 html[lang="en"] .lab-en-only{display:none}
 </style>
@@ -899,7 +884,7 @@ html[lang="en"] .lab-en-only{display:none}
   render();
 })();
 </script>
-<script src="assets/nav.js?v=65"></script>
+<script src="assets/nav.js?v=66"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--kr);font-size:.74rem;color:#7b8595">
   © 2026 연세대학교 기계공학부 &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

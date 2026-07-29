@@ -16,7 +16,7 @@
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트를 미리 받아 둔다 — 파서가 해당 줄에 닿았을 때 이미 캐시에 있어 멈춤이 짧아진다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d17" />
-<link rel="preload" as="script" href="assets/nav.js?v=71" />
+<link rel="preload" as="script" href="assets/nav.js?v=72" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    시안 H · 아카데믹 (Reference: me.kaist.ac.kr / me.snu.ac.kr)
@@ -170,7 +170,7 @@ img{display:block;max-width:100%}
 .sec-head>div{flex:1;min-width:0}
 .kick{font-family:var(--mono);font-size:.66rem;font-weight:500;letter-spacing:.3em;text-transform:uppercase;color:var(--coral)}
 .sec-title{margin-top:.3rem;font-size:clamp(1.7rem,1.2rem + 2.4vw,2.9rem);font-weight:800;
-  letter-spacing:-.02em;color:var(--ink);line-height:1.12}
+  letter-spacing:-.02em;color:#111318;line-height:1.12}
 .more{display:inline-block;font-size:.85rem;font-weight:600;color:var(--muted);white-space:nowrap;padding-bottom:.2rem;
   transition:color .2s,transform .45s var(--e)}
 .more:hover{color:var(--coral);transform:translateX(5px)}
@@ -253,6 +253,110 @@ img{display:block;max-width:100%}
 .crow:hover .clabs{color:rgba(255,255,255,.8)}
 .crow:hover .clabs b{color:#fff}
 @media(max-width:640px){.cdesc,.cen{display:none}}
+
+/* ── 스크롤 구간 (학사와 같은 짜임) ──
+   배경·색은 우리 것(사진을 흑백 네이비로 눌러 깔고 이중 그라디언트)을 그대로 쓰고,
+   그 위에 초대형 타이포와 스크롤 진행만 참고 화면에서 가져왔다.
+   .tw-scene 은 몇 화면 높이의 빈 통, .tw-pin 이 그 안에서 화면에 고정된다. */
+.tw-scene{position:relative}
+.tw-scene.is-say{height:230vh;height:230svh;background:#fff}
+.tw-pin{position:sticky;top:0;height:100vh;height:100svh;
+  display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+/* 히어로 판 — 페이지 히어로와 같은 사진·베일 */
+  filter:grayscale(1) contrast(1.2) brightness(.55);
+  transform:scale(calc(1 + var(--p,0) * .08));transform-origin:50% 45%}
+  radial-gradient(125% 95% at 50% 52%,rgba(10,22,44,.42) 0%,rgba(10,22,44,.68) 52%,rgba(8,17,34,.92) 100%),
+  linear-gradient(180deg,rgba(18,41,79,.66) 0%,rgba(16,35,68,.42) 38%,rgba(10,22,44,.84) 100%)}
+/* 마지막 구간에서 흰 판이 아래에서 차올라 본문으로 넘어간다 */
+  height:calc(max(0%, (var(--p,0) - .66) / .34 * 100%))}
+  padding:0 clamp(1.2rem,.6rem + 2vw,3rem)}
+  opacity:calc(1 - var(--p,0) * 2)}
+/* 히어로 보조 줄 — 학술 표기(영문 과정명)와 한 줄 부제 */
+  letter-spacing:.26em;text-transform:uppercase;color:rgba(200,218,245,.8);
+  margin:0 0 clamp(1.6rem,3.4vh,2.6rem);
+  opacity:calc(1 - max(0, var(--p,0) - .5) / .3)}
+  letter-spacing:-.005em;margin:clamp(.9rem,2vh,1.4rem) 0 0;max-width:44rem;
+  transform:translate3d(0,calc(var(--p,0) * -10vh),0);
+  opacity:calc(1 - max(0, var(--p,0) - .45) / .3)}
+
+/* ── 확대 구간 ── 작게 있던 그림이 스크롤을 따라 화면을 채운다 */
+.tw-scene.is-zoom{height:220vh;height:220svh;background:#0d1c38}
+.is-zoom .tw-pin{background:#0d1c38;padding:0}
+.tw-zoom{position:relative;margin:0 auto;overflow:hidden;
+  width:calc(50% + var(--p,0) * 50%);
+  height:calc(46vh + var(--p,0) * 54vh);
+  border-radius:calc((1 - var(--p,0)) * .6rem);
+  box-shadow:0 30px 70px rgba(0,0,0,calc(.35 * (1 - var(--p,0))))}
+.tw-zoom img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  filter:grayscale(1) contrast(1.12) brightness(calc(.62 + var(--p,0) * .18))}
+.tw-zoom figcaption{position:absolute;left:0;right:0;bottom:0;z-index:1;
+  padding:clamp(1rem,3vh,2rem) clamp(1.2rem,3vw,2.6rem);
+  background:linear-gradient(180deg,rgba(8,17,34,0),rgba(8,17,34,.82));
+  font-family:var(--kr);font-size:clamp(.82rem,.78rem + .25vw,1rem);font-weight:600;
+  color:rgba(255,255,255,.9);letter-spacing:-.01em;
+  opacity:calc(min(1, max(0, var(--p,0) - .35) / .25))}
+
+/* ── 번호 목록 ── 스크롤을 따라 한 구분씩 짙어진다 */
+.tw-scene.is-list{height:340vh;height:340svh;background:#fff}
+.is-list .tw-pin{background:#fff}
+.tl-wrap{width:100%;max-width:1240px;margin:0 auto;padding:0 clamp(1.2rem,.6rem + 2vw,3rem);
+  display:grid;grid-template-columns:9rem minmax(0,1fr) minmax(0,15rem);
+  gap:clamp(1.4rem,3vw,3rem);align-items:start}
+.tl-label{font-family:var(--mono);font-size:.68rem;font-weight:600;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--muted);padding-top:.5rem}
+.tl-list{list-style:none;margin:0;padding:0}
+.tl-list li{display:flex;align-items:baseline;gap:clamp(.8rem,2vw,1.6rem);
+  font-family:var(--kr);font-weight:800;letter-spacing:-.03em;line-height:1.28;
+  font-size:clamp(1.25rem,.8rem + 2.2vw,2.5rem);
+  color:rgba(26,61,117,.17);transition:color .32s ease}
+.tl-list li .n{font-family:var(--mono);font-weight:600;font-size:.5em;
+  color:rgba(26,61,117,.17);transition:color .32s ease;min-width:1.2em}
+.tl-list li.on{color:var(--navy)}
+.tl-list li.on .n{color:var(--accent)}
+.tl-side{font-family:var(--kr);font-size:.88rem;color:var(--sub);line-height:1.75;
+  padding-top:.6rem;min-height:9rem}
+.tl-side .h{display:block;font-family:var(--mono);font-size:.64rem;font-weight:600;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--accent-ink,#8E5A4F);margin-bottom:.5rem}
+.tl-side a{display:inline-block;margin-top:.7rem;font-weight:700;color:var(--navy)}
+.tl-side a:hover{color:var(--accent-ink,#8E5A4F)}
+@media (max-width:860px){
+  .tw-scene.is-list{height:300vh;height:300svh}
+  .tl-wrap{grid-template-columns:1fr;gap:.9rem}
+  .tl-label{padding-top:0}
+  .tl-side{min-height:7rem;font-size:.84rem}
+}
+  font-size:clamp(3rem,1rem + 10vw,9rem)}
+  transform:translate3d(0,calc(var(--p,0) * -16vh),0);
+  opacity:calc(1 - max(0, var(--p,0) - .58) / .3)}
+/* 영문은 획만 남긴 글자 — 사진 위에서 우리 톤(연한 남색 획)으로 */
+  -webkit-text-stroke:1.4px rgba(200,218,245,.62);
+  transform:translate3d(0,calc(var(--p,0) * -26vh),0);
+  opacity:calc(.6 + min(.4, var(--p,0) / .22) - max(0, var(--p,0) - .62) / .28)}
+  margin:clamp(2.2rem,5.5vh,4rem) auto 0;padding:1.05rem clamp(1.2rem,.6rem + 2vw,3rem) 0;
+  border-top:1px solid rgba(255,255,255,.3);
+  display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+  font-family:var(--kr);font-size:clamp(.76rem,.72rem + .2vw,.92rem);font-weight:600;
+  color:rgba(255,255,255,.82);letter-spacing:.02em;
+  opacity:calc(1 - max(0, var(--p,0) - .55) / .32);
+  transform:translate3d(0,calc(var(--p,0) * -6vh),0)}
+/* 문장 구간 — 단어가 하나씩 진해진다. 다 켜지면 우리 네이비가 된다 */
+.is-say .tw-pin{background:#fff}
+.tw-say{width:100%;max-width:1180px;margin:0 auto;padding:0 clamp(1.2rem,.6rem + 2vw,3rem);
+  font-family:var(--kr);font-weight:800;letter-spacing:-.03em;line-height:1.26;
+  font-size:clamp(1.5rem,.9rem + 3.2vw,3.4rem);color:rgba(26,61,117,.16)}
+.tw-say .sw{transition:color .3s ease}
+.tw-say .sw.on{color:var(--navy,#1a3d75)}
+@media (max-width:640px){
+  .tw-scene.is-say{height:140vh;height:140svh}
+}
+@media (prefers-reduced-motion:reduce){
+  .tw-scene{height:auto}
+  .tw-pin{position:relative;height:auto;padding:7rem 0}
+  .tw-zoom{width:100%;height:60vh}
+  .tw-zoom figcaption{opacity:1}
+  .tl-list li{color:var(--navy)}.tl-list li .n{color:var(--accent)}
+  .tw-say{color:var(--navy,#1a3d75)}
+}
 
 /* ── 교수진 — 드래그 가로 레일 ── */
 /* 교수진 레일 좌우 이동 버튼 — 한 칸(카드 폭 + 간격)씩 옮긴다.
@@ -481,6 +585,24 @@ img{display:block;max-width:100%}
   </div>
 </div>
 
+
+<!-- 스크롤 구간 — 학사와 같은 짜임. 그림이 화면을 꽉 채운 뒤에야 다음으로 넘어가고,
+     이어지는 문장은 스크롤을 따라 단어가 하나씩 짙어진다. -->
+<section class="tw-scene is-zoom" aria-label="학부 전경">
+  <div class="tw-pin">
+    <figure class="tw-zoom">
+      <img src="assets/hero-about.jpg" alt="연세대학교 공과대학 건물 외벽" loading="lazy" decoding="async">
+      <figcaption>연세대학교 공과대학 · 기계공학부</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="tw-scene is-say" id="twSay" aria-label="학부 요약">
+  <div class="tw-pin">
+    <p class="tw-say" id="twSayText">1958년 이래 여섯 개 연구 분야에서 전임 교수 33명이 교육과 연구를 이어 오고 있습니다.</p>
+  </div>
+</section>
+
 <main>
   <!-- 교수진을 히어로·지표 바로 뒤로 올렸다 — 어두운 화면 셋이 이어져 도입이 묵직해진다.
        예전에는 흰 섹션 사이에 어두운 교수진이 끼어 명암이 줄무늬처럼 번갈았다. -->
@@ -527,6 +649,24 @@ img{display:block;max-width:100%}
 
   <!-- ═══ 공지 · 세미나 보드 ═══ -->
   <!-- ═══ 연구 분야 (SNU 6분야 그리드 스타일) ═══ -->
+  <!-- 번호 목록 — 스크롤을 따라 한 분야씩 짙어진다. 여섯 분야는 연구 페이지와 같은 목록이다. -->
+  <section class="tw-scene is-list" id="twList" aria-label="연구 분야">
+    <div class="tw-pin">
+      <div class="tl-wrap">
+        <p class="tl-label">연구 분야</p>
+        <ol class="tl-list" id="twListItems">
+          <li data-b="solid"><span class="n">1</span><span class="t">역학·소재</span></li>
+          <li data-b="thermal"><span class="n">2</span><span class="t">에너지·열유체</span></li>
+          <li data-b="dynamics"><span class="n">3</span><span class="t">로보틱스·제어</span></li>
+          <li data-b="manufacturing"><span class="n">4</span><span class="t">설계·제조</span></li>
+          <li data-b="micro"><span class="n">5</span><span class="t">마이크로·나노</span></li>
+          <li data-b="optics"><span class="n">6</span><span class="t">바이오·포토닉스</span></li>
+        </ol>
+        <div class="tl-side" id="twListSide" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
   <section class="wrap sec" id="research" aria-labelledby="h-research">
     <div class="sec-head">
       <span class="sidx" aria-hidden="true">02</span>
@@ -1163,6 +1303,74 @@ img{display:block;max-width:100%}
 })();
 </script>
 <!-- 공용 헤더·사이트맵 푸터(서브페이지와 동일) 주입 -->
-<script src="assets/nav.js?v=71"></script>
+<script src="assets/nav.js?v=72"></script>
+<script>
+/* 인트로 두 구간 — 스크롤 진행률(0~1)을 --p 로 넣고, 문장 구간은 단어를 하나씩 켠다.
+   바깥 통의 높이에서 화면 한 칸을 뺀 만큼이 「진행 구간」이다. */
+(function () {
+  'use strict';
+  var reduce = false;
+  try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+  var scenes = [].slice.call(document.querySelectorAll('.tw-scene'));
+  if (!scenes.length || reduce) return;
+
+  /* 문장을 단어로 쪼갠다 — 스크롤이 지나가며 하나씩 검정으로 바뀐다 */
+  var say = document.getElementById('twSayText'), words = [];
+  if (say) {
+    var frag = document.createDocumentFragment();
+    say.textContent.split(/(\s+)/).forEach(function (w) {
+      if (!w) return;
+      if (!w.trim()) { frag.appendChild(document.createTextNode(w)); return; }
+      var sp = document.createElement('span'); sp.className = 'sw'; sp.textContent = w;
+      frag.appendChild(sp); words.push(sp);
+    });
+    say.textContent = ''; say.appendChild(frag);
+  }
+
+  /* 번호 목록 — 여덟 구분의 설명은 아래 「전공 교과」의 BLOCKS 설명과 같은 문장이다 */
+  var listSec = document.getElementById('twList');
+  var items = listSec ? [].slice.call(listSec.querySelectorAll('.tl-list li')) : [];
+  var side = document.getElementById('twListSide'), cur = -1;
+  /* 분야 설명은 데이터셋(clusters)의 문장을 그대로 쓴다 */
+  var DESC = {};
+  ((window.YSME && window.YSME.clusters) || []).forEach(function (c) { DESC[c.id] = c.desc || ''; });
+  function esc(v){ return String(v).replace(/[&<>"]/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+  var t = 0;
+  function run() {
+    t = 0;
+    var vh = innerHeight || 1;
+    scenes.forEach(function (sc) {
+      var r = sc.getBoundingClientRect();
+      var span = Math.max(1, sc.offsetHeight - vh);
+      var p = Math.min(1, Math.max(0, -r.top / span));
+      sc.style.setProperty('--p', p.toFixed(4));
+      if (sc.id === 'twSay' && words.length) {
+        /* 앞뒤 15% 는 여유로 두고 가운데 70% 동안 단어를 켠다 */
+        var q = Math.min(1, Math.max(0, (p - .15) / .7));
+        var n = Math.round(q * words.length);
+        for (var k = 0; k < words.length; k++) words[k].classList.toggle('on', k < n);
+      }
+      if (sc.id === 'twList' && items.length) {
+        /* 앞뒤 10% 여유. 활성 하나만 짙게 두고 옆 칸에 그 구분의 설명을 쓴다 */
+        var r2 = Math.min(.999, Math.max(0, (p - .1) / .8));
+        var idx = Math.floor(r2 * items.length);
+        if (idx !== cur) {
+          cur = idx;
+          items.forEach(function (li, k) { li.classList.toggle('on', k === idx); });
+          var b = items[idx].getAttribute('data-b'), t = items[idx].querySelector('.t').textContent;
+          if (side) side.innerHTML = '<span class="h">' + esc(t) + '</span>' + esc(DESC[b] || '')
+            + '<br><a href="G-research.html#' + b + '">연구실 보기 →</a>';
+        }
+      }
+    });
+  }
+  function tick() { if (!t) { t = 1; requestAnimationFrame(run); } }
+  addEventListener('scroll', tick, { passive: true });
+  addEventListener('resize', run);
+  run();
+})();
+</script>
 </body>
 </html>

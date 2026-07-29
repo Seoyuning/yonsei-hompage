@@ -433,14 +433,15 @@ html[lang="en"] .lab-en-only{display:none}
   .eagle-body{display:flex;align-items:center;justify-content:center}
   /* 무대가 좌우로 물러나고 돌아오는 움직임 — flex 폭 변화만으로는 브라우저가
      중간 프레임을 그리지 않는 경우가 있어 폭 세 가지를 모두 전환 대상으로 둔다 */
+  /* 천천히, 끝까지 보이게 — 짧게 끊으면 「이동」이 아니라 「점프」로 읽힌다 */
   .eagle-body .eagle-stage{flex:0 1 700px;
-    transition:max-width .62s var(--e,cubic-bezier(.16,1,.3,1)),
-               flex-basis .62s var(--e,cubic-bezier(.16,1,.3,1)),
-               width .62s var(--e,cubic-bezier(.16,1,.3,1))}
+    transition:max-width 1.15s cubic-bezier(.33,.02,.15,1),
+               flex-basis 1.15s cubic-bezier(.33,.02,.15,1),
+               width 1.15s cubic-bezier(.33,.02,.15,1)}
   .eagle-side{flex:none;width:0;margin-left:0;opacity:0;overflow:hidden;
-    transition:width .62s var(--e,cubic-bezier(.16,1,.3,1)),
-               margin-left .62s var(--e,cubic-bezier(.16,1,.3,1)),
-               opacity .45s ease .06s}
+    transition:width 1.15s cubic-bezier(.33,.02,.15,1),
+               margin-left 1.15s cubic-bezier(.33,.02,.15,1),
+               opacity .55s ease .3s}
   .eagle-side-in{width:min(22rem,32vw)}
   .eagle-body:hover .eagle-side,.eagle-body.is-pin .eagle-side{
     width:min(22rem,32vw);margin-left:clamp(1.4rem,2.4vw,2.6rem);opacity:1}
@@ -466,7 +467,7 @@ html[lang="en"] .lab-en-only{display:none}
 /* 6개 조각 PNG가 겹쳐 독수리를 이룸(서로 안 겹침·틈 없음). 하나 들어올리면 그 자리는 비어 배경이 드러남 */
 .epart{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none;z-index:1;
   transform:translate(0,0) scale(1);
-  transition:transform .55s var(--e,cubic-bezier(.16,1,.3,1)),filter .4s ease,opacity .4s ease}
+  transition:transform .8s cubic-bezier(.33,.02,.15,1),filter .5s ease,opacity .5s ease}
 .epart.on{z-index:2;transform:var(--lift) scale(1.04);filter:drop-shadow(0 7px 11px rgba(0,0,0,.18))}
 /* 한 부위에 호버하면 나머지 부위는 살짝 흐려져 초점이 모임 */
 .eagle-stage.dim-others .epart:not(.on){opacity:.34;filter:saturate(.55)}

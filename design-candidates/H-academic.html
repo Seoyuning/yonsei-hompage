@@ -482,11 +482,33 @@ img{display:block;max-width:100%}
 </div>
 
 <main>
+  <!-- 교수진을 히어로·지표 바로 뒤로 올렸다 — 어두운 화면 셋이 이어져 도입이 묵직해진다.
+       예전에는 흰 섹션 사이에 어두운 교수진이 끼어 명암이 줄무늬처럼 번갈았다. -->
+  <section class="wrap sec sec-navy" aria-labelledby="h-people">
+    <div class="sec-head">
+      <span class="sidx" aria-hidden="true">01</span>
+      <div>
+        <p class="kick">People</p>
+        <h2 class="sec-title" id="h-people" data-i18n="peopleTitle">교수진</h2>
+      </div>
+      <a class="more" href="G-people.html" data-i18n="morePeople">교수진 전체 →</a>
+    </div>
+    <div class="prail-wrap">
+      <button type="button" class="prail-nav is-prev" aria-label="이전 교수 보기" aria-controls="pGrid">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <div class="prail" id="pGrid"></div>
+      <button type="button" class="prail-nav is-next" aria-label="다음 교수 보기" aria-controls="pGrid">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </section>
+
 
   <!-- ═══ 연구 뉴스 (KAIST 뉴스 하이라이트 스타일) ═══ -->
   <section class="wrap sec" aria-labelledby="h-news" id="secNews">
     <div class="sec-head">
-      <span class="sidx" aria-hidden="true">01</span>
+      <span class="sidx" aria-hidden="true">02</span>
       <div>
         <p class="kick">Research &amp; News</p>
         <h2 class="sec-title" id="h-news" data-i18n="newsTitle">연구 소식</h2>
@@ -526,7 +548,7 @@ img{display:block;max-width:100%}
   <!-- ═══ 연구 분야 (SNU 6분야 그리드 스타일) ═══ -->
   <section class="wrap sec" id="research" aria-labelledby="h-research">
     <div class="sec-head">
-      <span class="sidx" aria-hidden="true">02</span>
+      <span class="sidx" aria-hidden="true">03</span>
       <div>
         <p class="kick">Research Areas</p>
         <h2 class="sec-title" id="h-research" data-i18n="areasTitle">연구 분야</h2>
@@ -537,26 +559,6 @@ img{display:block;max-width:100%}
   </section>
 
   <!-- ═══ 교수진 ═══ -->
-  <section class="wrap sec sec-navy" aria-labelledby="h-people">
-    <div class="sec-head">
-      <span class="sidx" aria-hidden="true">03</span>
-      <div>
-        <p class="kick">People</p>
-        <h2 class="sec-title" id="h-people" data-i18n="peopleTitle">교수진</h2>
-      </div>
-      <a class="more" href="G-people.html" data-i18n="morePeople">교수진 전체 →</a>
-    </div>
-    <div class="prail-wrap">
-      <button type="button" class="prail-nav is-prev" aria-label="이전 교수 보기" aria-controls="pGrid">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
-      </button>
-      <div class="prail" id="pGrid"></div>
-      <button type="button" class="prail-nav is-next" aria-label="다음 교수 보기" aria-controls="pGrid">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
-      </button>
-    </div>
-  </section>
-
   <!-- ═══ 인스타그램 릴스 ═══ -->
   <section class="wrap sec" aria-labelledby="h-ig">
     <div class="sec-head">

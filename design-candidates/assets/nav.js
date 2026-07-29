@@ -296,8 +296,13 @@
     setBreadcrumb(null);
     /* 탭 바 — 하위 2개 이상일 때만(구성원 포함, 이제 2개라 표시) */
     if (!m.sub || m.sub.length < 2) return;
+    /* 탭 바를 어디에 끼울지 — 보통은 히어로 바로 뒤다. 히어로 대신 스크롤 인트로를
+       쓰는 화면(학사)에는 .phero 가 없으므로 본문(main) 바로 앞에 끼운다.
+       예전에는 여기서 그냥 돌아가 버려 탭 바가 통째로 안 만들어졌고,
+       그 바람에 섹션이 하나도 안 가려져 여덟 개가 한꺼번에 보였다. */
     var phero = document.querySelector('.phero');
-    if (!phero) return;
+    var mainEl = document.querySelector('main');
+    if (!phero && !mainEl) return;
     document.body.classList.add('has-ysub');
     var bar = document.createElement('nav');
     bar.className = 'ysub'; bar.setAttribute('role', 'tablist'); bar.setAttribute('aria-label', m.t + ' 하위 메뉴');
@@ -307,7 +312,8 @@
         /* 이 탭이 담당하는 섹션 id 전부 — 다른 탭에 숨은 앵커로 갈 때 어느 탭을 켜야 하는지 찾는 열쇠 */
         ' data-tabids="' + esc((s[2] || []).join(' ')) + '">' + esc(s[0]) + '</button>';
     }).join('') + '</div>';
-    phero.parentNode.insertBefore(bar, phero.nextSibling);
+    if (phero) phero.parentNode.insertBefore(bar, phero.nextSibling);
+    else mainEl.parentNode.insertBefore(bar, mainEl);
 
     /* sticky top = 흰 헤더 높이(유틸바 접힘 후 nav 높이) 동적 */
     var hdr = nav.querySelector('.ynv-hdr');

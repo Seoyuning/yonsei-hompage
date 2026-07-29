@@ -383,17 +383,8 @@ html[lang="en"] .lab-en-only{display:none}
 <style>.ynav-ph{position:fixed;top:0;left:0;right:0;height:3.7rem;background:rgba(255,255,255,.96);border-bottom:1px solid rgba(0,0,0,.08);z-index:39}</style>
 <style>
 /* ═══ 독수리 해부도 — 6부위 = 6연구분야 (호버 시 부위 떠오름 + 설명, 클릭 시 아코디언) ═══ */
-/* ── 독수리 무대 — 어두운 화면 ──
-   흰 종이 위 600px 도형으로는 아무리 층을 흘려도 무게가 안 생긴다.
-   화면 끝까지 짙은 색을 깔고 그림을 키워야 「장면」이 된다. */
-.eagle-sec{position:relative;isolation:isolate;max-width:1240px;margin:0 auto;
-  padding:clamp(3rem,2rem + 3.4vw,5rem) clamp(1.2rem,.6rem + 2vw,2.6rem) clamp(3rem,2rem + 3.4vw,4.6rem)}
-.eg-back{position:absolute;inset:0 calc(50% - 50vw);z-index:-1;
-  background-color:#0e2044;transition:background-color 1s ease}
-/* 어두운 판 위에서의 글자·선 */
-.eagle-sec .sec-kick{color:#c9a79c}
-.eagle-sec .sec-title{color:#fff}
-.eagle-sec .eagle-intro{color:rgba(255,255,255,.7)}
+.eagle-sec{max-width:1240px;margin:0 auto;padding:clamp(2.4rem,1.6rem + 3vw,4rem) clamp(1.2rem,.6rem + 2vw,2.6rem) 0}
+.eagle-intro{color:rgba(255,255,255,.7)}
 .eagle-sec .eagle-intro b{color:#fff}
 .eagle-sec .eg-arrow{border-color:rgba(255,255,255,.32);color:rgba(255,255,255,.82)}
 .eagle-sec .eg-arrow:hover{border-color:#fff;color:#fff;background:rgba(255,255,255,.12)}
@@ -440,9 +431,16 @@ html[lang="en"] .lab-en-only{display:none}
    손가락 화면에는 hover 가 없으므로 이 규칙을 적용하지 않는다(막대가 숨으면 넘길 수가 없다). */
 @media (hover:hover) and (min-width:1024px){
   .eagle-body{display:flex;align-items:center;justify-content:center}
-  .eagle-body .eagle-stage{flex:0 1 700px;transition:max-width .55s var(--e,cubic-bezier(.16,1,.3,1))}
+  /* 무대가 좌우로 물러나고 돌아오는 움직임 — flex 폭 변화만으로는 브라우저가
+     중간 프레임을 그리지 않는 경우가 있어 폭 세 가지를 모두 전환 대상으로 둔다 */
+  .eagle-body .eagle-stage{flex:0 1 700px;
+    transition:max-width .62s var(--e,cubic-bezier(.16,1,.3,1)),
+               flex-basis .62s var(--e,cubic-bezier(.16,1,.3,1)),
+               width .62s var(--e,cubic-bezier(.16,1,.3,1))}
   .eagle-side{flex:none;width:0;margin-left:0;opacity:0;overflow:hidden;
-    transition:width .55s var(--e,cubic-bezier(.16,1,.3,1)),margin-left .55s var(--e,cubic-bezier(.16,1,.3,1)),opacity .4s ease}
+    transition:width .62s var(--e,cubic-bezier(.16,1,.3,1)),
+               margin-left .62s var(--e,cubic-bezier(.16,1,.3,1)),
+               opacity .45s ease .06s}
   .eagle-side-in{width:min(22rem,32vw)}
   .eagle-body:hover .eagle-side,.eagle-body.is-pin .eagle-side{
     width:min(22rem,32vw);margin-left:clamp(1.4rem,2.4vw,2.6rem);opacity:1}
@@ -774,9 +772,6 @@ html[lang="en"] .lab-en-only{display:none}
 <main>
   <!-- 독수리 해부도: 6부위 = 6개 연구 분야 -->
   <section class="eagle-sec" id="fields" aria-labelledby="fd-title">
-    <!-- 화면 끝까지 깔리는 무대 배경. 분야를 고르면 그 분야 색이 섞인 짙은 톤으로
-         1초에 걸쳐 넘어간다(참고 사이트가 장면마다 배경색을 바꾸던 것과 같은 방식). -->
-    <span class="eg-back" id="eagleBack" aria-hidden="true"></span>
     <!-- 머리는 다른 화면과 같은 틀(번호 · 킥커 · 제목 · 요약 줄)로. 예전엔 이 화면만
          가운데 정렬에 번호도 없어서 형제 탭을 옮기면 축이 흔들렸다. -->
     <div class="sec-head">
@@ -1221,20 +1216,10 @@ html[lang="en"] .lab-en-only{display:none}
     var dotsBox = document.getElementById('eagleDots');
     var ORDER = PARTS.map(function(p){ return p.cid; });
     var pinned = null;
-    var back = document.getElementById('eagleBack');
-    var CAN_MIX = (function(){ try { return CSS.supports('color','color-mix(in srgb,red 30%,blue)'); } catch(e){ return false; } })();
     function paint(cid){
-      if(tint){
-        tint.style.backgroundColor = cid ? clColor(cid) : 'transparent';
-        tint.style.opacity = cid ? '.34' : '0';
-      }
-      /* 무대 배경 — 분야 색을 짙은 남색에 섞어 어두운 톤을 유지한다.
-         color-mix 를 못 쓰는 브라우저는 기본 남색 그대로 둔다(색만 안 바뀔 뿐 화면은 멀쩡하다) */
-      if(back && CAN_MIX){
-        back.style.backgroundColor = cid
-          ? 'color-mix(in srgb,' + clColor(cid) + ' 30%, #0a1830)'
-          : '#0e2044';
-      }
+      if(!tint) return;
+      tint.style.backgroundColor = cid ? clColor(cid) : 'transparent';
+      tint.style.opacity = cid ? '.34' : '0';
     }
     function syncDots(cid){
       if(!dotsBox) return;

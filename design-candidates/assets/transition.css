@@ -18,23 +18,37 @@
 @keyframes ys-vt-out { to { opacity: 0; } }
 @keyframes ys-vt-in  { from { opacity: 0; } to { opacity: 1; } }
 
-/* ── 페이지 진입 — 히어로 글자 등장 (서브페이지 공통 .phero, JS 불필요·로드 즉시 재생) ── */
+/* ── 페이지 진입 — 히어로 글자 등장 (서브페이지 공통 .phero, JS 불필요·로드 즉시 재생) ──
+   보조 줄(브레드크럼·킥커·리드)은 아래에서 떠오르고, 대제목은 위에서 아래로 걷히는
+   가림막을 지나며 밀려 올라온다. 예전엔 넷이 똑같이 14px 만 움직여 제목이 묻혔다. */
 @keyframes ys-txt-in {
-  from { opacity: 0; transform: translateY(14px); }
+  from { opacity: 0; transform: translateY(22px); }
   to   { opacity: 1; transform: none; }
 }
-.phero .bc         { animation: ys-txt-in .5s  cubic-bezier(.16,1,.3,1) both; }
-.phero .phero-kick { animation: ys-txt-in .55s cubic-bezier(.16,1,.3,1) .06s both; }
-.phero h1          { animation: ys-txt-in .6s  cubic-bezier(.16,1,.3,1) .12s both; }
-.phero .phero-lead { animation: ys-txt-in .65s cubic-bezier(.16,1,.3,1) .2s  both; }
+@keyframes ys-title-in {
+  from { opacity: 0; clip-path: inset(0 0 100% 0); transform: translateY(.36em); }
+  to   { opacity: 1; clip-path: inset(0 0 0 0);    transform: none; }
+}
+.phero .bc         { animation: ys-txt-in .62s cubic-bezier(.22,1,.36,1) both; }
+.phero .phero-kick { animation: ys-txt-in .68s cubic-bezier(.22,1,.36,1) .08s both; }
+.phero h1          { display: block; padding-bottom: .16em; margin-bottom: -.16em;
+                     animation: ys-title-in 1.05s cubic-bezier(.22,1,.36,1) .16s both; }
+.phero .phero-lead { animation: ys-txt-in .78s cubic-bezier(.22,1,.36,1) .34s both; }
 
-/* ── 형제 탭 전환 — 새로 보이는 뷰의 글자 등장 (nav.js 가 탭 클릭 시 부여/재부여) ── */
-.ys-view-in { animation: ys-txt-in .45s cubic-bezier(.16,1,.3,1) both; }
+/* ── 형제 탭 전환 — 새로 보이는 뷰의 등장 (nav.js 가 탭 클릭 시 부여/재부여) ──
+   뷰 전체가 한 번 떠오르고, 그 안의 대제목은 한 박자 늦게 가림막을 걷는다.
+   (nav.js 의 스크롤 등장과 달리 탭 전환은 매번 다시 재생된다) */
+.ys-view-in            { animation: ys-txt-in .6s cubic-bezier(.22,1,.36,1) both; }
+.ys-view-in .sec-title,
+.ys-view-in .staff-head > h2,
+.ys-view-in .al-head > h2 { display: block; padding-bottom: .16em; margin-bottom: -.16em;
+                     animation: ys-title-in .95s cubic-bezier(.22,1,.36,1) .12s both; }
 
 /* 움직임 최소화 선호 시 — 전환·등장 모두 즉시 표시로 둔다. */
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-old(root),
   ::view-transition-new(root) { animation: none; }
   .phero .bc, .phero .phero-kick, .phero h1, .phero .phero-lead,
-  .ys-view-in { animation: none; }
+  .ys-view-in, .ys-view-in .sec-title,
+  .ys-view-in .staff-head > h2, .ys-view-in .al-head > h2 { animation: none; }
 }

@@ -52,8 +52,15 @@
     '.ynv-d a{padding:.52rem 1.25rem;font-size:.87rem;font-weight:500;color:' + MUTED + ';text-decoration:none;' +
       'opacity:0;transform:translateY(7px);transition:opacity .4s ease,transform .5s ' + E + ',color .15s,background .15s,padding .3s ' + E + '}',
     '.ynv-i:hover .ynv-d a,.ynv-i:focus-within .ynv-d a{opacity:1;transform:none}',
-    '.ynv-d a:nth-child(2){transition-delay:.04s}.ynv-d a:nth-child(3){transition-delay:.08s}',
-    '.ynv-d a:nth-child(4){transition-delay:.12s}.ynv-d a:nth-child(5){transition-delay:.16s}',
+    /* 등장 계단 — 예전엔 5번까지만 지연이 적혀 있었다. 소식은 하위가 7개라
+       6·7번(자료실·취업 정보)만 지연 0이 되어 위 항목들보다 먼저 떠올랐다.
+       n+8 로 나머지를 한 번에 받고, 지연은 '열릴 때'만 준다 —
+       닫힐 때까지 지연이 남으면 아래 항목이 늦게까지 남아 어색하다. */
+    '.ynv-i:hover .ynv-d a,.ynv-i:focus-within .ynv-d a{transition-delay:var(--dd,0s)}',
+    '.ynv-d a:nth-child(2){--dd:.04s}.ynv-d a:nth-child(3){--dd:.08s}',
+    '.ynv-d a:nth-child(4){--dd:.12s}.ynv-d a:nth-child(5){--dd:.16s}',
+    '.ynv-d a:nth-child(6){--dd:.2s}.ynv-d a:nth-child(7){--dd:.24s}',
+    '.ynv-d a:nth-child(n+8){--dd:.28s}',
     '.ynv-d a:hover{color:' + NAVY + ';background:' + PAPER + ';padding-left:1.6rem}',
     '[id]{scroll-margin-top:5rem}',
     'body.has-ysub [id]{scroll-margin-top:var(--ys-stick,7.6rem)}',
@@ -118,8 +125,22 @@
       'transition:opacity .95s cubic-bezier(.22,1,.36,1),transform .95s cubic-bezier(.22,1,.36,1);' +
       'transition-delay:var(--rv-d,0s)}',
     'html.ys-rv [data-rv].rv-in{opacity:1;transform:none}',
-    '@media(prefers-reduced-motion:reduce){html.ys-rv [data-rv]{opacity:1;transform:none;transition:none}}',
-    '@media print{html.ys-rv [data-rv]{opacity:1;transform:none;transition:none}}',
+    /* 제목을 품은 블록은 덜 움직인다 — 제목이 아래의 제 몫 움직임을 갖기 때문에
+       둘이 겹치면 과해진다. 블록은 살짝만 뜨고, 시선은 제목이 끈다. */
+    'html.ys-rv [data-rv="s"]{transform:translateY(1rem)}',
+    /* ── 대제목 ──
+       예전엔 제목이 머리 블록에 실려 다 같이 2.6rem 올라올 뿐, 제 몫의 움직임이 없었다.
+       위에서 아래로 걷히는 가림막(clip-path) + 살짝 밀려 올라오기로 제목만 따로 세운다.
+       (아래 여백 보정은 CSS 로 하면 원래 margin 을 덮어써 배치가 밀린다 — JS 에서 잰다) */
+    'html.ys-rv [data-rvt]{display:block;' +
+      'clip-path:inset(0 0 100% 0);transform:translateY(.34em);' +
+      'transition:clip-path 1.05s cubic-bezier(.22,1,.36,1),transform 1.05s cubic-bezier(.22,1,.36,1);' +
+      'transition-delay:calc(var(--rv-d,0s) + .1s)}',
+    'html.ys-rv .rv-in [data-rvt],html.ys-rv [data-rvt].rv-in{clip-path:inset(0 0 0 0);transform:none}',
+    '@media(prefers-reduced-motion:reduce){html.ys-rv [data-rv]{opacity:1;transform:none;transition:none}' +
+      'html.ys-rv [data-rvt]{clip-path:none;transform:none;transition:none}}',
+    '@media print{html.ys-rv [data-rv]{opacity:1;transform:none;transition:none}' +
+      'html.ys-rv [data-rvt]{clip-path:none;transform:none;transition:none}}',
     /* 맨 위로 버튼 */
     '.ytop{position:fixed;right:1.4rem;bottom:1.4rem;z-index:45;width:2.9rem;height:2.9rem;border-radius:50%;' +
       'background:#fff;border:1px solid rgba(10,26,51,.15);box-shadow:0 6px 18px rgba(10,26,51,.15);' +
@@ -569,11 +590,25 @@
     });
     if (!picks.length) return;
 
+    /* 대제목 — 블록에 실려 같이 뜨기만 하던 것을, 제 몫의 움직임을 갖게 한다.
+       h1(히어로)은 transition.css 가 로드 즉시 재생하므로 여기서는 제외한다. */
+    var TITLE = '.sec-title, .staff-head > h2, .al-head > h2, .fd-title, .vision-tag';
     root.classList.add('ys-rv');
     picks.forEach(function (pair) {
       var el = pair[0], i = pair[1];
-      el.setAttribute('data-rv', '');
+      var hasTitle = el.querySelector && el.querySelector(TITLE);
+      el.setAttribute('data-rv', hasTitle ? 's' : '');
       if (i > 0) el.style.setProperty('--rv-d', Math.min(i, 5) * 0.17 + 's');
+      if (hasTitle) [].forEach.call(el.querySelectorAll(TITLE), function (t) {
+        t.setAttribute('data-rvt', '');
+        /* 가림막은 테두리 상자에서 잘린다 — 받침·괄호가 잘리지 않게 아래를 조금 넓히고,
+           그만큼 margin 에서 도로 뺀다. 원래 margin 을 읽어 더하므로 여백을 가진
+           제목(연구 비전의 큰 인용구 등)도 배치가 밀리지 않는다. */
+        var mb = 0;
+        try { mb = parseFloat(getComputedStyle(t).marginBottom) || 0; } catch (e) {}
+        t.style.paddingBottom = '.18em';
+        t.style.marginBottom = 'calc(' + mb + 'px - .18em)';
+      });
     });
 
     /* IntersectionObserver 콜백은 브라우저의 렌더링 단계에 실려 온다. 렌더링이 멈춘

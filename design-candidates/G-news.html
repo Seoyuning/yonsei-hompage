@@ -6,8 +6,8 @@
 <title>[시안 G · 관제] 소식 — 연세대학교 기계공학부</title>
 <meta name="description" content="연세대학교 기계공학부의 학부·대학원 공지사항과 연구 뉴스, 세미나·행사 안내를 확인할 수 있습니다." />
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
-<link rel="preload" as="script" href="assets/js/data.js?v=d16" />
-<link rel="preload" as="script" href="assets/nav.js?v=70" />
+<link rel="preload" as="script" href="assets/js/data.js?v=d17" />
+<link rel="preload" as="script" href="assets/nav.js?v=71" />
 <style>
 /* 소식 — 흰 배경 · 네이비 제목 · 실제 학과식 풀폭 게시판(표) 목록.
    히어로: 이미지 배너 + 중앙 정렬 타이틀 + 브레드크럼.
@@ -84,18 +84,12 @@ a{color:inherit;text-decoration:none}
    제목 아래에 슬래시로 이어붙인 요약 줄을 둔다.
    요약은 그 화면이 이미 담고 있는 사실만 적는다 — 새 주장을 만들지 않는다. */
 .sec-head{position:relative}
-.sec-meta{font-family:var(--kr);font-size:clamp(.82rem,.79rem + .15vw,.9rem);
-  color:var(--muted);line-height:1.7;margin:.85rem 0 0;letter-spacing:.01em;
-  padding-top:.8rem;border-top:1px solid var(--line-soft);max-width:44rem}
 @media (max-width:640px){
-    .sec-meta{max-width:none}
-}
+    }
 
 .sec-title{font-weight:800;color:var(--navy);
   font-size:clamp(1.85rem,1.2rem + 2.8vw,2.85rem);line-height:1.2;letter-spacing:-.01em}
 .sec-sub{font-size:.94rem;color:var(--sub);line-height:1.7;max-width:52rem;margin-top:.6rem}
-.sec-more{font-size:.84rem;color:var(--muted);white-space:nowrap;transition:color .15s}
-.sec-more:hover{color:var(--coral)}
 
 /* ── 게시판 툴바(분류 필터 + 검색) — 읽기 쉽게 넉넉히 ── */
 .board-tool{display:flex;align-items:center;justify-content:space-between;gap:1.2rem 1.6rem;
@@ -284,7 +278,6 @@ a{color:inherit;text-decoration:none}
     <div class="sec-head">
       <p class="sec-kick">Undergraduate</p>
       <h2 class="sec-title" id="t-ug">학부 공지사항</h2>
-        <p class="sec-meta">학부 공식 게시판 / 분류 · 검색 · 쪽 넘김</p>
     </div>
     <div class="board" data-scope="ug">
       <div class="board-tool">
@@ -316,7 +309,6 @@ a{color:inherit;text-decoration:none}
     <div class="sec-head">
       <p class="sec-kick">Graduate</p>
       <h2 class="sec-title" id="t-grad">대학원 공지사항</h2>
-        <p class="sec-meta">대학원 공식 게시판 / 분류 · 검색 · 쪽 넘김</p>
     </div>
     <div class="board" data-scope="grad">
       <div class="board-tool">
@@ -349,9 +341,7 @@ a{color:inherit;text-decoration:none}
       <div>
         <p class="sec-kick">Research News</p>
         <h2 class="sec-title" id="t-hi">뉴스 · 연구 성과</h2>
-        <p class="sec-meta">학부 연구 소식 / 원문 링크</p>
       </div>
-      <a class="sec-more" href="https://me.yonsei.ac.kr/me/community/news.do" target="_blank" rel="noopener">전체 보기 ↗</a>
     </div>
     <div class="news-lead" id="newsLead"></div>
     <div class="nlist" id="newsRows"></div>
@@ -362,7 +352,6 @@ a{color:inherit;text-decoration:none}
     <div class="sec-head">
       <p class="sec-kick">Seminars &amp; Events</p>
       <h2 class="sec-title" id="t-sched">세미나 · 행사</h2>
-        <p class="sec-meta">학부 주관 세미나 / 행사 일정</p>
     </div>
     <div class="duo">
       <div>
@@ -382,9 +371,7 @@ a{color:inherit;text-decoration:none}
       <div>
         <p class="sec-kick">Thesis Defense</p>
         <h2 class="sec-title" id="t-thesis">학위논문심사</h2>
-        <p class="sec-meta">석 · 박사 학위논문 심사 공고</p>
       </div>
-      <a class="sec-more" href="https://me.yonsei.ac.kr/me/community/degree_thesis_review.do" target="_blank" rel="noopener">전체 보기 ↗</a>
     </div>
     <table class="ntable">
       <colgroup><col class="c-no"><col class="c-title"><col class="c-writer"><col class="c-date"></colgroup>
@@ -406,9 +393,7 @@ a{color:inherit;text-decoration:none}
       <div>
         <p class="sec-kick">Resources</p>
         <h2 class="sec-title" id="t-archive">자료실</h2>
-        <p class="sec-meta">각종 양식 · 안내 자료 / 첨부는 원문에서</p>
       </div>
-      <a class="sec-more" href="https://me.yonsei.ac.kr/me/community/information.do" target="_blank" rel="noopener">원본 게시판 ↗</a>
     </div>
     <table class="ntable">
       <colgroup><col class="c-no"><col class="c-title"><col class="c-att"><col class="c-writer"><col class="c-date"></colgroup>
@@ -423,9 +408,7 @@ a{color:inherit;text-decoration:none}
       <div>
         <p class="sec-kick">Careers</p>
         <h2 class="sec-title" id="t-jobs">취업 정보</h2>
-        <p class="sec-meta">기업 채용 · 인턴 · 연구인력 모집</p>
       </div>
-      <a class="sec-more" href="https://me.yonsei.ac.kr/me/community/job.do" target="_blank" rel="noopener">전체 공고 ↗</a>
     </div>
     <table class="ntable">
       <colgroup><col class="c-no"><col class="c-cat"><col class="c-title"><col class="c-writer"><col class="c-date"></colgroup>
@@ -435,7 +418,7 @@ a{color:inherit;text-decoration:none}
   </section>
   </main>
 
-<script src="assets/js/data.js?v=d16"></script>
+<script src="assets/js/data.js?v=d17"></script>
 <script>
 (function(){
   'use strict';
@@ -634,7 +617,7 @@ a{color:inherit;text-decoration:none}
   boardRows('jobsRows', D.jobs, 'job');
 })();
 </script>
-<script src="assets/nav.js?v=70"></script>
+<script src="assets/nav.js?v=71"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--dimmer)">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

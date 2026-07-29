@@ -15,8 +15,8 @@
   media="print" onload="this.media='all'" />
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트를 미리 받아 둔다 — 파서가 해당 줄에 닿았을 때 이미 캐시에 있어 멈춤이 짧아진다 -->
-<link rel="preload" as="script" href="assets/js/data.js?v=d16" />
-<link rel="preload" as="script" href="assets/nav.js?v=70" />
+<link rel="preload" as="script" href="assets/js/data.js?v=d17" />
+<link rel="preload" as="script" href="assets/nav.js?v=71" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    시안 H · 아카데믹 (Reference: me.kaist.ac.kr / me.snu.ac.kr)
@@ -98,15 +98,39 @@ img{display:block;max-width:100%}
 .hero-veil{position:absolute;inset:0;background:
   radial-gradient(ellipse 68% 62% at 50% 46%,rgba(10,19,38,.14),rgba(10,19,38,.62) 84%),
   linear-gradient(180deg,rgba(10,19,38,.58),rgba(10,19,38,.16) 34%,rgba(10,19,38,.14) 60%,rgba(13,29,56,.78))}
-.hero-in{position:relative;padding:5.5rem 1.2rem 6rem;max-width:62rem;will-change:transform,opacity}
+.hero-in{position:relative;z-index:2;padding:5.5rem 1.2rem 7.5rem;max-width:66rem;will-change:transform,opacity}
+
+/* ── 히어로의 느린 층 ──
+   참고한 짜임: 층마다 다른 주기로 무한히 흐르게 두면(20~50초) 정지 화면이 살아난다.
+   여기서는 기계 도면의 격자와 마스코트 독수리를 층으로 쓴다. */
+.hero-layers{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+@keyframes hlSlideX{from{transform:translateX(0)}to{transform:translateX(-92px)}}
+@keyframes hlSlideY{from{transform:translateY(0)}to{transform:translateY(-124px)}}
+.hl-eagle{position:absolute;right:-6%;top:6%;width:min(62vw,760px);aspect-ratio:1/1;
+  background:url("assets/me-eagle.png") center/contain no-repeat;
+  opacity:.11;filter:brightness(0) invert(1);
+  animation:hlFloat 46s ease-in-out infinite alternate}
+@keyframes hlFloat{from{transform:translate3d(0,0,0) scale(1)}
+  to{transform:translate3d(-3.5%,-3%,0) scale(1.07)}}
+
+
+/* 아래쪽 흐름 띠 */
+.hero-band{position:absolute;left:0;right:0;bottom:0;z-index:2;overflow:hidden;
+  padding:.72rem 0;border-top:1px solid rgba(255,255,255,.16);
+  background:linear-gradient(180deg,rgba(10,19,38,0),rgba(10,19,38,.55))}
+.hb-track{display:flex;width:max-content;animation:hbRun 42s linear infinite}
+.hb-track span{font-family:var(--mono);font-size:.7rem;font-weight:600;letter-spacing:.32em;
+  color:rgba(255,255,255,.6);white-space:nowrap}
+@keyframes hbRun{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(max-width:640px){.hero-band{padding:.55rem 0}.hb-track span{font-size:.6rem;letter-spacing:.24em}}
 /* 대형 타이틀 — 단어별 마스크 리빌 */
 .hero h1 .tw{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em}
 .hero h1 .ti{display:inline-block;transform:translateY(114%);transition:transform 1.15s var(--e)}
 .hero.ttl-on h1 .ti{transform:none}
 .hero-kick{font-size:clamp(.72rem,.66rem + .3vw,.88rem);font-weight:600;letter-spacing:.34em;
   text-transform:uppercase;color:#e3ebf7;opacity:.94}
-.hero h1{margin-top:1.05rem;font-weight:800;letter-spacing:.015em;line-height:1.16;
-  font-size:clamp(2.2rem,1.1rem + 4.8vw,4.3rem);color:#fff}
+.hero h1{margin-top:1.15rem;font-weight:800;letter-spacing:-.005em;line-height:1.08;
+  font-size:clamp(2.6rem,1.2rem + 6.6vw,6.2rem);color:#fff}
 .hero .sub{margin:1.35rem auto 0;max-width:37rem;font-size:clamp(.94rem,.86rem + .3vw,1.08rem);color:#ccd8ea}
 .hero-btns{margin-top:2.1rem;display:flex;gap:.8rem;flex-wrap:wrap;justify-content:center}
 .btn{display:inline-block;padding:.74rem 1.6rem;border-radius:.2rem;font-weight:700;font-size:.92rem;
@@ -115,7 +139,7 @@ img{display:block;max-width:100%}
 .btn-white:hover{background:#fff;box-shadow:0 14px 34px rgba(0,0,0,.35)}
 .btn-ghost{border:1px solid rgba(255,255,255,.62);color:#fff}
 .btn-ghost:hover{background:rgba(255,255,255,.14);box-shadow:0 14px 34px rgba(0,0,0,.28)}
-.hero-scroll{position:absolute;left:50%;bottom:calc(1.3rem + env(safe-area-inset-bottom));transform:translateX(-50%);
+.hero-scroll{position:absolute;z-index:2;left:50%;bottom:calc(3.6rem + env(safe-area-inset-bottom));transform:translateX(-50%);
   font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.72)}
 .hero-scroll::after{content:"";display:block;width:1px;height:2rem;margin:.45rem auto 0;
   background:linear-gradient(rgba(255,255,255,.8),transparent)}
@@ -245,19 +269,24 @@ img{display:block;max-width:100%}
 .prail-nav.is-next{right:-.5rem}
 @media (max-width:640px){.prail-nav{width:2.3rem;height:2.3rem}.prail-nav.is-prev{left:-.2rem}.prail-nav.is-next{right:-.2rem}}
 @media (prefers-reduced-motion:reduce){.prail-nav{transition:none}.prail-nav:hover{transform:none}}
-.prail{display:flex;gap:1.3rem;overflow-x:auto;scroll-snap-type:x proximity;
-  padding:.5rem 0 1.6rem;cursor:grab;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+/* ── 3D 카드 호(弧) ──
+   평면으로 미는 줄이 아니라, 가운데는 정면을 보고 양끝으로 갈수록 옆으로 돌아가는
+   호 위에 카드를 세운다. 각 카드에 perspective() 를 직접 걸어 부모의 overflow 스크롤을
+   깨지 않는다(부모에 transform-style:preserve-3d 를 주면 가로 스크롤이 죽는다).
+   각도·깊이는 JS(coilRail)가 스크롤 위치로 매 프레임 다시 계산한다. */
+.prail{display:flex;gap:0;overflow-x:auto;scroll-snap-type:x proximity;
+  padding:2.4rem 0 3rem;cursor:grab;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .prail::-webkit-scrollbar{display:none}
 .prail.drag{cursor:grabbing;scroll-snap-type:none}
 /* 카드 — 사진은 카드 끝까지 채워 사람이 주인공이 되게 하고, 그 아래는 흰 판으로
    받는다(네이비 밴드 위에서 정보 칸이 또렷하게 떠오른다).
    이름·소속은 왼쪽 정렬 — 여러 장이 늘어서도 시선이 한 축으로 흐른다.
    맨 아래 두 칸은 칠하지 않고 헤어라인으로만 나눈 조용한 줄로 둔다. */
-.pc{flex:0 0 clamp(196px,23vw,248px);scroll-snap-align:start;
+.pc{flex:0 0 clamp(158px,15.5vw,208px);margin-inline:clamp(-1.1rem,-.7rem - .5vw,-.45rem);scroll-snap-align:center;
   display:flex;flex-direction:column;overflow:hidden;
   background:#fff;border-radius:.35rem;
-  transition:transform .6s var(--e),box-shadow .6s var(--e)}
-.pc:hover{transform:translateY(-6px);box-shadow:0 18px 42px rgba(0,0,0,.34)}
+  transition:box-shadow .45s var(--e)}
+.pc:hover{box-shadow:0 22px 52px rgba(0,0,0,.5)}
 .pc-top{display:block;text-decoration:none;color:inherit}
 .pc .pph{display:block;aspect-ratio:1/1.02;position:relative;overflow:hidden;
   background:linear-gradient(160deg,#e8e3d8,#d6d0c2)}
@@ -266,11 +295,11 @@ img{display:block;max-width:100%}
 .pc .pph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
   transition:transform .8s var(--e)}
 .pc:hover .pph img{transform:scale(1.06)}
-.pc .pin{display:block;padding:.85rem .9rem .95rem}
-.pc .pko{display:block;font-size:1.06rem;font-weight:800;color:var(--ink);
+.pc .pin{display:block;padding:.7rem .75rem .8rem}
+.pc .pko{display:block;font-size:.98rem;font-weight:800;color:var(--ink);
   letter-spacing:-.015em;line-height:1.25}
-.pc .prk{display:flex;align-items:center;gap:.32rem;flex-wrap:wrap;
-  margin-top:.32rem;font-size:.75rem;color:var(--muted);line-height:1.45}
+.pc .prk{display:flex;align-items:center;gap:.3rem;flex-wrap:wrap;
+  margin-top:.28rem;font-size:.7rem;color:var(--muted);line-height:1.45}
 .pc .prk .duty{color:var(--coral);font-weight:700}
 /* 분야 육각 배지 — 구성원 페이지의 분야 레일과 같은 글리프·같은 색 */
 .fbadge{flex:none;width:15px;height:17px;display:grid;place-items:center;color:#fff;
@@ -280,9 +309,9 @@ img{display:block;max-width:100%}
 /* 아래 두 칸 — 칠 없이 헤어라인으로만 나눈다 */
 .pc-btns{display:grid;grid-template-columns:1fr 1fr;margin-top:auto;
   border-top:1px solid var(--line)}
-.pbtn{display:flex;align-items:center;justify-content:center;gap:.32rem;
-  font-family:var(--kr);font-size:.72rem;font-weight:700;letter-spacing:.04em;
-  padding:.78rem .3rem;text-decoration:none;white-space:nowrap;
+.pbtn{display:flex;align-items:center;justify-content:center;gap:.28rem;
+  font-family:var(--kr);font-size:.66rem;font-weight:700;letter-spacing:.02em;
+  padding:.66rem .2rem;text-decoration:none;white-space:nowrap;
   color:var(--muted);transition:color .18s ease,background .18s ease}
 .pbtn + .pbtn{border-left:1px solid var(--line)}
 .pbtn svg{width:12px;height:12px;flex:none;opacity:.7}
@@ -425,6 +454,11 @@ img{display:block;max-width:100%}
 <section class="hero" aria-label="연세대학교 기계공학부">
   <div class="hero-bg" aria-hidden="true"></div>
   <div class="hero-veil" aria-hidden="true"></div>
+  <!-- 느리게 흐르는 층 — 마스코트 독수리 하나(46초). 격자와 한자를 함께 두니
+       화면이 어수선해져 층을 하나로 줄였다. -->
+  <div class="hero-layers" aria-hidden="true">
+    <span class="hl-eagle"></span>
+  </div>
   <div class="hero-in">
     <p class="hero-kick" data-i18n="heroKick">School of Mechanical Engineering</p>
     <h1 data-i18n="heroTitle">연세대학교 기계공학부</h1>
@@ -436,6 +470,13 @@ img{display:block;max-width:100%}
     </div>
   </div>
   <div class="hero-scroll" aria-hidden="true">Scroll</div>
+  <!-- 아래쪽 흐름 띠 — 같은 문구 두 벌을 이어 붙여 -50% 만큼 밀면 끊김 없이 돈다 -->
+  <div class="hero-band" aria-hidden="true">
+    <div class="hb-track">
+      <span>機制 · MECHANISM IN MOTION · SINCE 1958 · SCHOOL OF MECHANICAL ENGINEERING · YONSEI UNIVERSITY · </span>
+      <span>機制 · MECHANISM IN MOTION · SINCE 1958 · SCHOOL OF MECHANICAL ENGINEERING · YONSEI UNIVERSITY · </span>
+    </div>
+  </div>
 </section>
 <div class="stats">
   <div class="wrap">
@@ -446,7 +487,10 @@ img{display:block;max-width:100%}
 </div>
 
 <main>
-
+  <!-- 교수진을 히어로·지표 바로 뒤로 올렸다 — 어두운 화면 셋이 이어져 도입이 묵직해진다.
+       예전에는 흰 섹션 사이에 어두운 교수진이 끼어 명암이 줄무늬처럼 번갈았다. -->
+  <!-- 공지·세미나도 원래 짙은 밴드라, 흰 섹션 사이에 두면 명암이 다시 줄무늬가 된다.
+       앞쪽 어두운 덩어리에 붙여 [히어로·지표·교수진·공지] 를 한 묶음으로 만든다. -->
   <!-- ═══ 연구 뉴스 (KAIST 뉴스 하이라이트 스타일) ═══ -->
   <section class="wrap sec" aria-labelledby="h-news" id="secNews">
     <div class="sec-head">
@@ -463,7 +507,6 @@ img{display:block;max-width:100%}
     <img id="newsPrev" src="" alt="" aria-hidden="true" />
   </section>
 
-  <!-- ═══ 공지 · 세미나 보드 ═══ -->
   <section class="board-band" aria-label="공지 및 세미나">
     <div class="wrap">
       <div>
@@ -487,6 +530,7 @@ img{display:block;max-width:100%}
     </div>
   </section>
 
+  <!-- ═══ 공지 · 세미나 보드 ═══ -->
   <!-- ═══ 연구 분야 (SNU 6분야 그리드 스타일) ═══ -->
   <section class="wrap sec" id="research" aria-labelledby="h-research">
     <div class="sec-head">
@@ -500,7 +544,6 @@ img{display:block;max-width:100%}
     <div class="clist" id="areaGrid" data-cursor-zone></div>
   </section>
 
-  <!-- ═══ 교수진 ═══ -->
   <section class="wrap sec sec-navy" aria-labelledby="h-people">
     <div class="sec-head">
       <span class="sidx" aria-hidden="true">03</span>
@@ -521,6 +564,7 @@ img{display:block;max-width:100%}
     </div>
   </section>
 
+  <!-- ═══ 교수진 ═══ -->
   <!-- ═══ 인스타그램 릴스 ═══ -->
   <section class="wrap sec" aria-labelledby="h-ig">
     <div class="sec-head">
@@ -581,7 +625,7 @@ img{display:block;max-width:100%}
 </main>
 
 
-<script src="assets/js/data.js?v=d16"></script>
+<script src="assets/js/data.js?v=d17"></script>
 <script>
 /* 인스타그램 임베드 — 예전엔 embed.js 를 무조건 받고 load 때 릴 10개를 한꺼번에 처리했다.
    그 탓에 첫 화면과 아무 상관 없는 요청이 로드를 2초 가까이 끌었다(측정값 1.9s).
@@ -999,6 +1043,45 @@ img{display:block;max-width:100%}
     }
   }
 
+  /* ── 교수진 레일 — 3D 카드 호(弧) ──
+     가운데 카드는 정면, 양끝으로 갈수록 Y축으로 돌아가며 뒤로 물러난다.
+     스크롤할 때마다 각 카드의 중심이 레일 중심에서 얼마나 떨어졌는지 재서 각도를 준다.
+     transition 대신 매 프레임 값을 바꾸므로(rAF) 스크롤에 딱 붙어 움직인다.
+     모션 최소화를 켠 분에게는 평평한 줄 그대로 둔다. */
+  (function () {
+    var railC = document.getElementById('pGrid');
+    if (!railC) return;
+    var flat = false;
+    try { flat = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+    if (flat) return;
+    var MAX_ROT = 74, MAX_Z = 110, MAX_SC = .05, PERSP = 1150;
+    var tick = 0;
+    function coilRail() {
+      tick = 0;
+      var r = railC.getBoundingClientRect();
+      if (!r.width) return;
+      var cx = r.left + r.width / 2, half = r.width / 2;
+      [].forEach.call(railC.children, function (c) {
+        var b = c.getBoundingClientRect();
+        var d = ((b.left + b.width / 2) - cx) / half;      /* -1(왼쪽 끝) ~ 1(오른쪽 끝) */
+        if (d < -1.05) d = -1.05; if (d > 1.05) d = 1.05;   /* 90도를 넘기면 카드 뒷면이 보인다 */
+        var ad = Math.abs(d);
+        c.style.transform = 'perspective(' + PERSP + 'px) rotateY(' + (-d * MAX_ROT).toFixed(2) + 'deg)'
+          + ' translateZ(' + (-ad * MAX_Z).toFixed(1) + 'px) scale(' + (1.06 - ad * MAX_SC).toFixed(3) + ')';
+        c.style.zIndex = String(90 - Math.round(ad * 40));
+      });
+    }
+    /* 스크롤 중에만 프레임에 맞춰 묶는다. 그 밖(첫 그림·리사이즈·카드 교체)에서는
+       바로 계산한다 — rAF 가 멈춘 환경에서도 첫 배치가 평평하게 남지 않게. */
+    function schedule() { if (!tick) { tick = 1; requestAnimationFrame(coilRail); } }
+    railC.addEventListener('scroll', schedule, { passive: true });
+    addEventListener('resize', coilRail);
+    addEventListener('load', coilRail);
+    /* 카드가 나중에 그려지므로(renderPeople) 자식이 바뀌면 다시 계산한다 */
+    try { new MutationObserver(coilRail).observe(railC, { childList: true }); } catch (e) {}
+    coilRail(); setTimeout(coilRail, 300); setTimeout(coilRail, 1200);
+  })();
+
   /* ── 교수진 레일 — 드래그 스크롤 ── */
   var rail = document.getElementById('pGrid');
   if (rail && fine) {
@@ -1124,6 +1207,6 @@ img{display:block;max-width:100%}
 })();
 </script>
 <!-- 공용 헤더·사이트맵 푸터(서브페이지와 동일) 주입 -->
-<script src="assets/nav.js?v=70"></script>
+<script src="assets/nav.js?v=71"></script>
 </body>
 </html>

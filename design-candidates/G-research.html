@@ -12,8 +12,8 @@
   media="print" onload="this.media='all'" />
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
-<link rel="preload" as="script" href="assets/js/data.js?v=d16" />
-<link rel="preload" as="script" href="assets/nav.js?v=70" />
+<link rel="preload" as="script" href="assets/js/data.js?v=d17" />
+<link rel="preload" as="script" href="assets/nav.js?v=71" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    연구 — 연세대학교 기계공학부 (기관형 · 아이보리)
@@ -96,12 +96,8 @@ a{color:inherit;text-decoration:none}
    제목 아래에 슬래시로 이어붙인 요약 줄을 둔다.
    요약은 그 화면이 이미 담고 있는 사실만 적는다 — 새 주장을 만들지 않는다. */
 .sec-head{position:relative}
-.sec-meta{font-family:var(--kr);font-size:clamp(.82rem,.79rem + .15vw,.9rem);
-  color:var(--muted);line-height:1.7;margin:.85rem 0 0;letter-spacing:.01em;
-  padding-top:.8rem;border-top:1px solid var(--line-soft);max-width:44rem}
 @media (max-width:640px){
-    .sec-meta{max-width:none}
-}
+    }
 
 .sec-title{font-family:var(--kr);font-weight:700;color:var(--ink);
   font-size:clamp(1.85rem,1.2rem + 2.8vw,2.85rem);line-height:1.24;letter-spacing:-.01em;margin-top:.5rem}
@@ -387,10 +383,86 @@ html[lang="en"] .lab-en-only{display:none}
 <style>.ynav-ph{position:fixed;top:0;left:0;right:0;height:3.7rem;background:rgba(255,255,255,.96);border-bottom:1px solid rgba(0,0,0,.08);z-index:39}</style>
 <style>
 /* ═══ 독수리 해부도 — 6부위 = 6연구분야 (호버 시 부위 떠오름 + 설명, 클릭 시 아코디언) ═══ */
-.eagle-sec{max-width:1120px;margin:0 auto;padding:clamp(2.4rem,1.6rem + 3vw,4rem) clamp(1.2rem,.6rem + 2vw,2.6rem) 0}
-.eagle-intro{font-family:var(--kr);font-size:clamp(.9rem,.86rem + .2vw,1rem);color:var(--muted);line-height:1.75;max-width:44rem;margin:0 0 1.4rem}
+.eagle-sec{max-width:1240px;margin:0 auto;padding:clamp(2.4rem,1.6rem + 3vw,4rem) clamp(1.2rem,.6rem + 2vw,2.6rem) 0}
+.eagle-intro{color:rgba(255,255,255,.7)}
+.eagle-sec .eagle-intro b{color:#fff}
+.eagle-sec .eg-arrow{border-color:rgba(255,255,255,.32);color:rgba(255,255,255,.82)}
+.eagle-sec .eg-arrow:hover{border-color:#fff;color:#fff;background:rgba(255,255,255,.12)}
+.eagle-sec .eg-dot i{background:rgba(255,255,255,.32)}
+.eagle-sec .eg-dot:hover i{background:rgba(255,255,255,.7)}
+.eagle-sec .eagle-read{border-top-color:rgba(255,255,255,.24)}
+.eagle-sec .er-empty{color:rgba(255,255,255,.5)}
+.eagle-sec .er-part{color:rgba(255,255,255,.55)}
+.eagle-sec .er-desc{color:rgba(255,255,255,.78)}
+.eagle-sec .er-ko{color:#fff}
+.eagle-sec .er-ko .n{color:rgba(255,255,255,.6)}
+.eagle-sec .er-more{color:#fff}
+.eagle-sec .eg-drift{background:repeating-linear-gradient(90deg,rgba(255,255,255,.14) 0 1px,transparent 1px 76px)}
+.eagle-sec .eg-drift.is-2{background:repeating-linear-gradient(0deg,rgba(255,255,255,.14) 0 1px,transparent 1px 104px)}
+.eagle-sec .eagle-list button{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2);
+  border-left-color:#fff}
+.eagle-sec .eagle-list button b{color:#fff}
+.eagle-sec .eagle-list button span,.eagle-sec .eagle-list button i{color:rgba(255,255,255,.7)}
+.eagle-intro{font-family:var(--kr);font-size:clamp(.9rem,.86rem + .2vw,1rem);color:var(--muted);
+  line-height:1.75;max-width:44rem;margin:0 0 clamp(2.2rem,1.4rem + 2.6vw,3.6rem)}
 .eagle-intro b{color:var(--ink);font-weight:700}
-.eagle-stage{position:relative;width:100%;max-width:600px;margin:0 auto;aspect-ratio:1/1}
+.eagle-stage{position:relative;width:100%;max-width:700px;margin:0 auto;aspect-ratio:1/1}
+/* 고른 분야의 색 글로우 — 무대 뒤에서 번진다 */
+.eg-tint{position:absolute;left:6%;right:6%;top:8%;bottom:8%;z-index:0;border-radius:50%;
+  background-color:transparent;opacity:0;filter:blur(74px);pointer-events:none;
+  transition:background-color 1s ease,opacity 1s ease}
+/* 흐르는 도면 층 — 주기를 다르게 둬야 층이 겹쳐 보인다 */
+.eg-drift{position:absolute;inset:-14%;z-index:0;pointer-events:none;opacity:.5;
+  background:repeating-linear-gradient(90deg,rgba(26,61,117,.16) 0 1px,transparent 1px 76px);
+  -webkit-mask-image:radial-gradient(58% 58% at 50% 50%,#000 40%,transparent 78%);
+          mask-image:radial-gradient(58% 58% at 50% 50%,#000 40%,transparent 78%);
+  animation:egDriftX 28s linear infinite}
+.eg-drift.is-2{opacity:.36;
+  background:repeating-linear-gradient(0deg,rgba(26,61,117,.16) 0 1px,transparent 1px 104px);
+  animation:egDriftY 44s linear infinite}
+@keyframes egDriftX{from{transform:translateX(0)}to{transform:translateX(-76px)}}
+@keyframes egDriftY{from{transform:translateY(0)}to{transform:translateY(-104px)}}
+/* 장면 넘김 막대 */
+.eagle-body{position:relative}
+.eagle-nav{display:flex;align-items:center;justify-content:center;gap:clamp(.9rem,.6rem + 1vw,1.6rem);
+  margin:clamp(.6rem,.4rem + .6vw,1.1rem) auto 0;max-width:600px}
+/* ── 넓은 화면: 그림 왼쪽 · 설명 오른쪽 ──
+   손이 닿으면(또는 분야를 고정하면) 오른쪽 칸이 열리고 무대가 조금 줄며 왼쪽으로 물러난다.
+   손가락 화면에는 hover 가 없으므로 이 규칙을 적용하지 않는다(막대가 숨으면 넘길 수가 없다). */
+@media (hover:hover) and (min-width:1024px){
+  .eagle-body{display:flex;align-items:center;justify-content:center}
+  /* 무대가 좌우로 물러나고 돌아오는 움직임 — flex 폭 변화만으로는 브라우저가
+     중간 프레임을 그리지 않는 경우가 있어 폭 세 가지를 모두 전환 대상으로 둔다 */
+  .eagle-body .eagle-stage{flex:0 1 700px;
+    transition:max-width .62s var(--e,cubic-bezier(.16,1,.3,1)),
+               flex-basis .62s var(--e,cubic-bezier(.16,1,.3,1)),
+               width .62s var(--e,cubic-bezier(.16,1,.3,1))}
+  .eagle-side{flex:none;width:0;margin-left:0;opacity:0;overflow:hidden;
+    transition:width .62s var(--e,cubic-bezier(.16,1,.3,1)),
+               margin-left .62s var(--e,cubic-bezier(.16,1,.3,1)),
+               opacity .45s ease .06s}
+  .eagle-side-in{width:min(22rem,32vw)}
+  .eagle-body:hover .eagle-side,.eagle-body.is-pin .eagle-side{
+    width:min(22rem,32vw);margin-left:clamp(1.4rem,2.4vw,2.6rem);opacity:1}
+  .eagle-body:hover .eagle-stage,.eagle-body.is-pin .eagle-stage{max-width:620px}
+  .eagle-side .eagle-nav{margin:0 0 1rem;max-width:none}
+  .eagle-side .eagle-read{max-width:none;margin:0;min-height:11rem}
+}
+.eg-arrow{width:2.5rem;height:2.5rem;display:grid;place-items:center;flex:none;cursor:pointer;
+  background:none;border:1px solid var(--line);border-radius:50%;color:var(--sub);
+  transition:border-color .2s,color .2s,background .2s}
+.eg-arrow svg{width:17px;height:17px;display:block}
+.eg-arrow:hover{border-color:var(--accent);color:var(--navy);background:#fff}
+.eg-arrow:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.eg-dots{display:flex;align-items:center;gap:.45rem}
+.eg-dot{width:auto;height:1.6rem;padding:0 .1rem;background:none;border:0;cursor:pointer;
+  display:grid;place-items:center}
+.eg-dot i{display:block;width:7px;height:7px;border-radius:50%;font-style:normal;
+  background:var(--line);transition:background .25s,transform .25s,width .25s}
+.eg-dot:hover i{background:var(--muted)}
+.eg-dot[aria-selected="true"] i{background:var(--dc,var(--navy));width:22px;border-radius:99px}
+.eg-dot:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:.2rem}
+@media (prefers-reduced-motion:reduce){.eg-drift{animation:none}}
 /* 6개 조각 PNG가 겹쳐 독수리를 이룸(서로 안 겹침·틈 없음). 하나 들어올리면 그 자리는 비어 배경이 드러남 */
 .epart{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none;z-index:1;
   transform:translate(0,0) scale(1);
@@ -451,7 +523,7 @@ html[lang="en"] .lab-en-only{display:none}
 .eagle-list button span{font-size:.8rem;color:var(--sub)}
 .eagle-list button i{margin-left:auto;font-style:normal;color:var(--muted);font-size:.78rem}
 @media (max-width:760px){
-  .eagle-stage,.eagle-arrows,.eagle-read{display:none}
+  .eagle-stage,.eagle-arrows,.eagle-read,.eagle-nav{display:none}
   .eagle-list{display:flex}
 }
 @media (prefers-reduced-motion:reduce){
@@ -705,18 +777,40 @@ html[lang="en"] .lab-en-only{display:none}
     <div class="sec-head">
       <div>
         <p class="sec-kick">Six Research Fields</p>
-        <h2 class="sec-title" id="fd-title">여섯 개의 연구 분야</h2>
-        <p class="sec-meta">기초 역학에서 에너지·로봇·제조·바이오까지 / 독수리의 여섯 부위가 곧 여섯 분야</p>
+        <h2 class="sec-title" id="fd-title">연구 분야</h2>
       </div>
     </div>
-    <p class="eagle-intro">부위에 올리면 그 분야 설명이 그림 아래에 나타나고, <b>연구실 보기</b>를 누르면 그 분야 연구실 목록으로 이어집니다.</p>
-    <div class="eagle-stage" id="eagleStage" role="img" aria-label="연세대학교 기계공학부 마스코트 독수리 — 부위별 연구 분야">
+    <p class="eagle-intro">각 부위에 마우스를 올리면 그 분야 설명이 나타나고, <b>연구실 보기</b>를 누르면 해당 분야 연구실로 이동합니다.</p>
+    <div class="eagle-body" id="eagleBody">
+      <div class="eagle-stage" id="eagleStage" role="img" aria-label="연세대학교 기계공학부 마스코트 독수리 — 부위별 연구 분야">
+      <!-- 고른 분야의 색이 번지는 글로우. background-color 는 전환이 되므로 색이 부드럽게 넘어간다 -->
+      <span class="eg-tint" id="eagleTint" aria-hidden="true"></span>
+      <!-- 느리게 흐르는 도면 층 둘(28초 · 44초) — 가만히 있어도 무대가 숨 쉰다 -->
+      <span class="eg-drift" aria-hidden="true"></span>
+      <span class="eg-drift is-2" aria-hidden="true"></span>
       <svg class="eagle-arrows" id="eagleArrows" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
+    </div>
+      <!-- 오른쪽 칸 — 넘김 막대와 설명. 넓은 화면에서는 독수리에 손이 닿으면
+           이 칸이 열리며 독수리가 왼쪽으로 물러난다(한 화면에서 그림과 설명을 같이 본다).
+           좁은 화면·손가락 화면에서는 예전처럼 그림 아래에 그대로 쌓인다. -->
+      <div class="eagle-side">
+       <div class="eagle-side-in">
+    <div class="eagle-nav" id="eagleNav">
+      <button type="button" class="eg-arrow" data-dir="-1" aria-label="이전 분야">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <div class="eg-dots" id="eagleDots" role="tablist" aria-label="연구 분야 넘기기"></div>
+      <button type="button" class="eg-arrow" data-dir="1" aria-label="다음 분야">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+      </button>
     </div>
     <!-- 설명 판독대 — 예전에는 설명이 라벨 안에서 펼쳐져 부위를 덮었다(머리가 특히 심했다).
          설명을 그림 밖 고정 자리로 내리면 어느 부위를 짚어도 그림이 가려지지 않는다. -->
     <div class="eagle-read" id="eagleRead" aria-live="polite">
       <p class="er-empty">부위를 짚으면 그 분야 설명이 여기 나타납니다.</p>
+    </div>
+       </div>
+      </div>
     </div>
     <div class="eagle-list" id="eagleList" aria-label="연구 분야 목록"></div>
   </section>
@@ -732,7 +826,6 @@ html[lang="en"] .lab-en-only{display:none}
       <div>
         <p class="sec-kick">Research Vision</p>
         <h2 class="sec-title" id="vision-h">연구 비전</h2>
-        <p class="sec-meta">대학원 기계공학과 원문 / 공과대학 비전과 교육목표</p>
       </div>
     </div>
     <div class="vision-quote">
@@ -823,7 +916,6 @@ html[lang="en"] .lab-en-only{display:none}
       <div>
         <p class="sec-kick">연구 분야</p>
         <h2 class="sec-title">연구실 목록</h2>
-        <p class="sec-meta">여섯 개 연구 분야 / 연구실별 지도교수 · 위치 · 자료</p>
       </div>
     </div>
     <div id="clusterBlocks"></div>
@@ -836,7 +928,6 @@ html[lang="en"] .lab-en-only{display:none}
       <div>
         <p class="sec-kick">Lab Videos</p>
         <h2 class="sec-title" id="lv-title">연구실 홍보영상</h2>
-        <p class="sec-meta">연구실이 직접 소개하는 연구 주제 · 성과</p>
       </div>
     </div>
     <div id="lvGroups"></div>
@@ -854,7 +945,7 @@ html[lang="en"] .lab-en-only{display:none}
   </section>
 
 <!-- 공유 단일 데이터 소스 (window.YSME) -->
-<script src="assets/js/data.js?v=d16"></script>
+<script src="assets/js/data.js?v=d17"></script>
 <script>
 (function(){
   'use strict';
@@ -1117,14 +1208,62 @@ html[lang="en"] .lab-en-only{display:none}
     if(readBox) readBox.addEventListener('click', function(e){
       var b = e.target.closest('.er-more'); if(b) openCluster(b.getAttribute('data-cid'), true);
     });
+    /* ── 장면 넘김 ──
+       마우스를 올리면 그 부위가 잠깐 살아나고, 화살표·점으로 고르면 그 분야가 「고정」된다.
+       고정된 뒤에는 마우스를 치워도 그 장면이 남는다 — 마우스가 없는 화면에서도
+       여섯 분야를 하나씩 볼 수 있어야 하기 때문이다. */
+    var tint = document.getElementById('eagleTint');
+    var dotsBox = document.getElementById('eagleDots');
+    var ORDER = PARTS.map(function(p){ return p.cid; });
+    var pinned = null;
+    function paint(cid){
+      if(!tint) return;
+      tint.style.backgroundColor = cid ? clColor(cid) : 'transparent';
+      tint.style.opacity = cid ? '.34' : '0';
+    }
+    function syncDots(cid){
+      if(!dotsBox) return;
+      [].forEach.call(dotsBox.children, function(b){
+        b.setAttribute('aria-selected', String(b.getAttribute('data-cid') === cid));
+      });
+    }
     function setActive(cid){
       setRead(cid);
+      paint(cid);
+      syncDots(cid);
       stage.classList.toggle('dim-others', !!cid);
       [].forEach.call(stage.querySelectorAll('.epart,.elabel'), function(el){ el.classList.toggle('on', el.getAttribute('data-cid')===cid); });
       [].forEach.call(arrows.querySelectorAll('.earrow,.edot'), function(el){ el.classList.toggle('on', el.getAttribute('data-cid')===cid); });
     }
+    var bodyEl = document.getElementById('eagleBody');
+    function pin(cid){
+      pinned = cid; setActive(cid);
+      if(bodyEl) bodyEl.classList.toggle('is-pin', !!cid);
+    }
+    function step(dir){
+      var i = pinned ? ORDER.indexOf(pinned) : -1;
+      pin(ORDER[(i + dir + ORDER.length) % ORDER.length]);
+    }
+    if(dotsBox){
+      dotsBox.innerHTML = PARTS.map(function(p){
+        var c = cById[p.cid] || {};
+        return '<button type="button" class="eg-dot" role="tab" data-cid="'+esc(p.cid)+'"'
+          + ' style="--dc:'+clColor(p.cid)+'" aria-selected="false"'
+          + ' aria-label="'+esc((c.ko||'')+' 분야 보기')+'"><i aria-hidden="true"></i></button>';
+      }).join('');
+      dotsBox.addEventListener('click', function(e){
+        var b = e.target.closest('.eg-dot'); if(!b) return;
+        var cid = b.getAttribute('data-cid');
+        pin(pinned === cid ? null : cid);
+      });
+    }
+    var navBox = document.getElementById('eagleNav');
+    if(navBox) navBox.addEventListener('click', function(e){
+      var a = e.target.closest('.eg-arrow'); if(!a) return;
+      step(parseInt(a.getAttribute('data-dir'), 10) || 1);
+    });
     stage.addEventListener('mouseover', function(e){ var t=e.target.closest('[data-cid]'); if(t) setActive(t.getAttribute('data-cid')); });
-    stage.addEventListener('mouseleave', function(){ setActive(null); });
+    stage.addEventListener('mouseleave', function(){ setActive(pinned); });
     stage.addEventListener('focusin', function(e){ var t=e.target.closest('[data-cid]'); if(t) setActive(t.getAttribute('data-cid')); });
     stage.addEventListener('click', function(e){ var t=e.target.closest('.ehot,.elabel'); if(t) openCluster(t.getAttribute('data-cid'), true); });
     stage.addEventListener('keydown', function(e){ var t=e.target.closest('.ehot'); if(t && (e.key==='Enter'||e.key===' '||e.key==='Spacebar')){ e.preventDefault(); openCluster(t.getAttribute('data-cid'), true); } });
@@ -1380,7 +1519,7 @@ html[lang="en"] .lab-en-only{display:none}
   }
 })();
 </script>
-<script src="assets/nav.js?v=70"></script>
+<script src="assets/nav.js?v=71"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:#7b8595">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

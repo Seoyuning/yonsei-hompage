@@ -12,8 +12,8 @@
   media="print" onload="this.media='all'" />
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
-<link rel="preload" as="script" href="assets/js/data.js?v=d16" />
-<link rel="preload" as="script" href="assets/nav.js?v=70" />
+<link rel="preload" as="script" href="assets/js/data.js?v=d17" />
+<link rel="preload" as="script" href="assets/nav.js?v=71" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    시안 G — 교육 (라이트)
@@ -82,6 +82,61 @@ a{color:inherit;text-decoration:none}
 .phero::after{content:"";position:absolute;inset:0;background:
   radial-gradient(125% 95% at 50% 58%,rgba(10,22,44,.50) 0%,rgba(10,22,44,.70) 52%,rgba(8,17,34,.90) 100%),
   linear-gradient(180deg,rgba(18,41,79,.62) 0%,rgba(16,35,68,.50) 40%,rgba(10,22,44,.78) 100%)}
+/* ── 인트로 두 구간 ──
+   .tw-scene 은 몇 화면 높이의 빈 통, .tw-pin 이 그 안에서 화면에 고정된다.
+   진행률(0~1)은 JS 가 --p 로 넣어 주고, 아래 규칙은 그 값만 쓴다. */
+.tw-scene{position:relative;background:#0b0b0c}
+.tw-scene#twHero{height:260vh}
+.tw-scene.is-say{height:230vh;background:#fff}
+.tw-pin{position:sticky;top:0;height:100vh;height:100svh;display:flex;flex-direction:column;justify-content:center;
+  overflow:hidden}
+#twHero .tw-pin{background:#0b0b0c;
+  /* 마지막 3분의 1에서 흰 판이 아래에서 차올라 다음 구간으로 넘어간다 */
+  background-image:linear-gradient(180deg,#fff 0 100%);
+  background-repeat:no-repeat;background-position:bottom;
+  background-size:100% calc(max(0%, (var(--p,0) - .62) / .38 * 100%))}
+.tw-in{position:relative;z-index:1;width:100%;max-width:1400px;margin:0 auto;
+  padding:0 clamp(1.2rem,.6rem + 2vw,3rem)}
+#twHero .bc{color:rgba(255,255,255,.5);font-size:.8rem;letter-spacing:.04em;margin:0 0 clamp(1.2rem,3vh,2.2rem);
+  opacity:calc(1 - var(--p,0) * 2)}
+#twHero .bc a{color:rgba(255,255,255,.7)}
+#twHero .bc a:hover{color:#fff}
+.tw-title{display:block;margin:0;font-weight:800;letter-spacing:-.045em;line-height:.86;
+  font-size:clamp(3.4rem,1rem + 12vw,11rem)}
+.tw-l{display:block;color:#fff;
+  transform:translate3d(0,calc(var(--p,0) * -18vh),0);
+  opacity:calc(1 - max(0, var(--p,0) - .55) / .3)}
+.tw-r{display:block;text-align:right;color:transparent;-webkit-text-stroke:1.5px rgba(255,255,255,.55);
+  transform:translate3d(0,calc(var(--p,0) * -30vh),0);
+  opacity:calc(min(1, var(--p,0) / .22) - max(0, var(--p,0) - .6) / .28)}
+.tw-stats{position:relative;z-index:1;width:100%;max-width:1400px;
+  margin:clamp(2.4rem,6vh,4.6rem) auto 0;padding:1.05rem clamp(1.2rem,.6rem + 2vw,3rem) 0;
+  border-top:1px solid rgba(255,255,255,.22);
+  display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+  font-family:var(--kr);font-size:clamp(.76rem,.72rem + .2vw,.92rem);font-weight:600;
+  color:rgba(255,255,255,.72);letter-spacing:.02em;
+  opacity:calc(min(1, max(0, var(--p,0) - .12) / .2) - max(0, var(--p,0) - .58) / .3);
+  transform:translate3d(0,calc((1 - min(1, var(--p,0) / .3)) * 1.4rem),0)}
+/* 문장 구간 — 단어가 하나씩 진해진다 */
+.is-say .tw-pin{background:#fff}
+.tw-say{width:100%;max-width:1180px;margin:0 auto;padding:0 clamp(1.2rem,.6rem + 2vw,3rem);
+  font-family:var(--kr);font-weight:800;letter-spacing:-.03em;line-height:1.24;
+  font-size:clamp(1.6rem,.9rem + 3.4vw,3.7rem);color:rgba(11,11,12,.14)}
+.tw-say .sw{transition:color .28s ease}
+.tw-say .sw.on{color:#0b0b0c}
+@media (max-width:640px){
+  /* 손안에서는 제목만 보려고 네 화면을 넘기게 둘 수 없다 — 구간을 짧게 잡는다 */
+  .tw-scene#twHero{height:150vh;height:150svh}
+  .tw-scene.is-say{height:140vh;height:140svh}
+  .tw-r{text-align:left;-webkit-text-stroke-width:1px}
+  .tw-stats{justify-content:flex-start;gap:.4rem 1.2rem}
+}
+@media (prefers-reduced-motion:reduce){
+  .tw-scene#twHero,.tw-scene.is-say{height:auto}
+  .tw-pin{position:relative;height:auto;padding:7rem 0}
+  .tw-l,.tw-r,.tw-stats,#twHero .bc{transform:none;opacity:1}
+  .tw-say{color:#0b0b0c}
+}
 .phero-in{position:relative;z-index:1;padding:clamp(9.5rem,7rem + 4vw,11.5rem) 1.2rem clamp(2.6rem,5vh,4rem);max-width:60rem}
 .phero h1{font-size:clamp(1.9rem,1.2rem + 2.6vw,3rem);font-weight:800;letter-spacing:-.01em;line-height:1.16;color:#fff}
 .phero .bc{margin-top:.9rem;font-size:.82rem;letter-spacing:.02em;color:rgba(255,255,255,.82)}
@@ -106,12 +161,8 @@ a{color:inherit;text-decoration:none}
    제목 아래에 슬래시로 이어붙인 요약 줄을 둔다.
    요약은 그 화면이 이미 담고 있는 사실만 적는다 — 새 주장을 만들지 않는다. */
 .sec-head{position:relative}
-.sec-meta{font-family:var(--kr);font-size:clamp(.82rem,.79rem + .15vw,.9rem);
-  color:var(--muted);line-height:1.7;margin:.85rem 0 0;letter-spacing:.01em;
-  padding-top:.8rem;border-top:1px solid var(--line-soft);max-width:44rem}
 @media (max-width:640px){
-    .sec-meta{max-width:none}
-}
+    }
 
 .sec-title{font-family:var(--kr);font-weight:700;color:var(--ink);
   font-size:clamp(1.85rem,1.2rem + 2.8vw,2.85rem);line-height:1.24;letter-spacing:-.01em;margin-top:.5rem}
@@ -767,12 +818,33 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
 <a class="skip" href="#roadmap">본문(이수체계도) 바로가기</a>
 
 <!-- 페이지 히어로 -->
-<header class="phero">
-  <div class="phero-in">
-    <h1>학사</h1>
-    <p class="bc">홈 › 학사</p>
+<!-- ═══ 인트로 — 참고 화면(tinywins)과 같은 짜임 ═══
+     바깥을 몇 화면 높이로 길게 잡고, 그 안의 자식을 sticky 로 화면에 고정한다.
+     스크롤이 바깥을 지나가는 동안 고정된 화면 안에서 내용이 진행된다.
+     구간마다 배경이 뒤집히는 것도 같은 방식이다. -->
+<section class="tw-scene" id="twHero" aria-labelledby="tw-h">
+  <div class="tw-pin">
+    <div class="tw-in">
+      <p class="bc">홈 › 학사</p>
+      <h1 class="tw-title" id="tw-h">
+        <span class="tw-l">학사</span>
+        <span class="tw-r">ACADEMICS</span>
+      </h1>
+    </div>
+    <div class="tw-stats" aria-hidden="true">
+      <span>학부 전공 교과 8구분</span>
+      <span>4대 역학</span>
+      <span>공학교육인증 ABEEK</span>
+    </div>
   </div>
-  </header>
+</section>
+
+<!-- 문장 구간 — 스크롤이 지나가는 동안 단어가 하나씩 진해진다 -->
+<section class="tw-scene is-say" id="twSay" aria-label="학부 교육 요약">
+  <div class="tw-pin">
+    <p class="tw-say" id="twSayText">4대 역학을 중심에 두고, 여덟 구분의 전공 교과와 공학교육인증 과정으로 학부 교육을 운영합니다.</p>
+  </div>
+</section>
 
 <main>
   <!-- §01 교육과정 개관 -->
@@ -781,7 +853,6 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
       <div>
         <p class="sec-kick">개관</p>
         <h2 id="cur-h" class="sec-title">교육과정 개관</h2>
-        <p class="sec-meta">기초 과학 / 4대 역학 / 종합설계 — 4년의 이수 흐름</p>
       </div>
     </div>
     <!-- 한양대 기계공학부 「교육 목표」 페이지의 짜임을 참고했다:
@@ -850,7 +921,6 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
       <div>
         <p class="sec-kick">졸업 요건</p>
         <h2 id="req-h" class="sec-title">졸업 요건 요약</h2>
-        <p class="sec-meta">졸업 학점 / 전공필수 — 세부는 학번별 졸업 요건에서</p>
       </div>
     </div>
     <div class="req-grid">
@@ -875,7 +945,6 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
       <div>
         <p class="sec-kick">4대 역학</p>
         <h2 id="mech-h" class="sec-title">4대 역학</h2>
-        <p class="sec-meta">고체 · 열 · 유체 · 동역학 / 2학년 이수 / 전공필수</p>
       </div>
     </div>
     <div class="mech-grid" id="mechGrid"></div>
@@ -891,7 +960,6 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
       <div>
         <p class="sec-kick">이수체계도</p>
         <h2 id="rm-h" class="sec-title">기계공학부 교과목 트리</h2>
-        <p class="sec-meta">MSC · 전공 · 교양 / 학년 · 학기 순 학부 공식 배치</p>
       </div>
     </div>
     <div class="tree-top">
@@ -920,7 +988,6 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
       <div>
         <p class="sec-kick">졸업 요건</p>
         <h2 id="grad-req-title" class="sec-title">졸업 요건</h2>
-        <p class="sec-meta">학번별 이수 요건 / 학부 공식 졸업이수요건표 원문</p>
       </div>
     </div>
     <div id="gradRoot">
@@ -934,7 +1001,6 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
       <div>
         <p class="sec-kick">전공 교과</p>
         <h2 id="crs-h" class="sec-title">학부 전공 교과</h2>
-        <p class="sec-meta">전공필수 · 여섯 연구 분야 / 학정번호 · 국문 · 영문 · 교과 개요</p>
       </div>
     </div>
     <label class="crs-search"><span class="visually-hidden">전공 교과 검색</span>
@@ -955,7 +1021,6 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
       <div>
         <p class="sec-kick">공학인증</p>
         <h2 id="abeek-h" class="sec-title">공학교육인증</h2>
-        <p class="sec-meta">2003년 3월 가입 / 한국공학교육인증원(ABEEK)</p>
       </div>
     </div>
     <div class="abeek-card">
@@ -970,7 +1035,6 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
       <div>
         <p class="sec-kick">학생 활동</p>
         <h2 id="clubs-h" class="sec-title">동아리 · 학생활동</h2>
-        <p class="sec-meta">연세드론 · 메카 · 로보인 · SPACE Y / 학부 공식 소개 원문</p>
       </div>
     </div>
     <!-- 동아리 — 학부 공식 「동아리 소개」 원문(clubsInfo)을 그대로 그린다.
@@ -991,7 +1055,7 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
   </section>
 
 <!-- 단일 데이터 소스 (window.YSME) -->
-<script src="assets/js/data.js?v=d16"></script>
+<script src="assets/js/data.js?v=d17"></script>
 <script>
 (function(){
   'use strict';
@@ -1892,7 +1956,53 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
   });
 })();
 </script>
-<script src="assets/nav.js?v=70"></script>
+<script src="assets/nav.js?v=71"></script>
+<script>
+/* 인트로 두 구간 — 스크롤 진행률(0~1)을 --p 로 넣고, 문장 구간은 단어를 하나씩 켠다.
+   바깥 통의 높이에서 화면 한 칸을 뺀 만큼이 「진행 구간」이다. */
+(function () {
+  'use strict';
+  var reduce = false;
+  try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+  var scenes = [].slice.call(document.querySelectorAll('.tw-scene'));
+  if (!scenes.length || reduce) return;
+
+  /* 문장을 단어로 쪼갠다 — 스크롤이 지나가며 하나씩 검정으로 바뀐다 */
+  var say = document.getElementById('twSayText'), words = [];
+  if (say) {
+    var frag = document.createDocumentFragment();
+    say.textContent.split(/(\s+)/).forEach(function (w) {
+      if (!w) return;
+      if (!w.trim()) { frag.appendChild(document.createTextNode(w)); return; }
+      var sp = document.createElement('span'); sp.className = 'sw'; sp.textContent = w;
+      frag.appendChild(sp); words.push(sp);
+    });
+    say.textContent = ''; say.appendChild(frag);
+  }
+
+  var t = 0;
+  function run() {
+    t = 0;
+    var vh = innerHeight || 1;
+    scenes.forEach(function (sc) {
+      var r = sc.getBoundingClientRect();
+      var span = Math.max(1, sc.offsetHeight - vh);
+      var p = Math.min(1, Math.max(0, -r.top / span));
+      sc.style.setProperty('--p', p.toFixed(4));
+      if (sc.id === 'twSay' && words.length) {
+        /* 앞뒤 15% 는 여유로 두고 가운데 70% 동안 단어를 켠다 */
+        var q = Math.min(1, Math.max(0, (p - .15) / .7));
+        var n = Math.round(q * words.length);
+        for (var k = 0; k < words.length; k++) words[k].classList.toggle('on', k < n);
+      }
+    });
+  }
+  function tick() { if (!t) { t = 1; requestAnimationFrame(run); } }
+  addEventListener('scroll', tick, { passive: true });
+  addEventListener('resize', run);
+  run();
+})();
+</script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--kr);font-size:.74rem;color:#7b8595">
   © 2026 연세대학교 기계공학부 &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

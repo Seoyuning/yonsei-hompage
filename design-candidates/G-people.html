@@ -12,8 +12,8 @@
   media="print" onload="this.media='all'" />
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
-<link rel="preload" as="script" href="assets/js/data.js?v=d16" />
-<link rel="preload" as="script" href="assets/nav.js?v=70" />
+<link rel="preload" as="script" href="assets/js/data.js?v=d17" />
+<link rel="preload" as="script" href="assets/nav.js?v=71" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    교수진 디렉토리 — 아이보리 배경 · 네이비 제목 · 헤어라인 · 연회색 행
@@ -148,12 +148,14 @@ a{color:inherit;text-decoration:none}
 /* ── 교수진 사진 그리드 (한양대 member_01 레이아웃: 사진 위 · 정보 패널 아래) ── */
 .dir{max-width:1320px;margin:0 auto;padding:1.4rem clamp(1.2rem,.6rem + 2vw,2.6rem) 3rem}
 /* 분야별 그룹 — 각 분야 헤더 + 그 분야 카드 그리드, 그룹 간 상하 여백 */
-.fgroup{padding:2.4rem 0}
+/* 분야 사이를 넉넉히 — 여섯 덩이가 붙어 있으면 어디서 분야가 바뀌는지 안 보인다 */
+.fgroup{padding:clamp(3.2rem,2rem + 4vw,5.2rem) 0}
+.fgroup:first-child{padding-top:clamp(1.6rem,1rem + 2vw,2.6rem)}
 .fgroup + .fgroup{border-top:1px solid var(--line-soft)}
 /* 분야 머리 — 가운데로 모으고 영문은 아랫줄에 (예전엔 한 줄에 점·한글·영문·인원수가
    나란히 서고 인원수만 오른쪽 끝으로 밀려 축이 둘로 갈렸다) */
 .fg-head{display:flex;flex-direction:column;align-items:center;text-align:center;
-  gap:.34rem;margin-bottom:1.5rem}
+  gap:.34rem;margin-bottom:clamp(1.8rem,1.3rem + 1.6vw,2.6rem)}
 .fg-line{display:flex;align-items:center;justify-content:center;gap:.6rem;flex-wrap:wrap}
 .fg-head .fg-dot{width:11px;height:11px;border-radius:50%;background:var(--fg-c,var(--navy));flex:none}
 .fg-head h2{font-size:clamp(1.5rem,1.1rem + 1.7vw,2.15rem);font-weight:800;color:var(--navy);letter-spacing:-.01em;line-height:1.2}
@@ -227,7 +229,7 @@ a{color:inherit;text-decoration:none}
      좌우 카드의 아랫단이 어긋나지 않는다(전엔 짧은 쪽 밑에 흰 여백이 남았다) */
   flex:1 1 auto;
   padding:1rem 1.15rem 1.1rem;display:flex;flex-direction:column;gap:.55rem}
-.pbody-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.6rem}
+.pbody-top{display:block}
 .pnamebx{min-width:0}
 .pname{display:flex;align-items:baseline;gap:.45rem;flex-wrap:wrap}
 .pname .ko{font-family:var(--kr);font-weight:800;font-size:1.18rem;letter-spacing:-.01em;line-height:1.25}
@@ -237,13 +239,23 @@ a{color:inherit;text-decoration:none}
 .ppos{font-family:var(--kr);font-size:.8rem;font-weight:500;color:rgba(255,255,255,.85);margin-top:.24rem;line-height:1.42;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 html[lang="en"] .ppos{display:none}
-/* 우측 아이콘 버튼(홈페이지·상세) */
-.pbtns{flex:none;display:flex;gap:.4rem}
-.pbtn{display:grid;place-items:center;width:2rem;height:2rem;border-radius:50%;
-  background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.28);color:#fff;cursor:pointer;
-  transition:background .15s,border-color .15s}
-.pbtn:hover{background:rgba(255,255,255,.26);border-color:rgba(255,255,255,.6)}
-.pbtn svg{width:15px;height:15px;display:block}
+/* 패널 맨 아래 두 칸 — 메인 화면 교수진 카드와 같은 짜임.
+   예전엔 이름 오른쪽에 동그란 아이콘 두 개가 붙어 있어, 이름이 두 줄인 카드에서
+   버튼 자리가 위아래로 흔들렸다. 칠 없이 헤어라인으로만 나눈 줄로 바닥에 붙인다. */
+.pbtns{margin:auto -1.15rem -1.1rem;display:grid;
+  /* 칸 수에 맞춰 폭을 나눈다 — 명예·퇴임 교수는 공식 프로필도 메일도 없어
+     「자세히」한 칸뿐인데, 두 칸으로 고정하면 오른쪽이 빈 채로 남는다 */
+  grid-auto-flow:column;grid-auto-columns:1fr;
+  border-top:1px solid rgba(255,255,255,.2)}
+.pbtn{display:flex;align-items:center;justify-content:center;gap:.32rem;
+  padding:.72rem .3rem;background:none;border:0;border-radius:0;color:rgba(255,255,255,.9);
+  font-family:var(--kr);font-size:.74rem;font-weight:700;letter-spacing:.03em;
+  text-decoration:none;white-space:nowrap;cursor:pointer;
+  transition:background .18s ease,color .18s ease}
+.pbtn + .pbtn{border-left:1px solid rgba(255,255,255,.2)}
+.pbtn:hover{background:rgba(255,255,255,.13);color:#fff}
+.pbtn svg{width:13px;height:13px;display:block;opacity:.85}
+.pbtn:hover svg{opacity:1}
 .pbtn.more .ic-plus{display:grid;transition:transform .3s}
 .pcard.open .pbtn.more .ic-plus{transform:rotate(45deg)}
 /* 연구분야 라인 (패널 하단) */
@@ -296,7 +308,8 @@ html[lang="en"] .ppos{display:none}
   .pname .ko{font-size:1rem}
   .pname .rk{font-size:.7rem}
   .ppos{font-size:.72rem;white-space:normal;overflow:visible;text-overflow:clip;line-height:1.35}
-  .pbtns{gap:.3rem}
+  .pbtns{margin:auto -.75rem -.8rem}
+  .pbtn{padding:.6rem .25rem;font-size:.7rem;gap:.26rem}
   .pfieldline{font-size:.74rem;padding-top:.45rem}
   .pdetail .rows{gap:.42rem}
   .pdetail{padding:.75rem .8rem}
@@ -330,12 +343,8 @@ html[lang="en"] .ppos{display:none}
    제목 아래 슬래시 요약 줄을 둔다.
    요약은 그 화면이 이미 담고 있는 사실만 적는다. */
 .staff-head,.al-head{position:relative}
-.sec-meta{font-family:var(--kr);font-size:clamp(.82rem,.79rem + .15vw,.9rem);
-  color:var(--muted);line-height:1.7;margin:.85rem 0 0;letter-spacing:.01em;
-  padding-top:.8rem;border-top:1px solid var(--line-soft);max-width:44rem}
 @media (max-width:640px){
-    .sec-meta{max-width:none}
-}
+    }
 
 .staff-head h2{font-size:clamp(1.6rem,1.15rem + 2vw,2.4rem);font-weight:800;color:var(--navy);letter-spacing:-.01em}
 .staff-head .lead{margin-top:.7rem;font-size:.92rem;color:var(--sub);max-width:46rem;line-height:1.7}
@@ -543,7 +552,6 @@ html[lang="en"] .ppos{display:none}
   <section class="staff" id="staff" aria-labelledby="staff-title">
     <div class="staff-head">
       <h2 id="staff-title">교직원</h2>
-      <p class="sec-meta">학부 행정 · 대학원 학사 · BK21 교육연구단 담당</p>
       <p class="lead">학부 행정과 대학원 학사, BK21 교육연구단 업무를 담당하는 행정 직원입니다.</p>
     </div>
     <!-- 예전에는 「학사·행정 / 대학원 / 연구·회계 / 총무·시설」이라는 4직무 카드와
@@ -602,7 +610,6 @@ html[lang="en"] .ppos{display:none}
   <section class="al" id="alumni" aria-labelledby="al-title">
     <div class="al-head">
       <h2 id="al-title">동문</h2>
-      <p class="sec-meta">동문 연혁 / 인터뷰 · 대외협력 · 발전기금</p>
       <p class="al-lead">동문은 학부의 또 다른 구성원입니다. 졸업생과 재학생, 학부를 잇는 연혁과 인터뷰, 대외협력과 발전기금 안내를 모았습니다.</p>
     </div>
 
@@ -835,7 +842,7 @@ html[lang="en"] .ppos{display:none}
   </section>
   </main>
 
-<script src="assets/js/data.js?v=d16"></script>
+<script src="assets/js/data.js?v=d17"></script>
 <script>
 (function(){
   'use strict';
@@ -985,10 +992,12 @@ html[lang="en"] .ppos{display:none}
     var homeHref = p.detail || (p.email ? 'mailto:'+p.email : '');
     var homeBtn = homeHref
       ? '<a class="pbtn home" href="'+esc(homeHref)+'"'+(p.detail?' target="_blank" rel="noopener"':'')
-        + ' aria-label="'+esc(p.ko)+' '+(p.detail?'프로필':'이메일')+'" title="'+(p.detail?'프로필 · 홈페이지':'이메일')+'">'+ICON_HOME+'</a>'
+        + ' aria-label="'+esc(p.ko)+' '+(p.detail?'프로필':'이메일')+'" title="'+(p.detail?'프로필 · 홈페이지':'이메일')+'">'
+        + ICON_HOME + '<span class="lb">'+(p.detail?'프로필':'메일')+'</span></a>'
       : '';
     var moreBtn = '<button type="button" class="pbtn more" aria-expanded="false"'
-      + ' aria-label="'+esc(p.ko)+' 상세 정보 펼치기" title="상세 정보"><span class="ic-plus">'+ICON_PLUS+'</span></button>';
+      + ' aria-label="'+esc(p.ko)+' 상세 정보 펼치기" title="상세 정보">'
+      + '<span class="ic-plus">'+ICON_PLUS+'</span><span class="lb">자세히</span></button>';
 
     /* 상세(+ 토글) 행 — 이메일 · 사무실 · 연락처 · 프로필 */
     /* 직위는 카드 표면이 아니라 여기(자세히 보기)에서 보여 준다 */
@@ -1006,13 +1015,13 @@ html[lang="en"] .ppos{display:none}
         + '<div class="pbody-top">'
           + '<div class="pnamebx"><p class="pname"><span class="ko">'+esc(p.ko)+'</span>'
             + (p.role ? '<span class="rk">'+esc(p.role)+'</span>' : '') + '</p>'+pos+'</div>'
-          + '<div class="pbtns">'+homeBtn+moreBtn
-            + '<div class="pdetail" role="dialog" aria-label="'+esc(p.ko)+' 상세 정보">'
-              + '<div class="rows">'+det+'</div>'
-            + '</div>'
-          + '</div>'
         + '</div>'
         + '<div class="pfieldline"><span class="lb">연구분야 :</span> '+esc(cl.ko||'')+'</div>'
+        + '<div class="pbtns">'+homeBtn+moreBtn
+          + '<div class="pdetail" role="dialog" aria-label="'+esc(p.ko)+' 상세 정보">'
+            + '<div class="rows">'+det+'</div>'
+          + '</div>'
+        + '</div>'
       + '</div>'
       + '</article>';
   }
@@ -1192,7 +1201,7 @@ html[lang="en"] .ppos{display:none}
   }
 })();
 </script>
-<script src="assets/nav.js?v=70"></script>
+<script src="assets/nav.js?v=71"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--dimmer)">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

@@ -132,11 +132,19 @@
        예전엔 제목이 머리 블록에 실려 다 같이 2.6rem 올라올 뿐, 제 몫의 움직임이 없었다.
        위에서 아래로 걷히는 가림막(clip-path) + 살짝 밀려 올라오기로 제목만 따로 세운다.
        (아래 여백 보정은 CSS 로 하면 원래 margin 을 덮어써 배치가 밀린다 — JS 에서 잰다) */
-    'html.ys-rv [data-rvt]{display:block;' +
+    'html.ys-rv [data-rvt]:not([data-rvt="w"]){display:block;' +
       'clip-path:inset(0 0 100% 0);transform:translateY(.34em);' +
       'transition:clip-path 1.05s cubic-bezier(.22,1,.36,1),transform 1.05s cubic-bezier(.22,1,.36,1);' +
       'transition-delay:calc(var(--rv-d,0s) + .1s)}',
-    'html.ys-rv .rv-in [data-rvt],html.ys-rv [data-rvt].rv-in{clip-path:inset(0 0 0 0);transform:none}',
+    'html.ys-rv .rv-in [data-rvt]:not([data-rvt="w"]),html.ys-rv [data-rvt]:not([data-rvt="w"]).rv-in{clip-path:inset(0 0 0 0);transform:none}',
+    /* 단어 단위 리빌 — 제목을 단어마다 상자에 넣고 아래에서 하나씩 밀어 올린다.
+       가림막(clip-path) 하나로 걷는 것보다 글이 「쓰이는」 느낌이 난다. */
+    'html.ys-rv [data-rvt="w"] .rvw{display:inline-block;overflow:hidden;vertical-align:top;' +
+      'padding-bottom:.14em;margin-bottom:-.14em}',
+    'html.ys-rv [data-rvt="w"] .rvw > i{display:inline-block;font-style:normal;transform:translateY(115%);' +
+      'transition:transform .92s cubic-bezier(.22,1,.36,1);' +
+      'transition-delay:calc(var(--rv-d,0s) + var(--w,0s))}',
+    'html.ys-rv .rv-in [data-rvt="w"] .rvw > i,html.ys-rv [data-rvt="w"].rv-in .rvw > i{transform:none}',
     '@media(prefers-reduced-motion:reduce){html.ys-rv [data-rv]{opacity:1;transform:none;transition:none}' +
       'html.ys-rv [data-rvt]{clip-path:none;transform:none;transition:none}}',
     '@media print{html.ys-rv [data-rv]{opacity:1;transform:none;transition:none}' +
@@ -579,7 +587,26 @@
       el.setAttribute('data-rv', hasTitle ? 's' : '');
       if (i > 0) el.style.setProperty('--rv-d', Math.min(i, 5) * 0.17 + 's');
       if (hasTitle) [].forEach.call(el.querySelectorAll(TITLE), function (t) {
-        t.setAttribute('data-rvt', '');
+        /* 단어 단위로 쪼갠다 — <br> 같은 태그는 그대로 두고 글자 마디만 상자에 넣는다.
+           실패하면 아래의 가림막 방식으로 조용히 남는다. */
+        var split = false;
+        try {
+          var kids = [].slice.call(t.childNodes), out = [], wi = 0;
+          kids.forEach(function (n) {
+            if (n.nodeType === 3) {
+              n.nodeValue.split(/(\s+)/).forEach(function (w) {
+                if (!w) return;
+                if (!w.trim()) { out.push(document.createTextNode(w)); return; }
+                var box = document.createElement('span'); box.className = 'rvw';
+                var inn = document.createElement('i'); inn.textContent = w;
+                inn.style.setProperty('--w', (Math.min(wi, 9) * 0.055) + 's');
+                box.appendChild(inn); out.push(box); wi++;
+              });
+            } else out.push(n);
+          });
+          if (wi > 0) { t.textContent = ''; out.forEach(function (n) { t.appendChild(n); }); split = true; }
+        } catch (e) {}
+        t.setAttribute('data-rvt', split ? 'w' : '');
         /* 가림막은 테두리 상자에서 잘린다 — 받침·괄호가 잘리지 않게 아래를 조금 넓히고,
            그만큼 margin 에서 도로 뺀다. 원래 margin 을 읽어 더하므로 여백을 가진
            제목(연구 비전의 큰 인용구 등)도 배치가 밀리지 않는다. */

@@ -82,50 +82,58 @@ a{color:inherit;text-decoration:none}
 .phero::after{content:"";position:absolute;inset:0;background:
   radial-gradient(125% 95% at 50% 58%,rgba(10,22,44,.50) 0%,rgba(10,22,44,.70) 52%,rgba(8,17,34,.90) 100%),
   linear-gradient(180deg,rgba(18,41,79,.62) 0%,rgba(16,35,68,.50) 40%,rgba(10,22,44,.78) 100%)}
-/* ── 인트로 두 구간 ──
-   .tw-scene 은 몇 화면 높이의 빈 통, .tw-pin 이 그 안에서 화면에 고정된다.
-   진행률(0~1)은 JS 가 --p 로 넣어 주고, 아래 규칙은 그 값만 쓴다. */
-.tw-scene{position:relative;background:#0b0b0c}
-.tw-scene#twHero{height:260vh}
-.tw-scene.is-say{height:230vh;background:#fff}
-.tw-pin{position:sticky;top:0;height:100vh;height:100svh;display:flex;flex-direction:column;justify-content:center;
-  overflow:hidden}
-#twHero .tw-pin{background:#0b0b0c;
-  /* 마지막 3분의 1에서 흰 판이 아래에서 차올라 다음 구간으로 넘어간다 */
-  background-image:linear-gradient(180deg,#fff 0 100%);
-  background-repeat:no-repeat;background-position:bottom;
-  background-size:100% calc(max(0%, (var(--p,0) - .62) / .38 * 100%))}
+/* ── 인트로 두 구간 — 우리 히어로 + 참고 화면의 짜임 ──
+   배경·색은 우리 것(사진을 흑백 네이비로 눌러 깔고 이중 그라디언트)을 그대로 쓰고,
+   그 위에 초대형 타이포와 스크롤 진행만 참고 화면에서 가져왔다.
+   .tw-scene 은 몇 화면 높이의 빈 통, .tw-pin 이 그 안에서 화면에 고정된다. */
+.tw-scene{position:relative}
+.tw-scene#twHero{height:250vh;height:250svh}
+.tw-scene.is-say{height:230vh;height:230svh;background:#fff}
+.tw-pin{position:sticky;top:0;height:100vh;height:100svh;
+  display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+/* 히어로 판 — 페이지 히어로와 같은 사진·베일 */
+#twHero .tw-pin{background:#12294f url("assets/hero-academics.jpg") center 42%/cover no-repeat;color:#fff}
+#twHero .tw-pin::before{content:"";position:absolute;inset:0;background:inherit;
+  filter:grayscale(1) contrast(1.2) brightness(.55);
+  transform:scale(calc(1 + var(--p,0) * .08));transform-origin:50% 45%}
+#twHero .tw-pin::after{content:"";position:absolute;inset:0;background:
+  radial-gradient(125% 95% at 50% 52%,rgba(10,22,44,.42) 0%,rgba(10,22,44,.68) 52%,rgba(8,17,34,.92) 100%),
+  linear-gradient(180deg,rgba(18,41,79,.66) 0%,rgba(16,35,68,.42) 38%,rgba(10,22,44,.84) 100%)}
+/* 마지막 구간에서 흰 판이 아래에서 차올라 본문으로 넘어간다 */
+.tw-wipe{position:absolute;left:0;right:0;bottom:0;z-index:2;background:#fff;pointer-events:none;
+  height:calc(max(0%, (var(--p,0) - .66) / .34 * 100%))}
 .tw-in{position:relative;z-index:1;width:100%;max-width:1400px;margin:0 auto;
   padding:0 clamp(1.2rem,.6rem + 2vw,3rem)}
-#twHero .bc{color:rgba(255,255,255,.5);font-size:.8rem;letter-spacing:.04em;margin:0 0 clamp(1.2rem,3vh,2.2rem);
+#twHero .bc{color:rgba(255,255,255,.62);font-size:.8rem;letter-spacing:.04em;margin:0 0 clamp(1.2rem,3vh,2.2rem);
   opacity:calc(1 - var(--p,0) * 2)}
-#twHero .bc a{color:rgba(255,255,255,.7)}
+#twHero .bc a{color:rgba(255,255,255,.8)}
 #twHero .bc a:hover{color:#fff}
-.tw-title{display:block;margin:0;font-weight:800;letter-spacing:-.045em;line-height:.86;
-  font-size:clamp(3.4rem,1rem + 12vw,11rem)}
-.tw-l{display:block;color:#fff;
-  transform:translate3d(0,calc(var(--p,0) * -18vh),0);
-  opacity:calc(1 - max(0, var(--p,0) - .55) / .3)}
-.tw-r{display:block;text-align:right;color:transparent;-webkit-text-stroke:1.5px rgba(255,255,255,.55);
-  transform:translate3d(0,calc(var(--p,0) * -30vh),0);
-  opacity:calc(min(1, var(--p,0) / .22) - max(0, var(--p,0) - .6) / .28)}
+.tw-title{display:block;margin:0;font-weight:800;letter-spacing:-.04em;line-height:.9;
+  font-size:clamp(3rem,1rem + 10vw,9rem)}
+.tw-l{display:block;color:#fff;text-shadow:0 8px 40px rgba(6,14,30,.5);
+  transform:translate3d(0,calc(var(--p,0) * -16vh),0);
+  opacity:calc(1 - max(0, var(--p,0) - .58) / .3)}
+/* 영문은 획만 남긴 글자 — 사진 위에서 우리 톤(연한 남색 획)으로 */
+.tw-r{display:block;text-align:right;color:transparent;
+  -webkit-text-stroke:1.4px rgba(200,218,245,.62);
+  transform:translate3d(0,calc(var(--p,0) * -26vh),0);
+  opacity:calc(.6 + min(.4, var(--p,0) / .22) - max(0, var(--p,0) - .62) / .28)}
 .tw-stats{position:relative;z-index:1;width:100%;max-width:1400px;
-  margin:clamp(2.4rem,6vh,4.6rem) auto 0;padding:1.05rem clamp(1.2rem,.6rem + 2vw,3rem) 0;
-  border-top:1px solid rgba(255,255,255,.22);
+  margin:clamp(2.2rem,5.5vh,4rem) auto 0;padding:1.05rem clamp(1.2rem,.6rem + 2vw,3rem) 0;
+  border-top:1px solid rgba(255,255,255,.3);
   display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
   font-family:var(--kr);font-size:clamp(.76rem,.72rem + .2vw,.92rem);font-weight:600;
-  color:rgba(255,255,255,.72);letter-spacing:.02em;
-  opacity:calc(min(1, max(0, var(--p,0) - .12) / .2) - max(0, var(--p,0) - .58) / .3);
-  transform:translate3d(0,calc((1 - min(1, var(--p,0) / .3)) * 1.4rem),0)}
-/* 문장 구간 — 단어가 하나씩 진해진다 */
+  color:rgba(255,255,255,.82);letter-spacing:.02em;
+  opacity:calc(1 - max(0, var(--p,0) - .55) / .32);
+  transform:translate3d(0,calc(var(--p,0) * -6vh),0)}
+/* 문장 구간 — 단어가 하나씩 진해진다. 다 켜지면 우리 네이비가 된다 */
 .is-say .tw-pin{background:#fff}
 .tw-say{width:100%;max-width:1180px;margin:0 auto;padding:0 clamp(1.2rem,.6rem + 2vw,3rem);
-  font-family:var(--kr);font-weight:800;letter-spacing:-.03em;line-height:1.24;
-  font-size:clamp(1.6rem,.9rem + 3.4vw,3.7rem);color:rgba(11,11,12,.14)}
-.tw-say .sw{transition:color .28s ease}
-.tw-say .sw.on{color:#0b0b0c}
+  font-family:var(--kr);font-weight:800;letter-spacing:-.03em;line-height:1.26;
+  font-size:clamp(1.5rem,.9rem + 3.2vw,3.4rem);color:rgba(26,61,117,.16)}
+.tw-say .sw{transition:color .3s ease}
+.tw-say .sw.on{color:var(--navy,#1a3d75)}
 @media (max-width:640px){
-  /* 손안에서는 제목만 보려고 네 화면을 넘기게 둘 수 없다 — 구간을 짧게 잡는다 */
   .tw-scene#twHero{height:150vh;height:150svh}
   .tw-scene.is-say{height:140vh;height:140svh}
   .tw-r{text-align:left;-webkit-text-stroke-width:1px}
@@ -135,7 +143,8 @@ a{color:inherit;text-decoration:none}
   .tw-scene#twHero,.tw-scene.is-say{height:auto}
   .tw-pin{position:relative;height:auto;padding:7rem 0}
   .tw-l,.tw-r,.tw-stats,#twHero .bc{transform:none;opacity:1}
-  .tw-say{color:#0b0b0c}
+  .tw-wipe{display:none}
+  .tw-say{color:var(--navy,#1a3d75)}
 }
 .phero-in{position:relative;z-index:1;padding:clamp(9.5rem,7rem + 4vw,11.5rem) 1.2rem clamp(2.6rem,5vh,4rem);max-width:60rem}
 .phero h1{font-size:clamp(1.9rem,1.2rem + 2.6vw,3rem);font-weight:800;letter-spacing:-.01em;line-height:1.16;color:#fff}
@@ -836,6 +845,7 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
       <span>4대 역학</span>
       <span>공학교육인증 ABEEK</span>
     </div>
+    <span class="tw-wipe" aria-hidden="true"></span>
   </div>
 </section>
 

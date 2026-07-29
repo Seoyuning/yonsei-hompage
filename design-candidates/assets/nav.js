@@ -651,12 +651,26 @@
     };
   }
 
+  /* ── 배경 인덱스 번호의 기준 상자 고정 ──
+     번호(.sec-no)는 머리 상자 오른쪽 끝에 붙는 absolute 요소다. 그런데 화면에 따라
+     번호가 머리 상자 안쪽 <div> 에 들어 있고, 등장 애니메이션이 그 <div> 에 transform 을
+     걸면 그 순간 <div> 가 번호의 기준 상자가 된다 — right:0 이 글줄 끝(화면 가운데쯤)으로
+     바뀌어, 번호가 가운데 있다가 애니메이션이 끝나며 오른쪽으로 튀었다.
+     번호를 머리 상자의 직계로 올려 기준 상자를 뺏기지 않게 한다(그리기 위치는 그대로). */
+  function fixSecNoAnchor() {
+    [].forEach.call(document.querySelectorAll('.sec-no'), function (n) {
+      var host = n.closest ? n.closest('.sec-head, .staff-head, .al-head') : null;
+      if (host && n.parentNode !== host) host.appendChild(n);
+    });
+  }
+
   function mount() {
     var old = document.querySelector('.hud-top'); if (old) old.remove();
     var ph = document.querySelector('.ynav-ph'); if (ph) ph.remove();
     document.body.insertBefore(nav, document.body.firstChild);
     buildSubnav();
     buildFooter();
+    fixSecNoAnchor();
     setupReveal();
 
     /* 스크롤 시 유틸바 접힘 */

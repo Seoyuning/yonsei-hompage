@@ -13,7 +13,7 @@
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d16" />
-<link rel="preload" as="script" href="assets/nav.js?v=69" />
+<link rel="preload" as="script" href="assets/nav.js?v=70" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    시안 G — 대학원 (라이트)
@@ -106,19 +106,13 @@ a{color:inherit;text-decoration:none}
    대신 그쪽의 호버 전용 캡션·흐르는 글자·데스크톱 전용 안내는 가져오지 않았다 —
    모바일과 스크린리더에서 정보가 사라지기 때문이다. */
 .sec-head{position:relative;padding-left:0}
-.sec-no{position:absolute;right:0;top:-.35em;margin:0;
-  font-family:var(--mono);font-weight:600;line-height:1;
-  font-size:clamp(3.4rem,2rem + 6vw,7rem);color:var(--accent);opacity:.16;
-  font-variant-numeric:tabular-nums;letter-spacing:-.04em;pointer-events:none;user-select:none}
 /* 제목 아래 한 줄 — 슬래시로 이어 붙인 요약. 이 페이지가 이미 담고 있는 사실만 적는다 */
 .sec-meta{font-family:var(--kr);font-size:clamp(.82rem,.79rem + .15vw,.9rem);
   color:var(--muted);line-height:1.7;margin:.85rem 0 0;letter-spacing:.01em;
   padding-top:.8rem;border-top:1px solid var(--line-soft);max-width:44rem}
 @media (max-width:640px){
   /* 좁은 화면에선 제목이 폭을 다 쓰므로 번호를 겹치지 않게 위쪽 제 자리로 올린다 */
-  .sec-head{padding-top:2.6rem}
-  .sec-no{font-size:2.9rem;top:0;right:0;opacity:.2}
-  .sec-meta{max-width:none}
+    .sec-meta{max-width:none}
 }
 
 .sec-kick{font-family:var(--mono);font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--coral)}
@@ -483,14 +477,14 @@ html[lang="en"] .lab-en-only{display:none}
     <h1>대학원</h1>
     <p class="bc">홈 › 대학원</p>
   </div>
-</header>
+  </header>
 
 <main>
   <!-- §01 입학 안내 -->
   <section class="sec" id="grad-admission" aria-labelledby="adm-h">
     <div class="sec-head">
       <div>
-        <p class="sec-no" aria-hidden="true">01</p><p class="sec-kick">Admission</p>
+        <p class="sec-kick">Admission</p>
         <h2 id="adm-h" class="sec-title">입학 안내</h2>
         <p class="sec-meta">석사 · 박사 · 석박사통합 / 매 학기 모집 / 전형은 대학원 모집요강 기준</p>
       </div>
@@ -526,7 +520,7 @@ html[lang="en"] .lab-en-only{display:none}
   <section class="sec" id="grad-req" aria-labelledby="req-h">
     <div class="sec-head">
       <div>
-        <p class="sec-no" aria-hidden="true">02</p><p class="sec-kick">Degree Requirements</p>
+        <p class="sec-kick">Degree Requirements</p>
         <h2 id="req-h" class="sec-title">졸업 요건</h2>
         <p class="sec-meta">학점 / 종합시험 / 학위논문 심사 — 학부 공식 원문</p>
       </div>
@@ -544,7 +538,7 @@ html[lang="en"] .lab-en-only{display:none}
   <section class="sec" id="grad-courses" aria-labelledby="crs-h">
     <div class="sec-head">
       <div>
-        <p class="sec-no" aria-hidden="true">03</p><p class="sec-kick">Courses</p>
+        <p class="sec-kick">Courses</p>
         <h2 id="crs-h" class="sec-title">교과목 소개</h2>
         <p class="sec-meta">대학원 개설 전공 교과 / 학정번호 · 국문 · 영문 · 학점</p>
       </div>
@@ -568,7 +562,7 @@ html[lang="en"] .lab-en-only{display:none}
   <section class="sec" id="grad-labs" aria-labelledby="labs-h">
     <div class="sec-head">
       <div>
-        <p class="sec-no" aria-hidden="true">04</p><p class="sec-kick">Research Labs</p>
+        <p class="sec-kick">Research Labs</p>
         <h2 id="labs-h" class="sec-title">대학원 연구실</h2>
         <p class="sec-meta">여섯 개 연구 분야 / 연구실별 지도교수 · 위치 · 자료</p>
       </div>
@@ -589,7 +583,7 @@ html[lang="en"] .lab-en-only{display:none}
   <section class="sec" id="bk21" aria-labelledby="bk-h">
     <div class="sec-head">
       <div>
-        <p class="sec-no" aria-hidden="true">05</p><p class="sec-kick">BK21 FOUR</p>
+        <p class="sec-kick">BK21 FOUR</p>
         <h2 id="bk-h" class="sec-title">BK21 FOUR</h2>
         <p class="sec-meta">4단계 두뇌한국 21 / 대학원 교육 · 연구 역량 강화 사업</p>
       </div>
@@ -605,7 +599,7 @@ html[lang="en"] .lab-en-only{display:none}
       <a href="G-people.html">교수 · 연구 구성원 보기 <span aria-hidden="true">→</span></a>
     </div>
   </section>
-</main>
+  </main>
 
 <!-- 입학 CTA -->
 <section class="cta" aria-labelledby="cta-h">
@@ -615,7 +609,7 @@ html[lang="en"] .lab-en-only{display:none}
     <p>석·박사 전형 일정과 세부 안내는 학기별 연세대학교 대학원 모집요강에서 확인할 수 있습니다.</p>
   </div>
   <a class="cta-btn" href="#grad-admission">입학 안내 다시 보기 <span class="arr">→</span></a>
-</section>
+  </section>
 
 <!-- 공유 단일 데이터 소스 (window.YSME) -->
 <script src="assets/js/data.js?v=d16"></script>
@@ -885,7 +879,7 @@ html[lang="en"] .lab-en-only{display:none}
   render();
 })();
 </script>
-<script src="assets/nav.js?v=69"></script>
+<script src="assets/nav.js?v=70"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--kr);font-size:.74rem;color:#7b8595">
   © 2026 연세대학교 기계공학부 &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

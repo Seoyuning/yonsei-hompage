@@ -496,7 +496,44 @@
     var rawHash = (location.hash || '').slice(1);
     var deepAnchor = !!rawHash && !isTabHash && !window.__ysTab;
 
+    /* 깊은 앵커가 다른 탭 안에 숨어 있으면 그 탭을 먼저 켠다.
+       예: 학부소개에서 「G-research.html#atel」로 오면 atel 은 연구실 목록 탭(#clusters)
+       안에 있는데, 들어올 때 켜지는 건 첫 탭(연구 비전)이라 대상이 display:none 이 된다.
+       — 링크는 멀쩡한데 아무 데도 안 가는 것처럼 보였다.
+       탭 버튼에 심어 둔 data-tabids 로 대상이 어느 탭 소속인지 거슬러 찾는다. */
+    if (deepAnchor) {
+      var tEl = null;
+      try { tEl = document.getElementById(decodeURIComponent(rawHash)); } catch (e) { tEl = document.getElementById(rawHash); }
+      if (tEl) {
+        var owner = -1;
+        m.sub.forEach(function (s2, i) {
+          if (owner >= 0) return;
+          (s2[2] || []).forEach(function (id) {
+            if (owner >= 0) return;
+            var sec = document.getElementById(id);
+            if (sec && (sec === tEl || sec.contains(tEl))) owner = i;
+          });
+        });
+        if (owner >= 0) initial = owner;
+      }
+    }
+
     show(initial, false);
+
+    /* 탭을 켠 뒤 그 자리로 데려간다 — 숨어 있던 동안에는 위치를 잴 수 없었다.
+       바 높이만큼 비켜 세운다(--ys-stick 은 nav.js 가 방금 재어 넣은 값). */
+    if (deepAnchor) {
+      var landing = function () {
+        var el = null;
+        try { el = document.getElementById(decodeURIComponent(rawHash)); } catch (e) { el = document.getElementById(rawHash); }
+        if (!el || el.closest('.ysub-hide')) return;
+        var off = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--ys-stick')) || 132;
+        var y = Math.max(0, el.getBoundingClientRect().top + (pageYOffset || 0) - off);
+        try { scrollTo({ top: y, behavior: 'instant' }); } catch (_) { scrollTo(0, y); }
+      };
+      settleDeep(landing);
+    }
+    function settleDeep(fn) { setTimeout(fn, 60); addEventListener('load', function () { setTimeout(fn, 0); }); setTimeout(fn, 220); }
 
     /* 진입 지점은 **무엇을 눌러서 왔느냐**에 따라 다르다.
          · 최상위 메뉴 이름(해시 없음)  → 히어로부터. 그 메뉴의 첫 화면을 보여 준다

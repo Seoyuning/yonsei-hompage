@@ -13,7 +13,7 @@
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d17" />
-<link rel="preload" as="script" href="assets/nav.js?v=77" />
+<link rel="preload" as="script" href="assets/nav.js?v=78" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    교수진 디렉토리 — 아이보리 배경 · 네이비 제목 · 헤어라인 · 연회색 행
@@ -97,7 +97,7 @@ a{color:inherit;text-decoration:none}
   background:#ffffff;
   border-bottom:1px solid var(--line-soft);
   padding:.9rem 0;
-  scroll-margin-top:var(--ys-stick,4.5rem)}
+  scroll-margin-top:var(--ys-stick,7.6rem)}
 /* 위 형제바(.ysub-w, nav.js)와 같은 상자를 써야 「전임교수」가 「교수진」과 같은 지점에서 시작한다.
    폭·좌우 여백을 그쪽 값과 똑같이 맞춘다 — 한쪽만 바뀌면 다시 어긋난다. */
 .filter-wrap{max-width:72rem;margin:0 auto;padding:0 clamp(1.1rem,4vw,2rem)}
@@ -195,7 +195,7 @@ a{color:inherit;text-decoration:none}
 .pcard{position:relative;display:flex;flex-direction:column;background:#fff;border:1px solid var(--line-soft);
   box-shadow:0 2px 7px rgba(10,26,51,.07);
   opacity:0;transform:translateY(22px);transition:opacity .55s ease,transform .55s ease,box-shadow .25s ease;
-  scroll-margin-top:6rem}
+  scroll-margin-top:var(--ys-stick,7.6rem)}
 .pcard.in{opacity:1;transform:none}
 .pcard:hover{box-shadow:0 10px 24px rgba(10,26,51,.14)}
 .pcard:target{outline:2px solid var(--card-c,var(--navy));outline-offset:2px}
@@ -343,7 +343,7 @@ html[lang="en"] .ppos{display:none}
 /* ── 교직원 (행정팀) 섹션 ── */
 .staff{max-width:1320px;margin:0 auto;
   padding:1rem clamp(1.2rem,.6rem + 2vw,2.6rem) 3.6rem;
-  scroll-margin-top:5rem;border-top:1px solid var(--line-soft)}
+  scroll-margin-top:var(--ys-stick,7.6rem);border-top:1px solid var(--line-soft)}
 .staff-head{padding-top:2rem;margin-bottom:1.6rem}
 /* ── 섹션 머리 (대학원 페이지에서 시작해 전 페이지 공통) ──
    제목 아래 슬래시 요약 줄을 둔다.
@@ -374,7 +374,7 @@ html[lang="en"] .ppos{display:none}
    ═══════════════════════════════════════════════════════════ */
 .al{max-width:1320px;margin:0 auto;
   padding:1rem clamp(1.2rem,.6rem + 2vw,2.6rem) 3.6rem;
-  scroll-margin-top:5rem;border-top:1px solid var(--line-soft)}
+  scroll-margin-top:var(--ys-stick,7.6rem);border-top:1px solid var(--line-soft)}
 .al-head{padding-top:2rem;margin-bottom:1.8rem}
 .al-head h2{font-size:clamp(1.6rem,1.15rem + 2vw,2.4rem);font-weight:800;color:#111318;letter-spacing:-.01em}
 .al-lead{margin-top:.7rem;font-size:.92rem;color:var(--sub);max-width:46rem;line-height:1.7}
@@ -523,7 +523,6 @@ html[lang="en"] .ppos{display:none}
       <p class="bc">홈 › 구성원</p>
       <p class="phero-kick">People</p>
       <h1>구성원</h1>
-      <p class="phero-lead">기계공학부는 교수진·연구진·학생이 함께 만들어가는 공동체입니다. 여섯 개 연구 분야에서 전임 교수진이 교육과 연구를 이끌어 갑니다.</p>
     </div>
   </header>
 
@@ -725,7 +724,9 @@ html[lang="en"] .ppos{display:none}
       <p class="al-src">인터뷰 참여를 원하는 동문은 학부 행정팀으로 연락해 주세요.</p>
       <div class="al-mores">
         <a class="al-more" href="G-research.html#fields">여섯 개 연구 분야 보기 <span aria-hidden="true">→</span></a>
-        <a class="al-more" href="G-admissions.html#careers">진로 안내 보기 <span aria-hidden="true">→</span></a>
+        <!-- 예전 주소(G-admissions.html#careers)에는 careers 라는 id 가 없어 링크가 죽어 있었다.
+             진로·취업을 다루는 실제 화면은 소식의 「취업 정보」다. -->
+        <a class="al-more" href="G-news.html#jobs">취업 정보 보기 <span aria-hidden="true">→</span></a>
       </div>
     </div>
 
@@ -1217,7 +1218,7 @@ html[lang="en"] .ppos{display:none}
   }
 })();
 </script>
-<script src="assets/nav.js?v=77"></script>
+<script src="assets/nav.js?v=78"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--dimmer)">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

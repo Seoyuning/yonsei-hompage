@@ -13,7 +13,7 @@
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d17" />
-<link rel="preload" as="script" href="assets/nav.js?v=84" />
+<link rel="preload" as="script" href="assets/nav.js?v=85" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    연구 — 연세대학교 기계공학부 (기관형 · 아이보리)
@@ -1234,6 +1234,53 @@ html[lang="en"] .lab-en-only{display:none}
                micro:'--c-nanobio', optics:'--c-optics', dynamics:'--c-dyn' };
 
   var TOTAL = labs.length; // 33
+  /* ── 값에 붙는 한국어 꼬리말 ──
+     「7개」「강건욱 교수」처럼 값과 한국어가 한 텍스트 노드에 붙으면
+     사전(문장 통째 대조)이 원리상 못 잡는다. 화면 언어를 직접 읽어 문장을 고른다.
+     소식 페이지(G-news)에서 같은 방식을 이미 쓰고 있다. */
+  function isEn(){
+    try{ return window.YSME_I18N ? window.YSME_I18N.isEn() : localStorage.getItem('ysme-lang')==='en'; }
+    catch(e){ return false; }
+  }
+  /* 교수 영문명은 지어내지 않는다 — data.js 의 공식 값만 쓴다 */
+  var PROF_EN = (function(){ var m={};
+    ((window.YSME&&window.YSME.professors)||[]).forEach(function(p){ if(p.ko&&p.en) m[p.ko]=p.en; });
+    return m; })();
+  function profName(ko){
+    if(!ko) return '';
+    /* 이미 손댄 값이 다시 들어와도 같은 결과가 나오게 꼬리말·머리말을 먼저 벗긴다 */
+    var n = String(ko).replace(/^Prof\.\s*/, '').replace(/\s*교수$/, '');
+    return isEn() ? ('Prof. ' + (PROF_EN[n] || n)) : (n + ' 교수');
+  }
+  function nLabs(n){ return isEn() ? (n + (n === 1 ? ' lab' : ' labs')) : (n + '개 연구실'); }
+  function nCount(n){ return isEn() ? String(n) : (n + '개'); }
+  /* 언어를 바꾸면 이 문장들을 다시 찍는다 */
+  var RELANG = [];
+  ['ynvKo','ynvEn'].forEach(function(id){
+    document.addEventListener('click', function(e){
+      var b = e.target && e.target.closest ? e.target.closest('#'+id) : null;
+      if(!b) return;
+      setTimeout(function(){ RELANG.forEach(function(fn){ try{ fn(); }catch(_e){} }); }, 90);
+    });
+  });
+
+  /* 언어를 바꾸면 값에 붙은 꼬리말만 다시 쓴다 — 화면을 통째로 다시 그리면
+     펼쳐 둔 아코디언·고른 분야가 초기화되므로 글자만 손댄다. */
+  RELANG.push(function(){
+    document.querySelectorAll('[data-n]').forEach(function(el){
+      el.textContent = nCount(+el.getAttribute('data-n')) + (el.getAttribute('data-suf') || '');
+    });
+    document.querySelectorAll('[data-nl]').forEach(function(el){
+      el.textContent = nLabs(+el.getAttribute('data-nl'));
+    });
+    document.querySelectorAll('[data-pi]').forEach(function(el){
+      var ko = el.getAttribute('data-pi'); if(!ko) return;
+      var dot = el.querySelector('.cdot');
+      el.textContent = profName(ko);
+      if (dot) el.insertBefore(dot, el.firstChild);
+    });
+  });
+
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){
     return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
 
@@ -1249,7 +1296,7 @@ html[lang="en"] .lab-en-only{display:none}
   if(statRow){
     statRow.innerHTML = clusters.map(function(c){
       return '<a class="stat-item" href="#'+esc(c.id)+'">'
-        + '<div class="num tnum">'+c.count+'<span class="u">개</span></div>'
+        + '<div class="num tnum" data-nl="'+c.count+'">'+esc(nLabs(c.count))+'</div>'
         + '<div class="ko">'+esc(c.ko)+'</div>'
         + '</a>';
     }).join('');
@@ -1291,7 +1338,7 @@ html[lang="en"] .lab-en-only{display:none}
     var sub = l.area ? '<div class="l-sub">'+esc(l.area)+'</div>'
             : (l.en ? '<div class="l-sub lab-en-only">'+esc(l.en)+'</div>' : '');
 
-    var piInner = esc(l.pi)+' 교수';
+    var piInner = '<span data-pi="'+esc(l.pi)+'">'+esc(profName(l.pi))+'</span>';
     var piCell = prof
       ? '<a class="pi" href="G-people.html#'+esc(prof.id)+'">'+piInner+'<span class="visually-hidden"> 프로필 보기</span></a>'
       : '<span class="pi">'+piInner+'</span>';
@@ -1363,7 +1410,7 @@ html[lang="en"] .lab-en-only{display:none}
           + '<p class="desc">'+esc(c.desc)+'</p>'
         + '</div>'
         + '<div class="cl-metric">'
-          + '<div class="num tnum">'+String(c.count)+'<span class="u">개</span></div>'
+          + '<div class="num tnum" data-nl="'+c.count+'">'+esc(nLabs(c.count))+'</div>'
           + '<div class="share">연구실</div>'
         + '</div>'
         + '<svg class="cl-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>'
@@ -1509,14 +1556,14 @@ html[lang="en"] .lab-en-only{display:none}
       var hot=document.createElement('div'); hot.className='ehot'; hot.setAttribute('data-cid',p.cid);
       hot.style.clipPath=p.hot; hot.style.webkitClipPath=p.hot;
       hot.setAttribute('role','button'); hot.setAttribute('tabindex','0');
-      hot.setAttribute('aria-label', c.ko+' 부위 · '+c.count+'개 연구실 · 목록 열기');
+      hot.setAttribute('aria-label', c.ko+' · '+nLabs(c.count));
       stage.appendChild(hot);
       var lab=document.createElement('button'); lab.type='button'; lab.className='elabel';
       lab.setAttribute('data-cid',p.cid); lab.style.left=p.lx+'%'; lab.style.top=p.ly+'%';
       lab.style.setProperty('--cl-c',col);
-      lab.setAttribute('aria-label', c.ko+' 분야 · '+c.count+'개 연구실 · 목록 열기');
+      lab.setAttribute('aria-label', c.ko+' · '+nLabs(c.count));
       lab.innerHTML = '<div class="en">'+esc(p.part)+'</div>'
-        + '<div class="ko">'+esc(c.ko)+'<span class="n">'+c.count+'개</span></div>';
+        + '<div class="ko">'+esc(c.ko)+'<span class="n" data-n="'+c.count+'">'+esc(nCount(c.count))+'</span></div>';
       stage.appendChild(lab);
     });
     /* 판독대 — 짚은 부위의 설명을 그림 밖 고정 자리에 쓴다 */
@@ -1528,7 +1575,7 @@ html[lang="en"] .lab-en-only{display:none}
       if(!c){ readBox.innerHTML = '<p class="er-empty">부위를 짚으면 그 분야 설명이 여기 나타납니다.</p>'; return; }
       readBox.style.setProperty('--cl-c', clColor(cid));
       readBox.innerHTML = '<p class="er-part">'+esc(p ? p.part : '')+'</p>'
-        + '<p class="er-ko">'+esc(c.ko)+'<span class="n">연구실 '+c.count+'개</span></p>'
+        + '<p class="er-ko">'+esc(c.ko)+'<span class="n" data-nl="'+c.count+'">'+esc(nLabs(c.count))+'</span></p>'
         + '<p class="er-desc">'+esc(c.desc)+'</p>'
         + '<button type="button" class="er-more" data-cid="'+esc(cid)+'">연구실 보기 <span aria-hidden="true">→</span></button>';
     }
@@ -1632,7 +1679,7 @@ html[lang="en"] .lab-en-only{display:none}
   var elist=document.getElementById('eagleList');
   if(elist){
     elist.innerHTML = clusters.map(function(c){
-      return '<button type="button" data-cid="'+esc(c.id)+'"><b>'+esc(c.ko)+'</b><span>'+esc(c.en)+'</span><i>'+c.count+'개 ↓</i></button>';
+      return '<button type="button" data-cid="'+esc(c.id)+'"><b>'+esc(c.ko)+'</b><span>'+esc(c.en)+'</span><i data-n="'+c.count+'" data-suf=" ↓">'+esc(nCount(c.count))+' ↓</i></button>';
     }).join('');
     elist.addEventListener('click', function(e){ var b=e.target.closest('button'); if(b) openCluster(b.getAttribute('data-cid'), true); });
   }
@@ -1645,13 +1692,13 @@ html[lang="en"] .lab-en-only{display:none}
       var col = clColor(c.id);
       return '<button type="button" class="fd-card" data-cid="'+esc(c.id)+'" data-cursor="자세히 보기" '
           + 'style="--fc:'+col+'" '
-          + 'aria-label="'+esc(c.ko)+' 분야 · '+c.count+'개 연구실 · 자세히 보기">'
+          + 'aria-label="'+esc(c.ko)+' · '+esc(nLabs(c.count))+'">'
         + '<div class="fd-c-top">'
           + '<div>'
             + '<div class="fd-c-en">'+esc(c.en)+'</div>'
             + '<div class="fd-c-ko">'+esc(c.ko)+'</div>'
           + '</div>'
-          + '<div class="fd-c-count tnum">'+c.count+'<span class="u">개 연구실</span></div>'
+          + '<div class="fd-c-count tnum" data-nl="'+c.count+'">'+esc(nLabs(c.count))+'</div>'
         + '</div>'
         + '<p class="fd-c-desc">'+esc(c.desc)+'</p>'
         + '<span class="fd-c-more"><span class="lbl">자세히 보기</span>'
@@ -1681,7 +1728,7 @@ html[lang="en"] .lab-en-only{display:none}
     function fxFill(c){
       fx.querySelector('#fxEn').textContent = c.en || '';
       fx.querySelector('#fxKo').textContent = c.ko || '';
-      fx.querySelector('#fxCount').innerHTML = '소속 연구실 <b>'+c.count+'개</b>';
+      fx.querySelector('#fxCount').innerHTML = isEn() ? ('<b>'+c.count+'</b> labs') : ('소속 연구실 <b>'+c.count+'개</b>');
       fx.querySelector('#fxDesc').textContent = c.desc || '';
       fx.querySelector('#fxIntro').textContent = c.intro || '';
       fx.querySelector('#fxLink').setAttribute('data-golabs', c.id);
@@ -1788,7 +1835,7 @@ html[lang="en"] .lab-en-only{display:none}
         var prof = profByLab[l.id];
         var vi = vidInfo(l.video);
         var pi = l.pi
-          ? '<div class="lvpi"><span class="cdot" aria-hidden="true"></span>'+esc(l.pi)+' 교수</div>'
+          ? '<div class="lvpi" data-pi="'+esc(l.pi)+'"><span class="cdot" aria-hidden="true"></span>'+esc(profName(l.pi))+'</div>'
           : '';
         var en = l.en ? '<div class="lven">'+esc(l.en)+'</div>' : '';
         var body = '<div class="lv-body"><div class="lvname">'+esc(l.ko)+'</div>'+pi+en+'</div>';
@@ -1796,9 +1843,9 @@ html[lang="en"] .lab-en-only{display:none}
           /* 영상 보유 — 클릭 시 라이트박스에서 재생. href 는 실제 영상 URL(무JS 폴백: 새 탭). */
           var img = vi.thumb ? '<img class="lv-img" src="'+esc(vi.thumb)+'" alt="" loading="lazy" onerror="this.remove()">' : '';
           return '<a class="lv-card has-video" href="'+esc(l.video)+'" target="_blank" rel="noopener" '
-              + 'data-embed="'+esc(vi.embed)+'" data-ttl="'+esc(l.ko)+'" data-pi="'+esc(l.pi?l.pi+' 교수':'')+'" '
+              + 'data-embed="'+esc(vi.embed)+'" data-ttl="'+esc(l.ko)+'" data-pi="'+esc(l.pi?profName(l.pi):'')+'" '
               + (prof?'data-prof="'+esc(prof.id)+'" ':'')
-              + 'aria-label="'+esc(l.ko+(l.pi?' · '+l.pi+' 교수':'')+' 홍보영상 재생')+'">'
+              + 'aria-label="'+esc(l.ko+(l.pi?' · '+profName(l.pi):'')+' 홍보영상 재생')+'">'
             + '<div class="lv-thumb">'+img
               + '<span class="lv-tag">'+esc(c.ko)+'</span>'
               + '<span class="lv-play" aria-hidden="true">'+playSvg()+'</span>'
@@ -1808,7 +1855,7 @@ html[lang="en"] .lab-en-only{display:none}
         /* 영상 없음 — 정직하게 준비 중, 카드는 연구실(교수) 정보로 이동 */
         var href = prof ? 'G-people.html#'+esc(prof.id) : '#'+esc(l.cluster);
         return '<a class="lv-card is-soon" href="'+href+'" '
-            + 'aria-label="'+esc(l.ko+(l.pi?' · '+l.pi+' 교수':'')+' — 홍보영상 준비 중, 연구실 정보로 이동')+'">'
+            + 'aria-label="'+esc(l.ko+(l.pi?' · '+profName(l.pi):'')+' — 홍보영상 준비 중, 연구실 정보로 이동')+'">'
           + '<div class="lv-thumb">'
             + '<span class="lv-tag">'+esc(c.ko)+'</span>'
             + '<span class="lv-soon">영상 준비 중</span>'
@@ -1820,7 +1867,7 @@ html[lang="en"] .lab-en-only{display:none}
           + '<span class="gdot" aria-hidden="true"></span>'
           + '<span class="gko">'+esc(c.ko)+'</span>'
           + '<span class="gen">'+esc(c.en)+'</span>'
-          + '<span class="gn">'+groupLabs.length+'개 연구실</span>'
+          + '<span class="gn" data-nl="'+groupLabs.length+'">'+esc(nLabs(groupLabs.length))+'</span>'
         + '</div>'
         + '<div class="lv-grid">'+cards+'</div>'
         + '</div>';
@@ -1879,7 +1926,7 @@ html[lang="en"] .lab-en-only{display:none}
   }
 })();
 </script>
-<script src="assets/nav.js?v=84"></script>
+<script src="assets/nav.js?v=85"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:#7b8595">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

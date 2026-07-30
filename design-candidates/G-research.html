@@ -1252,6 +1252,11 @@ html[lang="en"] .lab-en-only{display:none}
     var n = String(ko).replace(/^Prof\.\s*/, '').replace(/\s*교수$/, '');
     return isEn() ? ('Prof. ' + (PROF_EN[n] || n)) : (n + ' 교수');
   }
+  /* 「3명」의 「명」은 세는 말이라 영문에서는 숫자만 남긴다 */
+  function internCnt(v){
+    var t = String(v||'');
+    return isEn() ? t.replace(/명$/, '') : t;
+  }
   function nLabs(n){ return isEn() ? (n + (n === 1 ? ' lab' : ' labs')) : (n + '개 연구실'); }
   function nCount(n){ return isEn() ? String(n) : (n + '개'); }
   /* 언어를 바꾸면 이 문장들을 다시 찍는다 */
@@ -1272,6 +1277,9 @@ html[lang="en"] .lab-en-only{display:none}
     });
     document.querySelectorAll('[data-nl]').forEach(function(el){
       el.textContent = nLabs(+el.getAttribute('data-nl'));
+    });
+    document.querySelectorAll('[data-cnt]').forEach(function(el){
+      el.textContent = ' — ' + internCnt(el.getAttribute('data-cnt'));
     });
     document.querySelectorAll('[data-pi]').forEach(function(el){
       var ko = el.getAttribute('data-pi'); if(!ko) return;
@@ -1383,7 +1391,9 @@ html[lang="en"] .lab-en-only{display:none}
       }
       var cnt = realVal(l.intern);
       internHtml = '<div class="lp-block intern-panel">'
-        + '<div class="ip-head">학부연구생 · 인턴 모집'+(cnt ? ' — '+esc(cnt) : '')+'</div>'
+        + '<div class="ip-head"><span>학부연구생 · 인턴 모집</span>'
+          /* 라벨과 인원을 다른 마디로 나눈다 — 한 마디에 붙어 있으면 사전이 통째로 대조해 못 잡는다 */
+          + (cnt ? '<span class="ip-n" data-cnt="'+esc(cnt)+'"> — '+esc(internCnt(cnt))+'</span>' : '')+'</div>'
         + '<dl class="ip-grid">'+dl+'</dl>'
       + '</div>';
     }

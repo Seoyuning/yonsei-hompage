@@ -166,6 +166,35 @@ a{color:inherit;text-decoration:none}
    보직은 아래 .opost 카드로 다시 짰고, 이 이름들은 저장소 어디에도 마크업이 없다.
    (주의 — 주석 안에 별표와 빗금을 붙여 쓰면 주석이 거기서 끝나 버린다) */
 .org-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.8rem,1rem + 2.5vw,3rem);align-items:start}
+/* ── 대중교통 ──
+   학교 공식 표를 그대로 옮긴 것이라 항목이 많다. 상자로 두르지 않고
+   [왼쪽 라벨 | 오른쪽 내용]을 헤어라인으로 끊는, 이 사이트의 편집 지면 어법을 쓴다.
+   노선 번호는 숫자가 줄줄이라 자릿수가 흔들리지 않게 tabular-nums 를 준다. */
+.way{margin-top:clamp(2.4rem,1.6rem + 2.4vw,3.6rem)}
+.way-row{display:grid;grid-template-columns:7rem minmax(0,1fr);
+  gap:0 clamp(1.2rem,.8rem + 1.4vw,2.2rem);align-items:start;
+  padding:clamp(1.1rem,.9rem + .7vw,1.6rem) 0;border-top:1px solid var(--line)}
+.way-row:last-of-type{border-bottom:1px solid var(--line)}
+.way-lab{font-family:var(--kr);font-weight:700;font-size:.74rem;letter-spacing:.16em;
+  color:var(--muted);line-height:1.5}
+.way-body{min-width:0}
+.way-stop + .way-stop{margin-top:clamp(1rem,.8rem + .6vw,1.5rem)}
+.way-line{font-family:var(--kr);font-size:.95rem;line-height:1.5;color:var(--body);margin:0}
+.way-line b{font-weight:700;color:#111318}
+.way-line .wn{font-size:.76rem;font-weight:600;color:var(--label);margin-left:.4rem}
+.way-list{list-style:none;margin:.5rem 0 0;padding:0;display:grid;gap:.34rem}
+.way-list li{display:grid;grid-template-columns:2.9rem minmax(0,1fr);gap:.6rem;
+  font-family:var(--kr);font-size:.9rem;line-height:1.65;color:var(--sub);
+  font-variant-numeric:tabular-nums;word-break:keep-all}
+.way-list .wk{font-weight:700;font-size:.76rem;color:var(--label);letter-spacing:.02em;
+  padding-top:.15em}
+.way-src{margin-top:1rem;font-family:var(--kr);font-size:.78rem;color:var(--muted)}
+.way-src a{color:var(--muted);text-decoration:underline;text-underline-offset:2px;transition:color .15s}
+.way-src a:hover{color:var(--coral)}
+@media (max-width:560px){
+  .way-row{grid-template-columns:minmax(0,1fr);gap:.7rem 0}
+  .way-list li{grid-template-columns:2.6rem minmax(0,1fr);gap:.5rem;font-size:.86rem}
+}
 .overline{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;
   color:var(--coral);margin-bottom:1rem}
 
@@ -596,11 +625,70 @@ a{color:inherit;text-decoration:none}
           <div class="c-row addr"><span class="val">서울특별시 서대문구 연세로 50 (03722)<br>연세대학교 공과대학 기계공학부</span></div>
         </div>
         <p class="side-note">
-          <a href="https://www.yonsei.ac.kr" target="_blank" rel="noopener">캠퍼스 안내 <span aria-hidden="true">↗</span></a>
+          <a href="https://www.yonsei.ac.kr/sc/502/subview.do" target="_blank" rel="noopener">캠퍼스 안내 <span aria-hidden="true">↗</span></a>
           &nbsp;·&nbsp;
           <a href="https://map.naver.com/p/search/연세대학교%20제1공학관" target="_blank" rel="noopener">네이버 지도에서 보기 <span aria-hidden="true">↗</span></a>
         </p>
       </div>
+    </div>
+
+    <!-- 대중교통 — 학교 공식 「오시는 길」(yonsei.ac.kr/sc/502)의 표를 그대로 옮겼다.
+         노선 번호는 한 자리도 고치지 않는다. 정류장 넷 중 학부에서 가까운 순서로 둔다. -->
+    <div class="way">
+      <p class="overline">대중교통</p>
+
+      <div class="way-row">
+        <p class="way-lab">지하철</p>
+        <div class="way-body">
+          <p class="way-line"><b>2호선 신촌역</b></p>
+          <ul class="way-list">
+            <li><span class="wk">2번 출구</span> 연세대학교 · 세브란스병원 방향</li>
+            <li><span class="wk">3번 출구</span> 연세대학교 · 이화여자대학교 방향</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="way-row">
+        <p class="way-lab">버스</p>
+        <div class="way-body">
+          <div class="way-stop">
+            <p class="way-line"><b>연세대학교 · 연세대학교앞</b> <span class="wn">중앙차선</span></p>
+            <ul class="way-list">
+              <li><span class="wk">간선</span> 163, 171, 172, 272, 470, 601, 606, 672, 673, 674, 700, 710, 742, 750A, 750B</li>
+              <li><span class="wk">지선</span> 6714, 7737</li>
+              <li><span class="wk">광역</span> M6724, M7111, M7119</li>
+              <li><span class="wk">공항</span> 6011</li>
+              <li><span class="wk">직행</span> 1000, 1200, 1900, 7111, 7200</li>
+            </ul>
+          </div>
+          <div class="way-stop">
+            <p class="way-line"><b>연세대학교 정문</b></p>
+            <ul class="way-list">
+              <li><span class="wk">간선</span> 163, 171, 172</li>
+              <li><span class="wk">지선</span> 7017, 7713, 7720, 7727, 7728, 7737</li>
+              <li><span class="wk">광역</span> M6724</li>
+              <li><span class="wk">마을</span> 서대문03, 서대문04</li>
+            </ul>
+          </div>
+          <div class="way-stop">
+            <p class="way-line"><b>세브란스병원앞</b> <span class="wn">중앙차선</span></p>
+            <ul class="way-list">
+              <li><span class="wk">간선</span> 272, 470, 601, 606, 672, 673, 700, 710, 742, 750A, 750B</li>
+              <li><span class="wk">지선</span> 6714, 7737</li>
+            </ul>
+          </div>
+          <div class="way-stop">
+            <p class="way-line"><b>세브란스병원</b></p>
+            <ul class="way-list">
+              <li><span class="wk">간선</span> 163, 171, 172, 472</li>
+              <li><span class="wk">지선</span> 7017, 7024, 7713</li>
+              <li><span class="wk">마을</span> 서대문03, 서대문04, 서대문05</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <p class="way-src">출처 <a href="https://www.yonsei.ac.kr/sc/502/subview.do" target="_blank" rel="noopener">연세대학교 신촌캠퍼스 오시는 길 <span aria-hidden="true">↗</span></a></p>
     </div>
   </section>
 

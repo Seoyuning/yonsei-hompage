@@ -298,9 +298,16 @@ a{color:inherit;text-decoration:none}
 .l-tel{font-variant-numeric:tabular-nums;white-space:nowrap}
 .l-tel a{color:inherit}
 .l-tel a:hover{color:var(--navy)}
+/* 자료 칸 — 「홈페이지」에는 집 아이콘이 있고 「영상」에는 없다.
+   inline-flex 상자의 기준선은 첫 자식이 정하는데, 아이콘이 있는 쪽은 그 SVG 가
+   기준선을 잡아 링크 하나만 3px 위로 떠 두 글자가 어긋나 보였다.
+   칸을 flex 로 바꾸면 좁은 칸에서 두 링크가 줄바꿈돼 더 나빠진다 —
+   둘 다 vertical-align:middle 로 같은 자리에 세우는 편이 안전하다. */
 .l-act{white-space:nowrap}
 .l-act a.ext{color:var(--muted);transition:color .15s;
-  display:inline-flex;align-items:center;gap:.3rem;white-space:nowrap}
+  display:inline-flex;align-items:center;gap:.3rem;white-space:nowrap;
+  vertical-align:middle}
+.l-act .sep,.l-act .dim{vertical-align:middle}
 /* 집 아이콘 — 글자와 같은 색을 물려받아 호버에서 함께 바뀐다 */
 .l-act .ext-i{width:.95em;height:.95em;flex:none;display:block}
 .l-act a.ext:hover{color:var(--navy);text-decoration:underline;text-underline-offset:3px}

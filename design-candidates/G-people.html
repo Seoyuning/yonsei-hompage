@@ -84,7 +84,15 @@ a{color:inherit;text-decoration:none}
 /* 형제바(.ysub) 바로 아래에 붙는다. 값을 3.6rem 으로 박아 두면 형제바가 생긴 뒤로는
    그 아래로 파묻혀 「전임교수 / 명예·퇴임교수」 줄이 가려진다(nav.js 가 --ys-bars 로 실측). */
 /* 분야 필터 줄만 화면에 붙는다 */
-.filterbar.is-kind{position:relative;z-index:19;padding-bottom:0}
+/* 신분 구분 줄 아래에는 여백을 넉넉히 둔다 — 여백을 아래 분야 필터 줄(.is-chips)의
+   padding-top 으로 주면 그 줄이 화면 위에 붙을 때 띠가 같이 두꺼워지므로,
+   붙지 않는 이 줄의 padding-bottom 으로 준다.
+   아래 테두리는 지운다: 여백을 벌리면 .kseg 밑줄과 이 테두리가 1rem 남짓 떨어져
+   가로줄 두 개 사이에 빈 띠가 생긴다. 구분선 역할은 .kseg 밑줄이 이미 한다. */
+/* top:auto 를 반드시 되돌린다 — 공통 .filterbar 에 걸린 top:var(--ys-bars) 는
+   position:relative 에도 그대로 먹어 이 줄만 124px 아래로 밀려 내려간다.
+   그러면 뒤따르는 분야 필터 줄이 위로 올라와 순서가 뒤집혀 보인다. */
+.filterbar.is-kind{position:relative;top:auto;z-index:19;padding-bottom:clamp(.8rem,1.6vh,1.4rem);border-bottom:0}
 .filterbar.is-kind .kseg{margin-bottom:0}
 .filterbar.is-chips{padding-top:.85rem}
 .filterbar{position:sticky;top:var(--ys-bars,3.6rem);z-index:20;
@@ -124,6 +132,7 @@ a{color:inherit;text-decoration:none}
 .fchips{display:flex;align-items:center;gap:.35rem;flex-wrap:wrap}
 /* display:flex 가 hidden 속성의 display:none 을 이겨서 숨겨지지 않는다 */
 .fchips[hidden]{display:none}
+.filterbar[hidden]{display:none}
 .fchips-label{font-size:.78rem;color:var(--label);margin-right:.55rem;flex:none;letter-spacing:.02em}
 /* ── 분야 필터 ──
    색은 쓰지 않는다: 예전에 칩마다 분야색 점을 찍었더니 여섯 색이 한 줄에 늘어서
@@ -1092,6 +1101,10 @@ html[lang="en"] .ppos{display:none}
     rowsEl.hidden = em;
     if(em) emptyEl.hidden = true;
     cWrap.hidden = em;
+    /* 감싼 sticky 띠까지 같이 접는다 — 칩만 숨기면 신분 구분 줄과 명단 사이에
+       빈 흰 띠와 헤어라인 한 줄이 그대로 남는다(명예·퇴임에는 분야 필터가 없다) */
+    var chipBar = cWrap.closest ? cWrap.closest('.filterbar.is-chips') : null;
+    if (chipBar) chipBar.hidden = em;
     document.getElementById('dir').setAttribute('aria-label', em ? '명예·퇴임 교수 명단' : '전임 교수 디렉토리');
     if(kseg) [].forEach.call(kseg.querySelectorAll('.kseg-b'), function(b){
       b.setAttribute('aria-selected', String(b.dataset.k === state.k));

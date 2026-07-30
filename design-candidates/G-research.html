@@ -104,8 +104,11 @@ a{color:inherit;text-decoration:none}
 .sec-sub{font-family:var(--kr);font-size:.92rem;color:var(--sub);margin-top:.7rem;max-width:52rem;line-height:1.7}
 
 /* ── 연구 비전 (웅장한 리드 + 3개 축 · 편집형 절제) ── */
+/* 네 탭(연구 비전 · 연구 분야 · 연구실 목록 · 홍보영상)은 형제바로 갈아 끼우는 한 화면이다.
+   탭마다 위 여백이 112 / 64 / 67 / 74px 로 달라, 탭을 옮길 때마다 본문이 위아래로 튀었다.
+   네 곳 모두 같은 값(1440px 기준 45px)으로 맞춘다. */
 .vision{background:#ffffff;max-width:1120px;margin:0 auto;
-  padding:clamp(4rem,3rem + 5vw,7rem) clamp(1.2rem,.6rem + 2vw,2.6rem);
+  padding:clamp(1.9rem,1.4rem + 1.6vw,3rem) clamp(1.2rem,.6rem + 2vw,2.6rem) clamp(4rem,3rem + 5vw,7rem);
   border-bottom:1px solid var(--line-soft);scroll-margin-top:6.6rem}
 /* 비전 헤더 — 킥커만 얇게, 큰 위계는 리드 문장이 담당 */
 .vision .sec-head{margin-bottom:clamp(2.2rem,1.4rem + 2.5vw,3.4rem)}
@@ -211,7 +214,7 @@ a{color:inherit;text-decoration:none}
 
 /* ── 분야별 연구실 (카드 블록 × 6) ── */
 .clusters{max-width:1120px;margin:0 auto;
-  padding:clamp(2.8rem,2rem + 3vw,4.2rem) clamp(1.2rem,.6rem + 2vw,2.6rem) 1.6rem}
+  padding:clamp(1.9rem,1.4rem + 1.6vw,3rem) clamp(1.2rem,.6rem + 2vw,2.6rem) 1.6rem}
 /* ── 분야 아코디언 ──
    접힌 모습이 목록의 기본 상태다. 예전엔 [상자 + 좌측 3px 색막대 + 거대한 회색 숫자]라
    카드 6장이 쌓인 것처럼 무거웠다. 상자를 없애고 헤어라인으로만 나눈 '차례' 형태로 바꾼다.
@@ -383,7 +386,13 @@ html[lang="en"] .lab-en-only{display:none}
 <style>.ynav-ph{position:fixed;top:0;left:0;right:0;height:3.7rem;background:rgba(255,255,255,.96);border-bottom:1px solid rgba(0,0,0,.08);z-index:39}</style>
 <style>
 /* ═══ 독수리 해부도 — 6부위 = 6연구분야 (호버 시 부위 떠오름 + 설명, 클릭 시 아코디언) ═══ */
-.eagle-sec{max-width:1240px;margin:0 auto;padding:clamp(2.4rem,1.6rem + 3vw,4rem) clamp(1.2rem,.6rem + 2vw,2.6rem) 0}
+/* 위 여백만 절반으로 줄인다 — 이 구간은 형제 탭 바가 바로 위에 붙는데,
+   제목 아래로 얇은 안내 한 줄뿐이라 예전 값(2.4~4rem)에서는 탭 바와 독수리 사이가
+   빈칸으로만 채워져 보였다. 좌우·아래 값은 다른 구간과 맞춰 그대로 둔다. */
+.eagle-sec{max-width:1240px;margin:0 auto;padding:clamp(1.9rem,1.4rem + 1.6vw,3rem) clamp(1.2rem,.6rem + 2vw,2.6rem) 0}
+/* 이 구간의 머리 아래에는 큰 덩어리가 아니라 안내 한 줄이 오므로
+   공통 .sec-head 간격(1.6~2.4rem)은 과하다. 여기서만 좁혀 안내 줄을 제목에 붙인다. */
+.eagle-sec .sec-head{margin-bottom:clamp(.9rem,.7rem + .8vw,1.4rem)}
 .eagle-intro{font-family:var(--kr);font-size:clamp(.9rem,.86rem + .2vw,1rem);color:var(--muted);
   line-height:1.75;max-width:44rem;margin:0 0 clamp(2.2rem,1.4rem + 2.6vw,3.6rem)}
 .eagle-intro b{color:var(--ink);font-weight:700}
@@ -636,7 +645,7 @@ html[lang="en"] .lab-en-only{display:none}
 <style>
 /* ═══ 연구실 홍보영상 갤러리 (분야 액센트 카드 · 16:9 썸네일 + 재생 버튼) ═══ */
 .labvideos{max-width:1120px;margin:0 auto;
-  padding:clamp(2.8rem,2rem + 3vw,4.6rem) clamp(1.2rem,.6rem + 2vw,2.6rem);
+  padding:clamp(1.9rem,1.4rem + 1.6vw,3rem) clamp(1.2rem,.6rem + 2vw,2.6rem) clamp(2.8rem,2rem + 3vw,4.6rem);
   border-bottom:1px solid var(--line-soft);scroll-margin-top:6.6rem}
 /* 분야 그룹 헤더 — 얇은 헤어라인 + 분야색 점, 편집형 위계 */
 .lv-group{margin-top:clamp(2.2rem,1.6rem + 1.5vw,3.2rem)}

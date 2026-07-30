@@ -114,15 +114,40 @@ a{color:inherit;text-decoration:none}
 .sec-sub{font-family:var(--kr);font-size:.92rem;color:var(--sub);margin-top:.7rem;max-width:52rem;line-height:1.7}
 
 /* ── §01 교육과정 개관 ── */
-/* 배너 — 사진 위에 문장 하나. 사진은 장식이라 alt 를 비우고, 글자는 어두운 막 위에 얹는다 */
-.edu-banner{position:relative;margin-top:clamp(1.4rem,1rem + 1.2vw,2.2rem);
-  border-radius:.6rem;overflow:hidden;background:var(--navy);
-  aspect-ratio:16/5;min-height:13rem}
-.edu-banner img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
-  opacity:.42;filter:saturate(.8)}
-.edu-banner::after{content:"";position:absolute;inset:0;
-  background:linear-gradient(90deg,rgba(10,26,51,.88) 0%,rgba(10,26,51,.55) 55%,rgba(10,26,51,.25) 100%)}
-.eb-txt{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;justify-content:center;
+/* 배너 — 스크롤을 따라 사진이 화면을 꽉 채우는 구간(메인 화면 H-academic 과 같은 짜임).
+   .tw-scene 은 두 화면 남짓의 빈 통이고, 그 안의 .tw-pin 이 화면에 붙어 머문다.
+   통을 지나가는 동안 붙어 있는 화면 안에서 사진이 자라고, 다 자라면 핀이 풀려
+   아래의 「이수 흐름」이 자연스럽게 이어진다.
+   진행률(0~1)은 스크립트가 --p 로 넣어 주고, 크기·모서리·글자는 CSS 가 그린다. */
+.tw-scene{position:relative;background:#fff;
+  /* 섹션(.sec)은 1120px 로 좁으니 이 통만 화면 폭으로 되돌린다.
+     body 가 overflow-x:hidden 이라 100vw 가 만드는 가로 넘침은 잘려 나간다. */
+  width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw)}
+.tw-scene.is-zoom{height:220vh;height:220svh;margin-top:clamp(1.4rem,1rem + 1.2vw,2.2rem)}
+/* 이 페이지는 위에 붙어 있는 바가 셋이다(헤더 · 형제 탭 · 바로가기).
+   top:0 으로 붙이면 흰 바들이 사진 위쪽을 덮으므로, nav.js 가 재어 둔 --ys-bars 만큼
+   내려 붙여 「바 아래로 보이는 화면」을 사진이 정확히 채우게 한다.
+   100vh 는 휴대폰에서 주소창 때문에 화면보다 커지므로 100svh 를 뒤에 겹쳐 쓴다. */
+.tw-pin{position:sticky;top:var(--ys-bars,7.6rem);
+  height:calc(100vh - var(--ys-bars,7.6rem));
+  height:calc(100svh - var(--ys-bars,7.6rem));
+  display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff}
+/* 폭·높이를 같이 늘리면 object-fit 이 잘라내는 자리가 계속 바뀌어 그림이 미끄러지듯 어색해진다.
+   상자는 처음부터 화면 크기로 두고 transform 으로 통째로 키우기만 한다(잘림이 변하지 않는다). */
+.tw-zoom{position:relative;flex:0 0 auto;width:100%;height:100%;margin:0;overflow:hidden;
+  transform:scale(calc(.54 + min(1, var(--p,0) / .8) * .46));transform-origin:50% 50%;
+  border-radius:calc((1 - min(1, var(--p,0) / .8)) * .9rem);
+  box-shadow:0 40px 90px rgba(15,27,48,calc(.34 * (1 - min(1, var(--p,0) / .8))))}
+/* 확대 구간의 배경은 흰색이라 사진이 화면에서 유일한 색이다 — 흑백으로 누르지 않는다 */
+.tw-zoom img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  filter:saturate(1.04) contrast(1.03)}
+/* 글자까지 같이 커지면 안 되므로 배율의 역수로 되돌린다(글자 크기가 변하지 않는다).
+   기준을 아래 끝(50% 100%)으로 두어야 되돌린 만큼 위로만 자라 상자 밖으로 삐져나가지 않는다. */
+.tw-zoom figcaption{position:absolute;left:0;right:0;bottom:0;z-index:1;
+  transform:scale(calc(1 / (.54 + min(1, var(--p,0) / .8) * .46)));transform-origin:50% 100%;
+  background:linear-gradient(180deg,rgba(8,17,34,0),rgba(8,17,34,.82));
+  opacity:calc(min(1, max(0, var(--p,0) - .3) / .25))}
+.eb-txt{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;
   padding:clamp(1.6rem,1.2rem + 2.5vw,3.4rem)}
 .eb-kick{font-family:var(--kr);font-size:.74rem;font-weight:700;letter-spacing:.18em;
   color:rgba(255,255,255,.82);margin:0 0 .9rem;padding-bottom:.7rem;position:relative}
@@ -167,9 +192,28 @@ a{color:inherit;text-decoration:none}
 @media (max-width:860px){
   .edu-row{grid-template-columns:1fr;gap:1.1rem}
   .edu-items{grid-template-columns:1fr}
-  .edu-banner{aspect-ratio:auto;min-height:0}
-  .edu-banner::after{background:linear-gradient(180deg,rgba(10,26,51,.72) 0%,rgba(10,26,51,.88) 100%)}
 }
+/* 휴대폰에서는 통을 짧게 — 220svh 는 손가락으로 넘기기엔 너무 길다 */
+@media (max-width:640px){
+  .tw-scene.is-zoom{height:150vh;height:150svh}
+}
+/* 「동작 줄이기」를 켠 사람에게는 확대를 걸지 않는다.
+   스크립트도 이 경우 .is-live 를 붙이지 않지만, 나중에 스크립트가 바뀌어도
+   확대가 되살아나지 않도록 CSS 에서도 한 번 더 못 박아 둔다. */
+@media (prefers-reduced-motion:reduce){
+  .tw-scene.is-zoom{height:auto}
+  .tw-pin{position:static;height:auto}
+  .tw-zoom{transform:none;height:auto;aspect-ratio:16/6;border-radius:0;box-shadow:none}
+  .tw-zoom figcaption{transform:none;opacity:1}
+}
+/* 스크립트가 진행률을 넣기 시작하면 .is-live 가 붙는다. 붙기 전(스크립트가 없거나 「동작 줄이기」)
+   에는 통 높이를 auto 로 두고 확대 없이 한 장으로 보여 준다 — 예전 배너와 같은 모습이다.
+   위의 휴대폰 규칙(150svh)과 굵기가 같으니, 반드시 그 뒤에 두어야 이 쪽이 이긴다. */
+.tw-scene:not(.is-live){height:auto}
+.tw-scene:not(.is-live) .tw-pin{position:static;height:auto}
+.tw-scene:not(.is-live) .tw-zoom{transform:none;height:auto;aspect-ratio:16/6;
+  border-radius:0;box-shadow:none}
+.tw-scene:not(.is-live) .tw-zoom figcaption{transform:none;opacity:1}
 
 /* ── 졸업 요건 요약 (#requirements) ── */
 .req-grid{display:grid;grid-template-columns:minmax(13rem,1fr) 2.2fr;gap:1px;
@@ -782,11 +826,20 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
     <!-- 한양대 기계공학부 「교육 목표」 페이지의 짜임을 참고했다:
          (1) 사진 위에 한 문장을 얹은 배너, (2) 「제목 상자 + 항목 셋」 묶음의 반복.
          문구는 새로 짓지 않고 우리가 이미 쓰던 개관 문장을 그 틀에 나눠 담았다. -->
-    <div class="edu-banner">
-      <img src="assets/hero-academics.jpg" alt="" loading="lazy" />
-      <div class="eb-txt">
-        <p class="eb-kick">Curriculum</p>
-        <p class="eb-line">기초 과학에서 종합설계까지,<br />4년의 이수 흐름</p>
+    <!-- 배너 사진은 스크롤 확대 구간으로 — 메인 화면(H-academic)의 그 짜임을 그대로 옮겼다.
+         형제 탭(.ysub)이 main 안의 섹션들을 통째로 감추므로, 이 구간은 반드시
+         #curriculum **안에** 두어야 탭 전환이 깨지지 않는다. -->
+    <div class="tw-scene is-zoom">
+      <div class="tw-pin">
+        <figure class="tw-zoom">
+          <img src="assets/hero-academics.jpg" alt="" loading="lazy" decoding="async" />
+          <figcaption>
+            <div class="eb-txt">
+              <p class="eb-kick">Curriculum</p>
+              <p class="eb-line">기초 과학에서 종합설계까지,<br />4년의 이수 흐름</p>
+            </div>
+          </figcaption>
+        </figure>
       </div>
     </div>
 
@@ -1881,6 +1934,45 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
 })();
 </script>
 <script src="assets/nav.js?v=72"></script>
+<script>
+/* ── 교육과정 배너 확대 — 스크롤 진행률 ──
+   바깥 통(.tw-scene)의 높이에서 화면 한 칸을 뺀 만큼이 「진행 구간」이다.
+   그 구간을 지나는 동안 0~1 을 --p 로 넣어 주면 크기·모서리·글자는 CSS 가 그린다.
+   스크롤마다 재지 않고 rAF 로 한 프레임에 한 번만 재어 스크롤이 무거워지지 않게 한다. */
+(function () {
+  'use strict';
+  var reduce = false;
+  try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+  var scenes = [].slice.call(document.querySelectorAll('.tw-scene'));
+  /* .is-live 를 붙이지 않고 나가면 CSS 가 확대 없는 한 장으로 둔다 — 스크립트가 없어도 멀쩡하다 */
+  if (!scenes.length || reduce) return;
+  scenes.forEach(function (s) { s.classList.add('is-live'); });
+
+  var ticking = false;
+  function run() {
+    ticking = false;
+    var vh = innerHeight || document.documentElement.clientHeight || 1;
+    scenes.forEach(function (s) {
+      /* 다른 탭이 켜져 있으면 이 구간은 display:none 이라 높이가 0 이다 — 진행률도 0 으로 둔다 */
+      var span = s.offsetHeight - vh;
+      if (span < 1) { s.style.setProperty('--p', '0'); return; }
+      var p = -s.getBoundingClientRect().top / span;
+      s.style.setProperty('--p', (p < 0 ? 0 : p > 1 ? 1 : p).toFixed(4));
+    });
+  }
+  function ask() { if (!ticking) { ticking = true; requestAnimationFrame(run); } }
+  addEventListener('scroll', ask, { passive: true });
+  addEventListener('resize', ask, { passive: true });
+  addEventListener('load', run);
+  /* 형제 탭을 옮기면 이 구간이 숨었다 나타나며 위치가 통째로 바뀐다 — 그려진 뒤 다시 잰다.
+     탭 버튼과 바로가기 바는 nav.js 가 나중에 붙이므로 문서에 위임해 받는다. */
+  document.addEventListener('click', function (e) {
+    var t = e.target && e.target.closest ? e.target.closest('.ysub-tab,.yjump a') : null;
+    if (t) setTimeout(run, 60);
+  });
+  run();
+})();
+</script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--kr);font-size:.74rem;color:#7b8595">
   © 2026 연세대학교 기계공학부 &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

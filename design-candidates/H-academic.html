@@ -122,6 +122,10 @@ img{display:block;max-width:100%}
 .hb-track span{font-family:var(--mono);font-size:.7rem;font-weight:600;letter-spacing:.32em;
   color:rgba(255,255,255,.6);white-space:nowrap}
 @keyframes hbRun{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+/* 히어로를 지나쳐도 독수리 부유와 띠 흐름이 계속 돌면 합성기가 영영 쉬지 못한다.
+   화면 밖으로 나가면 세운다 — 클래스가 「안 보일 때 붙는」 방향이라
+   스크립트가 없으면 그냥 계속 도는 예전 동작 그대로다(멈춘 채 남지 않는다). */
+.hero.is-off .hl-eagle,.hero.is-off .hb-track{animation-play-state:paused}
 @media(max-width:640px){.hero-band{padding:.55rem 0}.hb-track span{font-size:.6rem;letter-spacing:.24em}}
 /* 대형 타이틀 — 단어별 마스크 리빌 */
 .hero h1 .tw{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em}
@@ -266,16 +270,25 @@ img{display:block;max-width:100%}
 .is-zoom .tw-pin{background:#fff;padding:0}
 /* 폭·높이를 같이 늘리면 잘리는 자리가 계속 바뀌어 그림이 미끄러지듯 어색해진다.
    상자는 처음부터 화면 크기로 두고 통째로 키우기만 한다(잘림이 변하지 않는다). */
+/* will-change 로 이 상자를 미리 제 층에 올려 둔다 — 그러면 scale 은 합성기만 쓰고
+   프레임마다 다시 그리지 않는다. 화면 하나 크기의 층 하나뿐이라 감당할 만하다. */
 .tw-zoom{position:relative;margin:0 auto;overflow:hidden;width:100%;height:100vh;height:100svh;
   transform:scale(calc(.54 + min(1, var(--p,0) / .8) * .46));
-  transform-origin:50% 50%;
-  border-radius:calc((1 - min(1, var(--p,0) / .8)) * 1.4rem);
-  box-shadow:0 40px 90px rgba(0,0,0,calc(.42 * (1 - min(1, var(--p,0) / .8))))}
+  transform-origin:50% 50%;will-change:transform;
+  border-radius:1.4rem;
+  box-shadow:0 40px 90px rgba(0,0,0,.42);
+  /* 모서리와 그림자는 --p 대신 「다 커졌다」는 표시 하나로 한 번만 바꾼다.
+     매 프레임 calc 로 움직이면 그때마다 이 층을 통째로 다시 칠한다. */
+  transition:border-radius .45s ease,box-shadow .45s ease}
+.tw-zoom.is-full{border-radius:0;box-shadow:none}
 .tw-zoom img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
   filter:saturate(1.04) contrast(1.03)}
 .tw-zoom figcaption .cred{display:block;margin-top:.35rem;font-weight:500;font-size:.72em;
   color:rgba(255,255,255,.62);letter-spacing:0}
+/* 캡션도 프레임마다 transform·opacity 가 바뀐다. 부모 층 안에 그대로 두면
+   그 영역만큼 부모 층을 다시 칠하므로, 캡션에도 제 층을 미리 잡아 준다. */
 .tw-zoom figcaption{position:absolute;left:0;right:0;bottom:0;z-index:1;
+  will-change:transform,opacity;
   transform:scale(calc(1 / (.54 + min(1, var(--p,0) / .8) * .46)));transform-origin:50% 100%;
   padding:clamp(1rem,3vh,2rem) clamp(1.2rem,3vw,2.6rem);
   background:linear-gradient(180deg,rgba(8,17,34,0),rgba(8,17,34,.82));
@@ -341,21 +354,15 @@ img{display:block;max-width:100%}
   .tl-shot{max-width:20rem}
   .tl-label{padding-top:0}
   .tl-side{min-height:7rem;font-size:.84rem}
+  /* ── 휴대폰 — 프레임마다 「다시 칠할 일」을 없앤다 ──
+     transform 과 opacity 는 합성기만 쓰므로 거의 공짜지만,
+     border-radius 는 층 전체를 래스터라이즈 다시 하게 만들고
+     box-shadow(90px 흐림)는 화면만 한 상자를 매 프레임 다시 그린다.
+     휴대폰에서 버벅이던 주범이라 확대 중에는 둘 다 끈다.
+     이미지 필터도 층을 하나 더 만들어 확대와 겹치면 매번 다시 건다. */
+  .tw-zoom{border-radius:0;box-shadow:none}
+  .tw-zoom img{filter:none}
 }
-  font-size:clamp(3rem,1rem + 10vw,9rem)}
-  transform:translate3d(0,calc(var(--p,0) * -16vh),0);
-  opacity:calc(1 - max(0, var(--p,0) - .58) / .3)}
-/* 영문은 획만 남긴 글자 — 사진 위에서 우리 톤(연한 남색 획)으로 */
-  -webkit-text-stroke:1.4px rgba(200,218,245,.62);
-  transform:translate3d(0,calc(var(--p,0) * -26vh),0);
-  opacity:calc(.6 + min(.4, var(--p,0) / .22) - max(0, var(--p,0) - .62) / .28)}
-  margin:clamp(2.2rem,5.5vh,4rem) auto 0;padding:1.05rem clamp(1.2rem,.6rem + 2vw,3rem) 0;
-  border-top:1px solid rgba(255,255,255,.3);
-  display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
-  font-family:var(--kr);font-size:clamp(.76rem,.72rem + .2vw,.92rem);font-weight:600;
-  color:rgba(255,255,255,.82);letter-spacing:.02em;
-  opacity:calc(1 - max(0, var(--p,0) - .55) / .32);
-  transform:translate3d(0,calc(var(--p,0) * -6vh),0)}
 /* 문장 구간 — 단어가 하나씩 진해진다. 다 켜지면 우리 네이비가 된다 */
 .is-say .tw-pin{background:#fff}
 .tw-say{width:100%;max-width:1180px;margin:0 auto;padding:0 clamp(1.2rem,.6rem + 2vw,3rem);
@@ -364,7 +371,11 @@ img{display:block;max-width:100%}
 .tw-say .sw{transition:color .3s ease}
 .tw-say .sw.on{color:var(--navy,#1a3d75)}
 @media (max-width:640px){
+  /* 비싼 sticky 구간을 지나는 스크롤 거리를 줄인다 — 660svh 를 520svh 로.
+     휴대폰은 한 번에 보이는 화면이 작아 구간이 길수록 「안 끝나는」 느낌만 커진다. */
   .tw-scene.is-say{height:140vh;height:140svh}
+  .tw-scene.is-zoom{height:160vh;height:160svh}
+  .tw-scene.is-list{height:220vh;height:220svh}
 }
 @media (prefers-reduced-motion:reduce){
   .tw-scene{height:auto}
@@ -559,7 +570,7 @@ img{display:block;max-width:100%}
 .ftr a:hover{color:#fff}
 </style>
 <style>h1,h2,.sec-title,.phero h1,.hero h1,.hero-title,.club-name,.vt,.staff-head h2,.brand .bko,.ynv-brand .bko{font-family:"Apple SD Gothic Neo",system-ui,sans-serif;letter-spacing:-.01em}</style>
-<link rel="stylesheet" href="assets/transition.css?v=2">
+<link rel="stylesheet" href="assets/transition.css?v=3">
 </head>
 <body>
 
@@ -1401,20 +1412,41 @@ img{display:block;max-width:100%}
   function esc(v){ return String(v).replace(/[&<>"]/g, function(c){
     return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
 
-  var t = 0;
+  /* 구간 높이는 스크롤 중에 변하지 않는다 — 프레임마다 offsetHeight 를 다시 재면
+     그때마다 레이아웃을 강제로 계산한다. 처음과 resize 때만 재고 캐시해 둔다. */
+  var spans = [];
+  function measure() {
+    var vh = innerHeight || 1;
+    spans = scenes.map(function (sc) { return Math.max(1, sc.offsetHeight - vh); });
+  }
+  measure();
+
+  var t = 0, sayOn = 0;
+  /* 프레임마다 DOM 을 찾지 않도록 한 번만 잡아 둔다 */
+  var zoomScene = document.querySelector('.tw-scene.is-zoom');
+  var zoomBox = zoomScene ? zoomScene.querySelector('.tw-zoom') : null;
+
   function run() {
     t = 0;
-    var vh = innerHeight || 1;
-    scenes.forEach(function (sc) {
-      var r = sc.getBoundingClientRect();
-      var span = Math.max(1, sc.offsetHeight - vh);
-      var p = Math.min(1, Math.max(0, -r.top / span));
+    /* 읽기를 먼저 몰아서 한다 — 한 구간에 쓰고 다음 구간을 읽으면 그 사이마다
+       레이아웃을 다시 계산하게 된다(layout thrashing). 휴대폰에서 특히 비싸다. */
+    var tops = scenes.map(function (sc) { return sc.getBoundingClientRect().top; });
+    scenes.forEach(function (sc, si) {
+      var p = Math.min(1, Math.max(0, -tops[si] / spans[si]));
       sc.style.setProperty('--p', p.toFixed(4));
+      /* 다 커진 뒤에만 모서리·그림자를 지운다 — 표시 하나를 켜고 끄는 것이라
+         전환이 일어나는 0.45초 동안만 다시 칠하고, 그 밖에는 손대지 않는다. */
+      if (zoomBox && sc === zoomScene) zoomBox.classList.toggle('is-full', p >= .78);
       if (sc.id === 'twSay' && words.length) {
         /* 앞뒤 15% 는 여유로 두고 가운데 70% 동안 단어를 켠다 */
         var q = Math.min(1, Math.max(0, (p - .15) / .7));
         var n = Math.round(q * words.length);
-        for (var k = 0; k < words.length; k++) words[k].classList.toggle('on', k < n);
+        /* 켜진 개수가 그대로면 손대지 않는다 — 프레임마다 단어 수만큼 클래스를
+           휘젓는 대신, 늘어나거나 줄어든 구간만 고친다. */
+        if (n !== sayOn) {
+          for (var k = Math.min(n, sayOn); k < Math.max(n, sayOn); k++) words[k].classList.toggle('on', k < n);
+          sayOn = n;
+        }
       }
       if (sc.id === 'twList' && items.length) {
         /* 앞뒤 10% 여유. 활성 하나만 짙게 두고, 옆 칸의 사진도 그 분야로 바꾼다 */
@@ -1440,8 +1472,16 @@ img{display:block;max-width:100%}
   }
   function tick() { if (!t) { t = 1; requestAnimationFrame(run); } }
   addEventListener('scroll', tick, { passive: true });
-  addEventListener('resize', run);
+  addEventListener('resize', function () { measure(); run(); }, { passive: true });
   run();
+
+  /* 히어로가 화면 밖으로 나가면 그 안의 무한 애니메이션을 세운다 */
+  var hero = document.querySelector('.hero');
+  if (hero && 'IntersectionObserver' in window) {
+    new IntersectionObserver(function (es) {
+      es.forEach(function (e) { hero.classList.toggle('is-off', !e.isIntersecting); });
+    }, { rootMargin: '10% 0px' }).observe(hero);
+  }
 })();
 </script>
 </body>

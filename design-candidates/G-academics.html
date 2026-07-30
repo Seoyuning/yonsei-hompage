@@ -134,10 +134,26 @@ a{color:inherit;text-decoration:none}
   display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff}
 /* 폭·높이를 같이 늘리면 object-fit 이 잘라내는 자리가 계속 바뀌어 그림이 미끄러지듯 어색해진다.
    상자는 처음부터 화면 크기로 두고 transform 으로 통째로 키우기만 한다(잘림이 변하지 않는다). */
+/* --p 로 움직이는 것은 transform 하나뿐이다(그리고 캡션의 opacity).
+   이 둘은 합성기가 층을 옮겨 붙이기만 하면 되므로 거의 공짜다.
+   반대로 모서리(border-radius)와 그림자(box-shadow)를 --p 로 움직이면 값이 바뀔 때마다
+   그 층을 통째로 다시 칠해야 한다 — 특히 90px 흐림 그림자를 화면만 한 상자에 매 프레임
+   다시 그리는 것이 가장 비쌌다. 그래서 둘 다 고정값으로 못 박는다.
+   상자가 scale() 로 커지니 모서리도 함께 커졌다 작아져 보여, 카드가 펼쳐지는 듯 오히려 자연스럽다.
+   그림자는 다 커진 뒤엔 .tw-pin(overflow:hidden) 밖으로 밀려나 저절로 보이지 않는다. */
 .tw-zoom{position:relative;flex:0 0 auto;width:100%;height:100%;margin:0;overflow:hidden;
   transform:scale(calc(.54 + min(1, var(--p,0) / .8) * .46));transform-origin:50% 50%;
-  border-radius:calc((1 - min(1, var(--p,0) / .8)) * .9rem);
-  box-shadow:0 40px 90px rgba(15,27,48,calc(.34 * (1 - min(1, var(--p,0) / .8))))}
+  border-radius:.9rem;
+  box-shadow:0 40px 90px rgba(15,27,48,.34);
+  /* 확대되는 동안 쓸 층을 미리 잡아 둔다 — 층에 한 번 칠해 두면 매 프레임 다시 칠하지 않는다.
+     이 페이지에 .tw-zoom 은 하나뿐이라 상시로 걸어도 안전하다(여럿이면 메모리가 위험하다). */
+  will-change:transform;
+  /* 모서리·그림자는 --p 로 따라가지 않고, 「다 커졌다」는 표시 하나로 한 번만 지운다.
+     매 프레임 calc 로 움직이면 그때마다 층을 통째로 다시 칠하지만, 이러면
+     전환이 도는 0.45초 동안만 칠하고 끝난다. 다 커진 뒤 모서리가 남으면
+     흰 배경에 흰 모서리가 파인 것처럼 보여 「꽉 찬」 느낌이 깎인다. */
+  transition:border-radius .45s ease,box-shadow .45s ease}
+.tw-zoom.is-full{border-radius:0;box-shadow:none}
 /* 확대 구간의 배경은 흰색이라 사진이 화면에서 유일한 색이다 — 흑백으로 누르지 않는다 */
 .tw-zoom img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
   filter:saturate(1.04) contrast(1.03)}
@@ -146,7 +162,11 @@ a{color:inherit;text-decoration:none}
 .tw-zoom figcaption{position:absolute;left:0;right:0;bottom:0;z-index:1;
   transform:scale(calc(1 / (.54 + min(1, var(--p,0) / .8) * .46)));transform-origin:50% 100%;
   background:linear-gradient(180deg,rgba(8,17,34,0),rgba(8,17,34,.82));
-  opacity:calc(min(1, max(0, var(--p,0) - .3) / .25))}
+  opacity:calc(min(1, max(0, var(--p,0) - .3) / .25));
+  /* 이 캡션도 프레임마다 transform · opacity 가 바뀐다. 층을 따로 잡아 두지 않으면
+     위 .tw-zoom 층 안에서 값이 바뀌는 셈이라 그 자리를 매 프레임 다시 칠하게 된다.
+     따로 층을 주면 둘 다 합성기가 층을 옮기고 겹치는 일로 끝난다. */
+  will-change:transform,opacity}
 .eb-txt{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;
   padding:clamp(1.6rem,1.2rem + 2.5vw,3.4rem)}
 .eb-kick{font-family:var(--kr);font-size:.74rem;font-weight:700;letter-spacing:.18em;
@@ -192,6 +212,12 @@ a{color:inherit;text-decoration:none}
 @media (max-width:860px){
   .edu-row{grid-template-columns:1fr;gap:1.1rem}
   .edu-items{grid-template-columns:1fr}
+  /* 휴대폰에서는 다시 칠할 거리를 아예 없앤다.
+     흐림 90px 짜리 그림자와 둥근 모서리는 화면만 한 상자에서 값이 고정이어도 칠하는 값이 비싸고,
+     사진에 건 filter 는 층을 하나 더 만들어 확대와 겹치면 프레임마다 다시 걸린다.
+     여기까지 걷어내면 스크롤 중에 움직이는 것은 transform:scale() 과 캡션 opacity 뿐이다. */
+  .tw-zoom{box-shadow:none;border-radius:0}
+  .tw-zoom img{filter:none}
 }
 /* 휴대폰에서는 통을 짧게 — 220svh 는 손가락으로 넘기기엔 너무 길다 */
 @media (max-width:640px){
@@ -203,8 +229,9 @@ a{color:inherit;text-decoration:none}
 @media (prefers-reduced-motion:reduce){
   .tw-scene.is-zoom{height:auto}
   .tw-pin{position:static;height:auto}
-  .tw-zoom{transform:none;height:auto;aspect-ratio:16/6;border-radius:0;box-shadow:none}
-  .tw-zoom figcaption{transform:none;opacity:1}
+  /* 움직이지 않으니 층도 미리 잡아 둘 이유가 없다 — will-change 를 되돌린다 */
+  .tw-zoom{transform:none;height:auto;aspect-ratio:16/6;border-radius:0;box-shadow:none;will-change:auto}
+  .tw-zoom figcaption{transform:none;opacity:1;will-change:auto}
 }
 /* 스크립트가 진행률을 넣기 시작하면 .is-live 가 붙는다. 붙기 전(스크립트가 없거나 「동작 줄이기」)
    에는 통 높이를 auto 로 두고 확대 없이 한 장으로 보여 준다 — 예전 배너와 같은 모습이다.
@@ -212,8 +239,8 @@ a{color:inherit;text-decoration:none}
 .tw-scene:not(.is-live){height:auto}
 .tw-scene:not(.is-live) .tw-pin{position:static;height:auto}
 .tw-scene:not(.is-live) .tw-zoom{transform:none;height:auto;aspect-ratio:16/6;
-  border-radius:0;box-shadow:none}
-.tw-scene:not(.is-live) .tw-zoom figcaption{transform:none;opacity:1}
+  border-radius:0;box-shadow:none;will-change:auto}
+.tw-scene:not(.is-live) .tw-zoom figcaption{transform:none;opacity:1;will-change:auto}
 
 /* ── 졸업 요건 요약 (#requirements) ── */
 .req-grid{display:grid;grid-template-columns:minmax(13rem,1fr) 2.2fr;gap:1px;
@@ -796,7 +823,7 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
 </style>
 <style>.ynav-ph{position:fixed;top:0;left:0;right:0;height:3.7rem;background:rgba(255,255,255,.96);border-bottom:1px solid rgba(0,0,0,.08);z-index:39}</style>
 <style>h1,h2,.sec-title,.phero h1,.hero h1,.hero-title,.pick-name,.vt,.staff-head h2,.brand .bko,.ynv-brand .bko{font-family:"Apple SD Gothic Neo",system-ui,sans-serif;letter-spacing:-.01em}</style>
-<link rel="stylesheet" href="assets/transition.css?v=2">
+<link rel="stylesheet" href="assets/transition.css?v=3">
 <script>/* 탭 해시 진입은 히어로부터 — 파싱 전에 해시를 떼어 앵커 점프·상단바 접힘 왕복을 원천 차단(nav.js가 탭 복원).
    scrollRestoration=manual: 뒤로가기·같은 주소 재방문 때 브라우저가 이전 스크롤을 되살려
    히어로를 건너뛰고 첫 탭 중간부터 보이는 것을 막는다(깊은 앵커 #id 이동에는 영향 없음). */
@@ -1937,8 +1964,9 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
 <script>
 /* ── 교육과정 배너 확대 — 스크롤 진행률 ──
    바깥 통(.tw-scene)의 높이에서 화면 한 칸을 뺀 만큼이 「진행 구간」이다.
-   그 구간을 지나는 동안 0~1 을 --p 로 넣어 주면 크기·모서리·글자는 CSS 가 그린다.
-   스크롤마다 재지 않고 rAF 로 한 프레임에 한 번만 재어 스크롤이 무거워지지 않게 한다. */
+   그 구간을 지나는 동안 0~1 을 --p 로 넣어 주면 크기와 글자는 CSS 가 그린다.
+   스크롤마다 재지 않고 rAF 로 한 프레임에 한 번만 재어 스크롤이 무거워지지 않게 한다.
+   한 프레임 안에서도 「전부 읽고 → 전부 쓴다」 순서를 지킨다(중간에 쓰면 레이아웃을 다시 계산한다). */
 (function () {
   'use strict';
   var reduce = false;
@@ -1948,28 +1976,69 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
   if (!scenes.length || reduce) return;
   scenes.forEach(function (s) { s.classList.add('is-live'); });
 
+  /* 통의 높이는 스크롤하는 동안에는 변하지 않는다. 그런데 offsetHeight 를 프레임마다 읽으면
+     그때마다 레이아웃을 강제로 다시 계산하게 된다 — 크기가 달라질 때(resize · 탭 전환)만
+     재어 캐시에 담아 두고, 스크롤 중에는 캐시를 쓴다. */
+  var heights = [];
+  var needMeasure = false;
+  function measure() {
+    needMeasure = false;
+    for (var i = 0; i < scenes.length; i++) heights[i] = scenes[i].offsetHeight;
+  }
+
+  /* 읽기와 쓰기를 갈라 두려고 진행률을 잠시 담아 두는 자리와, 직전에 쓴 값을 기억하는 자리 */
+  var next = [];
+  var last = [];
   var ticking = false;
+  /* 프레임마다 DOM 을 찾지 않도록 한 번만 잡아 둔다 */
+  var zoomScene = document.querySelector('.tw-scene.is-zoom');
+  var zoomBox = zoomScene ? zoomScene.querySelector('.tw-zoom') : null;
   function run() {
     ticking = false;
+    /* 다시 재야 한다면 여기서 한 번만 잰다 — 휴대폰은 주소창이 접히며 resize 가 몰아쳐 오는데,
+       그때마다 바로 재면 다시 프레임마다 레이아웃을 강제하는 꼴이 된다. */
+    if (needMeasure) measure();
     var vh = innerHeight || document.documentElement.clientHeight || 1;
-    scenes.forEach(function (s) {
-      /* 다른 탭이 켜져 있으면 이 구간은 display:none 이라 높이가 0 이다 — 진행률도 0 으로 둔다 */
-      var span = s.offsetHeight - vh;
-      if (span < 1) { s.style.setProperty('--p', '0'); return; }
-      var p = -s.getBoundingClientRect().top / span;
-      s.style.setProperty('--p', (p < 0 ? 0 : p > 1 ? 1 : p).toFixed(4));
-    });
+    var i;
+    /* ① 읽기 — 먼저 전부 읽어 담는다.
+       읽기 사이에 쓰기가 끼면 앞 요소에 쓴 값 때문에 뒤 요소를 읽을 때 레이아웃을
+       다시 계산해야 한다(layout thrashing). 그래서 한 줄도 쓰지 않고 읽기만 한다. */
+    for (i = 0; i < scenes.length; i++) {
+      var r = scenes[i].getBoundingClientRect();
+      var h = heights[i];
+      /* 다른 탭이 켜져 있는 동안 재었으면 display:none 이라 0 으로 잡혀 있다 —
+         이미 읽어 둔 rect 로 되살린다(새로 읽는 것이 아니라 값이 공짜다). */
+      if (!(h > 0) && r.height > 0) h = heights[i] = r.height;
+      var span = h - vh;
+      /* 아직 숨어 있으면 진행률도 0 으로 둔다 */
+      if (span < 1) { next[i] = '0'; continue; }
+      var p = -r.top / span;
+      next[i] = (p < 0 ? 0 : p > 1 ? 1 : p).toFixed(4);
+    }
+    /* ② 쓰기 — 다 읽은 뒤에 한꺼번에 쓴다. 값이 그대로면 아예 건드리지 않는다(헛된 스타일 무효화를 막는다) */
+    for (i = 0; i < scenes.length; i++) {
+      if (next[i] === last[i]) continue;
+      last[i] = next[i];
+      scenes[i].style.setProperty('--p', next[i]);
+      /* 다 커졌으면 모서리·그림자를 지운다. 표시 하나를 켜고 끄는 것이라
+         전환이 도는 동안만 다시 칠하고 그 밖에는 손대지 않는다. */
+      if (zoomBox && scenes[i] === zoomScene) zoomBox.classList.toggle('is-full', +next[i] >= .78);
+    }
   }
   function ask() { if (!ticking) { ticking = true; requestAnimationFrame(run); } }
+  /* 「다음 프레임에 높이부터 다시 재라」고 표시만 해 둔다 — 재는 일은 run() 안에서 한 번에 한다 */
+  function askMeasured() { needMeasure = true; ask(); }
   addEventListener('scroll', ask, { passive: true });
-  addEventListener('resize', ask, { passive: true });
-  addEventListener('load', run);
+  addEventListener('resize', askMeasured, { passive: true });
+  addEventListener('load', askMeasured);
   /* 형제 탭을 옮기면 이 구간이 숨었다 나타나며 위치가 통째로 바뀐다 — 그려진 뒤 다시 잰다.
      탭 버튼과 바로가기 바는 nav.js 가 나중에 붙이므로 문서에 위임해 받는다. */
   document.addEventListener('click', function (e) {
     var t = e.target && e.target.closest ? e.target.closest('.ysub-tab,.yjump a') : null;
-    if (t) setTimeout(run, 60);
+    if (t) setTimeout(askMeasured, 60);
   });
+  /* 첫 그림은 rAF 를 기다리지 않고 바로 그린다 — 페이지 중간으로 복원되어 들어와도 한 프레임도 튀지 않는다 */
+  measure();
   run();
 })();
 </script>

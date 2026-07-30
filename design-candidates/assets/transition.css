@@ -52,3 +52,30 @@
   .ys-view-in, .ys-view-in .sec-title,
   .ys-view-in .staff-head > h2, .ys-view-in .al-head > h2 { animation: none; }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   휴대폰 — 스크롤 프레임을 갉아먹는 것들을 끈다.
+   여기 모아 두는 이유: 여덟 페이지가 모두 이 파일을 읽으므로
+   한 곳만 고치면 전부에 걸린다.
+   ══════════════════════════════════════════════════════════════ */
+@media (max-width: 860px) {
+  /* 고정 헤더의 backdrop-filter 는 스크롤할 때마다 「뒤에 있는 것」을 다시 흐리게
+     계산한다. 화면 폭을 꽉 채운 고정 바에 걸려 있어 프레임마다 전면 재계산이다.
+     휴대폰에서 체감이 가장 큰 항목이라, 흐림 대신 불투명한 배경으로 바꾼다. */
+  .ynv-hdr {
+    -webkit-backdrop-filter: none !important;
+            backdrop-filter: none !important;
+    background: rgba(255, 255, 255, .97) !important;
+  }
+  /* 형제 탭 바·바로가기 바도 sticky 라 같은 이유로 흐림을 쓰지 않는다 */
+  .ysub, .yjump {
+    -webkit-backdrop-filter: none !important;
+            backdrop-filter: none !important;
+  }
+}
+
+/* 움직임 최소화 선호 시 — 무한 반복 장식은 아예 세운다.
+   (한 번 재생하고 끝나는 등장 애니메이션은 위 블록에서 이미 처리했다) */
+@media (prefers-reduced-motion: reduce) {
+  .hl-eagle, .hb-track, .eg-drift { animation: none !important; }
+}

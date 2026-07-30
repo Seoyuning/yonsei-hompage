@@ -29,16 +29,16 @@
   --accent-ink:#8E5A4F;  /* 글자에 쓰는 포인트 색 — 본문 대비 5.6:1 */
   --coral:#8E5A4F;
   --sky:#9db4d8;
-  --ink:#2a3a56;
-  --body:#4a5a74;
-  --sub:#5c6b85;
-  --muted:#7b8595;
-  --faint:#9aa3b0;
-  --dimmer:#7b8595;
-  --line:rgba(10,26,51,.14);
-  --line-soft:rgba(10,26,51,.08);
-  --card:#f7f9fc;
-  --card-hover:#eef3fa;
+  --ink:#0f1b30;
+  --body:#1e2b42;
+  --sub:#41506b;
+  --muted:#5e6b82;
+  --faint:#8b96a9;
+  --dimmer:#5e6b82;
+  --line:#e2ddd2;
+  --line-soft:#efeae0;
+  --card:#f4f1ea;
+  --card-hover:#ece7dc;
   --mono:"Apple SD Gothic Neo","Pretendard Variable","Pretendard",system-ui,sans-serif;
   --kr:"Apple SD Gothic Neo","Pretendard Variable","Pretendard",system-ui,sans-serif;
   /* --c-solid / --c-thermal / --c-manuf / --c-dyn 삭제 —
@@ -63,7 +63,7 @@ a{color:inherit;text-decoration:none}
 .skip:focus{top:.6rem}
 
 /* ── 컨테이너 ── */
-.wrap{max-width:1120px;margin:0 auto;
+.wrap{max-width:1232px;margin:0 auto;
   padding-left:clamp(1.2rem,.6rem + 2vw,2.6rem);padding-right:clamp(1.2rem,.6rem + 2vw,2.6rem)}
 
 /* ── 페이지 히어로 (이미지 배너 + 중앙 타이틀) ── */
@@ -148,9 +148,10 @@ a{color:inherit;text-decoration:none}
 
 /* ── 학부 입학 (서울대 생명과학부 「대학입학」 짜임 참고) ──
    전형은 입학처가 주관하므로, 우리 페이지는 (1) 그 사실을 알리는 안내 덩어리와
-   (2) 전형별로 입학처의 정확한 위치로 보내는 카드 격자를 갖는다.
+   (2) 전형별로 입학처의 정확한 위치로 보내는 목록을 갖는다.
    그쪽은 사진 카드지만 우리에겐 전형 사진이 없다 — 지어낸 이미지를 쓰는 대신
-   번호·제목·한 줄 설명의 활자 카드로 옮기고, 포인트 색을 모서리와 화살표에 쓴다. */
+   번호·제목·한 줄 설명의 활자로만 옮기고, 포인트 색을 화살표와 행 끝선에 쓴다.
+   (사진이 빠진 카드는 결국 상자 안의 글자였다 — 아래 .adm-grid 주석 참고) */
 .adm-note{display:flex;gap:clamp(.8rem,.6rem + .6vw,1.1rem);align-items:flex-start;
   background:var(--accent-soft);border-left:3px solid var(--accent);border-radius:.4rem;
   padding:clamp(1rem,.85rem + .6vw,1.35rem) clamp(1rem,.85rem + .8vw,1.5rem);
@@ -163,26 +164,39 @@ a{color:inherit;text-decoration:none}
 .adm-note p + p{margin-top:.5rem;color:var(--sub);font-size:.88rem}
 .adm-note b{color:var(--ink);font-weight:700}
 
-.adm-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:clamp(.7rem,.5rem + .7vw,1.05rem);margin-top:clamp(1.3rem,1rem + 1.2vw,2rem)}
-.adm-card{position:relative;display:flex;flex-direction:column;gap:.5rem;
-  background:var(--card,#fff);border:1px solid var(--line-soft);border-radius:.55rem;
-  box-shadow:0 1px 3px rgba(15,27,48,.05);
-  padding:clamp(1.2rem,1rem + .7vw,1.7rem) clamp(1rem,.85rem + .6vw,1.35rem) clamp(1.3rem,1.1rem + .7vw,1.8rem);
-  overflow:hidden;transition:border-color .18s,box-shadow .22s,transform .22s}
-.adm-card::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;
+/* ── 전형 넷 — 편집 지면의 목록으로 ──
+   처음엔 [흰 상자 + 테두리 + 그림자 + 둥근 모서리] 카드 넷을 가로로 늘어놓았다.
+   그런데 한 칸이 싣는 것은 번호 · 제목 한 줄 · 설명 한 줄 · 바깥으로 나가는 화살표뿐이라,
+   상자가 따로 실어 나르는 뜻이 없었다. 상자를 걷어내고
+   [위 테두리 하나 + 행마다 아래 테두리 하나]로만 끊는다 —
+   메인(H-academic)의 연구 뉴스 목록(.nlist/.nrow)이 쓰는 바로 그 어법이고,
+   G-research 의 분야 아코디언이 「상자를 없애고 헤어라인으로만 나눈 차례」로 간 것과 같은 판단이다.
+   네 줄로 눕히면 제목과 설명이 같은 높이에 서서 넷을 견주기도 쉬워진다. */
+.adm-grid{display:grid;grid-template-columns:1fr;
+  margin-top:clamp(1.3rem,1rem + 1.2vw,2rem);border-top:1px solid var(--ink)}
+.adm-card{position:relative;display:grid;
+  grid-template-columns:2.8rem minmax(0,1.05fr) minmax(0,1fr) 1.2rem;
+  grid-template-areas:"n t d g";align-items:baseline;
+  column-gap:clamp(.9rem,.6rem + 1.2vw,1.8rem);
+  padding:clamp(1.15rem,.95rem + .8vw,1.7rem) .2rem;
+  border-bottom:1px solid var(--line)}
+/* 포인트 색은 「모서리와 화살표」에 쓴다는 처음 뜻 그대로 — 다만 모서리가 없어졌으니
+   행을 끊는 헤어라인 자체가 왼쪽부터 물든다. 움직이는 값은 transform 하나뿐이다. */
+.adm-card::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;
   background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .25s}
-.adm-card:hover{border-color:var(--accent);box-shadow:0 8px 20px rgba(165,111,99,.16);transform:translateY(-3px)}
 .adm-card:hover::after{transform:scaleX(1)}
 .adm-card:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
-.adm-no{font-family:var(--mono);font-weight:600;font-size:.74rem;letter-spacing:.06em;
+.adm-no{grid-area:n;font-family:var(--mono);font-weight:600;font-size:.74rem;letter-spacing:.06em;
   color:var(--accent);font-variant-numeric:tabular-nums}
-.adm-t{font-family:var(--kr);font-weight:700;color:var(--ink);line-height:1.35;letter-spacing:-.01em;
-  font-size:clamp(1rem,.94rem + .3vw,1.14rem)}
-.adm-d{font-family:var(--kr);font-size:.84rem;color:var(--muted);line-height:1.65}
-.adm-go{position:absolute;top:clamp(1.2rem,1rem + .7vw,1.7rem);right:clamp(1rem,.85rem + .6vw,1.35rem);
-  color:var(--line);font-size:.95rem;transition:color .18s}
-.adm-card:hover .adm-go{color:var(--accent)}
+.adm-t{grid-area:t;font-family:var(--kr);font-weight:700;color:var(--ink);line-height:1.35;letter-spacing:-.01em;
+  font-size:clamp(1rem,.94rem + .3vw,1.14rem);
+  transition:color .18s,transform .3s cubic-bezier(.22,.61,.36,1)}
+/* 설명은 제목 옆에 한 줄로 눕힌다 — G-research 의 .cl-titles .desc 와 같은 처리다 */
+.adm-d{grid-area:d;font-family:var(--kr);font-size:.84rem;color:var(--muted);line-height:1.65}
+.adm-go{grid-area:g;justify-self:end;font-family:var(--mono);color:var(--faint);font-size:.95rem;
+  transition:color .18s,transform .3s cubic-bezier(.22,.61,.36,1)}
+.adm-card:hover .adm-t{color:var(--coral);transform:translateX(8px)}
+.adm-card:hover .adm-go{color:var(--coral);transform:translateX(6px)}
 
 .adm-links{display:flex;flex-wrap:wrap;gap:.6rem 1.4rem;margin-top:1.2rem}
 .adm-links a{font-family:var(--kr);font-size:.88rem;font-weight:600;color:var(--navy);
@@ -195,20 +209,33 @@ a{color:inherit;text-decoration:none}
   border-top:1px solid var(--line)}
 .adm-rh-t{font-family:var(--kr);font-weight:700;color:var(--navy);margin:0;
   font-size:clamp(1.05rem,.96rem + .5vw,1.28rem);line-height:1.3;letter-spacing:-.01em}
-.adm-items{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(.7rem,.5rem + .6vw,1rem)}
-.adm-item{display:flex;flex-direction:column;gap:.45rem;
-  border:1px solid var(--line-soft);border-radius:.5rem;background:var(--card,#fff);
-  padding:clamp(1rem,.85rem + .55vw,1.3rem);transition:border-color .18s,transform .2s}
-.adm-item:hover{border-color:var(--accent);transform:translateY(-2px)}
-.adm-it{font-family:var(--kr);font-weight:700;color:var(--ink);font-size:1rem;line-height:1.35}
+/* ── 미리 보기 셋 ──
+   위 전형 목록과 같은 어법으로 맞춘다. 셋을 한 줄에 나란히 두되 상자 대신
+   [위 테두리 + 칸마다 아래 테두리]로만 끊는다 — G-academics 의 전공필수 목록(.req-list)이
+   아홉을 3단으로 눕힌 짜임 그대로다. 호버도 그쪽과 같이 제목만 오른쪽으로 밀린다. */
+.adm-items{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  column-gap:clamp(1.2rem,.8rem + 1.6vw,2.4rem);
+  border-top:1px solid var(--line)}
+.adm-item{display:flex;flex-direction:column;gap:.4rem;min-width:0;
+  padding:clamp(.9rem,.75rem + .5vw,1.25rem) .1rem;
+  border-bottom:1px solid var(--line-soft)}
+.adm-it{font-family:var(--kr);font-weight:700;color:var(--ink);font-size:1rem;line-height:1.35;
+  transition:color .18s,transform .3s cubic-bezier(.22,.61,.36,1)}
+.adm-item:hover .adm-it{color:var(--coral);transform:translateX(6px)}
 .adm-id{font-family:var(--kr);font-size:.83rem;color:var(--muted);line-height:1.65}
 
+/* 좁은 화면 — 전형 한 줄은 [번호 · 제목 · ↗] 를 윗줄에, 설명을 아랫줄에 내린다.
+   격자 자리를 이름으로 못 박아 두지 않으면 자동 배치가 화살표를 셋째 줄로 밀어낸다. */
 @media (max-width:860px){
-  .adm-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .adm-card{grid-template-columns:2.4rem minmax(0,1fr) 1.1rem;
+    grid-template-areas:"n t g" ". d d";row-gap:.25rem}
   .adm-row{grid-template-columns:1fr;gap:1rem}
   .adm-items{grid-template-columns:1fr}
 }
-@media (max-width:460px){ .adm-grid{grid-template-columns:1fr} }
+@media (max-width:460px){
+  .adm-card{grid-template-columns:2.1rem minmax(0,1fr) 1.1rem;
+    column-gap:.7rem}
+}
 
 /* ── 대학원 진학 3단계 ── */
 .step{border:1px solid var(--line-soft);background:var(--card);
@@ -362,9 +389,9 @@ a{color:inherit;text-decoration:none}
     </div>
     <!-- 서울대 생명과학부 「대학입학」 페이지의 짜임을 참고했다:
          (1) '입학 전형은 본부(입학처)가 주관한다'는 안내 한 덩어리,
-         (2) 전형 종류별 카드 격자 — 각 카드는 입학처의 해당 안내로 나간다.
+         (2) 전형 종류별 목록 — 각 줄은 입학처의 해당 안내로 나간다.
          우리 학부는 전형을 직접 운영하지 않으므로 이 구조가 사실관계와도 맞다.
-         카드 주소는 연세대 입학처에서 실제로 열리는 것만 넣었다(2026-07-28 확인). -->
+         링크 주소는 연세대 입학처에서 실제로 열리는 것만 넣었다(2026-07-28 확인). -->
     <div class="adm-note" role="note">
       <span class="adm-note-i" aria-hidden="true">i</span>
       <div>

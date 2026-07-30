@@ -90,6 +90,7 @@ img{display:block;max-width:100%}
 .hero h1 .tw{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em}
 .hero h1 .ti{display:inline-block;transform:translateY(114%);transition:transform 1.15s var(--e)}
 .hero.ttl-on h1 .ti{transform:none}
+.hero-kick:empty{display:none}
 .hero-kick{font-size:clamp(.72rem,.66rem + .3vw,.88rem);font-weight:600;letter-spacing:.34em;
   text-transform:uppercase;color:#e3ebf7;opacity:.94}
 /* 학부명 — 크기·굵기를 한 단계씩 낮춘다. 화면을 가득 채우는 큰 글씨는
@@ -231,7 +232,7 @@ img{display:block;max-width:100%}
 /* will-change 로 이 상자를 미리 제 층에 올려 둔다 — 그러면 scale 은 합성기만 쓰고
    프레임마다 다시 그리지 않는다. 화면 하나 크기의 층 하나뿐이라 감당할 만하다. */
 .tw-zoom{position:relative;margin:0 auto;overflow:hidden;width:100%;height:100vh;height:100svh;
-  transform:scale(calc(.54 + min(1, var(--p,0) / .8) * .46));
+  transform:scale(calc(.72 + min(1, var(--p,0) / .8) * .28));
   transform-origin:50% 50%;will-change:transform;
   border-radius:1.4rem;
   box-shadow:0 40px 90px rgba(0,0,0,.42);
@@ -247,7 +248,7 @@ img{display:block;max-width:100%}
    그 영역만큼 부모 층을 다시 칠하므로, 캡션에도 제 층을 미리 잡아 준다. */
 .tw-zoom figcaption{position:absolute;left:0;right:0;bottom:0;z-index:1;
   will-change:transform,opacity;
-  transform:scale(calc(1 / (.54 + min(1, var(--p,0) / .8) * .46)));transform-origin:50% 100%;
+  transform:scale(calc(1 / (.72 + min(1, var(--p,0) / .8) * .28)));transform-origin:50% 100%;
   padding:clamp(1rem,3vh,2rem) clamp(1.2rem,3vw,2.6rem);
   background:linear-gradient(180deg,rgba(8,17,34,0),rgba(8,17,34,.82));
   font-family:var(--kr);font-size:clamp(.82rem,.78rem + .25vw,1rem);font-weight:600;
@@ -794,7 +795,7 @@ img{display:block;max-width:100%}
     en: {
       tbYonsei: 'Yonsei University', tbEng: 'College of Engineering', tbCur: 'Current ME site',
       navAbout: 'About', navPeople: 'People', navResearch: 'Research', navAcad: 'Academics', navNews: 'News', navAdm: 'Admissions',
-      heroKick: '연세대학교 기계공학부', heroTitle: 'School of Mechanical Engineering',
+      heroKick: '', heroTitle: 'School of Mechanical Engineering',   /* 영문 화면에서는 킥커를 비운다 — 제목이 이미 영문 학부명이라 같은 말을 두 번 하게 된다 */
       heroSub: 'A challenge that never stops — Yonsei Mechanical Engineering, toward its first century',
       stFaculty: 'Faculty', stAreas: 'Research Areas', stFounded: 'Founded',
       newsTitle: 'Research News', moreAll: 'View all →',

@@ -31,14 +31,14 @@
   --accent-ink:#8E5A4F;  /* 글자에 쓰는 포인트 색 — 본문 대비 5.6:1 */
   --coral:#8E5A4F;--warm:#1a3d75;
   --ink:#1a3d75;
-  --body:#4a5a74;
-  --sub:#5c6b85;
-  --muted:#7b8595;
+  --body:#1e2b42;
+  --sub:#41506b;
+  --muted:#5e6b82;
   --label:#9aa3b0;
-  --line:rgba(10,26,51,.12);
-  --line-soft:rgba(10,26,51,.08);
-  --card:#f7f9fc;
-  --card-hover:#eef3fa;
+  --line:#e2ddd2;
+  --line-soft:#efeae0;
+  --card:#f4f1ea;
+  --card-hover:#ece7dc;
   --mono:"Apple SD Gothic Neo","Pretendard Variable","Pretendard",system-ui,sans-serif;
   --kr:"Apple SD Gothic Neo","Pretendard Variable","Pretendard",system-ui,sans-serif;
   /* 6개 연구 분야 액센트 — 분야별 프로 톤 팔레트 (무채도 낮은, 코랄 금지) */
@@ -111,23 +111,25 @@ a{color:inherit;text-decoration:none}
 /* 네 탭(연구 비전 · 연구 분야 · 연구실 목록 · 홍보영상)은 형제바로 갈아 끼우는 한 화면이다.
    탭마다 위 여백이 112 / 64 / 67 / 74px 로 달라, 탭을 옮길 때마다 본문이 위아래로 튀었다.
    네 곳 모두 같은 값(1440px 기준 45px)으로 맞춘다. */
-.vision{background:#ffffff;max-width:1120px;margin:0 auto;
+.vision{background:#ffffff;max-width:1232px;margin:0 auto;
   padding:clamp(1.9rem,1.4rem + 1.6vw,3rem) clamp(1.2rem,.6rem + 2vw,2.6rem) clamp(4rem,3rem + 5vw,7rem);
   border-bottom:1px solid var(--line-soft);scroll-margin-top:6.6rem}
 /* 비전 헤더 — 킥커만 얇게, 큰 위계는 리드 문장이 담당 */
 .vision .sec-head{margin-bottom:clamp(2.2rem,1.4rem + 2.5vw,3.4rem)}
 /* 웅장한 리드 — 크고 절제된 편집 타이포, 넉넉한 행간 */
+/* 읽는 글이다 — 행간을 넉넉히, 한 줄은 한글 45자 안쪽으로.
+   text-wrap:balance 는 모든 줄을 똑같이 짧게 만들어 오른쪽이 들쭉날쭉해졌다(뺀다). */
 .vision-lead{font-family:var(--kr);font-weight:400;
-  font-size:clamp(1.08rem,.98rem + .5vw,1.32rem);
-  color:var(--ink);line-height:1.62;letter-spacing:-.01em;
-  max-width:52rem;margin:0;text-wrap:balance}
+  font-size:clamp(1.02rem,.96rem + .35vw,1.18rem);
+  color:var(--body);line-height:1.95;letter-spacing:-.005em;
+  max-width:41rem;margin:0;word-break:keep-all}
 .vision-lead b{color:var(--navy);font-weight:700}
 /* 연구 비전 — 원문(대학원 기계공학과) 인용 요소 */
 /* 연구 비전 인용문 — 이 화면의 얼굴이라 크게. 아래 「공과대학 비전과 교육목표」 도식과
    한 흐름으로 읽히도록 왼쪽 네이비 룰로 묶고 아래 여백을 도식 쪽에 붙인다. */
-.vision-tag{font-family:var(--kr);font-weight:800;color:var(--navy);
-  font-size:clamp(1.65rem,1.15rem + 2.2vw,2.6rem);letter-spacing:-.02em;line-height:1.32;
-  margin:0 0 1.1rem;text-wrap:balance}
+.vision-tag{font-family:var(--kr);font-weight:800;color:#111318;
+  font-size:clamp(1.5rem,1.1rem + 1.9vw,2.3rem);letter-spacing:-.025em;line-height:1.38;
+  margin:0 0 1.35rem;word-break:keep-all}
 
 /* ── 공과대학 비전과 교육목표 (3층 흐름: 비전 → 교육목적 → 교육목표) ──
    원본은 회색 원(버블)이 겹치는 2010년대 웹 도식이다. 원을 그대로 흉내 내면
@@ -138,48 +140,54 @@ a{color:inherit;text-decoration:none}
    좁혀지며 한 흐름으로 읽힌다. */
 /* 인용 덩어리 — 아래 도식(.vis-frame)과 같은 2px 네이비 상단 룰을 써서 두 블록을
    한 도면의 두 판처럼 묶는다. 리드 폭도 도식 폭에 맞춰 넓힌다. */
-.vision-quote{border-top:2px solid var(--accent);padding-top:clamp(1.4rem,1rem + 1.2vw,2rem)}
-.vis-frame{margin-top:clamp(3rem,2rem + 3vw,5rem);border-top:2px solid var(--navy)}
-.vis-cap{font-family:var(--kr);font-weight:700;color:var(--ink);
-  font-size:clamp(1.02rem,.94rem + .35vw,1.2rem);line-height:1.4;letter-spacing:-.01em;
-  padding-top:1.1rem}
+/* 상단 룰이 코랄(인용) · 네이비(도식) · 회색(층)으로 셋이라 한 화면에 선 세 종류가
+   겹쳐 보였다. 이 사이트의 구간 머리와 같은 먹색 헤어라인 하나로 통일한다. */
+.vision-quote{border-top:1px solid #111318;padding-top:clamp(1.6rem,1.2rem + 1.4vw,2.4rem)}
+.vis-frame{margin-top:clamp(3rem,2rem + 3vw,4.6rem);border-top:1px solid #111318}
+/* 도식 제목 — 구간 머리의 작은 라벨과 같은 어법(작은 글자 + 넓은 자간) */
+.vis-cap{font-family:var(--kr);font-weight:700;color:#111318;
+  font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;line-height:1.4;
+  padding-top:.95rem}
+.vis-cap::after{content:"";display:block;margin-top:.95rem;border-top:1px solid var(--line)}
 /* 한 층 = [라벨 | 내용]. 층마다 구분선이 위에서 아래로 하나의 흐름을 만든다 */
 .vis-tier{display:grid;grid-template-columns:8.5rem minmax(0,1fr);
   gap:0 clamp(1.2rem,.6rem + 1.6vw,2.4rem);
   padding:clamp(1.6rem,1.1rem + 1.6vw,2.4rem) 0;
   border-top:1px solid var(--line-soft)}
 .vis-tier:first-of-type{border-top:0;padding-top:clamp(1.4rem,1rem + 1.2vw,2rem)}
-.vis-tier-label{font-family:var(--kr);font-weight:700;color:var(--navy);
-  font-size:1rem;line-height:1.35;letter-spacing:-.01em}
+/* 층 라벨 — 제목이 아니라 라벨이다. 작은 글자에 넓은 자간으로 한 단 낮춘다 */
+.vis-tier-label{font-family:var(--kr);font-weight:700;color:var(--muted);
+  font-size:.74rem;line-height:1.5;letter-spacing:.16em}
 /* 번호(VISION 01. · Objective 01.)는 CSS 카운터가 아니라 읽히는 텍스트다 */
-.vis-no{display:block;font-family:var(--kr);font-weight:700;font-size:.68rem;
-  letter-spacing:.14em;color:var(--navy);font-variant-numeric:tabular-nums}
+.vis-no{display:block;font-family:var(--kr);font-weight:700;font-size:.66rem;
+  letter-spacing:.16em;color:var(--label,#8b96a9);font-variant-numeric:tabular-nums}
 /* 층 1 — 비전 3축 */
 .vis-axes{list-style:none;padding:0;margin:0;display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
   gap:clamp(1.4rem,1rem + 1.4vw,2.2rem)}
-.vis-axis{border-top:2px solid var(--navy);padding-top:.85rem}
-.vis-axis-t{display:block;font-family:var(--kr);font-weight:700;color:var(--ink);
-  font-size:clamp(1.02rem,.94rem + .4vw,1.18rem);line-height:1.45;letter-spacing:-.01em;
-  margin-top:.6rem;overflow-wrap:break-word}
-/* 층 2 — 교육목적 3항목 */
+/* 세 층의 항목이 모두 같은 모양이어야 한 도식으로 읽힌다 —
+   [먹색 헤어라인] → [작은 번호] → [내용]. 예전에는 층마다 룰 굵기(2px/1px)와
+   마커(둥근 점 / 대시)가 달라 서로 다른 표 셋을 붙여 놓은 것처럼 보였다. */
+.vis-axis{border-top:1px solid #111318;padding-top:.85rem}
+.vis-axis-t{display:block;font-family:var(--kr);font-weight:700;color:#111318;
+  font-size:clamp(1rem,.94rem + .35vw,1.12rem);line-height:1.55;letter-spacing:-.015em;
+  margin-top:.55rem;word-break:keep-all}
+/* 층 2 — 교육목적 3항목. 비전과 같은 3열·같은 헤어라인 */
 .vis-aims{list-style:none;padding:0;margin:0;display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:.7rem clamp(1.4rem,1rem + 1.4vw,2.2rem)}
-.vis-aims li{position:relative;padding-left:.95rem;font-family:var(--kr);
-  font-size:.97rem;font-weight:500;color:var(--ink);line-height:1.6;overflow-wrap:break-word}
-.vis-aims li::before{content:"";position:absolute;left:0;top:.62em;width:5px;height:5px;
-  border-radius:50%;background:var(--navy)}
+  gap:clamp(1.4rem,1rem + 1.4vw,2.2rem)}
+.vis-aims li{border-top:1px solid var(--line);padding:.8rem 0 0;font-family:var(--kr);
+  font-size:.98rem;font-weight:600;color:#111318;line-height:1.6;word-break:keep-all}
 /* 층 3 — 교육목표(Objective) 4항목 · 원본에서 줄바꿈된 세부 줄은 별개 항목이다 */
 .vis-objs{list-style:none;padding:0;margin:0;display:grid;
   grid-template-columns:repeat(4,minmax(0,1fr));
   gap:clamp(1.2rem,.9rem + 1.2vw,1.9rem)}
 .vis-obj{border-top:1px solid var(--line);padding-top:.8rem}
-.vis-obj-items{list-style:none;padding:0;margin:.55rem 0 0;display:grid;gap:.4rem}
-.vis-obj-items li{position:relative;padding-left:.72rem;font-family:var(--kr);
-  font-size:.9rem;color:var(--sub);line-height:1.6;overflow-wrap:break-word}
-.vis-obj-items li::before{content:"";position:absolute;left:0;top:.78em;width:4px;height:1px;
-  background:var(--muted)}
+.vis-obj-items{list-style:none;padding:0;margin:.6rem 0 0;display:grid;gap:.5rem}
+.vis-obj-items li{position:relative;padding-left:.78rem;font-family:var(--kr);
+  font-size:.93rem;color:var(--sub);line-height:1.72;word-break:keep-all}
+.vis-obj-items li::before{content:"";position:absolute;left:0;top:.82em;width:5px;height:1px;
+  background:var(--label,#8b96a9)}
 /* 출처 — 담백한 한 줄 */
 .vis-src{font-family:var(--kr);font-size:.78rem;color:var(--muted);line-height:1.6;
   padding-top:1.1rem;border-top:1px solid var(--line-soft)}
@@ -197,7 +205,7 @@ a{color:inherit;text-decoration:none}
 @media (max-width:560px){.vis-objs{grid-template-columns:minmax(0,1fr);gap:1.1rem}}
 
 /* ── 요약: 6개 분야 (단정한 스탯 행) ── */
-.summary{max-width:1120px;margin:0 auto;
+.summary{max-width:1232px;margin:0 auto;
   padding:clamp(2.8rem,2rem + 3vw,4.2rem) clamp(1.2rem,.6rem + 2vw,2.6rem);
   border-bottom:1px solid var(--line-soft)}
 .sum-head{font-family:var(--kr);font-size:1rem;color:var(--sub);line-height:1.7;margin-bottom:1.8rem;max-width:52rem}
@@ -217,7 +225,7 @@ a{color:inherit;text-decoration:none}
 @media (max-width:400px){.stat-row{grid-template-columns:1fr}}
 
 /* ── 분야별 연구실 (카드 블록 × 6) ── */
-.clusters{max-width:1120px;margin:0 auto;
+.clusters{max-width:1232px;margin:0 auto;
   padding:clamp(1.9rem,1.4rem + 1.6vw,3rem) clamp(1.2rem,.6rem + 2vw,2.6rem) 1.6rem}
 /* ── 분야 아코디언 ──
    접힌 모습이 목록의 기본 상태다. 예전엔 [상자 + 좌측 3px 색막대 + 거대한 회색 숫자]라
@@ -345,7 +353,7 @@ a{color:inherit;text-decoration:none}
 .cta{background:var(--navy);color:#fff;
   padding:clamp(2.6rem,1.6rem + 3.5vw,4.2rem) clamp(1.4rem,.6rem + 2vw,3rem);
   display:flex;justify-content:space-between;align-items:center;gap:2rem;flex-wrap:wrap;
-  max-width:1120px;margin:clamp(3rem,2rem + 3vw,4.5rem) auto;
+  max-width:1232px;margin:clamp(3rem,2rem + 3vw,4.5rem) auto;
   margin-inline:clamp(1.2rem,.6rem + 2vw,2.6rem)}
 @media(min-width:1180px){.cta{margin-inline:auto}}
 .cta .cta-txt{max-width:34rem}
@@ -396,7 +404,7 @@ html[lang="en"] .lab-en-only{display:none}
 /* 위 여백만 절반으로 줄인다 — 이 구간은 형제 탭 바가 바로 위에 붙는데,
    제목 아래로 얇은 안내 한 줄뿐이라 예전 값(2.4~4rem)에서는 탭 바와 독수리 사이가
    빈칸으로만 채워져 보였다. 좌우·아래 값은 다른 구간과 맞춰 그대로 둔다. */
-.eagle-sec{max-width:1240px;margin:0 auto;padding:clamp(1.9rem,1.4rem + 1.6vw,3rem) clamp(1.2rem,.6rem + 2vw,2.6rem) 0}
+.eagle-sec{max-width:1232px;margin:0 auto;padding:clamp(1.9rem,1.4rem + 1.6vw,3rem) clamp(1.2rem,.6rem + 2vw,2.6rem) 0}
 /* 이 구간의 머리 아래에는 큰 덩어리가 아니라 안내 한 줄이 오므로
    공통 .sec-head 간격(1.6~2.4rem)은 과하다. 여기서만 좁혀 안내 줄을 제목에 붙인다. */
 .eagle-sec .sec-head{margin-bottom:clamp(.9rem,.7rem + .8vw,1.4rem)}
@@ -625,7 +633,7 @@ html[lang="en"] .lab-en-only{display:none}
 </style>
 <style>
 /* ═══ 6개 연구 분야 — 자세한 설명 카드 그리드 (독수리 아래, 클릭 시 확장) ═══ */
-.fields-detail{max-width:1120px;margin:0 auto;
+.fields-detail{max-width:1232px;margin:0 auto;
   padding:clamp(2.8rem,2rem + 3vw,4.6rem) clamp(1.2rem,.6rem + 2vw,2.6rem);
   border-bottom:1px solid var(--line-soft);scroll-margin-top:6.6rem}
 /* (이 화면 전용이던 가운데 정렬 헤더 .fd-head/.fd-kick/.fd-title/.fd-sub 는
@@ -734,7 +742,7 @@ html[lang="en"] .lab-en-only{display:none}
 </style>
 <style>
 /* ═══ 연구실 홍보영상 갤러리 (분야 액센트 카드 · 16:9 썸네일 + 재생 버튼) ═══ */
-.labvideos{max-width:1120px;margin:0 auto;
+.labvideos{max-width:1232px;margin:0 auto;
   padding:clamp(1.9rem,1.4rem + 1.6vw,3rem) clamp(1.2rem,.6rem + 2vw,2.6rem) clamp(2.8rem,2rem + 3vw,4.6rem);
   border-bottom:1px solid var(--line-soft);scroll-margin-top:6.6rem}
 /* 분야 그룹 헤더 — 얇은 헤어라인 + 분야색 점, 편집형 위계 */

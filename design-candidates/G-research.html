@@ -287,7 +287,10 @@ a{color:inherit;text-decoration:none}
 .l-tel a{color:inherit}
 .l-tel a:hover{color:var(--navy)}
 .l-act{white-space:nowrap}
-.l-act a.ext{color:var(--muted);transition:color .15s}
+.l-act a.ext{color:var(--muted);transition:color .15s;
+  display:inline-flex;align-items:center;gap:.3rem;white-space:nowrap}
+/* 집 아이콘 — 글자와 같은 색을 물려받아 호버에서 함께 바뀐다 */
+.l-act .ext-i{width:.95em;height:.95em;flex:none;display:block}
 .l-act a.ext:hover{color:var(--navy);text-decoration:underline;text-underline-offset:3px}
 .l-act .sep{color:var(--line);margin:0 .4rem}
 .l-name .dim,.l-tel .dim,.l-act .dim{color:var(--line)}
@@ -456,7 +459,8 @@ html[lang="en"] .lab-en-only{display:none}
   .eagle-body.is-pin .eagle-stage{transform:none}
   .eagle-body.is-pin .eagle-side{opacity:1;transform:none;pointer-events:auto;
     transition-delay:.55s}
-  .eagle-side .eagle-nav{margin:0 0 1.6rem;max-width:none}
+  /* 넘김 막대가 설명 아래로 내려갔다 — 여백도 위쪽으로 옮긴다 */
+  .eagle-side .eagle-nav{margin:1.6rem 0 0;max-width:none}
   .eagle-side .eagle-read{max-width:none;margin:0;min-height:11rem}
 }
 /* 움직임 최소화 선호 — 미끄러짐 없이 제자리에 놓는다 */
@@ -509,10 +513,19 @@ html[lang="en"] .lab-en-only{display:none}
 .ehot:focus-visible{outline:2px solid var(--navy);outline-offset:-4px}
 .eagle-arrows{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:2}
 /* 리더선 — 기술 도면풍 얇은 실선 + 속 빈 링 노드(점선 제거로 AI티 탈피) */
-.earrow{stroke:#bcc8de;stroke-width:.3;fill:none;transition:stroke .3s,stroke-width .3s;stroke-dasharray:none}
-.edot{fill:#fff;stroke:#bcc8de;stroke-width:.5;transition:fill .3s,stroke .3s}
-.earrow.on{stroke:var(--cl-c,var(--navy));stroke-width:.55}
-.edot.on{fill:var(--cl-c,var(--navy));stroke:var(--cl-c,var(--navy))}
+.earrow{stroke:#bcc8de;stroke-width:.3;fill:none;stroke-dasharray:none;
+  transition:stroke .3s,stroke-width .3s,opacity .26s ease}
+.edot{fill:#fff;stroke:#bcc8de;stroke-width:.5;
+  transition:fill .3s,stroke .3s,opacity .26s ease}
+/* ── 짚은 부위의 이음선은 걷는다 ──
+   부위는 --lift 만큼 떠오르는데 이음선의 끝점은 제자리에 박혀 있어,
+   짚는 순간 선의 꼬리가 부위에서 떨어져 나온 것처럼 보였다.
+   떠오른 부위 자체와 색이 들어온 라벨, 그리고 옆의 판독대가 이미 짝을 알려 주므로
+   그 한 줄은 없는 편이 깨끗하다. 나머지 선은 한 단 옅혀 무대를 조용히 둔다. */
+.earrow.on,.edot.on{opacity:0}
+.eagle-stage.dim-others .earrow:not(.on){stroke:#dde3ee}
+.eagle-stage.dim-others .edot:not(.on){stroke:#dde3ee}
+@media (prefers-reduced-motion:reduce){.earrow,.edot{transition:none}}
 /* 라벨 — 각진(직각) 편집형 카드, 얇은 헤어라인 + 호버 시 네이비 룰 슬라이드(그림자 최소화) */
 .elabel{position:absolute;z-index:4;transform:translate(-50%,-50%);
   min-width:10.5rem;max-width:14.5rem;background:#fff;border:1px solid var(--line);
@@ -530,20 +543,40 @@ html[lang="en"] .lab-en-only{display:none}
    설명이 라벨 안에서 펼쳐지면 라벨이 커지며 제 부위를 덮는다(머리가 특히 심했다).
    그림 밖 고정 자리로 내려, 어느 부위를 짚어도 그림이 가려지지 않게 한다.
    높이를 미리 잡아 두어 글이 바뀌어도 아래 내용이 밀리지 않는다. */
-.eagle-read{max-width:600px;margin:1.1rem auto 0;min-height:8.2rem;
-  border-top:1px solid var(--line);padding-top:.95rem;position:relative}
-.eagle-read::before{content:"";position:absolute;left:0;top:-1px;width:3.2rem;height:2px;
-  background:var(--cl-c,var(--line));transition:background .3s}
-.er-empty{font-family:var(--kr);font-size:.84rem;color:var(--label,#8b96a9);line-height:1.7}
-.er-part{font-family:var(--kr);font-size:.62rem;font-weight:600;letter-spacing:.18em;
+/* ── 판독대 ──
+   짚은 부위의 분야를 읽는 자리다. 예전에는 글자가 작고(.88rem/1.65) 이름·개수·설명이
+   비슷한 무게로 붙어 있어 어디부터 읽어야 할지 눈이 헤맸다.
+   위계를 셋으로 뚜렷이 나눈다 — [부위 라벨] · [분야 이름 + 개수] · [설명].
+   분야 색은 왼쪽 세로 막대 하나로만 쓴다(글자를 색으로 칠하면 본문 대비가 떨어진다). */
+.eagle-read{max-width:600px;margin:0 auto;min-height:9.4rem;position:relative;
+  padding:.2rem 0 .2rem clamp(.9rem,.7rem + .5vw,1.25rem);
+  border-left:2px solid var(--cl-c,var(--line));transition:border-color .45s ease}
+.er-empty{font-family:var(--kr);font-size:.88rem;color:var(--label,#8b96a9);line-height:1.75}
+/* 부위 — 어느 자리를 짚었는지. 가장 작은 글자에 넓은 자간 */
+.er-part{font-family:var(--kr);font-size:.66rem;font-weight:700;letter-spacing:.2em;
   text-transform:uppercase;color:var(--label,#8b96a9)}
-.er-ko{font-family:var(--kr);font-weight:800;font-size:1.18rem;color:var(--cl-c,var(--navy));
-  line-height:1.2;letter-spacing:-.01em;margin-top:.24rem}
-.er-ko .n{font-family:var(--kr);font-weight:600;font-size:.74rem;color:var(--muted);margin-left:.5rem;letter-spacing:0}
-.er-desc{font-family:var(--kr);font-size:.88rem;color:var(--sub);line-height:1.65;margin-top:.45rem;max-width:38rem}
-.er-more{font-family:var(--kr);font-size:.76rem;font-weight:700;color:var(--navy);
-  background:none;border:0;padding:.4rem 0 0;cursor:pointer;letter-spacing:-.01em}
-.er-more:hover{text-decoration:underline;text-underline-offset:3px}
+/* 분야 이름 — 이 칸에서 가장 먼저 읽혀야 한다. 색이 아니라 크기로 세운다 */
+.er-ko{font-family:var(--kr);font-weight:800;font-size:clamp(1.3rem,1.1rem + .7vw,1.6rem);
+  color:#111318;line-height:1.25;letter-spacing:-.02em;margin-top:.42rem;
+  display:flex;align-items:baseline;gap:.55rem;flex-wrap:wrap}
+/* 개수는 이름에 딸린 꼬리표다 — 옅은 알약으로 한 단 낮춘다 */
+.er-ko .n{font-family:var(--kr);font-weight:600;font-size:.72rem;letter-spacing:0;
+  color:var(--cl-c,var(--navy));background:color-mix(in srgb,var(--cl-c,#1a3d75) 10%,transparent);
+  padding:.16rem .5rem;border-radius:99px;white-space:nowrap}
+/* 설명 — 읽는 글이므로 본문 크기와 행간을 준다 */
+.er-desc{font-family:var(--kr);font-size:.95rem;color:var(--body,#4a5a74);line-height:1.85;
+  margin-top:.7rem;max-width:34rem;word-break:keep-all}
+/* 「연구실 보기」 — 밑줄이 글자를 따라 자라게. transform 만 움직여 프레임을 먹지 않는다 */
+.er-more{position:relative;font-family:var(--kr);font-size:.82rem;font-weight:700;color:var(--navy);
+  background:none;border:0;padding:.55rem 0 .2rem;cursor:pointer;letter-spacing:-.01em}
+.er-more::after{content:"";position:absolute;left:0;right:0;bottom:.05rem;height:1px;
+  background:currentColor;transform:scaleX(0);transform-origin:left;
+  transition:transform .38s cubic-bezier(.22,1,.36,1)}
+.er-more:hover::after,.er-more:focus-visible::after{transform:scaleX(1)}
+.er-more span{display:inline-block;transition:transform .38s cubic-bezier(.22,1,.36,1)}
+.er-more:hover span{transform:translateX(4px)}
+/* 넘김 막대는 이제 설명 아래에 온다 — 설명과 붙지 않게 한 칸 띄우고 왼쪽으로 정렬한다 */
+.eagle-side .eagle-nav{justify-content:flex-start}
 @media (max-width:1000px){.elabel{min-width:8.4rem;max-width:11rem;padding:.6rem .7rem}
   .elabel .ko{font-size:.9rem}}
 /* 모바일 대체 — 다이어그램 숨기고 6개 버튼 리스트 */
@@ -852,6 +885,11 @@ html[lang="en"] .lab-en-only{display:none}
            좁은 화면·손가락 화면에서는 예전처럼 그림 아래에 그대로 쌓인다. -->
       <div class="eagle-side">
        <div class="eagle-side-in">
+    <!-- 설명 판독대 — 예전에는 설명이 라벨 안에서 펼쳐져 부위를 덮었다(머리가 특히 심했다).
+         설명을 그림 밖 고정 자리로 내리면 어느 부위를 짚어도 그림이 가려지지 않는다. -->
+    <div class="eagle-read" id="eagleRead" aria-live="polite">
+      <p class="er-empty">부위를 짚으면 그 분야 설명이 여기 나타납니다.</p>
+    </div>
     <div class="eagle-nav" id="eagleNav">
       <button type="button" class="eg-arrow" data-dir="-1" aria-label="이전 분야">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
@@ -860,11 +898,6 @@ html[lang="en"] .lab-en-only{display:none}
       <button type="button" class="eg-arrow" data-dir="1" aria-label="다음 분야">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
       </button>
-    </div>
-    <!-- 설명 판독대 — 예전에는 설명이 라벨 안에서 펼쳐져 부위를 덮었다(머리가 특히 심했다).
-         설명을 그림 밖 고정 자리로 내리면 어느 부위를 짚어도 그림이 가려지지 않는다. -->
-    <div class="eagle-read" id="eagleRead" aria-live="polite">
-      <p class="er-empty">부위를 짚으면 그 분야 설명이 여기 나타납니다.</p>
     </div>
        </div>
       </div>
@@ -1084,9 +1117,13 @@ html[lang="en"] .lab-en-only{display:none}
       ? '<a href="tel:'+esc(tel.replace(/-/g,''))+'">'+esc(tel)+'</a>'
       : '<span class="dim" aria-hidden="true">—</span>';
 
-    /* 자료 열 — 홈페이지·소개영상을 아이콘 대신 짧은 글자 링크로 (아이콘만은 뜻이 흐리다) */
+    /* 자료 열 — 짧은 글자 링크. 아이콘만 두면 뜻이 흐리므로 글자를 남기고,
+       홈페이지에는 집 아이콘을 앞에 붙여 목록에서 한눈에 짚이게 한다. */
+    var HOME_SVG = '<svg class="ext-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" '
+      + 'stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+      + '<path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.4V20h13V9.4"/><path d="M9.8 20v-5.4h4.4V20"/></svg>';
     var links = [];
-    if(l.site)  links.push('<a class="ext" href="'+esc(l.site)+'" target="_blank" rel="noopener">홈페이지<span class="visually-hidden"> (새 창)</span></a>');
+    if(l.site)  links.push('<a class="ext" href="'+esc(l.site)+'" target="_blank" rel="noopener">'+HOME_SVG+'홈페이지<span class="visually-hidden"> (새 창)</span></a>');
     if(l.video) links.push('<a class="ext" href="'+esc(l.video)+'" target="_blank" rel="noopener">영상<span class="visually-hidden"> (새 창)</span></a>');
     var act = links.length ? links.join('<span class="sep" aria-hidden="true">·</span>') : '<span class="dim" aria-hidden="true">—</span>';
 
@@ -1165,9 +1202,18 @@ html[lang="en"] .lab-en-only{display:none}
       var s=clusterEls[k], open=(k===id);
       s.classList.toggle('cl-open', open); setHeadAria(s, open);
     });
+    /* 위에 붙어 있는 바(헤더 + 형제 탭 + 바로가기)의 실제 높이.
+       nav.js 가 재서 --ys-bars 에 넣어 둔다 — 예전에는 84px 을 박아 두어
+       바로가기 바가 있는 탭이나 좁은 화면에서 제목이 바에 가렸다. */
+    function barsTop(){
+      var v = 0;
+      try{ v = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--ys-bars')) || 0; }catch(e){}
+      return v || 84;
+    }
     function doScroll(){
       if(!scroll) return;
-      var y = target.getBoundingClientRect().top + (window.pageYOffset||0) - 84;
+      var y = target.getBoundingClientRect().top + (window.pageYOffset||0) - barsTop() - 10;
+      if(y < 0) y = 0;
       try{ window.scrollTo({top:y,behavior:'smooth'}); }catch(e){ window.scrollTo(0,y); }
       target.classList.remove('cl-flash'); void target.offsetWidth; target.classList.add('cl-flash');
     }
@@ -1181,8 +1227,10 @@ html[lang="en"] .lab-en-only{display:none}
   }
   function toggleCluster(id){
     var sec=clusterEls[id]; if(!sec) return;
+    /* 접을 때는 자리를 옮기지 않는다 — 접는 사람은 그 자리를 보고 있다.
+       펼칠 때는 그 분야를 바 바로 아래로 올린다(길게 펼쳐지므로 위에서부터 읽게 한다). */
     if(sec.classList.contains('cl-open')){ sec.classList.remove('cl-open'); setHeadAria(sec,false); }
-    else openCluster(id, false);
+    else openCluster(id, true);
   }
   var blocksEl = document.getElementById('clusterBlocks');
   blocksEl.addEventListener('click', function(e){

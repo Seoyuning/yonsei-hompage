@@ -1341,11 +1341,23 @@ img{display:block;max-width:100%}
   var scenes = [].slice.call(document.querySelectorAll('.tw-scene'));
   if (!scenes.length || reduce) return;
 
-  /* 문장을 단어로 쪼갠다 — 스크롤이 지나가며 하나씩 검정으로 바뀐다 */
+  /* ── 언어 ──
+     이 구간의 글은 단어로 쪼개 두므로 사전(en.json)이 문장 단위로 못 찾는다.
+     그래서 한/영 문장을 여기서 직접 들고, 언어를 바꾸면 다시 쪼갠다. */
+  function curLang() {
+    try { return localStorage.getItem('ysme-lang') === 'en' ? 'en' : 'ko'; } catch (e) { return 'ko'; }
+  }
+  var TXT = {
+    ko: { say: '1958년 이래 여섯 개 연구 분야에서 전임 교수 33명이 교육과 연구를 이어 오고 있습니다.',
+          cap: '연세대학교 공과대학 · 기계공학부', all: '연구실 전체', photo: '사진' },
+    en: { say: 'Since 1958, 33 full-time professors have taught and carried out research across six fields.',
+          cap: 'College of Engineering, Yonsei University · Mechanical Engineering', all: 'All labs', photo: 'Photo' }
+  };
   var say = document.getElementById('twSayText'), words = [];
-  if (say) {
-    var frag = document.createDocumentFragment();
-    say.textContent.split(/(\s+)/).forEach(function (w) {
+  function buildSay() {
+    if (!say) return;
+    var frag = document.createDocumentFragment(); words = [];
+    TXT[curLang()].say.split(/(\s+)/).forEach(function (w) {
       if (!w) return;
       if (!w.trim()) { frag.appendChild(document.createTextNode(w)); return; }
       var sp = document.createElement('span'); sp.className = 'sw'; sp.textContent = w;
@@ -1353,6 +1365,21 @@ img{display:block;max-width:100%}
     });
     say.textContent = ''; say.appendChild(frag);
   }
+  buildSay();
+  function applyLang() {
+    var L = TXT[curLang()];
+    buildSay();
+    var zc = document.querySelector('.is-zoom figcaption');
+    if (zc) zc.childNodes[0].nodeValue = L.cap + ' ';
+    var al = document.getElementById('twListAll');
+    if (al) al.childNodes[0].nodeValue = L.all + ' ';
+    cur = -1;   /* 사진 캡션(크레딧)도 다시 쓰이게 */
+  }
+  /* 헤더의 한/영 버튼은 nav.js 가 나중에 붙이므로 문서 위임으로 받는다 */
+  document.addEventListener('click', function (e) {
+    var t = e.target && e.target.closest ? e.target.closest('#ynvKo,#ynvEn') : null;
+    if (t) setTimeout(function () { applyLang(); run(); }, 60);
+  });
 
   /* 번호 목록 — 여덟 구분의 설명은 아래 「전공 교과」의 BLOCKS 설명과 같은 문장이다 */
   var listSec = document.getElementById('twList');
@@ -1404,7 +1431,7 @@ img{display:block;max-width:100%}
             if (isOn) { im.style.visibility = 'visible'; }
             else { setTimeout(function () { if (!im.classList.contains('on')) im.style.visibility = 'hidden'; }, 650); }
           });
-          if (cap) cap.textContent = CRED[b] || '';
+          if (cap) cap.textContent = (CRED[b] || '').replace(/^사진|^Photo/, TXT[curLang()].photo);
           /* 「연구실 전체」는 지금 켜진 분야로 이어진다 */
           if (allLink) allLink.setAttribute('href', 'G-research.html#' + b);
         }

@@ -83,6 +83,10 @@ a{color:inherit;text-decoration:none}
 /* ── 분야 서브내비 (sticky · 칩 필터) ── */
 /* 형제바(.ysub) 바로 아래에 붙는다. 값을 3.6rem 으로 박아 두면 형제바가 생긴 뒤로는
    그 아래로 파묻혀 「전임교수 / 명예·퇴임교수」 줄이 가려진다(nav.js 가 --ys-bars 로 실측). */
+/* 분야 필터 줄만 화면에 붙는다 */
+.filterbar.is-kind{position:relative;z-index:19;padding-bottom:0}
+.filterbar.is-kind .kseg{margin-bottom:0}
+.filterbar.is-chips{padding-top:.85rem}
 .filterbar{position:sticky;top:var(--ys-bars,3.6rem);z-index:20;
   background:#ffffff;
   border-bottom:1px solid var(--line-soft);
@@ -526,12 +530,18 @@ html[lang="en"] .ppos{display:none}
 
   <!-- 신분 구분 + 분야 서브내비 (교수진 섹션 앵커).
        공식 홈페이지가 「교수 / 명예·퇴임 교수」로 나누어 싣는 구분을 그대로 따른다. -->
-  <div class="filterbar" id="faculty" aria-label="교수진 목록 옵션">
+  <!-- 신분 구분은 한 번 고르고 마는 것이라 화면에 붙들지 않는다. 스크롤하며 계속
+       쓰는 것은 분야 필터뿐이라, 그 줄만 따로 떼어 화면에 붙인다. -->
+  <div class="filterbar is-kind" id="faculty" aria-label="교수 구분">
     <div class="filter-wrap">
       <div class="kseg" role="tablist" aria-label="교수 구분">
         <button type="button" class="kseg-b" role="tab" data-k="active" aria-selected="true">전임교수 <span class="kn">33</span></button>
         <button type="button" class="kseg-b" role="tab" data-k="emeritus" aria-selected="false">명예·퇴임교수 <span class="kn">17</span></button>
       </div>
+    </div>
+  </div>
+  <div class="filterbar is-chips" aria-label="연구분야 필터">
+    <div class="filter-wrap">
       <div class="fchips" role="group" aria-label="연구분야 필터" id="cChips"></div>
     </div>
   </div>

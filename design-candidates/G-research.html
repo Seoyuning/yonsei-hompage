@@ -384,25 +384,6 @@ html[lang="en"] .lab-en-only{display:none}
 <style>
 /* ═══ 독수리 해부도 — 6부위 = 6연구분야 (호버 시 부위 떠오름 + 설명, 클릭 시 아코디언) ═══ */
 .eagle-sec{max-width:1240px;margin:0 auto;padding:clamp(2.4rem,1.6rem + 3vw,4rem) clamp(1.2rem,.6rem + 2vw,2.6rem) 0}
-.eagle-intro{color:rgba(255,255,255,.7)}
-.eagle-sec .eagle-intro b{color:#fff}
-.eagle-sec .eg-arrow{border-color:rgba(255,255,255,.32);color:rgba(255,255,255,.82)}
-.eagle-sec .eg-arrow:hover{border-color:#fff;color:#fff;background:rgba(255,255,255,.12)}
-.eagle-sec .eg-dot i{background:rgba(255,255,255,.32)}
-.eagle-sec .eg-dot:hover i{background:rgba(255,255,255,.7)}
-.eagle-sec .eagle-read{border-top-color:rgba(255,255,255,.24)}
-.eagle-sec .er-empty{color:rgba(255,255,255,.5)}
-.eagle-sec .er-part{color:rgba(255,255,255,.55)}
-.eagle-sec .er-desc{color:rgba(255,255,255,.78)}
-.eagle-sec .er-ko{color:#fff}
-.eagle-sec .er-ko .n{color:rgba(255,255,255,.6)}
-.eagle-sec .er-more{color:#fff}
-.eagle-sec .eg-drift{background:repeating-linear-gradient(90deg,rgba(255,255,255,.14) 0 1px,transparent 1px 76px)}
-.eagle-sec .eg-drift.is-2{background:repeating-linear-gradient(0deg,rgba(255,255,255,.14) 0 1px,transparent 1px 104px)}
-.eagle-sec .eagle-list button{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2);
-  border-left-color:#fff}
-.eagle-sec .eagle-list button b{color:#fff}
-.eagle-sec .eagle-list button span,.eagle-sec .eagle-list button i{color:rgba(255,255,255,.7)}
 .eagle-intro{font-family:var(--kr);font-size:clamp(.9rem,.86rem + .2vw,1rem);color:var(--muted);
   line-height:1.75;max-width:44rem;margin:0 0 clamp(2.2rem,1.4rem + 2.6vw,3.6rem)}
 .eagle-intro b{color:var(--ink);font-weight:700}
@@ -443,10 +424,10 @@ html[lang="en"] .lab-en-only{display:none}
                margin-left 1.15s cubic-bezier(.33,.02,.15,1),
                opacity .55s ease .3s}
   .eagle-side-in{width:min(22rem,32vw)}
-  .eagle-body:hover .eagle-side,.eagle-body.is-pin .eagle-side{
-    width:min(22rem,32vw);margin-left:clamp(1.4rem,2.4vw,2.6rem);opacity:1}
-  .eagle-body:hover .eagle-stage,.eagle-body.is-pin .eagle-stage{max-width:620px}
-  .eagle-side .eagle-nav{margin:0 0 1rem;max-width:none}
+  .eagle-body.is-pin .eagle-side{
+    width:min(22rem,32vw);margin-left:clamp(2.6rem,4.5vw,5rem);opacity:1}
+  .eagle-body.is-pin .eagle-stage{max-width:620px}
+  .eagle-side .eagle-nav{margin:0 0 1.6rem;max-width:none}
   .eagle-side .eagle-read{max-width:none;margin:0;min-height:11rem}
 }
 .eg-arrow{width:2.5rem;height:2.5rem;display:grid;place-items:center;flex:none;cursor:pointer;
@@ -510,7 +491,7 @@ html[lang="en"] .lab-en-only{display:none}
   line-height:1.2;letter-spacing:-.01em;margin-top:.24rem}
 .er-ko .n{font-family:var(--kr);font-weight:600;font-size:.74rem;color:var(--muted);margin-left:.5rem;letter-spacing:0}
 .er-desc{font-family:var(--kr);font-size:.88rem;color:var(--sub);line-height:1.65;margin-top:.45rem;max-width:38rem}
-.er-more{font-family:var(--kr);font-size:.76rem;font-weight:700;color:var(--cl-c,var(--navy));
+.er-more{font-family:var(--kr);font-size:.76rem;font-weight:700;color:var(--navy);
   background:none;border:0;padding:.4rem 0 0;cursor:pointer;letter-spacing:-.01em}
 .er-more:hover{text-decoration:underline;text-underline-offset:3px}
 @media (max-width:1000px){.elabel{min-width:8.4rem;max-width:11rem;padding:.6rem .7rem}
@@ -1257,6 +1238,19 @@ html[lang="en"] .lab-en-only{display:none}
         var cid = b.getAttribute('data-cid');
         pin(pinned === cid ? null : cid);
       });
+    }
+    /* ── 스크롤로 열기 ──
+       손을 올려야 열리던 것을, 무대가 화면 한가운데에 들어오면 스스로 열리게 한다.
+       한 번 열리면 닫지 않는다 — 오르내릴 때마다 여닫히면 어지럽다. */
+    if ('IntersectionObserver' in window) {
+      var opened = false;
+      new IntersectionObserver(function (es) {
+        es.forEach(function (e) {
+          if (opened || !e.isIntersecting) return;
+          opened = true;
+          pin(ORDER[0]);
+        });
+      }, { threshold: 0, rootMargin: '-38% 0px -38% 0px' }).observe(stage);
     }
     var navBox = document.getElementById('eagleNav');
     if(navBox) navBox.addEventListener('click', function(e){

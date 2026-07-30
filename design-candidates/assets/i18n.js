@@ -200,11 +200,17 @@
     if (!dict || !document.body) return;
     walk(document.body);
     applyHead();
+    /* 적용이 끝났음을 알린다 — nav.js 의 대제목 단어 쪼개기가 이 신호를 기다린다.
+       (쪼갠 뒤에는 낱말마다 텍스트 노드가 따로라 사전이 문장을 통째로 못 잡는다) */
+    try { document.dispatchEvent(new CustomEvent('ysme:i18n', { detail: { on: on } })); } catch (e) {}
   }
 
   function restore() {
     var i;
     restoreHead();
+    setTimeout(function () {
+      try { document.dispatchEvent(new CustomEvent('ysme:i18n', { detail: { on: false } })); } catch (e) {}
+    }, 0);
     for (i = textLog.length - 1; i >= 0; i--) {
       var t = textLog[i];
       try { t.node.nodeValue = t.raw; } catch (e) {}

@@ -682,32 +682,69 @@
        h1(히어로)은 transition.css 가 로드 즉시 재생하므로 여기서는 제외한다. */
     var TITLE = '.sec-title, .staff-head > h2, .al-head > h2, .vision-tag';
     root.classList.add('ys-rv');
+
+    /* ── 대제목 단어 쪼개기 ──
+       쪼개고 나면 낱말마다 텍스트 노드가 따로여서, 사전(문장 통째 대조)이
+       「졸업 요건 요약」을 못 잡고 「졸업」만 바꿔 'Graduation 요건 요약' 이 됐다.
+       그래서 쪼개기 전 원문을 남겨 두고, 번역이 적용될 때마다
+       [원문 복원 → 번역 적용 → 다시 쪼개기] 를 돌린다. */
+    var titleEls = [];
+    function splitTitle(t) {
+      if (t.dataset.rvSrc === undefined) t.dataset.rvSrc = t.innerHTML;
+      var split = false;
+      try {
+        var kids = [].slice.call(t.childNodes), out = [], wi = 0;
+        kids.forEach(function (n) {
+          if (n.nodeType === 3) {
+            n.nodeValue.split(/(\s+)/).forEach(function (w) {
+              if (!w) return;
+              if (!w.trim()) { out.push(document.createTextNode(w)); return; }
+              var box = document.createElement('span'); box.className = 'rvw';
+              var inn = document.createElement('i'); inn.textContent = w;
+              inn.style.setProperty('--w', (Math.min(wi, 9) * 0.055) + 's');
+              box.appendChild(inn); out.push(box); wi++;
+            });
+          } else out.push(n);
+        });
+        if (wi > 0) { t.textContent = ''; out.forEach(function (n) { t.appendChild(n); }); split = true; }
+      } catch (e) {}
+      t.setAttribute('data-rvt', split ? 'w' : '');
+    }
+    var reSplitting = false;
+    function reSplitTitles() {
+      if (reSplitting) return;         /* 아래에서 DOM 을 건드리면 신호가 다시 오므로 한 번만 돈다 */
+      reSplitting = true;
+      titleEls.forEach(function (t) {
+        if (t.dataset.rvSrc === undefined) return;
+        /* ① 쪼개기 전 원문으로 되돌린다 — 사전은 텍스트 노드를 통째로 대조하므로
+              낱말로 흩어져 있으면 「졸업 요건 요약」을 못 찾고 「졸업」만 바꾼다. */
+        t.innerHTML = t.dataset.rvSrc;
+        t.removeAttribute('data-rvt');
+        /* ② 사전을 이 자리에 직접 적용한다. 변경 감시(MutationObserver)를 기다리면
+              그 사이에 우리가 다시 쪼개 버려 같은 일이 되풀이된다. */
+        try {
+          var I = window.YSME_I18N;
+          /* 영문일 때만 사전을 먹인다 — apply() 는 현재 언어를 보지 않고 그냥 바꾸므로,
+             한국어로 되돌리는 길에 부르면 방금 되살린 한국어를 도로 영문으로 만든다. */
+          if (I && I.apply && I.isEn && I.isEn()) I.apply(t);
+        } catch (e) {}
+        /* ③ 다시 쪼갠다. 원문(rvSrc)은 **늘 한국어 그대로** 둔다 —
+              번역된 글자를 원문으로 삼으면 한국어로 되돌릴 때 되돌아갈 곳이 없어진다. */
+        splitTitle(t);
+        t.classList.add('rv-in');      /* 보고 있던 제목이 다시 숨지 않게 */
+      });
+      setTimeout(function () { reSplitting = false; }, 0);
+    }
+    document.addEventListener('ysme:i18n', reSplitTitles);
+
     picks.forEach(function (pair) {
       var el = pair[0], i = pair[1];
       var hasTitle = el.querySelector && el.querySelector(TITLE);
       el.setAttribute('data-rv', hasTitle ? 's' : '');
       if (i > 0) el.style.setProperty('--rv-d', Math.min(i, 5) * 0.17 + 's');
       if (hasTitle) [].forEach.call(el.querySelectorAll(TITLE), function (t) {
-        /* 단어 단위로 쪼갠다 — <br> 같은 태그는 그대로 두고 글자 마디만 상자에 넣는다.
-           실패하면 아래의 가림막 방식으로 조용히 남는다. */
-        var split = false;
-        try {
-          var kids = [].slice.call(t.childNodes), out = [], wi = 0;
-          kids.forEach(function (n) {
-            if (n.nodeType === 3) {
-              n.nodeValue.split(/(\s+)/).forEach(function (w) {
-                if (!w) return;
-                if (!w.trim()) { out.push(document.createTextNode(w)); return; }
-                var box = document.createElement('span'); box.className = 'rvw';
-                var inn = document.createElement('i'); inn.textContent = w;
-                inn.style.setProperty('--w', (Math.min(wi, 9) * 0.055) + 's');
-                box.appendChild(inn); out.push(box); wi++;
-              });
-            } else out.push(n);
-          });
-          if (wi > 0) { t.textContent = ''; out.forEach(function (n) { t.appendChild(n); }); split = true; }
-        } catch (e) {}
-        t.setAttribute('data-rvt', split ? 'w' : '');
+        splitTitle(t);
+        titleEls.push(t);
         /* 가림막은 테두리 상자에서 잘린다 — 받침·괄호가 잘리지 않게 아래를 조금 넓히고,
            그만큼 margin 에서 도로 뺀다. 원래 margin 을 읽어 더하므로 여백을 가진
            제목(연구 비전의 큰 인용구 등)도 배치가 밀리지 않는다. */

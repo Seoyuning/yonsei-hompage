@@ -13,7 +13,7 @@
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d17" />
-<link rel="preload" as="script" href="assets/nav.js?v=74" />
+<link rel="preload" as="script" href="assets/nav.js?v=77" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    시안 G — 교육 (라이트)
@@ -242,20 +242,74 @@ a{color:inherit;text-decoration:none}
   border-radius:0;box-shadow:none;will-change:auto}
 .tw-scene:not(.is-live) .tw-zoom figcaption{transform:none;opacity:1;will-change:auto}
 
-/* ── 졸업 요건 요약 (#requirements) ── */
-.req-grid{display:grid;grid-template-columns:minmax(13rem,1fr) 2.2fr;gap:1px;
-  background:var(--line-soft);border:1px solid var(--line-soft)}
-.req-card{background:var(--card);padding:1.5rem 1.4rem 1.6rem}
-.req-lab{font-family:var(--kr);font-size:.8rem;font-weight:600;color:var(--muted)}
-.req-val{font-family:var(--mono);font-weight:500;font-size:1.7rem;line-height:1;color:var(--ink);
-  font-variant-numeric:tabular-nums;margin-top:.7rem}
-.req-val .u{font-family:var(--kr);font-size:.5em;color:var(--muted);margin-left:.15em}
-.req-desc{font-family:var(--kr);font-size:.86rem;color:var(--sub);line-height:1.7;margin-top:.75rem;max-width:38rem}
+/* ── 졸업 요건 요약 (#requirements) ──
+   예전에는 [얇은 회색 테두리로 두른 큰 상자를 세로선 하나로 둘로 나눈] 모습이었다.
+   왼쪽 칸(130학점)은 할 말이 한 줄인데 오른쪽 칸(전공필수 9과목 + 태그 9개)의 높이에
+   끌려가 아래가 텅 빈 채로 늘어났고, 회색 배경 탓에 이 화면에서 가장 확실한 사실 둘이
+   오히려 눌려 보였다.
+   그래서 상자를 걷어낸다. 바로 위 묶음(.edu-row)이 이미 쓰고 있는 어법 그대로
+   [왼쪽 = 라벨 + 큰 숫자] [오른쪽 = 설명]을 가로 헤어라인으로만 끊고,
+   두 사실을 나란한 칸이 아니라 위아래 두 줄로 눕힌다.
+   줄이 서로 다른 줄이 되니 높이가 서로를 끌고 다닐 일 자체가 없어진다. */
+.req-grid{display:grid;gap:0}
+/* 숫자 둘은 나란히 — 견주어 보는 값이라 위아래로 눕히면 오히려 멀어진다 */
+.req-nums{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:clamp(1.2rem,.8rem + 1.6vw,2.6rem);
+  padding:clamp(1rem,.8rem + .6vw,1.4rem) 0 clamp(1.1rem,.9rem + .7vw,1.6rem);
+  border-top:1px solid var(--line)}
+.req-row{padding:clamp(1rem,.8rem + .6vw,1.4rem) 0 clamp(1.2rem,1rem + .8vw,1.8rem);
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+/* 격자 칸의 기본 최소폭은 「내용만큼」이라, 안에 안 줄어드는 것이 하나라도 들어오면
+   칸이 밀려 화면 밖으로 삐져나간다. 두 칸 모두 줄어들 수 있게 못 박아 둔다. */
+.req-key,.req-body{min-width:0}
+/* 라벨 — 작은 글자에 넓은 자간, 그 아래 먹색 가로줄.
+   메인(H-academic)의 .tl-eyebrow 가 쓰는 「작은 라벨 + 검은 룰」과 같은 어법이다. */
+.req-lab{font-family:var(--mono);font-size:.7rem;font-weight:600;letter-spacing:.2em;
+  color:#111318;padding-bottom:.7rem;border-bottom:1px solid #111318}
+/* 숫자 — 이 묶음에서 가장 먼저 눈에 잡혀야 한다.
+   메인 히어로 지표(.st b)의 굵기·자간·tabular-nums 를 그대로 따르되 색만 먹색으로. */
+.req-val{font-family:var(--mono);font-weight:700;letter-spacing:-.01em;line-height:.92;
+  font-size:clamp(2.3rem,1.7rem + 2.4vw,3.4rem);color:#111318;
+  font-variant-numeric:tabular-nums;margin-top:clamp(.6rem,.5rem + .4vw,.95rem)}
+/* 단위는 숫자에 딸린 꼬리표다 — 숫자 크기에 비례(em)하되 회색으로 한 단 낮춘다 */
+.req-val .u{font-family:var(--kr);font-weight:500;font-size:.24em;letter-spacing:0;
+  color:var(--muted);margin-left:.28em}
+.req-desc{font-family:var(--kr);font-size:.9rem;color:var(--sub);line-height:1.75;
+  margin:0;max-width:52rem}
 .req-desc b{color:var(--ink);font-weight:600}
-.req-list{list-style:none;display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.95rem;padding:0}
-.req-list a{display:inline-block;font-family:var(--kr);font-size:.8rem;color:#2a3a56;
-  background:#fff;border:1px solid var(--line);padding:.34rem .65rem;transition:border-color .15s,color .15s}
-.req-list a:hover{border-color:var(--coral);color:var(--coral)}
+/* 스크립트가 꺼져 목록이 비면 테두리만 남은 빈 줄이 생긴다 — 그때는 통째로 감춘다 */
+.req-list:empty{display:none}
+/* 대체 문구는 위 설명 바로 밑에 붙지 않게 한 칸 띄운다 */
+.req-desc--fb{margin-top:clamp(1rem,.8rem + .6vw,1.4rem)}
+/* ── 전공필수 아홉 과목 ──
+   예전엔 둥근 알약 태그 9개였다. 태그는 「그 외 부가정보」라는 뜻이라, 반드시 들어야 하는
+   과목 아홉이 곁가지처럼 읽혔다. G-research 의 분야 아코디언이 상자를 버리고 헤어라인만
+   남겨 「차례」가 된 것과 같은 판단으로, 여기서도 상자를 없애고 한 줄에 한 과목씩 눕힌다.
+   행 간격·호버 어법은 메인의 뉴스 목록(.nlist/.nrow)에서 가져왔다. */
+/* 한 줄에 하나씩 아홉 줄이면 세로로 460px — 한눈에 안 들어오고 장황하다.
+   아홉은 3×3 으로 놓았을 때 가장 빨리 읽힌다. 줄 목록의 어법(번호 + 헤어라인)은
+   그대로 두고 단수만 셋으로 늘린다. 좁아지면 2단 → 1단으로 접힌다. */
+.req-list{list-style:none;margin:clamp(1.2rem,.9rem + 1vw,1.8rem) 0 0;padding:0;
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  column-gap:clamp(1.2rem,.8rem + 1.6vw,2.4rem);
+  border-top:1px solid var(--line)}
+.req-list li{border-bottom:1px solid var(--line-soft);min-width:0}
+.req-list a{display:grid;grid-template-columns:1.9rem minmax(0,1fr) .9rem;
+  align-items:baseline;gap:.45rem;padding:.6rem .1rem}
+@media (max-width:1080px){.req-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.req-list{grid-template-columns:1fr}}
+/* 번호는 눈으로 세는 표시다 — 01…09 가 위의 큰 숫자 「9」와 맞아떨어지는지 바로 보인다 */
+.rq-n{font-family:var(--mono);font-size:.7rem;font-weight:600;letter-spacing:.08em;
+  color:var(--label);font-variant-numeric:tabular-nums}
+.rq-t{font-family:var(--kr);font-weight:600;letter-spacing:-.01em;line-height:1.4;
+  font-size:clamp(.95rem,.9rem + .3vw,1.1rem);color:var(--ink);
+  transition:color .18s,transform .3s cubic-bezier(.22,.61,.36,1)}
+/* ↓ 는 「눌러 아래 상세로 내려간다」는 뜻을 글자 대신 자리로 알린다 */
+.rq-go{justify-self:end;font-family:var(--mono);font-size:.82rem;color:var(--label);
+  transition:color .18s,transform .3s cubic-bezier(.22,.61,.36,1)}
+/* 움직이는 것은 transform 과 color 뿐이다 — 폭·그림자를 건드리면 휴대폰에서 프레임을 먹는다 */
+.req-list a:hover .rq-t{color:var(--coral);transform:translateX(6px)}
+.req-list a:hover .rq-go{color:var(--coral);transform:translateY(3px)}
 
 /* ── 공학교육인증 (#abeek) ── */
 .abeek-card{border:1px solid var(--line-soft);background:var(--card);
@@ -807,7 +861,8 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
 /* ── 반응형 ── */
 @media (max-width:900px){
   .overview{grid-template-columns:1fr;gap:1.8rem}
-  .req-grid{grid-template-columns:1fr}
+  /* 좁은 화면에서는 라벨·숫자 아래로 설명이 이어지게 한 줄로 쌓는다 */
+  .req-row{grid-template-columns:1fr;gap:clamp(1rem,.8rem + 1vw,1.4rem)}
 }
 @media (max-width:680px){
     .ug-toolbar{flex-direction:column;align-items:stretch}
@@ -846,7 +901,7 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
   <section class="sec" id="curriculum" aria-labelledby="cur-h">
     <div class="sec-head">
       <div>
-        <p class="sec-kick">개관</p>
+        <p class="sec-kick">Curriculum</p>
         <h2 id="cur-h" class="sec-title">교육과정 개관</h2>
       </div>
     </div>
@@ -923,22 +978,33 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
   <section class="sec" id="requirements" aria-labelledby="req-h">
     <div class="sec-head">
       <div>
-        <p class="sec-kick">졸업 요건</p>
+        <p class="sec-kick">Requirements</p>
         <h2 id="req-h" class="sec-title">졸업 요건 요약</h2>
       </div>
     </div>
+    <!-- 상자를 두르지 않는다. 가로 헤어라인으로 끊은 두 줄이고, 각 줄은
+         [왼쪽 = 라벨 + 큰 숫자][오른쪽 = 설명·목록]이다. 줄이 서로 다르므로
+         왼쪽이 오른쪽 높이에 끌려가 늘어나는 일이 없다. 문구는 한 글자도 손대지 않았다. -->
     <div class="req-grid">
-      <div class="req-card">
-        <p class="req-lab">졸업 학점</p>
-        <p class="req-val">130<span class="u">학점</span></p>
-        <p class="req-desc">교양과 전공을 합쳐 <b>총 130학점</b>을 이수해야 졸업할 수 있습니다.</p>
+      <!-- 두 숫자를 위아래 두 줄로 놓았더니 한 화면에 안 들어왔다.
+           둘은 서로 견주어 보는 값이므로 나란히 두는 편이 빨리 읽힌다. -->
+      <div class="req-nums">
+        <div class="req-key">
+          <p class="req-lab">졸업 학점</p>
+          <p class="req-val">130<span class="u">학점</span></p>
+        </div>
+        <div class="req-key">
+          <p class="req-lab">전공필수</p>
+          <p class="req-val"><span id="reqCount">—</span><span class="u">과목</span></p>
+        </div>
       </div>
-      <div class="req-card">
-        <p class="req-lab">전공필수</p>
-        <p class="req-val"><span id="reqCount">—</span><span class="u">과목</span></p>
-        <p class="req-desc"><b>전공필수</b>는 기계공학부 학생이 졸업하려면 반드시 이수해야 하는 과목입니다. 과목을 누르면 아래 상세 설명으로 이동합니다.</p>
-        <ul class="req-list" id="reqList"></ul>
-        <noscript><p class="req-desc">전공필수 목록은 JavaScript 활성 시 표시됩니다 — 아래 학부 전공 교과 목록의 ‘전공필수’ 구분을 참고하세요.</p></noscript>
+      <div class="req-row">
+        <div class="req-body">
+          <p class="req-desc">교양과 전공을 합쳐 <b>총 130학점</b>을 이수해야 졸업할 수 있습니다.
+            <b>전공필수</b>는 기계공학부 학생이 졸업하려면 반드시 이수해야 하는 과목입니다. 과목을 누르면 아래 상세 설명으로 이동합니다.</p>
+          <ul class="req-list" id="reqList"></ul>
+          <noscript><p class="req-desc req-desc--fb">전공필수 목록은 JavaScript 활성 시 표시됩니다 — 아래 학부 전공 교과 목록의 ‘전공필수’ 구분을 참고하세요.</p></noscript>
+        </div>
       </div>
     </div>
   </section>
@@ -947,7 +1013,7 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
   <section class="sec" id="mechanics" aria-labelledby="mech-h">
     <div class="sec-head">
       <div>
-        <p class="sec-kick">4대 역학</p>
+        <p class="sec-kick">Core Mechanics</p>
         <h2 id="mech-h" class="sec-title">4대 역학</h2>
       </div>
     </div>
@@ -962,7 +1028,7 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
   <section class="sec" id="roadmap" aria-labelledby="rm-h">
     <div class="sec-head">
       <div>
-        <p class="sec-kick">이수체계도</p>
+        <p class="sec-kick">Course Map</p>
         <h2 id="rm-h" class="sec-title">기계공학부 교과목 트리</h2>
       </div>
     </div>
@@ -990,7 +1056,7 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
   <section class="sec" id="graduation" aria-labelledby="grad-req-title">
     <div class="sec-head">
       <div>
-        <p class="sec-kick">졸업 요건</p>
+        <p class="sec-kick">Graduation</p>
         <h2 id="grad-req-title" class="sec-title">졸업 요건</h2>
       </div>
     </div>
@@ -1003,7 +1069,7 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
   <section class="sec" id="courses" aria-labelledby="crs-h">
     <div class="sec-head">
       <div>
-        <p class="sec-kick">전공 교과</p>
+        <p class="sec-kick">Major Courses</p>
         <h2 id="crs-h" class="sec-title">학부 전공 교과</h2>
       </div>
     </div>
@@ -1023,7 +1089,7 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
   <section class="sec" id="abeek" aria-labelledby="abeek-h">
     <div class="sec-head">
       <div>
-        <p class="sec-kick">공학인증</p>
+        <p class="sec-kick">ABEEK</p>
         <h2 id="abeek-h" class="sec-title">공학교육인증</h2>
       </div>
     </div>
@@ -1037,7 +1103,7 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
   <section class="sec" id="clubs" aria-labelledby="clubs-h">
     <div class="sec-head">
       <div>
-        <p class="sec-kick">학생 활동</p>
+        <p class="sec-kick">Student Life</p>
         <h2 id="clubs-h" class="sec-title">동아리 · 학생활동</h2>
       </div>
     </div>
@@ -1872,9 +1938,16 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
     if(reqCountEl) reqCountEl.textContent = reqCourses.length;
     var metricReqEl = document.getElementById('metricReq');
     if(metricReqEl) metricReqEl.textContent = reqCourses.length;
-    reqListEl.innerHTML = reqCourses.map(function(c){
+    /* 알약 태그 대신 한 줄에 한 과목씩 — 번호(01…09)는 눈으로 세는 표시일 뿐이라
+       aria-hidden 으로 감춘다. 읽어 주는 것은 과목명 하나여야 하고, 이 아홉을
+       「반드시 이 순서로 듣는다」는 뜻으로 들리게 해서도 안 된다.
+       주소(#course-CODE)는 그대로 둔다 — 문서 끝의 전역 클릭 처리기가 이 주소를 보고
+       「전공 교과」 탭을 켜고 해당 과목 상세까지 내려 준다. 그 동작이 이 목록의 핵심이다. */
+    reqListEl.innerHTML = reqCourses.map(function(c, i){
       return '<li><a href="#course-'+esc(c.code)+'">'
-        + esc(c.ko)
+        + '<span class="rq-n" aria-hidden="true">'+(i < 9 ? '0' : '')+(i + 1)+'</span>'
+        + '<span class="rq-t">'+esc(c.ko)+'</span>'
+        + '<span class="rq-go" aria-hidden="true">↓</span>'
       + '</a></li>';
     }).join('');
   }
@@ -1960,7 +2033,7 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
   });
 })();
 </script>
-<script src="assets/nav.js?v=74"></script>
+<script src="assets/nav.js?v=77"></script>
 <script>
 /* ── 교육과정 배너 확대 — 스크롤 진행률 ──
    바깥 통(.tw-scene)의 높이에서 화면 한 칸을 뺀 만큼이 「진행 구간」이다.

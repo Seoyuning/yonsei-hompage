@@ -1,0 +1,20 @@
+Model Information:
+* title:	Mechanical Eagle
+* source:	https://sketchfab.com/3d-models/mechanical-eagle-9d236618133b4bd4b67395c8e61b232a
+* author:	Neil Laguardia (https://sketchfab.com/Neil_Laguardia)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Mechanical Eagle" (https://sketchfab.com/3d-models/mechanical-eagle-9d236618133b4bd4b67395c8e61b232a) by Neil Laguardia (https://sketchfab.com/Neil_Laguardia) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+────────────────────────────────────────────────────────────
+이 저장소에서의 사용
+* eagle-p-{head,lw,rw,body,tail,talons}.png · me-eagle.png 은
+  위 3D 모델을 부위별로 렌더링해 만든 파생물이다.
+* 원본 모델 파일(assets/eagle-model2/ · 10.1MB)은 배포에 쓰이지 않아 지웠다.
+  다시 렌더링해야 하면 git 이력에서 되살릴 수 있다:
+      git log --diff-filter=D -- design-candidates/assets/eagle-model2
+      git checkout <그 커밋>^ -- design-candidates/assets/eagle-model2
+* 저작자 표시는 nav.js 가 만드는 전 페이지 푸터(.yft-credit)에 적혀 있다.

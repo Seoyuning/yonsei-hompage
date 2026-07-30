@@ -13,7 +13,7 @@
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d17" />
-<link rel="preload" as="script" href="assets/nav.js?v=74" />
+<link rel="preload" as="script" href="assets/nav.js?v=77" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    교수진 디렉토리 — 아이보리 배경 · 네이비 제목 · 헤어라인 · 연회색 행
@@ -53,8 +53,6 @@ body{
   line-height:1.6;
 }
 a{color:inherit;text-decoration:none}
-.mono{font-family:var(--mono)}
-.tnum{font-variant-numeric:tabular-nums}
 .visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 :focus-visible{outline:2px solid var(--coral);outline-offset:2px}
 .skip{position:absolute;left:.6rem;top:-3rem;z-index:60;background:var(--navy);color:#fff;
@@ -129,7 +127,8 @@ a{color:inherit;text-decoration:none}
   .emrow{grid-template-columns:auto 1fr;padding:.85rem .1rem}
   .emrow .eterm{grid-column:1 / -1;margin-top:.1rem}
 }
-.fchips{display:flex;align-items:center;gap:.35rem;flex-wrap:wrap}
+/* 칩 사이는 여백으로만 나눈다 — 구분선을 넣으면 다시 상자처럼 보인다 */
+.fchips{display:flex;align-items:center;flex-wrap:wrap;gap:0 .9rem}
 /* display:flex 가 hidden 속성의 display:none 을 이겨서 숨겨지지 않는다 */
 .fchips[hidden]{display:none}
 .filterbar[hidden]{display:none}
@@ -151,11 +150,8 @@ a{color:inherit;text-decoration:none}
   transition:transform .22s cubic-bezier(.22,.61,.36,1)}
 .fchip:hover{color:var(--navy)}
 .fchip:focus-visible{outline:2px solid var(--navy);outline-offset:3px;border-radius:2px}
-.fchip .cdot{display:none}
 .fchip[aria-pressed="true"]{color:var(--navy);font-weight:700}
 .fchip[aria-pressed="true"]::after{transform:scaleX(1)}
-/* 칩 사이는 여백으로만 나눈다 — 구분선을 넣으면 다시 상자처럼 보인다 */
-.fchips{gap:0 .9rem}
 @media (prefers-reduced-motion:reduce){ .fchip::after{transition:none} }
 
 /* ── 교수진 사진 그리드 (한양대 member_01 레이아웃: 사진 위 · 정보 패널 아래) ── */
@@ -255,7 +251,8 @@ html[lang="en"] .ppos{display:none}
 /* 패널 맨 아래 두 칸 — 메인 화면 교수진 카드와 같은 짜임.
    예전엔 이름 오른쪽에 동그란 아이콘 두 개가 붙어 있어, 이름이 두 줄인 카드에서
    버튼 자리가 위아래로 흔들렸다. 칠 없이 헤어라인으로만 나눈 줄로 바닥에 붙인다. */
-.pbtns{margin:auto -1.15rem -1.1rem;display:grid;
+/* position:relative — 아래 .pdetail(떠오르는 상세 판)의 기준 상자 */
+.pbtns{position:relative;margin:auto -1.15rem -1.1rem;display:grid;
   /* 칸 수에 맞춰 폭을 나눈다 — 명예·퇴임 교수는 공식 프로필도 메일도 없어
      「자세히」한 칸뿐인데, 두 칸으로 고정하면 오른쪽이 빈 채로 남는다 */
   grid-auto-flow:column;grid-auto-columns:1fr;
@@ -301,8 +298,6 @@ html[lang="en"] .ppos{display:none}
 .pdetail a.il:hover{text-decoration:underline;text-underline-offset:2px}
 /* 펼친 카드가 옆 카드 위로 오게 */
 .pcard.open{z-index:7}
-/* 버튼 묶음이 기준 상자 */
-.pbtns{position:relative}
 @media (prefers-reduced-motion:reduce){
   .pcard{opacity:1;transform:none;transition:box-shadow .2s}
   .pphoto img,.pcard:hover .pphoto img{transition:none;transform:none}
@@ -327,15 +322,13 @@ html[lang="en"] .ppos{display:none}
   .pdetail .rows{gap:.42rem}
   .pdetail{padding:.75rem .8rem}
   .pdetail .il{font-size:.76rem;gap:.42rem}
-
-/* 좁은 화면 — 버튼 기준으로 띄우면 왼쪽 열 카드의 판이 화면 밖으로 나간다.
-   기준 상자를 카드 본문으로 바꿔 카드 폭에 맞춰 띄운다(위치는 그대로 '위로 올라오는 판'). */
-@media (max-width:640px){
+  /* 좁은 화면 — 버튼 기준으로 띄우면 왼쪽 열 카드의 판이 화면 밖으로 나간다.
+     기준 상자를 카드 본문으로 바꿔 카드 폭에 맞춰 띄운다(위치는 그대로 '위로 올라오는 판').
+     예전에는 이 두 규칙을 @media (max-width:640px) 로 한 번 더 감싸 두었는데,
+     바깥이 이미 460px 이라 늘 참인 껍데기였다 — 적용 폭은 그때나 지금이나 460px 이하다. */
   .pbtns{position:static}
   .pdetail{left:0;right:0;width:auto;min-width:0;max-width:none;
     bottom:calc(100% + .4rem);transform-origin:bottom center}
-}
-
   .pfallback{font-size:2.2rem}
 }
 
@@ -356,9 +349,6 @@ html[lang="en"] .ppos{display:none}
    제목 아래 슬래시 요약 줄을 둔다.
    요약은 그 화면이 이미 담고 있는 사실만 적는다. */
 .staff-head,.al-head{position:relative}
-@media (max-width:640px){
-    }
-
 .staff-head h2{font-size:clamp(1.6rem,1.15rem + 2vw,2.4rem);font-weight:800;color:#111318;letter-spacing:-.01em}
 .staff-head .lead{margin-top:.7rem;font-size:.92rem;color:var(--sub);max-width:46rem;line-height:1.7}
 .staff-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:1rem}
@@ -368,9 +358,9 @@ html[lang="en"] .ppos{display:none}
 .staff-card .role{font-size:.8rem;font-weight:600;color:var(--sub);margin-top:.2rem;letter-spacing:.01em}
 .staff-card li a{color:var(--body);text-decoration:none;transition:color .15s}
 .staff-card li a:hover{color:var(--coral);text-decoration:underline;text-underline-offset:2px}
-.staff-card li{overflow-wrap:anywhere}
 .staff-card ul{list-style:none;margin-top:.85rem;display:flex;flex-direction:column;gap:.4rem}
-.staff-card li{position:relative;padding-left:.9rem;font-size:.84rem;color:var(--body);line-height:1.55}
+.staff-card li{position:relative;padding-left:.9rem;font-size:.84rem;color:var(--body);
+  line-height:1.55;overflow-wrap:anywhere}
 .staff-card li::before{content:"";position:absolute;left:0;top:.6em;width:4px;height:4px;border-radius:50%;background:var(--coral)}
 .staff-contact{margin-top:1.6rem;border:1px solid var(--line-soft);background:var(--row);padding:1rem 1.2rem}
 .staff-contact .lab{font-size:.74rem;color:var(--label);letter-spacing:.02em}
@@ -549,7 +539,9 @@ html[lang="en"] .ppos{display:none}
       </div>
     </div>
   </div>
-  <div class="filterbar is-chips" aria-label="연구분야 필터">
+  <!-- id 가 있어야 nav.js 의 탭 전환이 이 줄을 「교수진 탭의 것」으로 관리한다.
+       id 가 없으면 어느 탭에도 속하지 않아 교직원·동문에서도 그대로 떠 있었다. -->
+  <div class="filterbar is-chips" id="facultyChips" aria-label="연구분야 필터">
     <div class="filter-wrap">
       <div class="fchips" role="group" aria-label="연구분야 필터" id="cChips"></div>
     </div>
@@ -570,6 +562,7 @@ html[lang="en"] .ppos{display:none}
   <!-- 교직원 (행정팀) -->
   <section class="staff" id="staff" aria-labelledby="staff-title">
     <div class="staff-head">
+      <p class="sec-kick">Staff</p>
       <h2 id="staff-title">교직원</h2>
       <p class="lead">학부 행정과 대학원 학사, BK21 교육연구단 업무를 담당하는 행정 직원입니다.</p>
     </div>
@@ -628,6 +621,7 @@ html[lang="en"] .ppos{display:none}
        인터뷰·협력 사례·기금 운영은 확인된 자료가 없어 예시임을 화면에 밝힌 자리표시자다. -->
   <section class="al" id="alumni" aria-labelledby="al-title">
     <div class="al-head">
+      <p class="sec-kick">Alumni</p>
       <h2 id="al-title">동문</h2>
       <p class="al-lead">동문은 학부의 또 다른 구성원입니다. 졸업생과 재학생, 학부를 잇는 연혁과 인터뷰, 대외협력과 발전기금 안내를 모았습니다.</p>
     </div>
@@ -974,14 +968,13 @@ html[lang="en"] .ppos{display:none}
   }
 
   /* ── 분야 필터 칩 렌더 (연구분야만 · 카운트 없음) ── */
-  function chip(val,label,cvar,pressed){
+  function chip(val,label,pressed){
     return '<button type="button" class="fchip" data-c="'+val+'" aria-pressed="'+pressed+'">'+
-      (cvar ? '<span class="cdot" style="--chip-c:var('+cvar+')" aria-hidden="true"></span>' : '') +
       esc(label) + '</button>';
   }
   cWrap.innerHTML = '<span class="fchips-label" aria-hidden="true">연구분야</span>' +
-    chip('all','전체',null,state.c==='all') +
-    clusters.map(function(c){ return chip(c.id,c.ko,CVAR[c.id],state.c===c.id); }).join('');
+    chip('all','전체',state.c==='all') +
+    clusters.map(function(c){ return chip(c.id,c.ko,state.c===c.id); }).join('');
 
   function syncChips(){
     cWrap.querySelectorAll('.fchip').forEach(function(b){ b.setAttribute('aria-pressed',String(b.dataset.c===state.c)); });
@@ -1224,7 +1217,7 @@ html[lang="en"] .ppos{display:none}
   }
 })();
 </script>
-<script src="assets/nav.js?v=74"></script>
+<script src="assets/nav.js?v=77"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--dimmer)">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

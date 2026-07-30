@@ -14,7 +14,7 @@
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d17" />
-<link rel="preload" as="script" href="assets/nav.js?v=74" />
+<link rel="preload" as="script" href="assets/nav.js?v=77" />
 <style>
 /* ───────────────────────────────────────────────
    입학 · 진로 (라이트 테마)
@@ -55,7 +55,7 @@ body{
   line-height:1.65;
 }
 a{color:inherit;text-decoration:none}
-.mono{font-family:var(--mono)}
+/* .mono 유틸리티 삭제 — 이 페이지 마크업에 붙은 곳이 없다(--mono 변수는 계속 쓴다) */
 .tnum{font-variant-numeric:tabular-nums}
 :focus-visible{outline:2px solid var(--coral);outline-offset:2px}
 .skip{position:absolute;left:.6rem;top:-3rem;z-index:60;background:var(--navy);color:#fff;
@@ -82,43 +82,33 @@ a{color:inherit;text-decoration:none}
 .phero-in{position:relative;z-index:1;padding:clamp(9.5rem,7rem + 4vw,11.5rem) 1.2rem clamp(2.6rem,5vh,4rem);max-width:60rem}
 .phero h1{font-size:clamp(1.9rem,1.2rem + 2.6vw,3rem);font-weight:800;letter-spacing:-.01em;line-height:1.16;color:#fff}
 .phero .bc{margin-top:.9rem;font-size:.82rem;letter-spacing:.02em;color:rgba(255,255,255,.82)}
-/* 페이지 내 이동 (하단 하드라인 링크) */
-.subnav{display:flex;flex-wrap:wrap;gap:.4rem 1.4rem;padding-top:1.3rem;padding-bottom:1.3rem;
-  border-bottom:1px solid var(--line-soft)}
-.subnav a{font-size:.86rem;color:var(--sub);transition:color .15s}
-.subnav a:hover{color:var(--navy)}
+/* .subnav 삭제 — 페이지 내 이동은 nav.js 의 상단 서브내비(.ysub)로 옮겨
+   본문 마크업에서 사라졌다(아래 §01 위 주석 참고) */
 
 /* ── 섹션 골격 (흰 배경) ── */
 /* 위·아래만 준다 — shorthand 로 쓰면 같이 걸린 .wrap 의 좌우 여백이 0으로 지워져
    휴대폰에서 글이 화면 끝에 붙는다(넓은 화면에선 max-width 덕에 안 보이던 문제) */
 .section{padding-block:clamp(3rem,2rem + 3vw,4.5rem)}
 .section + .section{border-top:1px solid var(--line-soft)}
-.sec-head{display:flex;justify-content:space-between;align-items:baseline;
+/* 섹션 머리 — 따로 선언돼 있던 position 을 이 규칙에 합쳤다 */
+.sec-head{position:relative;display:flex;justify-content:space-between;align-items:baseline;
   gap:1.5rem;flex-wrap:wrap;margin-bottom:clamp(1.6rem,1rem + 2vw,2.4rem)}
 .sec-kick{font-family:var(--mono);font-size:.66rem;letter-spacing:.24em;
   text-transform:uppercase;color:var(--coral)}
-/* ── 섹션 머리 (대학원 페이지에서 시작해 전 페이지 공통) ──
-   제목 아래에 슬래시로 이어붙인 요약 줄을 둔다.
-   요약은 그 화면이 이미 담고 있는 사실만 적는다 — 새 주장을 만들지 않는다. */
-.sec-head{position:relative}
-@media (max-width:640px){
-    }
-
 .sec-title{font-weight:700;color:#111318;letter-spacing:-.01em;
   font-size:clamp(1.85rem,1.2rem + 2.8vw,2.85rem);line-height:1.24;margin-top:.5rem}
-.sec-sub{font-size:.94rem;color:var(--sub);line-height:1.7;max-width:44rem;margin-top:.55rem}
+/* .sec-sub(제목 아래 요약 줄) 와 빈 640px 미디어쿼리 삭제 — 이 페이지엔 그 마크업이 없다 */
 
 /* ── 카드 (공통 패널) ── */
 .card{border:1px solid var(--line-soft);background:var(--card);padding:1.6rem 1.6rem 1.7rem}
 .card--soft{background:var(--card)}
-.card .overline{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;
+/* 오버라인 — 카드 안과 §03 장학 블록이 같은 선언이라 묶었다(.cnt 만 장학 쪽에 더 붙는다) */
+.card .overline,.sch-block > .overline{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;
   text-transform:uppercase;color:var(--coral);display:block;margin-bottom:.9rem}
 .card h3{font-weight:700;font-size:1.1rem;color:var(--navy);line-height:1.3;margin-bottom:.7rem}
 .card p{font-size:.9rem;color:var(--body);line-height:1.75}
 .card p.contact-line{font-size:.86rem;color:var(--sub);line-height:1.8}
-.card a.inline{color:var(--navy);text-decoration:underline;text-underline-offset:2px;
-  text-decoration-color:var(--line);transition:text-decoration-color .15s}
-.card a.inline:hover{text-decoration-color:var(--coral)}
+/* .card a.inline 삭제 — 카드 본문에 그 클래스를 쓴 링크가 없다 */
 .card b{color:var(--ink);font-weight:600}
 .card .kbd{font-family:var(--mono);font-size:.82em;border:1px solid var(--line);
   padding:.05em .4em;color:var(--sub);white-space:nowrap}
@@ -130,14 +120,7 @@ a{color:inherit;text-decoration:none}
 .duo{display:grid;gap:1.1rem;grid-template-columns:1.3fr 1fr}
 @media (max-width:860px){.duo{grid-template-columns:1fr}}
 
-/* 번호 리스트 (지원 절차) */
-.num-list{list-style:none;margin:1rem 0 1.2rem;display:flex;flex-direction:column;gap:.7rem}
-.num-list li{display:grid;grid-template-columns:auto 1fr;gap:.8rem;align-items:start;
-  font-size:.9rem;color:var(--body);line-height:1.65}
-.num-list .n{font-family:var(--mono);font-size:.68rem;color:var(--coral);
-  border:1px solid var(--line);padding:.15rem .4rem;line-height:1.2;align-self:start;margin-top:.15rem}
-.num-list a{color:var(--navy);text-decoration:underline;text-underline-offset:2px;text-decoration-color:var(--line)}
-.num-list a:hover{text-decoration-color:var(--coral)}
+/* .num-list(번호 리스트) 삭제 — 지원 절차가 §01 .adm-* 카드 격자로 바뀌며 마크업이 사라졌다 */
 
 /* 데이터 정의 행 (연혁/스펙) */
 .def{border-top:1px solid var(--line)}
@@ -256,23 +239,11 @@ a{color:inherit;text-decoration:none}
 .note a{color:var(--navy);text-decoration:underline;text-underline-offset:2px;transition:color .15s}
 .note a:hover{color:var(--coral)}
 
-/* 용어 풀이 (짧은 한 줄 해설) */
-.gloss{font-size:.8rem;color:var(--muted);line-height:1.75;
-  margin-top:1rem;padding-top:.85rem;border-top:1px dashed var(--line-soft)}
-.gloss b{color:var(--sub);font-weight:600}
-
-/* .route / .persona / .pdot / .flow / .st / .ar 규칙 삭제 —
-   §05 진로 페르소나 4카드 전용 스타일이었고, 카드를 지우면서 참조가 끊겼다. */
-
-/* ── 연혁 타임라인 ── */
-.timeline{border-left:1px solid var(--line);margin-top:.4rem;padding-left:1.1rem;
-  display:flex;flex-direction:column;gap:1.1rem}
-.tl-item{position:relative}
-.tl-item::before{content:"";position:absolute;left:calc(-1.1rem - 1px);top:.35rem;
-  width:7px;height:7px;border-radius:50%;background:var(--faint);transform:translateX(-50%)}
-.tl-item--hl::before{background:var(--coral)}
-.tl-date{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;color:var(--coral);margin-bottom:.2rem}
-.tl-text{font-size:.88rem;color:var(--body);line-height:1.6}
+/* 아래 규칙들을 삭제했다(모두 저장소 전체 grep 결과 마크업이 없다):
+   .gloss(용어 풀이) — 붙어 있던 해설 줄이 사라졌다.
+   .route/.persona/.pdot/.flow/.st/.ar — §05 진로 페르소나 4카드 전용이었다.
+   .timeline/.tl-item/.tl-item--hl/.tl-date/.tl-text — 이 페이지의 연혁 타임라인은
+     §02 「대학원 연혁」 .def 정의 행으로 바뀌었다(G-about 의 .timeline 은 그 페이지 것). */
 
 /* ── FAQ ── */
 .faq{border-top:1px solid var(--line)}
@@ -284,10 +255,13 @@ a{color:inherit;text-decoration:none}
 .faq summary .qm{font-family:var(--mono);font-size:.68rem;color:var(--coral);align-self:start;margin-top:.2rem}
 .faq summary .qt{font-size:.96rem;color:var(--ink);font-weight:600;line-height:1.45}
 .faq summary .mk{position:relative;width:12px;height:12px;flex:none;align-self:start;margin-top:.35rem}
-.faq summary .mk::before,.faq summary .mk::after{content:"";position:absolute;background:var(--coral);transition:transform .2s}
-.faq summary .mk::before{top:5px;left:0;width:12px;height:1px}
-.faq summary .mk::after{top:0;left:5px;width:1px;height:12px}
-.faq details[open] summary .mk::after{transform:scaleY(0)}
+/* ＋/－ 마커 — FAQ 와 §03 교내 장학 목록(.sch-list)이 같은 모양을 쓴다.
+   두 곳의 선언이 글자까지 같아 묶었다. 다른 것은 .mk 자체의 margin-top 뿐이라 그것만 각자 둔다. */
+.faq summary .mk::before,.faq summary .mk::after,
+.sch-list summary .mk::before,.sch-list summary .mk::after{content:"";position:absolute;background:var(--coral);transition:transform .2s}
+.faq summary .mk::before,.sch-list summary .mk::before{top:5px;left:0;width:12px;height:1px}
+.faq summary .mk::after,.sch-list summary .mk::after{top:0;left:5px;width:1px;height:12px}
+.faq details[open] summary .mk::after,.sch-list details[open] summary .mk::after{transform:scaleY(0)}
 .faq .fbody{padding:0 .2rem 1.2rem;font-size:.9rem;color:var(--body);line-height:1.8;max-width:52rem}
 .faq .fbody a{color:var(--navy);text-decoration:underline;text-underline-offset:2px;text-decoration-color:var(--line)}
 .faq .fbody a:hover{text-decoration-color:var(--coral)}
@@ -312,8 +286,7 @@ a{color:inherit;text-decoration:none}
 /* ── 장학 안내 ── */
 .sch-block{margin-top:1.6rem}
 .sch-block:first-child{margin-top:0}
-.sch-block > .overline{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;
-  text-transform:uppercase;color:var(--coral);display:block;margin-bottom:.9rem}
+/* .sch-block > .overline 본체는 위 「카드」 절의 .card .overline 과 묶어 두었다 */
 .sch-block > .overline .cnt{color:var(--navy);font-variant-numeric:tabular-nums;margin-left:.4rem}
 /* 교내: details 리스트 */
 .sch-list{border-top:1px solid var(--line)}
@@ -326,11 +299,8 @@ a{color:inherit;text-decoration:none}
   border:1px solid var(--line);padding:.12rem .4rem;line-height:1.3;align-self:start;margin-top:.1rem;
   font-variant-numeric:tabular-nums}
 .sch-list summary .nm{font-size:.94rem;color:var(--ink);font-weight:600;line-height:1.45}
+/* ＋/－ 마커의 나머지 선언은 위 FAQ 절에 묶어 두었다 */
 .sch-list summary .mk{position:relative;width:12px;height:12px;flex:none;align-self:start;margin-top:.3rem}
-.sch-list summary .mk::before,.sch-list summary .mk::after{content:"";position:absolute;background:var(--coral);transition:transform .2s}
-.sch-list summary .mk::before{top:5px;left:0;width:12px;height:1px}
-.sch-list summary .mk::after{top:0;left:5px;width:1px;height:12px}
-.sch-list details[open] summary .mk::after{transform:scaleY(0)}
 .sch-list .sbody{padding:0 .2rem 1.1rem 2.6rem;font-size:.88rem;color:var(--body);line-height:1.75;max-width:54rem}
 /* 교외: 카드 그리드 */
 .sch-cards{display:grid;gap:1.1rem;grid-template-columns:repeat(auto-fit,minmax(19rem,1fr))}
@@ -347,16 +317,8 @@ a{color:inherit;text-decoration:none}
   line-height:1.6;font-variant-numeric:normal;white-space:normal}
 @media (max-width:520px){.sch-card .def .drow{grid-template-columns:1fr}.sch-card .def .drow .v{margin-top:.15rem}}
 
-/* ── 학부 현황 (숫자) ── */
-.stats{border-top:1px solid var(--line-soft);margin-top:1rem}
-.stats-inner{padding:2.4rem 0 2.6rem;
-  display:flex;justify-content:space-between;align-items:flex-end;gap:2rem;flex-wrap:wrap}
-.counters{display:flex;gap:clamp(2rem,1rem + 4vw,4.5rem);flex-wrap:wrap}
-.ct .lab{font-size:.84rem;color:var(--muted);margin-bottom:.4rem}
-.ct .num{font-weight:600;color:var(--navy);
-  font-size:clamp(1.3rem,1rem + 1vw,1.6rem);line-height:1.1;font-variant-numeric:tabular-nums}
-.stats-contact{font-size:.86rem;color:var(--muted);text-align:right;line-height:1.9}
-.stats-contact b{color:var(--sub);font-weight:600}
+/* 「학부 현황 (숫자)」 CSS(.stats/.stats-inner/.counters/.ct .lab/.ct .num/.stats-contact)
+   삭제 — 그 밴드 마크업이 이 페이지에서 사라졌다(학부 규모 숫자는 G-about §03 이 갖는다). */
 
 /* ── 반응형 ── */
 @media (max-width:860px){
@@ -364,8 +326,6 @@ a{color:inherit;text-decoration:none}
   .post-cat{grid-row:1;grid-column:1}
   .post-date{grid-row:1;grid-column:2;justify-self:end}
   .post-title{grid-row:2;grid-column:1 / -1}
-  .stats-inner{flex-direction:column;align-items:flex-start}
-  .stats-contact{text-align:left}
 }
 </style>
 <style>.ynav-ph{position:fixed;top:0;left:0;right:0;height:3.7rem;background:rgba(255,255,255,.96);border-bottom:1px solid rgba(0,0,0,.08);z-index:39}</style>
@@ -396,7 +356,7 @@ a{color:inherit;text-decoration:none}
   <section class="wrap section" id="undergraduate" aria-labelledby="ug-h">
     <div class="sec-head">
       <div>
-        <p class="sec-kick">입학</p>
+        <p class="sec-kick">Undergraduate</p>
         <h2 id="ug-h" class="sec-title">학부 입학</h2>
       </div>
     </div>
@@ -476,7 +436,7 @@ a{color:inherit;text-decoration:none}
   <section class="wrap section" id="graduate" aria-labelledby="grad-h">
     <div class="sec-head">
       <div>
-        <p class="sec-kick">대학원</p>
+        <p class="sec-kick">Graduate</p>
         <h2 id="grad-h" class="sec-title">대학원 진학</h2>
       </div>
     </div>
@@ -528,7 +488,7 @@ a{color:inherit;text-decoration:none}
   <section class="wrap section" id="scholarships" aria-labelledby="sch-h">
     <div class="sec-head">
       <div>
-        <p class="sec-kick">장학</p>
+        <p class="sec-kick">Scholarships</p>
         <h2 id="sch-h" class="sec-title">장학 안내</h2>
       </div>
     </div>
@@ -652,9 +612,9 @@ a{color:inherit;text-decoration:none}
     }).join('');
   }
 
-  /* 장학 카운터 */
-  ['sch-in-cnt','sch-in-cnt2'].forEach(function(id){ var e=document.getElementById(id); if(e) e.textContent = schIn.length; });
-  ['sch-ex-cnt','sch-ex-cnt2'].forEach(function(id){ var e=document.getElementById(id); if(e) e.textContent = schEx.length; });
+  /* 장학 카운터 — 예전엔 id 두 벌(sch-in-cnt/sch-in-cnt2)을 훑었으나 앞의 것은 마크업에서 사라졌다 */
+  var cntIn = document.getElementById('sch-in-cnt2'); if(cntIn) cntIn.textContent = schIn.length;
+  var cntEx = document.getElementById('sch-ex-cnt2'); if(cntEx) cntEx.textContent = schEx.length;
 
   function safeUrl(u){
     var url = String(u || '');
@@ -725,7 +685,7 @@ a{color:inherit;text-decoration:none}
 
 })();
 </script>
-<script src="assets/nav.js?v=74"></script>
+<script src="assets/nav.js?v=77"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--dimmer)">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

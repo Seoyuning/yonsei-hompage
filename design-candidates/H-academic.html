@@ -7,7 +7,6 @@
    (깊은 앵커 #id 이동에는 영향 없음) */try{history.scrollRestoration="manual"}catch(e){}</script>
 <title>[시안 H · 아카데믹] 연세대학교 기계공학부</title>
 <meta name="description" content="Design candidate H — Academic. KAIST ME·SNU ME 메인을 참고한 정갈한 화이트 아카데믹 레이아웃. 타이포 히어로 + 연구 뉴스 카드 + 공지/세미나 보드 + 분야 그리드." />
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
 <!-- 본문 글꼴 — 렌더를 막지 않게 비동기로 받는다(media 트릭). 받기 전에는 시스템 글꼴로
      그대로 보이고(font-display:swap), 받은 뒤 조용히 바뀐다. -->
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
@@ -16,7 +15,7 @@
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트를 미리 받아 둔다 — 파서가 해당 줄에 닿았을 때 이미 캐시에 있어 멈춤이 짧아진다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d17" />
-<link rel="preload" as="script" href="assets/nav.js?v=74" />
+<link rel="preload" as="script" href="assets/nav.js?v=77" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    시안 H · 아카데믹 (Reference: me.kaist.ac.kr / me.snu.ac.kr)
@@ -43,50 +42,9 @@ a{color:inherit;text-decoration:none}
 img{display:block;max-width:100%}
 .wrap{max-width:72rem;margin:0 auto;padding:0 clamp(1.1rem,4vw,2rem)}
 
-/* ── 상단 유틸리티 바 ── */
-.topbar{background:var(--ink);color:#c6d2e6;font-size:.74rem}
-.topbar .wrap{display:flex;align-items:center;justify-content:flex-end;gap:1.4rem;padding-top:.42rem;padding-bottom:.42rem}
-.topbar a:hover{color:#fff}
-.lang{display:flex;gap:.1rem;margin-left:.5rem;border:1px solid rgba(255,255,255,.28);border-radius:99px;padding:.12rem}
-.lang button{font-family:inherit;font-size:.66rem;font-weight:700;letter-spacing:.08em;color:#c6d2e6;
-  background:none;border:0;border-radius:99px;padding:.16rem .62rem;cursor:pointer;transition:background .12s,color .12s}
-.lang button.on{background:#fff;color:var(--navy-d)}
-
-/* ── 헤더 ── */
-.hdr{position:sticky;top:0;z-index:40;background:rgba(245,242,236,.94);
-  backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-.hdr .wrap{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;
-  padding-top:.85rem;padding-bottom:.85rem}
-.brand{display:flex;align-items:center;gap:.7rem;min-width:0}
-.brand img{height:2.4rem;width:auto}
-.brand .bko{font-weight:800;font-size:1.06rem;letter-spacing:-.01em;color:var(--navy);line-height:1.25}
-.brand .ben{display:block;font-size:.62rem;font-weight:500;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--dim)}
-.gnb{display:flex;gap:clamp(2rem,3.8vw,3.6rem);font-weight:600;font-size:.98rem;white-space:nowrap}
-.gi{position:relative}
-.gi>a{position:relative;display:inline-block;padding:.55rem 0;transition:color .2s}
-.gi>a::after{content:"";position:absolute;left:0;right:0;bottom:.2rem;height:2px;background:var(--coral);
-  transform:scaleX(0);transform-origin:right;transition:transform .45s var(--e)}
-.gi:hover>a{color:var(--navy)}
-.gi:hover>a::after{transform:scaleX(1);transform-origin:left}
-/* 드롭다운 — 살짝 떠오르며 항목이 순차 페이드 */
-.gd{position:absolute;top:calc(100% + .35rem);left:50%;min-width:12.5rem;
-  background:#fff;border:1px solid var(--line);border-top:2px solid var(--coral);
-  box-shadow:0 22px 48px rgba(15,27,48,.14);padding:.55rem 0;display:flex;flex-direction:column;
-  opacity:0;visibility:hidden;transform:translate(-50%,14px);z-index:50;
-  transition:opacity .35s var(--e),transform .5s var(--e),visibility .35s}
-.gd::before{content:"";position:absolute;top:-1rem;left:0;right:0;height:1rem}
-.gi:hover .gd,.gi:focus-within .gd{opacity:1;visibility:visible;transform:translate(-50%,4px)}
-.gd a{padding:.52rem 1.25rem;font-size:.87rem;font-weight:500;color:var(--muted);
-  opacity:0;transform:translateY(7px);
-  transition:opacity .4s ease,transform .5s var(--e),color .15s,background .15s,padding .3s var(--e)}
-.gi:hover .gd a,.gi:focus-within .gd a{opacity:1;transform:none}
-.gd a:nth-child(2){transition-delay:.04s}.gd a:nth-child(3){transition-delay:.08s}
-.gd a:nth-child(4){transition-delay:.12s}.gd a:nth-child(5){transition-delay:.16s}
-.gd a:hover{color:var(--coral);background:var(--paper);padding-left:1.6rem}
-@media(max-width:920px){.gnb{display:none}}
-@media(prefers-reduced-motion:reduce){.gd,.gd a{transition:none;opacity:1;transform:translate(-50%,4px)}
-  .gd a{transform:none}}
+/* 상단 유틸 바·헤더·드롭다운·푸터의 CSS는 여기 없다 — 그 마크업은 이 페이지가 아니라
+   assets/nav.js 가 .ynv-* / .yft 로 만들고, 제 스타일도 함께 주입한다.
+   (예전에 남아 있던 .topbar/.lang/.hdr/.brand/.gnb/.gi/.gd/.ftr 규칙은 짝 없는 죽은 규칙이라 지웠다) */
 
 /* ── 히어로 — 풀블리드 이미지 + 중앙 학부명 (SNU ME 참고) ── */
 /* 첫 화면은 히어로가 독차지한다 — 88vh 였을 때 아래 지표 밴드가 빼꼼 보여
@@ -107,8 +65,6 @@ img{display:block;max-width:100%}
    참고한 짜임: 층마다 다른 주기로 무한히 흐르게 두면(20~50초) 정지 화면이 살아난다.
    여기서는 기계 도면의 격자와 마스코트 독수리를 층으로 쓴다. */
 .hero-layers{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
-@keyframes hlSlideX{from{transform:translateX(0)}to{transform:translateX(-92px)}}
-@keyframes hlSlideY{from{transform:translateY(0)}to{transform:translateY(-124px)}}
 .hl-eagle{position:absolute;right:-6%;top:6%;width:min(62vw,760px);aspect-ratio:1/1;
   background:url("assets/me-eagle.png") center/contain no-repeat;
   opacity:.11;filter:brightness(0) invert(1);
@@ -116,8 +72,6 @@ img{display:block;max-width:100%}
 @keyframes hlFloat{from{transform:translate3d(0,0,0) scale(1)}
   to{transform:translate3d(-3.5%,-3%,0) scale(1.07)}}
 
-
-/* 아래쪽 흐름 띠 */
 /* 히어로를 지나쳐도 독수리 부유가 계속 돌면 합성기가 영영 쉬지 못한다.
    화면 밖으로 나가면 세운다 — 클래스가 「안 보일 때 붙는」 방향이라
    스크립트가 없으면 그냥 계속 도는 예전 동작 그대로다(멈춘 채 남지 않는다).
@@ -134,12 +88,6 @@ img{display:block;max-width:100%}
 .hero h1{margin-top:1.15rem;font-weight:600;letter-spacing:-.005em;line-height:1.1;
   font-size:clamp(2.2rem,1.1rem + 5.2vw,4.9rem);color:#fff}
 .hero .sub{margin:1.5rem auto 0;max-width:37rem;font-size:clamp(.94rem,.86rem + .3vw,1.08rem);color:#ccd8ea}
-.btn{display:inline-block;padding:.74rem 1.6rem;border-radius:.2rem;font-weight:700;font-size:.92rem;
-  transition:background .2s,color .2s,box-shadow .35s var(--e);will-change:transform}
-.btn-white{background:#fff;color:var(--navy)}
-.btn-white:hover{background:#fff;box-shadow:0 14px 34px rgba(0,0,0,.35)}
-.btn-ghost{border:1px solid rgba(255,255,255,.62);color:#fff}
-.btn-ghost:hover{background:rgba(255,255,255,.14);box-shadow:0 14px 34px rgba(0,0,0,.28)}
 .hero-scroll{position:absolute;z-index:2;left:50%;bottom:calc(3.6rem + env(safe-area-inset-bottom));transform:translateX(-50%);
   font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.72)}
 .hero-scroll::after{content:"";display:block;width:1px;height:2rem;margin:.45rem auto 0;
@@ -160,18 +108,22 @@ img{display:block;max-width:100%}
 /* 섹션 배경 교차 — 흰(페이퍼)/네이비. 네이비 섹션은 풀블리드 + 텍스트 반전 */
 .sec-navy{position:relative;isolation:isolate;color:#fff}
 .sec-navy::before{content:"";position:absolute;inset:0 calc(50% - 50vw);background:var(--navy-d);z-index:-1}
-.sec-navy .sidx{color:var(--accent-d)}
-.sec-navy .kick{color:var(--accent-d)}
+.sec-navy .kick{color:#fff;border-bottom-color:rgba(255,255,255,.45)}
 .sec-navy .sec-title{color:#fff}
 .sec-navy .more{color:#c7d3e8}
 .sec-navy .more:hover{color:#fff}
-.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:1.2rem;margin-bottom:clamp(2.8rem,5.5vh,4.4rem)}
-.sidx{flex:none;font-family:var(--mono);font-weight:800;line-height:.85;
-  font-size:clamp(3rem,3rem + 4vw,6rem);color:var(--navy);user-select:none}
-.sec-head>div{flex:1;min-width:0}
-.kick{font-family:var(--mono);font-size:.66rem;font-weight:500;letter-spacing:.3em;text-transform:uppercase;color:var(--coral)}
-.sec-title{margin-top:.3rem;font-size:clamp(1.7rem,1.2rem + 2.4vw,2.9rem);font-weight:800;
-  letter-spacing:-.02em;color:#111318;line-height:1.12}
+/* ── 구간 머리 ──
+   메뉴 페이지와 같은 형식으로 통일한다: [영문 라벨] → [먹색 가로줄] → [대제목].
+   예전에는 큰 배경 번호(01·03·04)와 산호색 라벨이 제목 옆에 붙어 있어,
+   같은 사이트인데 화면마다 머리가 다르게 보였다. 번호는 뺐다. */
+.sec-head{display:block;margin-bottom:clamp(2.2rem,4.5vh,3.6rem)}
+.sec-head-row{display:flex;align-items:flex-end;justify-content:space-between;gap:1.2rem;flex-wrap:wrap}
+.kick{display:block;width:100%;font-family:var(--mono);font-size:.68rem;font-weight:600;
+  letter-spacing:.22em;text-transform:uppercase;color:#111318;
+  padding-bottom:.82rem;border-bottom:1px solid #111318;
+  margin:0 0 clamp(.95rem,.75rem + .8vw,1.6rem)}
+.sec-title{margin-top:0;font-size:clamp(1.7rem,1.2rem + 2.4vw,2.9rem);font-weight:800;
+  letter-spacing:-.02em;color:#111318;line-height:1.14}
 .more{display:inline-block;font-size:.85rem;font-weight:600;color:var(--muted);white-space:nowrap;padding-bottom:.2rem;
   transition:color .2s,transform .45s var(--e)}
 .more:hover{color:var(--coral);transform:translateX(5px)}
@@ -311,8 +263,6 @@ img{display:block;max-width:100%}
   letter-spacing:-.01em;transition:color .18s}
 .tl-all:hover{color:var(--accent-ink,#8E5A4F)}
 .tl-all span{color:var(--accent);margin-left:.2rem}
-.tl-label{font-family:var(--mono);font-size:.68rem;font-weight:600;letter-spacing:.2em;
-  text-transform:uppercase;color:var(--muted);padding-top:.5rem}
 /* 목록 머리 — 섹션 번호·킥커·제목·전체 링크를 왼쪽 칸에 세운다 */
 .tl-head{display:flex;flex-direction:column;gap:.3rem;padding-top:.2rem}
 .tl-head .sidx{font-family:var(--mono);font-size:clamp(2.4rem,1.6rem + 2vw,3.6rem);font-weight:700;color:var(--line);line-height:1;letter-spacing:-.03em}
@@ -349,7 +299,6 @@ img{display:block;max-width:100%}
   .tw-scene.is-list{height:300vh;height:300svh}
   .tl-wrap{grid-template-columns:1fr;gap:.9rem}
   .tl-shot{max-width:20rem}
-  .tl-label{padding-top:0}
   .tl-side{min-height:7rem;font-size:.84rem}
   /* ── 휴대폰 — 프레임마다 「다시 칠할 일」을 없앤다 ──
      transform 과 opacity 는 합성기만 쓰므로 거의 공짜지만,
@@ -470,9 +419,8 @@ img{display:block;max-width:100%}
 @keyframes heroZoom{from{transform:scale(1.07)}to{transform:scale(1)}}
 .hero-kick,.hero .sub,.hero-scroll{opacity:0;animation:heroFade 1.1s var(--e) forwards}
 .hero .sub{animation-delay:.5s}
-.hero-scroll{animation-delay:1.1s}
+.hero-scroll{animation-name:heroFadeSoft;animation-delay:1.1s}
 @keyframes heroFade{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-.hero-scroll{animation-name:heroFadeSoft}
 @keyframes heroFadeSoft{from{opacity:0}to{opacity:1}}
 /* 스크롤 리빌: 처음 보일 때 한 번만 은은하게 */
 .fade{opacity:0;transform:translateY(26px);transition:opacity .9s ease,transform 1s var(--e)}
@@ -536,8 +484,9 @@ img{display:block;max-width:100%}
   .quick .wrap{padding-top:2.9rem;padding-bottom:2.9rem}
   .mq{padding-top:2.6rem;padding-bottom:1.2rem}
   /* 섹션 머리 — 「전체 보기」가 제목과 부딪혀 줄이 엉켰다. 아래 줄로 내린다 */
-  .sec-head{flex-wrap:wrap;align-items:center;gap:.9rem;margin-bottom:1.7rem}
-  .sidx{font-size:2.6rem}
+  .sec-head{margin-bottom:1.7rem}
+  .sec-head-row{align-items:center;gap:.6rem}
+  .kick{font-size:.64rem;letter-spacing:.18em;padding-bottom:.6rem;margin-bottom:.8rem}
   .sec-head .more{order:3;flex:0 0 100%;text-align:right;padding:.3rem 0}
   /* 목록 — 말줄임 대신 두 줄까지 */
   .nrow{padding-top:1.3rem;padding-bottom:1.3rem}
@@ -560,13 +509,6 @@ img{display:block;max-width:100%}
   .ig-set blockquote{scroll-snap-align:start}
 }
 
-/* ── 푸터 ── */
-.ftr{background:var(--ink);color:#a9b8d2;font-size:.8rem}
-.ftr .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem;
-  padding-top:2rem;padding-bottom:2.2rem}
-.ftr b{color:#fff;font-size:.9rem;letter-spacing:.01em}
-.ftr .fl{line-height:1.9}
-.ftr a:hover{color:#fff}
 </style>
 <style>h1,h2,.sec-title,.phero h1,.hero h1,.hero-title,.club-name,.vt,.staff-head h2,.brand .bko,.ynv-brand .bko{font-family:"Apple SD Gothic Neo",system-ui,sans-serif;letter-spacing:-.01em}</style>
 <link rel="stylesheet" href="assets/transition.css?v=3">
@@ -627,12 +569,11 @@ img{display:block;max-width:100%}
   <!-- ═══ 연구 뉴스 (KAIST 뉴스 하이라이트 스타일) ═══ -->
   <section class="wrap sec" aria-labelledby="h-news" id="secNews">
     <div class="sec-head">
-      <span class="sidx" aria-hidden="true">01</span>
-      <div>
-        <p class="kick">Research &amp; News</p>
+      <p class="kick">Research &amp; News</p>
+      <div class="sec-head-row">
         <h2 class="sec-title" id="h-news" data-i18n="newsTitle">연구 소식</h2>
+        <a class="more" href="G-news.html" data-i18n="moreAll">전체 보기 →</a>
       </div>
-      <a class="more" href="G-news.html" data-i18n="moreAll">전체 보기 →</a>
     </div>
     <div class="nlist" id="newsGrid">
       <a class="nrow" href="G-news.html"><span class="nt2">학부 뉴스 보기</span><i>→</i></a>
@@ -675,7 +616,6 @@ img{display:block;max-width:100%}
       </div>
       <div class="tl-wrap">
         <div class="tl-head">
-          <span class="sidx" aria-hidden="true">02</span>
           <h2 class="sec-title" id="h-research" data-i18n="areasTitle">연구 분야</h2>
           <a class="more" href="G-research.html" data-i18n="moreLabs">연구실 목록 →</a>
         </div>
@@ -706,12 +646,11 @@ img{display:block;max-width:100%}
 
   <section class="wrap sec sec-navy" aria-labelledby="h-people">
     <div class="sec-head">
-      <span class="sidx" aria-hidden="true">03</span>
-      <div>
-        <p class="kick">People</p>
+      <p class="kick">People</p>
+      <div class="sec-head-row">
         <h2 class="sec-title" id="h-people" data-i18n="peopleTitle">교수진</h2>
+        <a class="more" href="G-people.html" data-i18n="morePeople">교수진 전체 →</a>
       </div>
-      <a class="more" href="G-people.html" data-i18n="morePeople">교수진 전체 →</a>
     </div>
     <div class="prail-wrap">
       <button type="button" class="prail-nav is-prev" aria-label="이전 교수 보기" aria-controls="pGrid">
@@ -728,12 +667,11 @@ img{display:block;max-width:100%}
   <!-- ═══ 인스타그램 릴스 ═══ -->
   <section class="wrap sec" aria-labelledby="h-ig">
     <div class="sec-head">
-      <span class="sidx" aria-hidden="true">04</span>
-      <div>
-        <p class="kick">Instagram</p>
+      <p class="kick">Instagram</p>
+      <div class="sec-head-row">
         <h2 class="sec-title" id="h-ig" data-i18n="igTitle">@yonsei_mech 릴스</h2>
+        <a class="more" href="https://www.instagram.com/yonsei_mech/" target="_blank" rel="noopener" data-i18n="moreIg">팔로우 →</a>
       </div>
-      <a class="more" href="https://www.instagram.com/yonsei_mech/" target="_blank" rel="noopener" data-i18n="moreIg">팔로우 →</a>
     </div>
     <div class="ig-wrap">
       <div class="ig-track">
@@ -869,7 +807,6 @@ img{display:block;max-width:100%}
       smAdm1: 'Undergraduate', smAdm2: 'Graduate', smAdm3: 'Scholarships', smAdm4: 'Employment', smAdm5: 'Career Paths'
     }
   };
-  var RANK_EN = { '교수': 'Professor', '부교수': 'Associate Professor', '조교수': 'Assistant Professor' };
   var LANG = 'ko';
   try { LANG = localStorage.getItem('ysme-lang') === 'en' ? 'en' : 'ko'; } catch (e) {}
   function T(k) { return (I18N[LANG] && I18N[LANG][k]) || I18N.ko[k] || ''; }
@@ -1158,20 +1095,8 @@ img{display:block;max-width:100%}
   }, { passive: true });
   update();
 
-  /* ── 마그네틱 버튼 — 커서를 살짝 따라오는 히어로 CTA (파인 포인터 전용) ── */
+  /* 마우스처럼 정밀한 포인터에서만 도는 것들 — 아래 뉴스 프리뷰·교수진 레일 드래그 */
   var fine = matchMedia('(pointer: fine)').matches;
-  if (!reduce && fine) {
-    document.querySelectorAll('.hero .btn').forEach(function (b) {
-      b.style.transition += ',transform .6s var(--e)';
-      b.addEventListener('pointermove', function (e) {
-        var r = b.getBoundingClientRect();
-        var dx = (e.clientX - r.left - r.width / 2) / r.width;
-        var dy = (e.clientY - r.top - r.height / 2) / r.height;
-        b.style.transform = 'translate(' + (dx * 10).toFixed(1) + 'px,' + (dy * 8).toFixed(1) + 'px)';
-      });
-      b.addEventListener('pointerleave', function () { b.style.transform = ''; });
-    });
-  }
 
   /* ── 뉴스 호버 프리뷰 — rAF 루프에서 러프(lerp) 추적 ── */
   if (!reduce && fine) {
@@ -1326,7 +1251,7 @@ img{display:block;max-width:100%}
 })();
 </script>
 <!-- 공용 헤더·사이트맵 푸터(서브페이지와 동일) 주입 -->
-<script src="assets/nav.js?v=74"></script>
+<script src="assets/nav.js?v=77"></script>
 <script>
 /* 인트로 두 구간 — 스크롤 진행률(0~1)을 --p 로 넣고, 문장 구간은 단어를 하나씩 켠다.
    바깥 통의 높이에서 화면 한 칸을 뺀 만큼이 「진행 구간」이다. */

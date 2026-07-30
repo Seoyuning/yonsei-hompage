@@ -12,7 +12,7 @@
   media="print" onload="this.media='all'" />
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
-<link rel="preload" as="script" href="assets/nav.js?v=74" />
+<link rel="preload" as="script" href="assets/nav.js?v=77" />
 <style>
 /* ───────────────────────────────────────────────
    시안 G — 학부 소개 (라이트 테마)
@@ -56,8 +56,8 @@ body{
   line-height:1.65;
 }
 a{color:inherit;text-decoration:none}
-.mono{font-family:var(--mono)}
-.tnum{font-variant-numeric:tabular-nums}
+/* .mono / .tnum 유틸리티 삭제 — 이 페이지 마크업 어디에도 붙어 있지 않다
+   (--mono 변수 자체는 .sec-kick·.org-stat 등이 계속 쓴다) */
 :focus-visible{outline:2px solid var(--coral);outline-offset:2px}
 .skip{position:absolute;left:.6rem;top:-3rem;z-index:60;background:var(--navy);color:#fff;
   padding:.5rem .9rem;font-size:.8rem;transition:top .15s}
@@ -84,21 +84,16 @@ a{color:inherit;text-decoration:none}
 .section{max-width:1120px;margin:0 auto;scroll-margin-top:5.5rem;
   padding:clamp(3.2rem,2rem + 4vw,5rem) clamp(1.2rem,.6rem + 2vw,2.6rem)}
 .section + .section{border-top:1px solid var(--line-soft)}
-.sec-head{margin-bottom:clamp(1.6rem,1rem + 2vw,2.6rem)}
+/* 섹션 머리 — margin-bottom 과 position 이 따로 선언돼 있던 것을 한 규칙으로 합쳤다.
+   position:relative 는 예전 배경 인덱스 번호의 기준점이었고, 지금은 남겨만 둔다. */
+.sec-head{position:relative;margin-bottom:clamp(1.6rem,1rem + 2vw,2.6rem)}
 /* 킥커와 「전체 보기」 링크는 왼쪽에 붙여 둔다 — 오른쪽 끝으로 밀면 배경 인덱스 번호와 겹친다 */
 .sec-top{display:flex;align-items:baseline;gap:.4rem 1.5rem;flex-wrap:wrap}
 .sec-kick{font-family:var(--mono);font-size:.66rem;letter-spacing:.24em;
   text-transform:uppercase;color:var(--coral)}
-/* ── 섹션 머리 (대학원 페이지에서 시작해 전 페이지 공통) ──
-   제목 아래에 슬래시로 이어붙인 요약 줄을 둔다.
-   요약은 그 화면이 이미 담고 있는 사실만 적는다 — 새 주장을 만들지 않는다. */
-.sec-head{position:relative}
-@media (max-width:640px){
-    }
-
 .sec-title{font-weight:700;color:#111318;letter-spacing:-.01em;
   font-size:clamp(1.85rem,1.2rem + 2.8vw,2.85rem);line-height:1.24;margin-top:.5rem}
-.sec-sub{font-size:.94rem;color:var(--muted);line-height:1.7;max-width:44rem;margin-top:.55rem}
+/* .sec-sub(제목 아래 요약 줄) 와 빈 640px 미디어쿼리 삭제 — 이 페이지엔 그 마크업이 없다 */
 
 /* §01 인사말용 초상·서명 CSS 는 인사말 섹션과 함께 제거했다(실재하지 않는 글이었다). */
 
@@ -164,28 +159,13 @@ a{color:inherit;text-decoration:none}
   .goal-d{font-size:.92rem;line-height:1.75}
 }
 
-/* ── §03 조직 — 보직 카드 + 연락처 ── */
+/* ── §05 연락처 · 오시는 길 — 2단 격자 + 연락처 행 ──
+   옛 보직 카드 CSS(.officers · .officer 계열 · .badge · .badge--role)를 삭제했다.
+   보직은 아래 .opost 카드로 다시 짰고, 이 이름들은 저장소 어디에도 마크업이 없다.
+   (주의 — 주석 안에 별표와 빗금을 붙여 쓰면 주석이 거기서 끝나 버린다) */
 .org-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.8rem,1rem + 2.5vw,3rem);align-items:start}
 .overline{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;
   color:var(--coral);margin-bottom:1rem}
-.officers{display:flex;flex-direction:column;gap:1rem}
-.officer{border:1px solid var(--line-soft);background:var(--card);padding:1.2rem 1.3rem;transition:background .15s}
-.officer:hover{background:var(--card-hover)}
-.officer-top{display:flex;gap:.4rem;margin-bottom:.8rem}
-.badge{display:inline-block;font-size:.72rem;padding:.18rem .5rem;
-  border:1px solid var(--line);color:var(--muted)}
-.badge--role{border-color:var(--coral);color:var(--coral)}
-.officer-name{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap}
-.officer-name b{font-weight:700;font-size:1.2rem;color:var(--navy)}
-.officer-name .en{font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-.officer .tag{display:inline-flex;align-items:center;gap:.42rem;font-size:.82rem;color:var(--sub);margin-top:.7rem}
-.officer .tag .dot{width:7px;height:7px;border-radius:50%;background:var(--tag-c,var(--coral));flex:none}
-.officer-lab{font-size:.86rem;color:var(--sub);margin-top:.5rem;line-height:1.55}
-.officer-lab .loc{font-size:.8rem;color:var(--muted)}
-.officer-foot{display:flex;gap:1.4rem;margin-top:.95rem;padding-top:.8rem;border-top:1px solid var(--line-soft)}
-.officer-foot a{font-size:.84rem;color:var(--muted);transition:color .15s}
-.officer-foot a:hover{color:var(--coral)}
-.officer-foot a .arr{color:var(--coral)}
 
 /* 연락처 행 */
 .contact-rows{border-top:1px solid var(--line)}
@@ -201,8 +181,10 @@ a{color:inherit;text-decoration:none}
 .c-row.addr .val a{color:var(--muted);text-decoration:underline;text-underline-offset:2px;transition:color .15s}
 .c-row.addr .val a:hover{color:var(--coral)}
 .side-note{font-size:.86rem;color:var(--muted);line-height:1.7;margin-top:1.3rem}
-.side-note a{color:var(--navy);text-decoration:underline;text-underline-offset:2px;transition:color .15s}
-.side-note a:hover{color:var(--coral)}
+/* 밑줄 링크 세 자리(.side-note · .admin-foot · .hist-more)는 선언이 같아 묶었다.
+   호버 색만 .admin-foot 이 --accent-ink 를 써서 따로 둔다. */
+.side-note a,.admin-foot a,.hist-more a{color:var(--navy);text-decoration:underline;text-underline-offset:2px;transition:color .15s}
+.side-note a:hover,.hist-more a:hover{color:var(--coral)}
 
 /* ── §03 조직 · 행정 ──
    예전 모습: 학부장 한 사람이 거대한 상자를 혼자 차지하고, 그 아래 밴드에는 한 줄만
@@ -291,7 +273,6 @@ a{color:inherit;text-decoration:none}
 .admin-foot{margin-top:1.3rem;display:flex;align-items:baseline;gap:.4rem 1.4rem;flex-wrap:wrap;
   font-size:.84rem;color:var(--muted);line-height:1.75}
 .admin-foot .loc-line{color:var(--sub)}
-.admin-foot a{color:var(--navy);text-decoration:underline;text-underline-offset:2px;transition:color .15s}
 .admin-foot a:hover{color:var(--accent-ink,#8E5A4F)}
 @media (max-width:900px){
   .org-posts{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -302,7 +283,7 @@ a{color:inherit;text-decoration:none}
   .org-stat{grid-template-columns:1fr 1fr;gap:1.1rem 0}
   .org-stat li:nth-child(3){border-left:0}
   .org-posts,.admin-lines{grid-template-columns:1fr}
-  .opost.is-lead{grid-column:1 / -1}
+  /* .opost.is-lead{grid-column:1 / -1} 은 위 900px 규칙이 이미 걸어 둔다 — 중복이라 뺐다 */
 }
 
 /* ── §04 주요 연혁 — 타임라인 ── */
@@ -318,19 +299,11 @@ a{color:inherit;text-decoration:none}
 .tl-body{font-size:.94rem;color:var(--sub);line-height:1.65}
 .tl-body b{color:var(--ink);font-weight:600}
 .hist-more{margin-top:1.6rem;font-size:.9rem;color:var(--muted)}
-.hist-more a{color:var(--navy);text-decoration:underline;text-underline-offset:2px;transition:color .15s}
-.hist-more a:hover{color:var(--coral)}
 @media (max-width:640px){.tl-row{grid-template-columns:5.6rem 1fr;gap:.9rem}
   .tl-year{font-size:.86rem}.tl-body{font-size:.88rem}}
 
-/* ── 학부 현황 (숫자) ── */
-.stats{border-top:1px solid var(--line-soft)}
-.stats-inner{max-width:1120px;margin:0 auto;
-  padding:2.4rem clamp(1.2rem,.6rem + 2vw,2.6rem);
-  display:flex;gap:clamp(2rem,1rem + 4vw,4.5rem);flex-wrap:wrap}
-.ct .lab{font-size:.84rem;color:var(--muted);margin-bottom:.4rem}
-.ct .num{font-family:var(--mono);font-weight:300;color:var(--navy);
-  font-size:clamp(1.9rem,1rem + 2.6vw,2.6rem);line-height:1;font-variant-numeric:tabular-nums}
+/* 「학부 현황 (숫자)」 CSS(.stats/.stats-inner/.ct .lab/.ct .num) 와 그 카운트업
+   스크립트 삭제 — 해당 섹션이 §03 의 .org-stat 로 옮겨 가면서 마크업이 사라졌다. */
 
 /* ── 입학 CTA 밴드 (네이비) ── */
 .cta{background:var(--navy);color:#fff;
@@ -353,9 +326,7 @@ a{color:inherit;text-decoration:none}
 
 /* ── 반응형 ── */
 @media (max-width:860px){
-  .greet-grid{grid-template-columns:1fr;gap:1.6rem}
-  .portrait{max-width:14rem}
-  /* .vision-grid 는 §02 개편으로 사라져 목록에서 뺐다 */
+  /* .greet-grid·.portrait(인사말) 과 .vision-grid(§02 개편) 는 그 섹션과 함께 사라져 뺐다 */
   .org-grid{grid-template-columns:1fr;gap:1.8rem}
   /* 사진은 숨기지 않고 본문 아래로 — 1단이 되면 소스 순서(본문 → 사진)대로 쌓인다 */
   .intro-grid{grid-template-columns:minmax(0,1fr);gap:1.6rem}
@@ -399,6 +370,7 @@ a{color:inherit;text-decoration:none}
          예전에는 제목이 격자 밖에 있어 사진이 본문 높이에만 맞았다. -->
     <div class="intro-grid">
       <div>
+        <p class="sec-kick">About</p>
         <h2 id="intro-h" class="sec-title">멈추지 않는 도전,<br>100년을 향한 연세 기계공학</h2>
         <p class="intro-lead">연세대학교 기계공학부는 역학·소재, 에너지·열유체, 로보틱스·제어, 설계·제조,
           마이크로·나노, 바이오·포토닉스에 이르는 폭넓은 분야에서 세계적 수준의 교육과 연구를 수행합니다.
@@ -423,7 +395,7 @@ a{color:inherit;text-decoration:none}
   <section class="section" id="vision" aria-labelledby="vision-h">
     <div class="sec-head">
       <div class="sec-top">
-        <p class="sec-kick">교육</p>
+        <p class="sec-kick">Education</p>
       </div>
       <h2 id="vision-h" class="sec-title">교육목표</h2>
     </div>
@@ -455,7 +427,7 @@ a{color:inherit;text-decoration:none}
   <section class="section" id="organization" aria-labelledby="org-h">
     <div class="sec-head">
       <div class="sec-top">
-        <p class="sec-kick">조직</p>
+        <p class="sec-kick">Organization</p>
       </div>
         <h2 id="org-h" class="sec-title">조직 · 행정</h2>
     </div>
@@ -570,7 +542,7 @@ a{color:inherit;text-decoration:none}
   <section class="section" id="history" aria-labelledby="hist-h">
     <div class="sec-head">
       <div class="sec-top">
-        <p class="sec-kick">연혁</p>
+        <p class="sec-kick">History</p>
       </div>
         <h2 id="hist-h" class="sec-title">주요 연혁</h2>
     </div>
@@ -602,7 +574,7 @@ a{color:inherit;text-decoration:none}
   <section class="section" id="location" aria-labelledby="loc-h">
     <div class="sec-head">
       <div class="sec-top">
-        <p class="sec-kick">연락처</p>
+        <p class="sec-kick">Contact</p>
       </div>
         <h2 id="loc-h" class="sec-title">연락처 · 오시는 길</h2>
     </div>
@@ -641,27 +613,10 @@ a{color:inherit;text-decoration:none}
   </section>
   </main>
 
-<script>
-(function(){
-  'use strict';
-  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  /* 카운트업 (reduced-motion 존중) */
-  document.querySelectorAll('[data-count]').forEach(function(el){
-    var target = parseInt(el.dataset.count,10);
-    if(reduce){ el.textContent = target; return; }
-    var t0=null, dur=1300;
-    function step(t){
-      if(!t0) t0=t;
-      var p = Math.min((t-t0)/dur,1), e = 1-Math.pow(1-p,3);
-      el.textContent = Math.round(target*e);
-      if(p<1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
-  });
-})();
-</script>
-<script src="assets/nav.js?v=74"></script>
+<!-- 카운트업 스크립트 삭제 — 이 페이지에는 [data-count] 요소가 하나도 없고
+     data.js 도 싣지 않아(nav.js 뿐) 요소가 생길 경로가 없다. §03 학부 규모 숫자는
+     .org-stat 에 그냥 적힌 값이라 애니메이션 대상이 아니다. -->
+<script src="assets/nav.js?v=77"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--dimmer)">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

@@ -164,8 +164,8 @@
       'color:#111318;padding-bottom:.82rem;border-bottom:1px solid #111318;' +
       'margin:0 0 clamp(.95rem,.75rem + .8vw,1.6rem)}',
     /* 제목 — 메인과 같은 굵기·자간. 크기는 각 페이지 값을 살린다(본문 폭이 다르다) */
-    'html.ys-sub .sec-title{margin-top:0;font-weight:800;letter-spacing:-.02em;line-height:1.14}',
-    'html.ys-sub .sec-sub{margin-top:.7rem}',
+    'html.ys-sub .sec-title,html.ys-sub .staff-head > h2,html.ys-sub .al-head > h2' +
+      '{margin-top:0;font-weight:800;letter-spacing:-.02em;line-height:1.14}',
     /* 휴대폰 — 줄 아래 여백을 조금 줄여 머리가 화면을 덜 잡아먹게 한다 */
     '@media(max-width:640px){html.ys-sub .sec-kick{font-size:.64rem;letter-spacing:.18em;' +
       'padding-bottom:.6rem;margin-bottom:.8rem}}',
@@ -241,6 +241,12 @@
     '.yft-base{border-top:1px solid rgba(255,255,255,.1);padding:1.25rem 1rem;font-size:.72rem;' +
       'letter-spacing:.03em;color:#7f90ad;text-align:center}',
     '.yft-base a{color:#93a2bd;text-decoration:none}.yft-base a:hover{color:#fff}',
+    /* 저작자 표시 — 저작권 줄보다 한 단계 낮은 무게로, 그러나 읽을 수 있게 */
+    '.yft-credit{border-top:1px solid rgba(255,255,255,.08);padding:.95rem 1rem .1rem;' +
+      'font-size:.7rem;line-height:1.8;color:#71809b;text-align:center}',
+    '.yft-credit a{color:#93a2bd;text-decoration:underline;text-underline-offset:.18em}',
+    '.yft-credit a:hover{color:#fff}',
+    '.yft-credit + .yft-base{border-top:0}',
     '@media(max-width:720px){.yft-w{grid-template-columns:1fr;gap:2.4rem}}',
     /* 휴대폰 — 사이트맵이 길어 꼬리가 되므로 두 칸으로 촘촘히, 링크는 눌릴 만큼 */
     '@media(max-width:640px){' +
@@ -258,7 +264,7 @@
   /* ── 2. 메뉴 정의 (메인 H-academic 순서·라벨과 동일) ── */
   var MENU = [
     { t: '학부소개', h: 'G-about.html', key: 'about', sub: [['학부 소개', 'G-about.html#intro', ['intro']], ['교육목표', 'G-about.html#vision', ['vision']], ['조직 · 행정', 'G-about.html#organization', ['organization']], ['주요 연혁', 'G-about.html#history', ['history']], ['연락처 · 오시는 길', 'G-about.html#location', ['location']]] },
-    { t: '구성원', h: 'G-people.html', key: 'people', sub: [['교수진', 'G-people.html#faculty', ['faculty', 'dir']], ['교직원', 'G-people.html#staff', ['staff']], ['동문', 'G-people.html#alumni', ['alumni']]] },
+    { t: '구성원', h: 'G-people.html', key: 'people', sub: [['교수진', 'G-people.html#faculty', ['faculty', 'facultyChips', 'dir']], ['교직원', 'G-people.html#staff', ['staff']], ['동문', 'G-people.html#alumni', ['alumni']]] },
     { t: '연구', h: 'G-research.html', key: 'research', sub: [['연구 비전', 'G-research.html#vision', ['vision']], ['연구 분야', 'G-research.html#fields', ['fields', 'fieldsDetail']], ['연구실 목록', 'G-research.html#clusters', ['clusters']], ['연구실 홍보영상', 'G-research.html#labvideos', ['labvideos']]] },
     { t: '학사', h: 'G-academics.html', key: 'academics', sub: [['교육과정 개관', 'G-academics.html#curriculum', ['curriculum', 'requirements', 'abeek']], ['이수 체계도', 'G-academics.html#roadmap', ['roadmap']], ['졸업 요건', 'G-academics.html#graduation', ['graduation']], ['전공 교과', 'G-academics.html#courses', ['mechanics', 'courses']], ['동아리·학생활동', 'G-academics.html#clubs', ['clubs']]] },
     { t: '대학원', h: 'G-graduate.html', key: 'graduate', sub: [['입학 안내', 'G-graduate.html#grad-admission', ['grad-admission']], ['졸업 요건', 'G-graduate.html#grad-req', ['grad-req']], ['교과목 소개', 'G-graduate.html#grad-courses', ['grad-courses']], ['대학원 연구실', 'G-graduate.html#grad-labs', ['grad-labs']], ['BK21 FOUR', 'G-graduate.html#bk21', ['bk21']]] },
@@ -563,6 +569,13 @@
         '</div>' +
         '<nav class="yft-cols" aria-label="사이트맵">' + cols + '</nav>' +
       '</div>' +
+      /* 마스코트 독수리는 CC-BY-4.0 모델을 렌더링해 만든 그림이다.
+         이 라이선스는 저작자 표시가 의무이고, 렌더링한 파생물에도 그대로 따라온다.
+         독수리는 여러 화면에 쓰이므로 모든 페이지에 붙는 이 자리에 적어 둔다. */
+      '<div class="yft-credit">마스코트 독수리는 ' +
+        '<a href="https://sketchfab.com/3d-models/mechanical-eagle-9d236618133b4bd4b67395c8e61b232a" target="_blank" rel="noopener">“Mechanical Eagle”</a>' +
+        ' by <a href="https://sketchfab.com/Neil_Laguardia" target="_blank" rel="noopener">Neil Laguardia</a>' +
+        ' (<a href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>) 을 바탕으로 만들었습니다.</div>' +
       '<div class="yft-base">© 2026 Yonsei University · School of Mechanical Engineering &nbsp;·&nbsp; 공모전 출품 시안(비공식)</div>';
     document.body.appendChild(ft);
   }

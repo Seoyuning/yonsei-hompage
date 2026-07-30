@@ -286,9 +286,21 @@ img{display:block;max-width:100%}
 /* ── 번호 목록 ── 스크롤을 따라 한 구분씩 짙어진다 */
 .tw-scene.is-list{height:340vh;height:340svh;background:#fff}
 .is-list .tw-pin{background:#fff}
+/* 구간 머리 — 작은 라벨 아래 검은 가로줄 (참고 화면의 구간 구분선) */
+.tl-top{width:100%;max-width:1320px;margin:0 auto clamp(2rem,4vh,3.4rem);
+  padding:0 clamp(1.2rem,.6rem + 2vw,3rem)}
+.tl-eyebrow{font-family:var(--mono);font-size:.68rem;font-weight:600;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--ink);padding-bottom:.85rem;
+  border-bottom:1px solid #111318}
 .tl-wrap{width:100%;max-width:1320px;margin:0 auto;padding:0 clamp(1.2rem,.6rem + 2vw,3rem);
-  display:grid;grid-template-columns:11rem minmax(0,1fr) minmax(0,17rem) minmax(0,10rem);
-  gap:clamp(1.2rem,2.4vw,2.4rem);align-items:start}
+  display:grid;grid-template-columns:11rem minmax(0,1fr) minmax(0,18rem);
+  gap:clamp(1.4rem,3vw,3rem);align-items:start}
+/* 사진 칸 — 사진 아래에 「연구실 전체」 */
+.tl-shot{display:flex;flex-direction:column;gap:.85rem}
+.tl-all{font-family:var(--kr);font-size:.86rem;font-weight:700;color:var(--navy);
+  letter-spacing:-.01em;transition:color .18s}
+.tl-all:hover{color:var(--accent-ink,#8E5A4F)}
+.tl-all span{color:var(--accent);margin-left:.2rem}
 .tl-label{font-family:var(--mono);font-size:.68rem;font-weight:600;letter-spacing:.2em;
   text-transform:uppercase;color:var(--muted);padding-top:.5rem}
 /* 목록 머리 — 섹션 번호·킥커·제목·전체 링크를 왼쪽 칸에 세운다 */
@@ -319,13 +331,6 @@ img{display:block;max-width:100%}
   opacity:0;visibility:hidden;transform:scale(1.05);
   transition:opacity .62s ease,transform .9s cubic-bezier(.22,1,.36,1)}
 .tl-side img.on{opacity:1;visibility:visible;transform:scale(1)}
-/* 오른쪽 끝 — 그 분야에 속한 연구실 이름 (데이터셋에서 가져온다) */
-.tl-subs{font-family:var(--kr);font-size:.86rem;color:var(--sub);line-height:1.9;padding-top:.2rem}
-.tl-subs li{list-style:none;opacity:0;transform:translateY(.5rem);
-  transition:opacity .45s ease,transform .45s cubic-bezier(.22,1,.36,1)}
-.tl-subs li.on{opacity:1;transform:none}
-.tl-subs .more{display:inline-block;margin-top:.6rem;font-size:.82rem;font-weight:700;color:var(--navy)}
-.tl-subs .more:hover{color:var(--accent-ink,#8E5A4F)}
 .tl-side .cap{position:absolute;left:0;right:0;bottom:0;z-index:1;padding:.7rem .8rem;
   background:linear-gradient(180deg,rgba(8,17,34,0),rgba(8,17,34,.78));
   font-family:var(--kr);font-size:.66rem;font-weight:500;color:rgba(255,255,255,.72);
@@ -333,8 +338,7 @@ img{display:block;max-width:100%}
 @media (max-width:860px){
   .tw-scene.is-list{height:300vh;height:300svh}
   .tl-wrap{grid-template-columns:1fr;gap:.9rem}
-  .tl-side{max-width:20rem}
-  .tl-subs{font-size:.82rem;line-height:1.75}
+  .tl-shot{max-width:20rem}
   .tl-label{padding-top:0}
   .tl-side{min-height:7rem;font-size:.84rem}
 }
@@ -668,6 +672,9 @@ img{display:block;max-width:100%}
        같은 내용을 두 벌로 보여 주던 중복을 없앤다. -->
   <section class="tw-scene is-list" id="twList" aria-labelledby="h-research">
     <div class="tw-pin">
+      <div class="tl-top">
+        <p class="tl-eyebrow">Research Area</p>
+      </div>
       <div class="tl-wrap">
         <div class="tl-head">
           <span class="sidx" aria-hidden="true">02</span>
@@ -682,6 +689,7 @@ img{display:block;max-width:100%}
           <li data-b="micro"><span class="n">5</span><span class="t">마이크로·나노</span></li>
           <li data-b="optics"><span class="n">6</span><span class="t">바이오·포토닉스</span></li>
         </ol>
+        <div class="tl-shot">
         <div class="tl-side" id="twListSide" aria-hidden="true">
           <img src="assets/fields/solid.jpg" alt="" data-b="solid" fetchpriority="low" decoding="async">
           <img src="assets/fields/thermal.jpg" alt="" data-b="thermal" loading="lazy" decoding="async">
@@ -691,7 +699,8 @@ img{display:block;max-width:100%}
           <img src="assets/fields/optics.jpg" alt="" data-b="optics" loading="lazy" decoding="async">
           <span class="cap" id="twListCap"></span>
         </div>
-        <ul class="tl-subs" id="twListSubs" aria-live="polite"></ul>
+        <a class="tl-all" id="twListAll" href="G-research.html">연구실 전체 <span aria-hidden="true">→</span></a>
+        </div>
       </div>
     </div>
   </section>
@@ -1353,11 +1362,7 @@ img{display:block;max-width:100%}
      그 분야를 대표하는 장면이라, 아래에 출처·저작자·라이선스를 함께 적는다. */
   var shots = listSec ? [].slice.call(listSec.querySelectorAll('.tl-side img')) : [];
   var cap = document.getElementById('twListCap');
-  var subs = document.getElementById('twListSubs');
-  var LABS = {};
-  ((window.YSME && window.YSME.labs) || []).forEach(function (l) {
-    (LABS[l.cluster] = LABS[l.cluster] || []).push(l.ko);
-  });
+  var allLink = document.getElementById('twListAll');
   var CRED = {
     solid: '사진 Kerina yin · Wikimedia Commons · CC0',
     thermal: '사진 Tommi Nummelin · Wikimedia Commons · CC BY-SA 3.0',
@@ -1400,16 +1405,8 @@ img{display:block;max-width:100%}
             else { setTimeout(function () { if (!im.classList.contains('on')) im.style.visibility = 'hidden'; }, 650); }
           });
           if (cap) cap.textContent = CRED[b] || '';
-          if (subs) {
-            /* 그 분야의 연구실 이름 넷까지 — 데이터셋에서 가져온다 */
-            var list = (LABS[b] || []).slice(0, 4);
-            subs.innerHTML = list.map(function (n) { return '<li>' + esc(n) + '</li>'; }).join('')
-              + '<li><a class="more" href="G-research.html#' + b + '">연구실 전체 →</a></li>';
-            var lis = subs.children;
-            for (var q = 0; q < lis.length; q++) (function (el, i2) {
-              setTimeout(function () { el.classList.add('on'); }, 60 + i2 * 55);
-            })(lis[q], q);
-          }
+          /* 「연구실 전체」는 지금 켜진 분야로 이어진다 */
+          if (allLink) allLink.setAttribute('href', 'G-research.html#' + b);
         }
       }
     });

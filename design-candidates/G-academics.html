@@ -36,8 +36,8 @@
   --label:#9aa3b0;
   --line:#e2ddd2;
   --line-soft:#efeae0;
-  --card:#f4f1ea;
-  --card-hover:#ece7dc;
+  --card:#ffffff;   /* 판 색 없음 — 칸은 헤어라인으로만 나눈다 */
+  --card-hover:#faf9f6;
   --mono:"Apple SD Gothic Neo","Pretendard Variable","Pretendard",system-ui,sans-serif;
   --kr:"Apple SD Gothic Neo","Pretendard Variable","Pretendard",system-ui,sans-serif;
   /* 6개 연구 분야 색 토큰 (라이트 톤) */
@@ -681,7 +681,7 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
 .gr-cap-l::after{content:" — ";white-space:pre}
 .gr-table th,.gr-table td{border:1px solid var(--line-soft);padding:.55rem .6rem;
   font-size:.84rem;line-height:1.6;text-align:left;vertical-align:top;color:var(--body)}
-.gr-table thead th{background:var(--card-hover);color:var(--ink);font-weight:600;font-size:.78rem;text-align:center}
+.gr-table thead th{background:#fff;color:var(--ink);font-weight:600;font-size:.78rem;text-align:center}
 .gr-u{margin-left:.12em;font-size:.92em;color:var(--sub);font-weight:400}
 
 /* ① 학점 배분 요약 · ③ 복수전공 격자 — 열이 많아 좁은 화면에서는 상자 안에서 민다 */
@@ -702,11 +702,11 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
 .gr-table--yr{border-top:2px solid var(--navy)}
 .gr-table--yr thead th:first-child{width:10rem}
 /* 종별(원본 rowspan · sameCat) 묶음 — 굵은 띠로 계층을 보인다 */
-.gr-grp-r th{background:var(--card-hover);padding:.55rem .7rem}
+.gr-grp-r th{background:#fff;padding:.55rem .7rem}
 .gr-grp-lab{font-family:var(--kr);font-size:.68rem;letter-spacing:.06em;color:var(--muted);margin-right:.5rem}
 .gr-grp-n{font-family:var(--kr);font-weight:700;font-size:.95rem;color:var(--navy)}
 .gr-grp-c{font-family:var(--kr);font-size:.82rem;color:var(--sub);margin-left:.45rem}
-.gr-k{background:#fbfcfe;white-space:normal}
+.gr-k{background:#fff;white-space:normal}
 .gr-k-n{display:block;font-family:var(--kr);font-weight:600;font-size:.85rem;color:var(--ink)}
 .gr-k-c{display:block;font-family:var(--kr);font-size:.79rem;color:var(--sub);margin-top:.15rem}
 /* 교과목 — 원문 문자열은 그대로 두고 (괄호 밖) 쉼표에서만 끊어 칩으로 편다 */
@@ -852,7 +852,7 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
 .crs-row > summary::marker{content:""}
 .crs-row:nth-child(even){background:rgba(10,26,51,.022)}
 .crs-row:hover{background:var(--card-hover)}
-.crs-row[open]{background:var(--card-hover)}
+.crs-row[open]{background:#fff}
 .crs-row.is-hidden{display:none}
 /* 4대 역학 4과목 — 왼쪽에 포인트색 기둥 자국. 위 밴드와 같은 색이라 이어져 보인다 */
 .crs-row.is-pil{box-shadow:inset 3px 0 0 var(--accent)}
@@ -1137,7 +1137,6 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
     <!-- 동아리 — 학부 공식 「동아리 소개」 원문(clubsInfo)을 그대로 그린다.
          원문은 [소제목] · - 항목 · ● SNS 로 짜여 있어 그 구조를 살려 옮긴다. -->
     <div class="pick-wrap" id="clubWrap"></div>
-    <p class="table-note">동아리 상세 소개와 모집 안내는 학부 공식 홈페이지 <a href="https://me.yonsei.ac.kr/me/community/circles.do" target="_blank" rel="noopener" style="color:var(--navy);font-weight:600">동아리 소개</a>에서 확인할 수 있습니다.</p>
   </section>
   </main>
 

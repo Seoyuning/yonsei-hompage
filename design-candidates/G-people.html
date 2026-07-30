@@ -112,20 +112,37 @@ a{color:inherit;text-decoration:none}
 .kseg-b .kn{font-size:.8rem;font-weight:600;color:var(--label);margin-left:.15rem}
 .kseg-b[aria-selected="true"] .kn{color:var(--navy)}
 /* 명예·퇴임 명단 — 사진이 없으므로 이름·전공·재직기간의 담백한 행 목록 */
-.emlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(20rem,1fr));gap:0 2.4rem;
-  border-top:1px solid var(--line)}
-.emrow{display:grid;grid-template-columns:auto 1fr auto;gap:.3rem .9rem;align-items:baseline;
-  padding:1rem .2rem;border-bottom:1px solid var(--line-soft)}
-.emrow .eko{font-weight:700;font-size:1.04rem;color:var(--navy)}
-.emrow .een{font-size:.82rem;color:var(--muted)}
-.emrow .eterm{font-size:.82rem;color:var(--sub);font-variant-numeric:tabular-nums;white-space:nowrap}
-.emrow .efield{grid-column:1 / -1;font-size:.86rem;color:var(--sub);margin-top:.1rem}
+/* ── 명예·퇴임 교수 ──
+   예전에는 [이름 영문명 재직기간]을 한 줄에 눕힌 목록이라, 사진이 없는 데다
+   17명이 줄줄이 흘러 어디서 한 사람이 끝나는지 눈으로 잡히지 않았다.
+   전임 교수와 같은 테두리 카드로 세운다 — 사진 자리에는 성(姓) 한 글자를 놓아
+   카드마다 시선이 걸릴 지점을 만든다. 짜임은 전임 카드(.pcard)와 같다. */
+.emlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));
+  gap:clamp(.9rem,.7rem + .6vw,1.3rem)}
+.emcard{display:grid;grid-template-columns:2.6rem minmax(0,1fr);
+  grid-template-areas:"ini ko" "ini en" "fld fld" "trm trm";
+  gap:.1rem .8rem;align-content:start;
+  border:1px solid var(--line);background:#fff;
+  padding:clamp(.95rem,.8rem + .5vw,1.25rem)}
+/* 성 한 글자 — 사진 대신 시선이 걸리는 자리. 상자를 두르지 않고 글자만 크게 */
+.emcard .emini{grid-area:ini;align-self:start;justify-self:center;
+  font-family:var(--kr);font-weight:800;font-size:1.5rem;line-height:1.15;
+  color:var(--line);letter-spacing:-.02em;user-select:none}
+.emcard .eko{grid-area:ko;font-weight:800;font-size:1.05rem;color:#111318;letter-spacing:-.015em;line-height:1.3}
+.emcard .een{grid-area:en;font-size:.8rem;color:var(--muted);line-height:1.45}
+.emcard .efield{grid-area:fld;font-size:.84rem;color:var(--sub);line-height:1.55;
+  margin-top:.6rem;padding-top:.6rem;border-top:1px solid var(--line-soft);word-break:keep-all}
+.emcard .eterm{grid-area:trm;font-size:.78rem;color:var(--label);
+  font-variant-numeric:tabular-nums;margin-top:.35rem}
+/* 전공도 재직기간도 없는 분은 이름만 남는다 — 카드 높이가 들쭉날쭉해지지 않게 바닥을 맞춘다 */
+.emcard{min-height:7.2rem}
 .emnote{margin-top:1.4rem;font-size:.84rem;color:var(--muted);line-height:1.7}
 @media (max-width:560px){
   .kseg-b{font-size:.9rem;padding:.5rem .6rem .55rem}
-  .emlist{grid-template-columns:1fr;gap:0}
-  .emrow{grid-template-columns:auto 1fr;padding:.85rem .1rem}
-  .emrow .eterm{grid-column:1 / -1;margin-top:.1rem}
+  .emlist{grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem}
+  .emcard{grid-template-columns:2rem minmax(0,1fr);padding:.8rem;min-height:0}
+  .emcard .emini{font-size:1.25rem}
+  .emcard .eko{font-size:.96rem}
 }
 /* 칩 사이는 여백으로만 나눈다 — 구분선을 넣으면 다시 상자처럼 보인다 */
 .fchips{display:flex;align-items:center;flex-wrap:wrap;gap:0 .9rem}
@@ -1113,11 +1130,12 @@ html[lang="en"] .ppos{display:none}
     if(emRows.dataset.done) return;
     emRows.innerHTML =
       '<div class="emlist">' + emeriti.map(function(p){
-        return '<div class="emrow">'
+        return '<div class="emcard">'
+          + '<span class="emini" aria-hidden="true">' + esc((p.ko || ' ').charAt(0)) + '</span>'
           + '<span class="eko">' + esc(p.ko) + '</span>'
           + '<span class="een">' + esc(p.en || '') + '</span>'
-          + (p.term ? '<span class="eterm">' + esc(p.term) + '</span>' : '<span class="eterm"></span>')
           + (p.field ? '<span class="efield">' + esc(p.field) + '</span>' : '')
+          + (p.term ? '<span class="eterm">' + esc(p.term) + '</span>' : '')
         + '</div>';
       }).join('') + '</div>'
       + '<p class="emnote">연세대학교 기계공학부를 거쳐 가신 명예·퇴임 교수 ' + emeriti.length + '분입니다. '

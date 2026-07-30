@@ -617,7 +617,10 @@
             '<a href="https://www.yonsei.ac.kr" target="_blank" rel="noopener">연세대학교 ↗</a>' +
             '<a href="https://engineering.yonsei.ac.kr" target="_blank" rel="noopener">공과대학 ↗</a>' +
             '<a href="https://me.yonsei.ac.kr" target="_blank" rel="noopener">현행 홈 ↗</a>' +
-            '<a href="../admin/index.html">관리자</a>' +
+            /* 온라인 편집은 이 자리에서 켜는 인플레이스 스튜디오다(?studio=1).
+               예전 링크는 배포에 없는 데스크톱 콘솔(admin/index.html)을 가리켜 404 였다.
+               그 콘솔은 내 컴퓨터의 폴더를 직접 여는 도구라 웹에 올리지 않는다. */
+            '<a href="' + esc(location.pathname + '?studio=1') + '">관리자</a>' +
           '</div>' +
         '</div>' +
         '<nav class="yft-cols" aria-label="사이트맵">' + cols + '</nav>' +

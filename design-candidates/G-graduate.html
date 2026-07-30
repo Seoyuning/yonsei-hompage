@@ -578,7 +578,14 @@ html[lang="en"] .lab-en-only{display:none}
     try{ return window.YSME_I18N ? window.YSME_I18N.isEn() : localStorage.getItem('ysme-lang')==='en'; }
     catch(e){ return false; }
   }
+  function nLabs(n){ return isEn() ? (n + (n === 1 ? ' lab' : ' labs')) : (n + '개 연구실'); }
   var RELANG = [];
+  /* 값에 붙은 꼬리말만 다시 쓴다 — 화면을 통째로 다시 그리면 펼쳐 둔 것이 접힌다 */
+  setTimeout(function(){ RELANG.push(function(){
+    document.querySelectorAll('[data-nl]').forEach(function(el){
+      el.textContent = nLabs(+el.getAttribute('data-nl'));
+    });
+  }); }, 0);
   ['ynvKo','ynvEn'].forEach(function(id){
     document.addEventListener('click', function(e){
       var b = e.target && e.target.closest ? e.target.closest('#'+id) : null;
@@ -697,7 +704,7 @@ html[lang="en"] .lab-en-only{display:none}
           + '<p class="desc">'+esc(c.desc)+'</p>'
         + '</div>'
         + '<div class="cl-metric">'
-          + '<div class="num tnum" data-nl="'+c.count+'">'+esc(isEn()? (c.count+(c.count===1?' lab':' labs')) : (c.count+'개 연구실'))+'</div>'
+          + '<div class="num tnum" data-nl="'+c.count+'">'+esc(nLabs(c.count))+'</div>'
           + '<div class="share">연구실</div>'
         + '</div>'
         + '<svg class="cl-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>'

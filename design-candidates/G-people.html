@@ -13,7 +13,7 @@
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d17" />
-<link rel="preload" as="script" href="assets/nav.js?v=78" />
+<link rel="preload" as="script" href="assets/nav.js?v=80" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    교수진 디렉토리 — 아이보리 배경 · 네이비 제목 · 헤어라인 · 연회색 행
@@ -145,7 +145,17 @@ a{color:inherit;text-decoration:none}
   .emcard .eko{font-size:.96rem}
 }
 /* 칩 사이는 여백으로만 나눈다 — 구분선을 넣으면 다시 상자처럼 보인다 */
-.fchips{display:flex;align-items:center;flex-wrap:wrap;gap:0 .9rem}
+/* 영문에서는 분야 이름이 길어(Mechanics & Materials …) 여섯 개가 두 줄이 되고,
+   이 줄은 화면에 붙어 있는 sticky 라 그만큼 본문을 계속 가린다.
+   줄바꿈 대신 옆으로 밀리게 두고(넘치면 손가락으로 쓸어 넘긴다), 오른쪽 끝을 흐려
+   더 있다는 것을 알린다 — 형제 탭 바(.ysub)가 이미 쓰는 방식과 같다. */
+.fchips{display:flex;align-items:center;flex-wrap:nowrap;gap:0 .9rem;
+  overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+  overscroll-behavior-x:contain;scroll-padding-inline:.2rem}
+.fchips::-webkit-scrollbar{display:none}
+.filterbar.is-chips{position:relative}
+.filterbar.is-chips::after{content:"";position:absolute;top:0;right:0;bottom:0;width:2.2rem;
+  pointer-events:none;background:linear-gradient(90deg,rgba(255,255,255,0),#fff 72%)}
 /* display:flex 가 hidden 속성의 display:none 을 이겨서 숨겨지지 않는다 */
 .fchips[hidden]{display:none}
 .filterbar[hidden]{display:none}
@@ -384,7 +394,7 @@ html[lang="en"] .ppos{display:none}
 .staff-contact .note a:hover{text-decoration-color:var(--navy)}
 
 /* ═══════════════════════════════════════════════════════════
-   동문 (구성원 세 번째 탭) — 연혁 · 인터뷰 · 대외협력 · 발전기금
+   동문 (구성원 세 번째 탭) — 연혁 · 인터뷰 · 발전기금 (대외협력은 연구 메뉴로 옮겼다)
    교직원 섹션과 같은 폭·여백 체계를 쓰되, 새 규칙은 모두 al- 접두를 달아
    기존 .pcard / .staff-* / .fchip / .kseg* 와 겹치지 않게 한다.
    ═══════════════════════════════════════════════════════════ */
@@ -553,7 +563,7 @@ html[lang="en"] .ppos{display:none}
 <script>/* 탭 해시 진입은 히어로부터 — 파싱 전에 해시를 떼어 앵커 점프·상단바 접힘 왕복을 원천 차단(nav.js가 탭 복원).
    scrollRestoration=manual: 뒤로가기·같은 주소 재방문 때 브라우저가 이전 스크롤을 되살려
    히어로를 건너뛰고 첫 탭 중간부터 보이는 것을 막는다(깊은 앵커 #id 이동에는 영향 없음). */
-(function(){try{history.scrollRestoration="manual"}catch(e){}var h=location.hash.slice(1);if(h&&/^(intro|vision|organization|history|location|faculty|dir|staff|fields|fieldsDetail|clusters|labvideos|curriculum|requirements|abeek|roadmap|graduation|mechanics|courses|grad|clubs|grad-admission|grad-req|grad-courses|grad-labs|bk21|notice-ug|notice-grad|hi|sched|thesis|archive|jobs|undergraduate|graduate|scholarships|careers|alumni|faq)$/.test(h)){window.__ysTab=h;try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}}})();</script>
+(function(){try{history.scrollRestoration="manual"}catch(e){}var h=location.hash.slice(1);if(h&&/^(intro|vision|organization|history|location|faculty|dir|staff|fields|fieldsDetail|clusters|labvideos|partnership|curriculum|requirements|abeek|roadmap|graduation|mechanics|courses|grad|clubs|grad-admission|grad-req|grad-courses|grad-labs|bk21|notice-ug|notice-grad|hi|sched|thesis|archive|jobs|undergraduate|graduate|scholarships|careers|alumni|faq)$/.test(h)){window.__ysTab=h;try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}}})();</script>
 </head>
 <body>
 <div class="ynav-ph" aria-hidden="true"></div>
@@ -675,7 +685,7 @@ html[lang="en"] .ppos{display:none}
     <div class="al-head">
       <p class="sec-kick">Alumni</p>
       <h2 id="al-title">동문</h2>
-      <p class="al-lead">동문은 학부의 또 다른 구성원입니다. 졸업생과 재학생, 학부를 잇는 연혁과 인터뷰, 대외협력과 발전기금 안내를 모았습니다.</p>
+      <p class="al-lead">동문은 학부의 또 다른 구성원입니다. 졸업생과 재학생, 학부를 잇는 연혁과 인터뷰, 발전기금 안내를 모았습니다.</p>
     </div>
 
     <!-- ── 1. 동문 연혁 (사실) ── -->
@@ -780,76 +790,6 @@ html[lang="en"] .ppos{display:none}
         <!-- 예전 주소(G-admissions.html#careers)에는 careers 라는 id 가 없어 링크가 죽어 있었다.
              진로·취업을 다루는 실제 화면은 소식의 「취업 정보」다. -->
         <a class="al-more" href="G-news.html#jobs">취업 정보 보기 <span aria-hidden="true">→</span></a>
-      </div>
-    </div>
-
-    <!-- ── 3. 대외협력 (유형은 설명, 사례는 자리표시자) ── -->
-    <div class="al-block">
-      <h3 class="al-h">대외협력</h3>
-      <p class="al-sub">기업·기관과 학부가 함께하는 협력의 형태를 안내합니다. 협력은 아래 네 가지 형태로 이루어집니다.</p>
-
-      <div class="al-types">
-        <div class="al-type">
-          <h4>공동연구</h4>
-          <p>기업이 제시한 과제를 연구실과 함께 수행합니다. 계약과 연구비 집행은 산학협력단 절차를 따릅니다.</p>
-        </div>
-        <div class="al-type">
-          <h4>채용 연계</h4>
-          <p>채용 설명회와 현장 견학을 학기 중에 진행합니다. 모집 공고는 소식 페이지의 취업 정보에 올립니다.</p>
-        </div>
-        <div class="al-type">
-          <h4>장학 후원</h4>
-          <p>기업과 기관, 동문이 지정 기부로 재학생 장학금을 후원합니다. 운영 중인 장학은 입학 안내의 장학 항목에서 확인할 수 있습니다.</p>
-        </div>
-        <div class="al-type">
-          <h4>현장실습</h4>
-          <p>방학 기간에 기업 현장에서 실무를 경험하는 과정입니다. 참여 방법은 학부 행정팀에 문의해 주세요.</p>
-        </div>
-      </div>
-
-      <p class="al-note"><span class="al-note-t">예시 데이터</span><span class="al-note-b">아래 협력 사례는 화면 구성을 위한 예시이며, 실제 협력 기관은 학부 확인 후 등재됩니다. 기관은 업종으로만 표기했습니다.</span></p>
-
-      <div class="al-tbl" role="table" aria-label="협력 사례 예시">
-        <div class="al-thead" role="row">
-          <span class="al-c" role="columnheader">협력 유형</span>
-          <span class="al-c" role="columnheader">연구 분야</span>
-          <span class="al-c" role="columnheader">참여 기관</span>
-        </div>
-        <div class="al-row" role="row">
-          <span class="al-c" role="cell"><span class="al-ck">협력 유형</span>공동연구</span>
-          <span class="al-c" role="cell"><span class="al-ck">연구 분야</span>에너지·열유체</span>
-          <span class="al-c" role="cell"><span class="al-ck">참여 기관</span>발전 설비 기업</span>
-        </div>
-        <div class="al-row" role="row">
-          <span class="al-c" role="cell"><span class="al-ck">협력 유형</span>공동연구</span>
-          <span class="al-c" role="cell"><span class="al-ck">연구 분야</span>마이크로·나노</span>
-          <span class="al-c" role="cell"><span class="al-ck">참여 기관</span>반도체 장비 기업</span>
-        </div>
-        <div class="al-row" role="row">
-          <span class="al-c" role="cell"><span class="al-ck">협력 유형</span>채용 연계</span>
-          <span class="al-c" role="cell"><span class="al-ck">연구 분야</span>설계·제조</span>
-          <span class="al-c" role="cell"><span class="al-ck">참여 기관</span>제조 대기업</span>
-        </div>
-        <div class="al-row" role="row">
-          <span class="al-c" role="cell"><span class="al-ck">협력 유형</span>장학 후원</span>
-          <span class="al-c" role="cell"><span class="al-ck">연구 분야</span>전 분야</span>
-          <span class="al-c" role="cell"><span class="al-ck">참여 기관</span>자동차 부품 기업</span>
-        </div>
-        <div class="al-row" role="row">
-          <span class="al-c" role="cell"><span class="al-ck">협력 유형</span>현장실습</span>
-          <span class="al-c" role="cell"><span class="al-ck">연구 분야</span>로보틱스·제어</span>
-          <span class="al-c" role="cell"><span class="al-ck">참여 기관</span>산업용 로봇 기업</span>
-        </div>
-      </div>
-
-      <div class="al-contact">
-        <span class="al-ck2">협력 문의</span>
-        <span class="al-cv"><a href="tel:0221234426">02-2123-4426</a></span>
-        <span class="al-cn">(03722) 서울특별시 서대문구 연세로 50 · 연세대학교 공과대학 기계공학부 행정팀</span>
-      </div>
-      <div class="al-mores">
-        <a class="al-more" href="G-news.html#jobs">취업 정보 보기 <span aria-hidden="true">→</span></a>
-        <a class="al-more" href="G-admissions.html#scholarships">장학 안내 보기 <span aria-hidden="true">→</span></a>
       </div>
     </div>
 
@@ -1280,7 +1220,7 @@ html[lang="en"] .ppos{display:none}
   }
 })();
 </script>
-<script src="assets/nav.js?v=78"></script>
+<script src="assets/nav.js?v=80"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--dimmer)">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

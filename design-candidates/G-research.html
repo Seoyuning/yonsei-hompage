@@ -13,7 +13,7 @@
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d17" />
-<link rel="preload" as="script" href="assets/nav.js?v=78" />
+<link rel="preload" as="script" href="assets/nav.js?v=80" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    연구 — 연세대학교 기계공학부 (기관형 · 아이보리)
@@ -865,12 +865,91 @@ html[lang="en"] .lab-en-only{display:none}
 @media(max-width:560px){.lvm-close{top:-2.6rem;width:2.1rem;height:2.1rem}}
 @media(prefers-reduced-motion:reduce){.lvm-back,.lvm-frame{transition:none}}
 </style>
-<style>h1,h2,.sec-title,.phero h1,.hero h1,.hero-title,.club-name,.vt,.staff-head h2,.brand .bko,.ynv-brand .bko{font-family:"Apple SD Gothic Neo",system-ui,sans-serif;letter-spacing:-.01em}</style>
+<style>h1,h2,.sec-title,.phero h1,.hero h1,.hero-title,.club-name,.vt,.staff-head h2,.brand .bko,.ynv-brand .bko{font-family:"Apple SD Gothic Neo",system-ui,sans-serif;letter-spacing:-.01em}
+/* ── 대외협력 (구성원 동문 탭에서 옮겨 왔다) ── */
+@media (max-width:760px){
+  .al-cards,.al-types{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+  .al-thead{display:none}
+  .al-row{grid-template-columns:1fr;gap:.45rem;padding:.95rem .2rem}
+  .al-ck{display:block}
+}
+@media (max-width:480px){
+  .al-block{margin-top:2.2rem;padding-top:2rem}
+  .al-card{padding:1.15rem .1rem 1.25rem}
+  .al-note{padding-left:.8rem}
+  .al-type,.al-use{padding:1rem .1rem 1.1rem}
+}
+/* ── 섹션 머리 (대학원 페이지에서 시작해 전 페이지 공통) ──
+   제목 아래 슬래시 요약 줄을 둔다.
+   요약은 그 화면이 이미 담고 있는 사실만 적는다. */
+.staff-head,.al-head{position:relative}
+/* 연락 줄 — 전화·메일은 탭 타깃 44px 을 확보한다(.al-cv a 와 같은 처리) */
+.strow .stmeta{grid-column:1 / -1;display:flex;flex-wrap:wrap;align-items:center;gap:0 .6rem;
+  font-size:.84rem;color:var(--body);line-height:1.55;overflow-wrap:anywhere}
+.al-head{padding-top:2rem;margin-bottom:1.8rem}
+.al-head h2{font-size:clamp(1.6rem,1.15rem + 2vw,2.4rem);font-weight:800;color:#111318;letter-spacing:-.01em}
+/* 블록 구분 — 한 섹션 안에 네 덩어리가 들어가므로 얇은 선으로만 나눈다 */
+.al-block{margin-top:2.6rem;padding-top:2.4rem;border-top:1px solid var(--line-soft)}
+/* 첫 블록만 선을 뺀다. :first-of-type 은 형제 중 첫 div(=.al-head)를 가리켜 맞지 않으므로
+   인접 선택자로 «머리 바로 다음 블록»을 집는다. */
+.al-head + .al-block{margin-top:0;padding-top:0;border-top:0}
+.al-h{font-size:1.18rem;font-weight:700;color:var(--navy);letter-spacing:-.01em;line-height:1.35}
+.al-sub{margin-top:.55rem;font-size:.9rem;color:var(--sub);line-height:1.7;max-width:48rem}
+/* 링크는 한 줄로 세워 탭 타깃 44px 을 확보한다 */
+.al-mores{display:flex;flex-wrap:wrap;gap:0 1.6rem;margin-top:.4rem}
+.al-more{display:inline-flex;align-items:center;gap:.4rem;min-height:44px;
+  font-size:.87rem;font-weight:600;color:var(--navy);
+  text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line);
+  transition:text-decoration-color .15s}
+.al-more:hover{text-decoration-color:var(--navy)}
+/* 예시 데이터 고지 — 사실과 자리표시자를 화면에서 구분한다.
+   상자 + 회색 판을 걷고 왼쪽 먹선 하나로만 세운다(아래 .al-quote 가 이미 쓰는 어법). */
+.al-note{display:flex;gap:.7rem;flex-wrap:wrap;align-items:baseline;
+  margin-top:1.3rem;padding:.1rem 0 .1rem .9rem;border-left:2px solid var(--navy);
+  font-size:.85rem;color:var(--sub);line-height:1.7}
+.al-note-t{flex:none;font-size:.74rem;font-weight:700;color:#fff;background:var(--navy);
+  padding:.22rem .55rem;letter-spacing:.02em}
+.al-note-b{flex:1 1 16rem;min-width:0}
+/* ── 2) 동문 인터뷰 ──
+   상자 넷 대신 [위 테두리 + 사람마다 아래 테두리] 목록. 두 단으로 늘어서도
+   위·아래 선이 한 격자로 이어져 지면이 조용해진다(.emlist / .req-list 와 같은 짜임). */
+.al-cards{display:grid;gap:0 clamp(1.4rem,1rem + 2vw,2.8rem);margin-top:1.3rem;
+  grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--line)}
+.al-card{display:flex;flex-direction:column;padding:1.3rem .1rem 1.5rem;
+  border-bottom:1px solid var(--line-soft)}
+/* ── 3) 대외협력 유형 + 협력 사례 표 ── */
+/* 네 유형도 같은 헤어라인 목록으로 */
+.al-types{display:grid;gap:0 clamp(1.4rem,1rem + 2vw,2.8rem);margin-top:1.4rem;
+  grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--line)}
+.al-type{padding:1.1rem .1rem 1.25rem;border-bottom:1px solid var(--line-soft)}
+.al-type h4{font-size:1rem;font-weight:700;color:var(--navy);line-height:1.35}
+.al-type p{margin-top:.5rem;font-size:.85rem;color:var(--body);line-height:1.75}
+/* 표 — 좁은 화면에서는 행 카드로 펴서 가로 스크롤이 생기지 않게 한다 */
+.al-tbl{margin-top:1.3rem;border-top:1px solid var(--line)}
+.al-thead,.al-row{display:grid;grid-template-columns:7.5rem 10rem 1fr;gap:1rem;
+  padding:.82rem .2rem;border-bottom:1px solid var(--line-soft);align-items:baseline}
+/* 머리줄은 칠하지 않는다 — G-research 의 연구실 목록 머리(.lab-legend)처럼
+   회색 글자와 아래 선만으로 충분히 머리로 읽힌다 */
+.al-thead{font-size:.78rem;color:var(--label);letter-spacing:.02em}
+.al-row{font-size:.88rem;color:var(--body);transition:background .12s}
+.al-row:hover{background:var(--row)}
+.al-c{min-width:0;overflow-wrap:anywhere}
+.al-ck{display:none;font-size:.74rem;color:var(--muted);line-height:1.5;margin-bottom:.1rem}
+/* 문의 창구 — 회색 판과 테두리를 걷고 얇은 선 아래 한 줄로 */
+.al-contact{margin-top:1.3rem;padding-top:1rem;border-top:1px solid var(--line);
+  display:flex;flex-wrap:wrap;align-items:center;gap:.3rem 1.3rem}
+.al-ck2{font-size:.76rem;color:var(--label);flex:none}
+.al-cv{font-size:.92rem;font-weight:700;color:var(--navy)}
+.al-cv a{display:inline-flex;align-items:center;min-height:44px}
+.al-cn{width:100%;font-size:.8rem;color:var(--muted);line-height:1.65}
+</style>
 <link rel="stylesheet" href="assets/transition.css?v=3">
 <script>/* 탭 해시 진입은 히어로부터 — 파싱 전에 해시를 떼어 앵커 점프·상단바 접힘 왕복을 원천 차단(nav.js가 탭 복원).
    scrollRestoration=manual: 뒤로가기·같은 주소 재방문 때 브라우저가 이전 스크롤을 되살려
    히어로를 건너뛰고 첫 탭 중간부터 보이는 것을 막는다(깊은 앵커 #id 이동에는 영향 없음). */
-(function(){try{history.scrollRestoration="manual"}catch(e){}var h=location.hash.slice(1);if(h&&/^(intro|vision|organization|history|location|faculty|dir|staff|fields|fieldsDetail|clusters|labvideos|curriculum|requirements|abeek|roadmap|graduation|mechanics|courses|grad|clubs|grad-admission|grad-req|grad-courses|grad-labs|bk21|notice-ug|notice-grad|hi|sched|thesis|archive|jobs|undergraduate|graduate|scholarships|careers|alumni|faq)$/.test(h)){window.__ysTab=h;try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}}})();</script>
+(function(){try{history.scrollRestoration="manual"}catch(e){}var h=location.hash.slice(1);if(h&&/^(intro|vision|organization|history|location|faculty|dir|staff|fields|fieldsDetail|clusters|labvideos|partnership|curriculum|requirements|abeek|roadmap|graduation|mechanics|courses|grad|clubs|grad-admission|grad-req|grad-courses|grad-labs|bk21|notice-ug|notice-grad|hi|sched|thesis|archive|jobs|undergraduate|graduate|scholarships|careers|alumni|faq)$/.test(h)){window.__ysTab=h;try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}}})();</script>
 </head>
 <body>
 <div class="ynav-ph" aria-hidden="true"></div>
@@ -1050,6 +1129,82 @@ html[lang="en"] .lab-en-only{display:none}
       </div>
     </div>
     <div id="lvGroups"></div>
+  </section>
+
+  <!-- ═══ 대외협력 — 기업·기관과의 산학협력. 예전에는 동문 탭 안에 있었는데,
+       동문(사람)과 성격이 달라 연구 메뉴로 옮겼다. 발전기금은 동문에 그대로 둔다. ═══ -->
+  <section class="clusters" id="partnership" aria-labelledby="pt-h">
+    <div class="sec-head">
+      <div>
+        <p class="sec-kick">Partnership</p>
+        <h2 class="sec-title" id="pt-h">대외협력</h2>
+      </div>
+    </div>
+          <p class="al-sub">기업·기관과 학부가 함께하는 협력의 형태를 안내합니다. 협력은 아래 네 가지 형태로 이루어집니다.</p>
+
+      <div class="al-types">
+        <div class="al-type">
+          <h3>공동연구</h3>
+          <p>기업이 제시한 과제를 연구실과 함께 수행합니다. 계약과 연구비 집행은 산학협력단 절차를 따릅니다.</p>
+        </div>
+        <div class="al-type">
+          <h3>채용 연계</h3>
+          <p>채용 설명회와 현장 견학을 학기 중에 진행합니다. 모집 공고는 소식 페이지의 취업 정보에 올립니다.</p>
+        </div>
+        <div class="al-type">
+          <h3>장학 후원</h3>
+          <p>기업과 기관, 동문이 지정 기부로 재학생 장학금을 후원합니다. 운영 중인 장학은 입학 안내의 장학 항목에서 확인할 수 있습니다.</p>
+        </div>
+        <div class="al-type">
+          <h3>현장실습</h3>
+          <p>방학 기간에 기업 현장에서 실무를 경험하는 과정입니다. 참여 방법은 학부 행정팀에 문의해 주세요.</p>
+        </div>
+      </div>
+
+      <p class="al-note"><span class="al-note-t">예시 데이터</span><span class="al-note-b">아래 협력 사례는 화면 구성을 위한 예시이며, 실제 협력 기관은 학부 확인 후 등재됩니다. 기관은 업종으로만 표기했습니다.</span></p>
+
+      <div class="al-tbl" role="table" aria-label="협력 사례 예시">
+        <div class="al-thead" role="row">
+          <span class="al-c" role="columnheader">협력 유형</span>
+          <span class="al-c" role="columnheader">연구 분야</span>
+          <span class="al-c" role="columnheader">참여 기관</span>
+        </div>
+        <div class="al-row" role="row">
+          <span class="al-c" role="cell"><span class="al-ck">협력 유형</span>공동연구</span>
+          <span class="al-c" role="cell"><span class="al-ck">연구 분야</span>에너지·열유체</span>
+          <span class="al-c" role="cell"><span class="al-ck">참여 기관</span>발전 설비 기업</span>
+        </div>
+        <div class="al-row" role="row">
+          <span class="al-c" role="cell"><span class="al-ck">협력 유형</span>공동연구</span>
+          <span class="al-c" role="cell"><span class="al-ck">연구 분야</span>마이크로·나노</span>
+          <span class="al-c" role="cell"><span class="al-ck">참여 기관</span>반도체 장비 기업</span>
+        </div>
+        <div class="al-row" role="row">
+          <span class="al-c" role="cell"><span class="al-ck">협력 유형</span>채용 연계</span>
+          <span class="al-c" role="cell"><span class="al-ck">연구 분야</span>설계·제조</span>
+          <span class="al-c" role="cell"><span class="al-ck">참여 기관</span>제조 대기업</span>
+        </div>
+        <div class="al-row" role="row">
+          <span class="al-c" role="cell"><span class="al-ck">협력 유형</span>장학 후원</span>
+          <span class="al-c" role="cell"><span class="al-ck">연구 분야</span>전 분야</span>
+          <span class="al-c" role="cell"><span class="al-ck">참여 기관</span>자동차 부품 기업</span>
+        </div>
+        <div class="al-row" role="row">
+          <span class="al-c" role="cell"><span class="al-ck">협력 유형</span>현장실습</span>
+          <span class="al-c" role="cell"><span class="al-ck">연구 분야</span>로보틱스·제어</span>
+          <span class="al-c" role="cell"><span class="al-ck">참여 기관</span>산업용 로봇 기업</span>
+        </div>
+      </div>
+
+      <div class="al-contact">
+        <span class="al-ck2">협력 문의</span>
+        <span class="al-cv"><a href="tel:0221234426">02-2123-4426</a></span>
+        <span class="al-cn">(03722) 서울특별시 서대문구 연세로 50 · 연세대학교 공과대학 기계공학부 행정팀</span>
+      </div>
+      <div class="al-mores">
+        <a class="al-more" href="G-news.html#jobs">취업 정보 보기 <span aria-hidden="true">→</span></a>
+        <a class="al-more" href="G-admissions.html#scholarships">장학 안내 보기 <span aria-hidden="true">→</span></a>
+      </div>
   </section>
   </main>
 
@@ -1724,7 +1879,7 @@ html[lang="en"] .lab-en-only{display:none}
   }
 })();
 </script>
-<script src="assets/nav.js?v=78"></script>
+<script src="assets/nav.js?v=80"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:#7b8595">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

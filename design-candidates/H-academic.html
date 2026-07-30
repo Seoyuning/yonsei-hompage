@@ -15,7 +15,7 @@
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트를 미리 받아 둔다 — 파서가 해당 줄에 닿았을 때 이미 캐시에 있어 멈춤이 짧아진다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d17" />
-<link rel="preload" as="script" href="assets/nav.js?v=78" />
+<link rel="preload" as="script" href="assets/nav.js?v=80" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    시안 H · 아카데믹 (Reference: me.kaist.ac.kr / me.snu.ac.kr)
@@ -796,7 +796,7 @@ img{display:block;max-width:100%}
       tbYonsei: 'Yonsei University', tbEng: 'College of Engineering', tbCur: 'Current ME site',
       navAbout: 'About', navPeople: 'People', navResearch: 'Research', navAcad: 'Academics', navNews: 'News', navAdm: 'Admissions',
       heroKick: '', heroTitle: 'School of Mechanical Engineering',   /* 영문 화면에서는 킥커를 비운다 — 제목이 이미 영문 학부명이라 같은 말을 두 번 하게 된다 */
-      heroSub: 'A challenge that never stops — Yonsei Mechanical Engineering, toward its first century',
+      heroSub: 'A challenge that never stops, toward our first century',
       stFaculty: 'Faculty', stAreas: 'Research Areas', stFounded: 'Founded',
       newsTitle: 'Research News', moreAll: 'View all →',
       ntTitle: 'Notices', tabAll: 'All', tabUG: 'Undergrad', tabGrad: 'Graduate',
@@ -819,13 +819,21 @@ img{display:block;max-width:100%}
   };
   var LANG = 'ko';
   try { LANG = localStorage.getItem('ysme-lang') === 'en' ? 'en' : 'ko'; } catch (e) {}
-  function T(k) { return (I18N[LANG] && I18N[LANG][k]) || I18N.ko[k] || ''; }
+  /* 빈 문자열도 뜻이 있는 값이다(「이 화면에서는 비운다」) — || 로 이어 붙이면
+     빈 값이 거짓으로 걸러져 한국어 원문으로 되돌아간다. 키가 있는지로 판단한다. */
+  function T(k) {
+    var t = I18N[LANG];
+    if (t && Object.prototype.hasOwnProperty.call(t, k)) return t[k];
+    return Object.prototype.hasOwnProperty.call(I18N.ko, k) ? I18N.ko[k] : '';
+  }
 
   function applyI18n() {
     document.documentElement.lang = LANG;
     document.querySelectorAll('[data-i18n]').forEach(function (el) {
       var v = T(el.dataset.i18n);
-      if (v) el.textContent = v;
+      /* 빈 문자열도 「이 화면에서는 비운다」는 뜻이다 — 예전에는 if(v) 로 걸러서
+         영문에서 히어로 킥커를 비워 뒀는데도 한국어 마크업 원문이 그대로 남았다. */
+      if (v !== undefined && v !== null) el.textContent = v;
     });
     var ko = document.getElementById('langKo'), en = document.getElementById('langEn');
     if (ko && en) {
@@ -1261,7 +1269,7 @@ img{display:block;max-width:100%}
 })();
 </script>
 <!-- 공용 헤더·사이트맵 푸터(서브페이지와 동일) 주입 -->
-<script src="assets/nav.js?v=78"></script>
+<script src="assets/nav.js?v=80"></script>
 <script>
 /* 인트로 두 구간 — 스크롤 진행률(0~1)을 --p 로 넣고, 문장 구간은 단어를 하나씩 켠다.
    바깥 통의 높이에서 화면 한 칸을 뺀 만큼이 「진행 구간」이다. */

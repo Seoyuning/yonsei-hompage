@@ -36,10 +36,17 @@
   var mo = null, pending = [], timer = null;
 
   /* ── 경로 ── */
+  /* 사전 주소에 이 파일의 버전 쿼리를 그대로 물려준다.
+     예전에는 ?v=NN 을 떼고 요청해서, 사전을 새로 채워도 브라우저가 캐시에 있는
+     옛 사전을 계속 썼다 — 「번역이 아직도 안 된다」의 진짜 원인이 이것이었다.
+     nav.js 가 i18n.js 를 붙일 때 자기 버전을 넘겨주므로, 그 버전만 올리면 사전도 함께 새로 받는다. */
   function dictUrl() {
     if (window.YSME_I18N_URL) return window.YSME_I18N_URL;
     var s = document.currentScript;
-    if (s && s.src) return s.src.replace(/[?#].*$/, '').replace(/i18n\.js$/, 'i18n/en.json');
+    if (s && s.src) {
+      var q = (s.src.match(/[?][^#]*/) || [''])[0];
+      return s.src.replace(/[?#].*$/, '').replace(/i18n\.js$/, 'i18n/en.json') + q;
+    }
     return 'assets/i18n/en.json';
   }
   var URL_ = dictUrl();

@@ -265,7 +265,7 @@
   var MENU = [
     { t: '학부소개', h: 'G-about.html', key: 'about', sub: [['학부 소개', 'G-about.html#intro', ['intro']], ['교육목표', 'G-about.html#vision', ['vision']], ['조직 · 행정', 'G-about.html#organization', ['organization']], ['주요 연혁', 'G-about.html#history', ['history']], ['연락처 · 오시는 길', 'G-about.html#location', ['location']]] },
     { t: '구성원', h: 'G-people.html', key: 'people', sub: [['교수진', 'G-people.html#faculty', ['faculty', 'facultyChips', 'dir']], ['교직원', 'G-people.html#staff', ['staff']], ['동문', 'G-people.html#alumni', ['alumni']]] },
-    { t: '연구', h: 'G-research.html', key: 'research', sub: [['연구 비전', 'G-research.html#vision', ['vision']], ['연구 분야', 'G-research.html#fields', ['fields', 'fieldsDetail']], ['연구실 목록', 'G-research.html#clusters', ['clusters']], ['연구실 홍보영상', 'G-research.html#labvideos', ['labvideos']]] },
+    { t: '연구', h: 'G-research.html', key: 'research', sub: [['연구 비전', 'G-research.html#vision', ['vision']], ['연구 분야', 'G-research.html#fields', ['fields', 'fieldsDetail']], ['연구실 목록', 'G-research.html#clusters', ['clusters']], ['연구실 홍보영상', 'G-research.html#labvideos', ['labvideos']], ['대외협력', 'G-research.html#partnership', ['partnership']]] },
     { t: '학사', h: 'G-academics.html', key: 'academics', sub: [['교육과정 개관', 'G-academics.html#curriculum', ['curriculum', 'requirements', 'abeek']], ['이수 체계도', 'G-academics.html#roadmap', ['roadmap']], ['졸업 요건', 'G-academics.html#graduation', ['graduation']], ['전공 교과', 'G-academics.html#courses', ['mechanics', 'courses']], ['동아리·학생활동', 'G-academics.html#clubs', ['clubs']]] },
     { t: '대학원', h: 'G-graduate.html', key: 'graduate', sub: [['입학 안내', 'G-graduate.html#grad-admission', ['grad-admission']], ['졸업 요건', 'G-graduate.html#grad-req', ['grad-req']], ['교과목 소개', 'G-graduate.html#grad-courses', ['grad-courses']], ['대학원 연구실', 'G-graduate.html#grad-labs', ['grad-labs']], ['BK21 FOUR', 'G-graduate.html#bk21', ['bk21']]] },
     { t: '소식', h: 'G-news.html', key: 'news', sub: [['학부 공지', 'G-news.html#notice-ug', ['notice-ug']], ['대학원 공지', 'G-news.html#notice-grad', ['notice-grad']], ['뉴스 · 연구성과', 'G-news.html#hi', ['hi']], ['세미나 · 행사', 'G-news.html#sched', ['sched']], ['학위논문심사', 'G-news.html#thesis', ['thesis']], ['자료실', 'G-news.html#archive', ['archive']], ['취업 정보', 'G-news.html#jobs', ['jobs']]] },
@@ -448,6 +448,7 @@
 
     function show(idx, mode) {
       var s = m.sub[idx]; if (!s) return;
+      curIdx = idx;
       var ids = s[2] || [];
       /* 활성 탭 섹션만 노출, 다른 탭 섹션 숨김 — '각 하위 메뉴 = 각 탭' 뷰 분리 */
       managed.forEach(function (el) { el.classList.toggle('ysub-hide', ids.indexOf(el.id) < 0); });
@@ -482,6 +483,21 @@
     }
     /* 형제 탭 바 — 그 탭 내용의 상단으로 */
     tabs.forEach(function (t, i) { t.addEventListener('click', function () { show(i, 'view'); }); });
+
+    /* 한/영을 바꾸면 소제목 바로가기 바를 다시 만든다.
+       이 바는 화면의 h2/h3 글자를 읽어 한 번 만들고 끝이라, 언어를 되돌려도
+       먼저 만들어진 영문 라벨이 그대로 남아 있었다(사전은 이미 바뀐 뒤라 손댈 것이 없다). */
+    var curIdx = 0;
+    ['ynvKo', 'ynvEn'].forEach(function (id) {
+      document.addEventListener('click', function (e) {
+        var b = e.target && e.target.closest ? e.target.closest('#' + id) : null;
+        if (!b) return;
+        setTimeout(function () {
+          var s2 = m.sub[curIdx];
+          if (s2) buildJump(s2[2] || []);
+        }, 120);
+      });
+    });
 
     /* 초기 탭 = 해시 매칭 or 첫 탭.
        탭 해시는 각 페이지 head 스니펫이 앵커 점프 차단을 위해 미리 떼어 window.__ysTab 에 보관 */

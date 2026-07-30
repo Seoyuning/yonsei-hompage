@@ -1347,9 +1347,14 @@ html[lang="en"] .lab-en-only{display:none}
       var a = e.target.closest('.eg-arrow'); if(!a) return;
       step(parseInt(a.getAttribute('data-dir'), 10) || 1);
     });
-    stage.addEventListener('mouseover', function(e){ var t=e.target.closest('[data-cid]'); if(t) setActive(t.getAttribute('data-cid')); });
-    stage.addEventListener('mouseleave', function(){ setActive(pinned); });
-    stage.addEventListener('focusin', function(e){ var t=e.target.closest('[data-cid]'); if(t) setActive(t.getAttribute('data-cid')); });
+    /* ── 짚은 자리에 머문다 ──
+       예전에는 손을 올려도 보여 주기만(setActive) 하고 pinned 는 그대로 뒀다.
+       그래서 손을 떼면 처음 열릴 때 잡힌 첫 분야로 되돌아갔고, 그 상태에서
+       캐러셀 화살표를 누르면 방금 보던 분야가 아니라 첫 분야에서부터 넘어갔다.
+       이제 짚는 것 자체가 고르는 것이다 — 마지막으로 짚은 자리에 그대로 머물고,
+       화살표도 그 자리에서 이어 넘어간다. mouseleave 로 되돌리지 않는다. */
+    stage.addEventListener('mouseover', function(e){ var t=e.target.closest('[data-cid]'); if(t) pin(t.getAttribute('data-cid')); });
+    stage.addEventListener('focusin', function(e){ var t=e.target.closest('[data-cid]'); if(t) pin(t.getAttribute('data-cid')); });
     stage.addEventListener('click', function(e){ var t=e.target.closest('.ehot,.elabel'); if(t) openCluster(t.getAttribute('data-cid'), true); });
     stage.addEventListener('keydown', function(e){ var t=e.target.closest('.ehot'); if(t && (e.key==='Enter'||e.key===' '||e.key==='Spacebar')){ e.preventDefault(); openCluster(t.getAttribute('data-cid'), true); } });
   }

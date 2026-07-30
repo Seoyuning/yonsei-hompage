@@ -11,3 +11,25 @@ desktop.ini
 # Temp
 *.tmp
 *~
+
+# ── 제출과 무관한 폴더·파일 ──
+# 저장소를 제출용으로 정리한다. 실제 산출물은 design-candidates/ 하나다.
+# (여기 적힌 것들은 내 컴퓨터에는 그대로 남는다 — 추적만 그만둔다)
+
+# 관리자 편집 콘솔 — 내 컴퓨터의 폴더를 직접 여는 도구라 공개 저장소에 둘 물건이 아니다.
+# (사이트 안의 인플레이스 스튜디오 design-candidates/assets/studio/ 는 그대로 둔다)
+admin/
+preview_admin/
+
+# 옛 시안 — 현재 산출물은 design-candidates/ 다
+prototype/
+prototype-v2/
+prototype-v3/
+연세 기계공학부 홈 - 단독.html
+
+# 내부 문서 · 공모전 안내문 · 참가신청서(개인 이름 포함)
+기획_전략/
+가이드라인/
+HANDOFF.md
+참가신청서_*
+스크린샷 *.png

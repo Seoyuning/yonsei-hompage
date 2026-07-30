@@ -27,46 +27,40 @@ OT 청취 결과 "수정·보수 관리가 용이한가"가 핵심 심사 기준
 - `prototype-v3` 프로젝트(구 `prototype-v3-nine.vercel.app`)는 2026-07-26 삭제했다.
   소스는 `prototype-v3/` 에 그대로 있으므로 필요하면 다시 배포하면 된다.
 
-> ⚠️ **`https://yonsei-hompage.vercel.app`** 는 우리 Vercel 계정에 없다(팀원 계정 추정).
-> 저장소 **루트 전체**를 서빙해서 `/%EA%B8%B0%ED%9A%8D_%EC%A0%84%EB%9E%B5/00_INDEX.md`
-> (기획_전략 폴더)와 `/admin/js/editor.js` 가 공개 URL 로 열린다. 소유자를 찾아
-> 프로젝트를 삭제하거나 Root Directory 를 `design-candidates` 로 바꿔야 한다.
+> ⚠️ **`https://yonsei-hompage.vercel.app`** 는 저장소 **루트 전체**를 서빙한다.
+> 예전에는 그 탓에 기획 문서와 관리자 콘솔 소스가 공개 주소로 열렸는데,
+> 지금은 둘 다 저장소에서 빠져(.gitignore) 더는 노출되지 않는다.
+> 그래도 이 배포는 Root Directory 를 `design-candidates` 로 두는 편이 맞다.
 
 ## 폴더 구조
 
 ```
-연세대_사이트 공모전/
-├─ 가이드라인/        대회 안내문·참가신청서 원본·OT 정리
-├─ 기획_전략/         마스터플레이북·컨셉·레드팀 분석 등 기획 문서 (00_INDEX.md부터 볼 것)
-├─ prototype/         1차 시안 (참고용, 더 이상 수정하지 않음)
-├─ prototype-v2/      2차 시안 (참고용, 더 이상 수정하지 않음)
-├─ prototype-v3/      ★ 최신 사이트 본체 — 편집 대상은 항상 이 폴더
-├─ admin/             ★ YSME Admin Studio — 관리자 편집 콘솔 (2축 산출물)
-└─ preview_admin/     Admin Studio 스크린샷 (로그인·워크스페이스)
+├─ design-candidates/  ★ 사이트 본체 — 편집 대상은 항상 이 폴더
+│   ├─ H-academic.html      메인
+│   ├─ G-*.html             학부소개 · 구성원 · 연구 · 학사 · 대학원 · 소식 · 입학
+│   ├─ assets/              공용 스크립트·스타일·이미지·데이터
+│   │   ├─ nav.js           헤더·푸터·형제 탭·등장 애니메이션 (모든 페이지 공통)
+│   │   ├─ i18n.js          한/영 적용 런타임 · i18n/en.json  사전
+│   │   ├─ js/data.js       사이트 데이터(순수 JSON) — 교수·연구실·공지·교과목
+│   │   └─ studio/          인플레이스 편집 스튜디오 (?studio=1 로 켠다)
+│   └─ api/                 publish(깃 커밋) · ai  서버리스 함수
+├─ index.html          루트 진입 → design-candidates/H-academic.html 로 보냄
+├─ vercel.json         배포 설정
+└─ .github/workflows/  배포 자동화
 ```
+
+> 기획 문서 · 옛 시안 · 관리자 데스크톱 콘솔(`admin/`)은 산출물이 아니라서
+> `.gitignore` 로 추적하지 않는다(작업자 컴퓨터에는 그대로 있다).
 
 ## 다른 PC에서 시작하기
 
-1. 저장소 클론: `git clone https://github.com/todo0157/Contest_build.git`
-   (이 폴더는 저장소 내 `연세대_사이트 공모전/`에 있다.)
-   - 이미 클론된 PC라면 **저장소 루트의 `CLAUDE.md`(멀티 PC git 규칙)** 절차대로
-     `git fetch` → ff-merge로 먼저 최신화한다. 커밋은 반드시 이 폴더만
-     pathspec으로 지정한다 — 루트에서 `git add -A` 금지.
-2. 필요 프로그램: **Chrome 또는 Edge(데스크톱)** 만 있으면 된다. 빌드 도구·npm 불필요.
-   폴더 픽커가 안 열리는 환경에서만 Python 3 필요(아래 serve.py).
-3. 사이트 확인: `prototype-v3/index.html`을 브라우저로 연다. 끝.
-4. Admin Studio 실행: `admin/index.html`을 Chrome/Edge로 연다.
-   - 최초 실행 시 관리자 계정 생성 → 「사이트 폴더 열기」→ `prototype-v3` 선택.
-   - AI 초안 기능은 [aistudio.google.com](https://aistudio.google.com)에서 무료 API 키
-     발급 후 「AI 어시스턴트」 탭에 입력 (키는 코드·저장소에 절대 커밋하지 않는다).
-   - 안 열리면: `python admin/serve.py` → http://localhost:8787 자동 오픈.
-   - 상세 사용법: **`admin/README.md`**
-
-> **기기 간 데이터 주의**: Admin Studio의 계정·버전 스냅샷·감사 기록·API 키는
-> 브라우저 로컬(IndexedDB)에만 저장된다. 다른 PC에서는 계정을 새로 만들고 키를
-> 다시 입력해야 하며, 버전 이력은 넘어가지 않는다(감사 기록은 JSON 내보내기로
-> 백업 가능). **사이트 파일 자체의 이력은 git이 진실**이므로, 작업 후 커밋·푸시하면
-> 어느 PC에서든 동일하게 이어진다.
+1. 저장소 클론 → `design-candidates/H-academic.html` 을 브라우저로 연다. 끝이다.
+   빌드 도구도 npm 도 필요 없다.
+2. 로컬에서 형제 탭·한영 전환까지 제대로 보려면 정적 서버로 열어야 한다:
+   `python3 -m http.server 8010` 뒤 `http://localhost:8010/design-candidates/H-academic.html`
+3. 온라인 편집: 배포된 화면에서 푸터의 **관리자** 를 누르면(= 주소에 `?studio=1`)
+   그 자리에서 인플레이스 스튜디오가 켜진다. 저장은 `/api/publish` 가 맡아
+   깃 저장소에 커밋한다(공용 암호 필요).
 
 ## 개발 규칙 (반드시 읽을 문서 2개)
 

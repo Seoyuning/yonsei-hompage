@@ -149,6 +149,26 @@
       'html.ys-rv [data-rvt]{clip-path:none;transform:none;transition:none}}',
     '@media print{html.ys-rv [data-rv]{opacity:1;transform:none;transition:none}' +
       'html.ys-rv [data-rvt]{clip-path:none;transform:none;transition:none}}',
+
+    /* ── 메뉴 페이지 섹션 머리 — 메인의 편집 지면 형식으로 통일 ──
+       메인은 구간을 「작은 라벨 + 그 아래 검은 가로줄」 하나로 연다(.tl-eyebrow).
+       메뉴 페이지는 산호색 킥커가 제목 옆에 붙어 있어 페이지마다 인상이 달랐다.
+       마크업(.sec-head > div > p.sec-kick + h2.sec-title)은 그대로 두고 —
+       하위·형제 페이지 구조를 건드리지 않기 위해 — 보이는 형식만 맞춘다.
+       html.ys-sub 는 G-* 페이지에서만 붙으므로 메인에는 영향이 없다. */
+    'html.ys-sub .sec-head{display:block}',
+    'html.ys-sub .sec-head > div,html.ys-sub .sec-top{display:block;width:100%}',
+    'html.ys-sub .sec-kick{display:block;width:100%;' +
+      'font-family:var(--mono,ui-monospace,SFMono-Regular,Menlo,monospace);' +
+      'font-size:.68rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;' +
+      'color:#111318;padding-bottom:.82rem;border-bottom:1px solid #111318;' +
+      'margin:0 0 clamp(.95rem,.75rem + .8vw,1.6rem)}',
+    /* 제목 — 메인과 같은 굵기·자간. 크기는 각 페이지 값을 살린다(본문 폭이 다르다) */
+    'html.ys-sub .sec-title{margin-top:0;font-weight:800;letter-spacing:-.02em;line-height:1.14}',
+    'html.ys-sub .sec-sub{margin-top:.7rem}',
+    /* 휴대폰 — 줄 아래 여백을 조금 줄여 머리가 화면을 덜 잡아먹게 한다 */
+    '@media(max-width:640px){html.ys-sub .sec-kick{font-size:.64rem;letter-spacing:.18em;' +
+      'padding-bottom:.6rem;margin-bottom:.8rem}}',
     /* 맨 위로 버튼 */
     '.ytop{position:fixed;right:1.4rem;bottom:1.4rem;z-index:45;width:2.9rem;height:2.9rem;border-radius:50%;' +
       'background:#fff;border:1px solid rgba(10,26,51,.15);box-shadow:0 6px 18px rgba(10,26,51,.15);' +
@@ -248,6 +268,9 @@
   var path = (location.pathname.split('/').pop() || '').toLowerCase();
   var curKey = null;
   MENU.forEach(function (m) { if (path === 'g-' + m.key + '.html') curKey = m.key; });
+  /* 메뉴 페이지(G-*)에만 붙는 표식. 메인(H-academic)은 curKey 가 없으므로 안 붙는다 —
+     아래 「섹션 머리 통일」 규칙이 메인까지 덮어써 두 번 손보는 일을 막는다. */
+  if (curKey) document.documentElement.classList.add('ys-sub');
 
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 

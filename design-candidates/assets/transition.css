@@ -77,5 +77,5 @@
 /* 움직임 최소화 선호 시 — 무한 반복 장식은 아예 세운다.
    (한 번 재생하고 끝나는 등장 애니메이션은 위 블록에서 이미 처리했다) */
 @media (prefers-reduced-motion: reduce) {
-  .hl-eagle, .hb-track, .eg-drift { animation: none !important; }
+  .hl-eagle, .eg-drift { animation: none !important; }
 }

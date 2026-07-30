@@ -13,7 +13,7 @@
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d17" />
-<link rel="preload" as="script" href="assets/nav.js?v=73" />
+<link rel="preload" as="script" href="assets/nav.js?v=74" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    연구 — 연세대학교 기계공학부 (기관형 · 아이보리)
@@ -429,28 +429,40 @@ html[lang="en"] .lab-en-only{display:none}
 .eagle-body{position:relative}
 .eagle-nav{display:flex;align-items:center;justify-content:center;gap:clamp(.9rem,.6rem + 1vw,1.6rem);
   margin:clamp(.6rem,.4rem + .6vw,1.1rem) auto 0;max-width:600px}
-/* ── 넓은 화면: 그림 왼쪽 · 설명 오른쪽 ──
-   손이 닿으면(또는 분야를 고정하면) 오른쪽 칸이 열리고 무대가 조금 줄며 왼쪽으로 물러난다.
+/* ── 넓은 화면: 독수리가 가운데 있다가 왼쪽으로 미끄러지고, 오른쪽에 설명이 열린다 ──
+   예전에는 폭(max-width · flex-basis · width)을 줄여 자리를 냈다. 그러면 독수리가
+   「옆으로 간다」가 아니라 「쪼그라든다」로 보이고, 폭이 바뀔 때마다 브라우저가
+   배치를 다시 재느라 중간 프레임을 건너뛰기도 한다.
+   그래서 자리는 격자로 처음부터 잡아 두고(따라서 배치는 한 번도 다시 재지 않는다),
+   움직임은 transform 하나로만 준다 — 설명 칸의 폭 절반만큼 왼쪽으로 당겨 두었다가
+   그 당김을 풀면, 독수리 전체가 화면 한가운데에서 오른쪽 제자리까지 미끄러진다.
    손가락 화면에는 hover 가 없으므로 이 규칙을 적용하지 않는다(막대가 숨으면 넘길 수가 없다). */
 @media (hover:hover) and (min-width:1024px){
-  .eagle-body{display:flex;align-items:center;justify-content:center}
-  /* 무대가 좌우로 물러나고 돌아오는 움직임 — flex 폭 변화만으로는 브라우저가
-     중간 프레임을 그리지 않는 경우가 있어 폭 세 가지를 모두 전환 대상으로 둔다 */
-  /* 천천히, 끝까지 보이게 — 짧게 끊으면 「이동」이 아니라 「점프」로 읽힌다 */
-  .eagle-body .eagle-stage{flex:0 1 700px;
-    transition:max-width 1.15s cubic-bezier(.33,.02,.15,1),
-               flex-basis 1.15s cubic-bezier(.33,.02,.15,1),
-               width 1.15s cubic-bezier(.33,.02,.15,1)}
-  .eagle-side{flex:none;width:0;margin-left:0;opacity:0;overflow:hidden;
-    transition:width 1.15s cubic-bezier(.33,.02,.15,1),
-               margin-left 1.15s cubic-bezier(.33,.02,.15,1),
-               opacity .55s ease .3s}
-  .eagle-side-in{width:min(22rem,32vw)}
-  .eagle-body.is-pin .eagle-side{
-    width:min(22rem,32vw);margin-left:clamp(2.6rem,4.5vw,5rem);opacity:1}
-  .eagle-body.is-pin .eagle-stage{max-width:620px}
+  .eagle-body{--eg-w:min(22rem,32vw);--eg-gap:clamp(2.6rem,4.5vw,5rem);
+    display:grid;grid-template-columns:minmax(0,1fr) var(--eg-w);
+    gap:var(--eg-gap);align-items:center}
+  /* 설명 칸은 오른쪽 자리를 처음부터 차지한 채 숨어 있다 — 열릴 때 폭이 변하지 않는다 */
+  .eagle-side{grid-column:2;grid-row:1;opacity:0;pointer-events:none;
+    transform:translateX(1.4rem);
+    transition:opacity .6s ease,transform .9s cubic-bezier(.22,1,.36,1)}
+  /* 처음 자리 — 설명 칸(폭 + 사이)의 절반만큼 오른쪽으로 밀어 화면 한가운데에 세운다.
+     천천히, 끝까지 보이게 1.35초. 짧게 끊으면 「이동」이 아니라 「점프」로 읽힌다. */
+  .eagle-body .eagle-stage{grid-column:1;grid-row:1;
+    transform:translateX(calc((var(--eg-w) + var(--eg-gap)) / 2));
+    transition:transform 1.35s cubic-bezier(.33,.02,.15,1);
+    will-change:transform}
+  /* 열림 — 밀어 둔 것을 풀면 독수리가 왼쪽 제자리로 미끄러진다.
+     설명은 독수리가 절반쯤 건너간 뒤에 뜨게 늦춘다(둘이 겹치면 어느 쪽도 안 보인다). */
+  .eagle-body.is-pin .eagle-stage{transform:none}
+  .eagle-body.is-pin .eagle-side{opacity:1;transform:none;pointer-events:auto;
+    transition-delay:.55s}
   .eagle-side .eagle-nav{margin:0 0 1.6rem;max-width:none}
   .eagle-side .eagle-read{max-width:none;margin:0;min-height:11rem}
+}
+/* 움직임 최소화 선호 — 미끄러짐 없이 제자리에 놓는다 */
+@media (prefers-reduced-motion:reduce) and (hover:hover) and (min-width:1024px){
+  .eagle-body .eagle-stage{transform:none;transition:none}
+  .eagle-side{transition:none}
 }
 .eg-arrow{width:2.5rem;height:2.5rem;display:grid;place-items:center;flex:none;cursor:pointer;
   background:none;border:1px solid var(--line);border-radius:50%;color:var(--sub);
@@ -822,7 +834,10 @@ html[lang="en"] .lab-en-only{display:none}
       </div>
     </div>
     <p class="eagle-intro">각 부위에 마우스를 올리면 그 분야 설명이 나타나고, <b>연구실 보기</b>를 누르면 해당 분야 연구실로 이동합니다.</p>
-    <div class="eagle-body" id="eagleBody">
+    <!-- data-no-rv: nav.js 의 등장 애니메이션에서 빼 달라는 표시.
+         이 구간은 스크롤로 열리는 제 움직임(가운데 → 오른쪽)을 이미 갖고 있는데,
+         등장 애니메이션이 다 뜬 뒤 transform:none 을 박아 그 움직임을 지워 버린다. -->
+    <div class="eagle-body" id="eagleBody" data-no-rv>
       <div class="eagle-stage" id="eagleStage" role="img" aria-label="연세대학교 기계공학부 마스코트 독수리 — 부위별 연구 분야">
       <!-- 고른 분야의 색이 번지는 글로우. background-color 는 전환이 되므로 색이 부드럽게 넘어간다 -->
       <span class="eg-tint" id="eagleTint" aria-hidden="true"></span>
@@ -831,8 +846,9 @@ html[lang="en"] .lab-en-only{display:none}
       <span class="eg-drift is-2" aria-hidden="true"></span>
       <svg class="eagle-arrows" id="eagleArrows" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
     </div>
-      <!-- 오른쪽 칸 — 넘김 막대와 설명. 넓은 화면에서는 독수리에 손이 닿으면
-           이 칸이 열리며 독수리가 왼쪽으로 물러난다(한 화면에서 그림과 설명을 같이 본다).
+      <!-- 넘김 막대와 설명. 넓은 화면에서는 독수리가 화면 한가운데에 섰다가
+           스크롤로 이 구간이 화면의 주인공이 되면 왼쪽으로 미끄러지고,
+           비워 준 오른쪽 자리에 이 칸이 열린다(한 화면에서 그림과 설명을 같이 본다).
            좁은 화면·손가락 화면에서는 예전처럼 그림 아래에 그대로 쌓인다. -->
       <div class="eagle-side">
        <div class="eagle-side-in">
@@ -1588,7 +1604,7 @@ html[lang="en"] .lab-en-only{display:none}
   }
 })();
 </script>
-<script src="assets/nav.js?v=73"></script>
+<script src="assets/nav.js?v=74"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:#7b8595">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

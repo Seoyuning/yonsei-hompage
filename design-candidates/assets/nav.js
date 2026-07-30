@@ -593,6 +593,12 @@
       [].forEach.call(sec.children, function (block, bi) {
         if (block.querySelector && block.querySelector(STICKY)) return;   /* sticky 품은 블록은 손대지 않는다 */
         if (block.matches && block.matches(STICKY)) return;
+        /* 제 몫의 움직임을 이미 가진 블록은 건너뛴다.
+           등장 애니메이션은 다 뜨고 나면 `transform:none;opacity:1` 을 박아 두는데,
+           그 선택자(html.ys-rv [data-rv].rv-in)가 특이도 (0,3,1) 이라 페이지가 준
+           transform 을 이겨 버린다 — 독수리가 옆으로 미끄러지지 못한 이유가 이것이었다.
+           그런 자리에는 마크업에 data-no-rv 를 달아 두면 여기서 통째로 비켜 간다. */
+        if (block.closest && block.closest('[data-no-rv]')) return;
         var kids = block.children ? [].filter.call(block.children, function (k) { return k.nodeType === 1; }) : [];
         var disp = '';
         try { disp = getComputedStyle(block).display; } catch (e) {}

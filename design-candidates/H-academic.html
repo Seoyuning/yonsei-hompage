@@ -16,7 +16,7 @@
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트를 미리 받아 둔다 — 파서가 해당 줄에 닿았을 때 이미 캐시에 있어 멈춤이 짧아진다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d17" />
-<link rel="preload" as="script" href="assets/nav.js?v=73" />
+<link rel="preload" as="script" href="assets/nav.js?v=74" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    시안 H · 아카데믹 (Reference: me.kaist.ac.kr / me.snu.ac.kr)
@@ -98,7 +98,10 @@ img{display:block;max-width:100%}
 .hero-veil{position:absolute;inset:0;background:
   radial-gradient(ellipse 68% 62% at 50% 46%,rgba(10,19,38,.14),rgba(10,19,38,.62) 84%),
   linear-gradient(180deg,rgba(10,19,38,.58),rgba(10,19,38,.16) 34%,rgba(10,19,38,.14) 60%,rgba(13,29,56,.78))}
-.hero-in{position:relative;z-index:2;padding:5.5rem 1.2rem 7.5rem;max-width:66rem;will-change:transform,opacity}
+/* 히어로 글은 세로 가운데에 놓인다 — 위 여백을 아래보다 크게 두면 그 차이의 절반만큼
+   아래로 내려앉는다. 예전에는 아래가 더 커서(5.5 / 7.5) 오히려 1rem 위로 떠 있었다. */
+.hero-in{position:relative;z-index:2;padding:9.5rem 1.2rem 4rem;max-width:66rem;will-change:transform,opacity}
+@media(max-width:640px){.hero-in{padding:7rem 1.2rem 3.4rem}}
 
 /* ── 히어로의 느린 층 ──
    참고한 짜임: 층마다 다른 주기로 무한히 흐르게 두면(20~50초) 정지 화면이 살아난다.
@@ -115,28 +118,22 @@ img{display:block;max-width:100%}
 
 
 /* 아래쪽 흐름 띠 */
-.hero-band{position:absolute;left:0;right:0;bottom:0;z-index:2;overflow:hidden;
-  padding:.72rem 0;border-top:1px solid rgba(255,255,255,.16);
-  background:linear-gradient(180deg,rgba(10,19,38,0),rgba(10,19,38,.55))}
-.hb-track{display:flex;width:max-content;animation:hbRun 42s linear infinite}
-.hb-track span{font-family:var(--mono);font-size:.7rem;font-weight:600;letter-spacing:.32em;
-  color:rgba(255,255,255,.6);white-space:nowrap}
-@keyframes hbRun{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-/* 히어로를 지나쳐도 독수리 부유와 띠 흐름이 계속 돌면 합성기가 영영 쉬지 못한다.
+/* 히어로를 지나쳐도 독수리 부유가 계속 돌면 합성기가 영영 쉬지 못한다.
    화면 밖으로 나가면 세운다 — 클래스가 「안 보일 때 붙는」 방향이라
-   스크립트가 없으면 그냥 계속 도는 예전 동작 그대로다(멈춘 채 남지 않는다). */
-.hero.is-off .hl-eagle,.hero.is-off .hb-track{animation-play-state:paused}
-@media(max-width:640px){.hero-band{padding:.55rem 0}.hb-track span{font-size:.6rem;letter-spacing:.24em}}
+   스크립트가 없으면 그냥 계속 도는 예전 동작 그대로다(멈춘 채 남지 않는다).
+   (아래쪽에서 흐르던 「SINCE 1958 · SCHOOL OF …」 띠는 뺐다) */
+.hero.is-off .hl-eagle{animation-play-state:paused}
 /* 대형 타이틀 — 단어별 마스크 리빌 */
 .hero h1 .tw{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em}
 .hero h1 .ti{display:inline-block;transform:translateY(114%);transition:transform 1.15s var(--e)}
 .hero.ttl-on h1 .ti{transform:none}
 .hero-kick{font-size:clamp(.72rem,.66rem + .3vw,.88rem);font-weight:600;letter-spacing:.34em;
   text-transform:uppercase;color:#e3ebf7;opacity:.94}
-.hero h1{margin-top:1.15rem;font-weight:800;letter-spacing:-.005em;line-height:1.08;
-  font-size:clamp(2.6rem,1.2rem + 6.6vw,6.2rem);color:#fff}
-.hero .sub{margin:1.35rem auto 0;max-width:37rem;font-size:clamp(.94rem,.86rem + .3vw,1.08rem);color:#ccd8ea}
-.hero-btns{margin-top:2.1rem;display:flex;gap:.8rem;flex-wrap:wrap;justify-content:center}
+/* 학부명 — 크기·굵기를 한 단계씩 낮춘다. 화면을 가득 채우는 큰 글씨는
+   힘은 있지만 사진을 눌러 버려, 조금 물러서면 오히려 또렷하게 읽힌다. */
+.hero h1{margin-top:1.15rem;font-weight:600;letter-spacing:-.005em;line-height:1.1;
+  font-size:clamp(2.2rem,1.1rem + 5.2vw,4.9rem);color:#fff}
+.hero .sub{margin:1.5rem auto 0;max-width:37rem;font-size:clamp(.94rem,.86rem + .3vw,1.08rem);color:#ccd8ea}
 .btn{display:inline-block;padding:.74rem 1.6rem;border-radius:.2rem;font-weight:700;font-size:.92rem;
   transition:background .2s,color .2s,box-shadow .35s var(--e);will-change:transform}
 .btn-white{background:#fff;color:var(--navy)}
@@ -371,9 +368,12 @@ img{display:block;max-width:100%}
 .tw-say .sw{transition:color .3s ease}
 .tw-say .sw.on{color:var(--navy,#1a3d75)}
 @media (max-width:640px){
-  /* 비싼 sticky 구간을 지나는 스크롤 거리를 줄인다 — 660svh 를 520svh 로.
+  /* 휴대폰에서는 사진 확대 뒤의 문장 구간(「1958년 이래 …」)을 빼기로 했다.
+     한 화면에 몇 단어씩만 들어와 문장이 끊겨 읽히고, 그것만으로 1.4화면을
+     더 내려야 했다. 같은 내용은 학부소개에 그대로 있다. */
+  .tw-scene.is-say{display:none}
+  /* 비싼 sticky 구간을 지나는 스크롤 거리를 줄인다 — 520svh 를 380svh 로.
      휴대폰은 한 번에 보이는 화면이 작아 구간이 길수록 「안 끝나는」 느낌만 커진다. */
-  .tw-scene.is-say{height:140vh;height:140svh}
   .tw-scene.is-zoom{height:160vh;height:160svh}
   .tw-scene.is-list{height:220vh;height:220svh}
 }
@@ -468,9 +468,8 @@ img{display:block;max-width:100%}
 /* 히어로: 로드 시 순차 페이드 (배경은 아주 느린 줌아웃으로 깊이감) */
 .hero-bg{animation:heroZoom 9s cubic-bezier(.2,.6,.3,1) forwards}
 @keyframes heroZoom{from{transform:scale(1.07)}to{transform:scale(1)}}
-.hero-kick,.hero .sub,.hero-btns,.hero-scroll{opacity:0;animation:heroFade 1.1s var(--e) forwards}
+.hero-kick,.hero .sub,.hero-scroll{opacity:0;animation:heroFade 1.1s var(--e) forwards}
 .hero .sub{animation-delay:.5s}
-.hero-btns{animation-delay:.68s}
 .hero-scroll{animation-delay:1.1s}
 @keyframes heroFade{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 .hero-scroll{animation-name:heroFadeSoft}
@@ -513,7 +512,7 @@ img{display:block;max-width:100%}
 
 @media(prefers-reduced-motion:reduce){
   .sfade{opacity:1!important}
-  .hero-bg,.hero-kick,.hero .sub,.hero-btns,.hero-scroll{animation:none;opacity:1}
+  .hero-bg,.hero-kick,.hero .sub,.hero-scroll{animation:none;opacity:1}
   .fade{opacity:1;transform:none;transition:none}
   .hero h1 .ti{transform:none;transition:none}
   .blist .brow,.clist .crow,.nlist .nrow{opacity:1;transform:none;transition:none}
@@ -589,21 +588,9 @@ img{display:block;max-width:100%}
   <div class="hero-in">
     <p class="hero-kick" data-i18n="heroKick">School of Mechanical Engineering</p>
     <h1 data-i18n="heroTitle">연세대학교 기계공학부</h1>
-    <p class="sub" data-i18n="heroSub">연세대학교 기계공학부는 1958년 이래 역학·소재부터
-      바이오·포토닉스까지 여섯 분야에서 교육과 연구를 이어 오고 있습니다.</p>
-    <div class="hero-btns">
-      <a class="btn btn-white" href="#research" data-i18n="btnResearch">연구 분야 보기</a>
-      <a class="btn btn-ghost" href="G-admissions.html" data-i18n="btnAdm">입학 안내</a>
-    </div>
+    <p class="sub" data-i18n="heroSub">멈추지 않는 도전, 100년을 향한 연세 기계공학</p>
   </div>
   <div class="hero-scroll" aria-hidden="true">Scroll</div>
-  <!-- 아래쪽 흐름 띠 — 같은 문구 두 벌을 이어 붙여 -50% 만큼 밀면 끊김 없이 돈다 -->
-  <div class="hero-band" aria-hidden="true">
-    <div class="hb-track">
-      <span>機制 · MECHANISM IN MOTION · SINCE 1958 · SCHOOL OF MECHANICAL ENGINEERING · YONSEI UNIVERSITY · </span>
-      <span>機制 · MECHANISM IN MOTION · SINCE 1958 · SCHOOL OF MECHANICAL ENGINEERING · YONSEI UNIVERSITY · </span>
-    </div>
-  </div>
 </section>
 <div class="stats">
   <div class="wrap">
@@ -837,8 +824,7 @@ img{display:block;max-width:100%}
       tbYonsei: '연세대학교', tbEng: '공과대학', tbCur: '기계공학부 현행 홈',
       navAbout: '학부소개', navPeople: '구성원', navResearch: '연구', navAcad: '학사', navNews: '소식', navAdm: '입학',
       heroKick: 'School of Mechanical Engineering', heroTitle: '연세대학교 기계공학부',
-      heroSub: '연세대학교 기계공학부는 1958년 이래 역학·소재부터 바이오·포토닉스까지 여섯 분야에서 교육과 연구를 이어 오고 있습니다.',
-      btnResearch: '연구 분야 보기', btnAdm: '입학 안내',
+      heroSub: '멈추지 않는 도전, 100년을 향한 연세 기계공학',
       stFaculty: '전임 교수', stAreas: '연구 분야', stFounded: '설립',
       newsTitle: '연구 소식', moreAll: '전체 보기 →',
       ntTitle: '공지사항', tabAll: '전체', tabUG: '학부', tabGrad: '대학원',
@@ -862,8 +848,7 @@ img{display:block;max-width:100%}
       tbYonsei: 'Yonsei University', tbEng: 'College of Engineering', tbCur: 'Current ME site',
       navAbout: 'About', navPeople: 'People', navResearch: 'Research', navAcad: 'Academics', navNews: 'News', navAdm: 'Admissions',
       heroKick: '연세대학교 기계공학부', heroTitle: 'School of Mechanical Engineering',
-      heroSub: 'Since 1958, the School of Mechanical Engineering at Yonsei University has advanced education and research across six areas, from mechanics and materials to bio and photonics.',
-      btnResearch: 'Research Areas', btnAdm: 'Admissions',
+      heroSub: 'A challenge that never stops — Yonsei Mechanical Engineering, toward its first century',
       stFaculty: 'Faculty', stAreas: 'Research Areas', stFounded: 'Founded',
       newsTitle: 'Research News', moreAll: 'View all →',
       ntTitle: 'Notices', tabAll: 'All', tabUG: 'Undergrad', tabGrad: 'Graduate',
@@ -1341,7 +1326,7 @@ img{display:block;max-width:100%}
 })();
 </script>
 <!-- 공용 헤더·사이트맵 푸터(서브페이지와 동일) 주입 -->
-<script src="assets/nav.js?v=73"></script>
+<script src="assets/nav.js?v=74"></script>
 <script>
 /* 인트로 두 구간 — 스크롤 진행률(0~1)을 --p 로 넣고, 문장 구간은 단어를 하나씩 켠다.
    바깥 통의 높이에서 화면 한 칸을 뺀 만큼이 「진행 구간」이다. */
@@ -1432,6 +1417,8 @@ img{display:block;max-width:100%}
        레이아웃을 다시 계산하게 된다(layout thrashing). 휴대폰에서 특히 비싸다. */
     var tops = scenes.map(function (sc) { return sc.getBoundingClientRect().top; });
     scenes.forEach(function (sc, si) {
+      /* 화면에서 뺀 구간(휴대폰의 문장 구간)은 높이가 0 이다 — 계산도 건너뛴다 */
+      if (spans[si] <= 1) return;
       var p = Math.min(1, Math.max(0, -tops[si] / spans[si]));
       sc.style.setProperty('--p', p.toFixed(4));
       /* 다 커진 뒤에만 모서리·그림자를 지운다 — 표시 하나를 켜고 끄는 것이라

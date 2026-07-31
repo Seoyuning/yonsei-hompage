@@ -29,7 +29,7 @@
 <link rel="stylesheet" href="assets/fonts.css?v=1" />
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d20" />
-<link rel="preload" as="script" href="assets/nav.js?v=108" />
+<link rel="preload" as="script" href="assets/nav.js?v=109" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    연구 — 연세대학교 기계공학부 (기관형 · 아이보리)
@@ -57,6 +57,10 @@
   --card-hover:#faf9f6;
   --mono:"JetBrains Mono","Pretendard Variable","Pretendard","Apple SD Gothic Neo",ui-monospace,monospace;
   --kr:"Pretendard Variable","Pretendard","Apple SD Gothic Neo",system-ui,sans-serif;
+  /* 숫자는 고정폭(JetBrains Mono)을 쓰지 않는다 — 0 안의 점과 1의 밑받침이
+     본문 글꼴과 따로 놀아 화면마다 숫자 인상이 달라졌다.
+     값은 --kr 과 같지만 이름이 「숫자」라는 뜻을 담아야 나중에 헷갈리지 않는다. */
+  --num:"Pretendard Variable","Pretendard","Apple SD Gothic Neo",system-ui,sans-serif;
   /* 6개 연구 분야 액센트 — 분야별 프로 톤 팔레트 (무채도 낮은, 코랄 금지) */
   --c-solid:#2b4a7a;
   --c-thermal:#b0742c;
@@ -69,7 +73,9 @@
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 body{
-  font-family:var(--mono);
+  /* 예전엔 --mono 였다. 아래 :lang(ko) 가 한국어 화면에서만 이를 덮으므로,
+     영문으로 바꾸면(html lang="en") 쪽 전체가 JetBrains Mono 로 넘어갔다. */
+  font-family:var(--kr);
   background:#ffffff; color:var(--body);
   -webkit-font-smoothing:antialiased;
   overflow-x:hidden;overflow-x:clip; word-break:keep-all;
@@ -469,6 +475,29 @@ html[lang="en"] .lab-en-only{display:none}
 .eagle-sec:not(.is-onscreen) .eg-drift{animation-play-state:paused}
 /* 장면 넘김 막대 */
 .eagle-body{position:relative}
+/* ── 독수리를 화면에 붙들어 둔다 ──
+   sticky 는 붙을 「여유」가 있어야 붙는다 — 감싼 자리가 붙는 칸과 높이가 같으면
+   아무 일도 일어나지 않는다. 그래서 자리(.eagle-hold)를 한 화면 더 길게 잡는다.
+   top 은 --ys-bars(상단 바 + 형제바 실높이). --ys-stick 은 앵커용 여백이 섞여 있어 틈이 뜬다. */
+@media (min-width:761px){
+  .eagle-hold{position:relative;height:170vh}
+  .eagle-stick{position:sticky;top:var(--ys-bars,7.2rem);
+    height:calc(100vh - var(--ys-bars,7.2rem));
+    display:flex;align-items:center}
+  .eagle-stick > .eagle-body{width:100%}
+  /* 멈춘 칸(화면 높이 − 위 바들)이 허락하는 만큼 쓰되, 「한눈에 보이게」가 조건이다.
+     무대는 정사각형이지만 부위 이름표(.elabel)가 아래로 14px, 좌우로 18% 더 삐져나온다 —
+     무대 크기만 재고 채우면 아래 이름표 두 개(꼬리·발톱)가 화면 밖으로 잘렸다.
+     그래서 세로로 3.5rem 을 미리 덜어 두고, 680px 상한으로 좌우 이름표가
+     오른쪽 설명 칸을 침범하지 않게 막는다(680 × 1.18 ≈ 803px < 왼쪽 칸 폭).
+     너비만 정하고 높이는 aspect-ratio 가 따라오게 둔다(둘 다 정하면 좁은 칸에서 찌그러진다). */
+  .eagle-stick .eagle-stage{width:min(680px,calc(100vh - var(--ys-bars,7.2rem) - 3.5rem));max-width:100%}
+}
+/* 움직임 최소화 선호 — 스크롤에 물린 멈춤을 끄고 그냥 흘려보낸다 */
+@media (prefers-reduced-motion:reduce){
+  .eagle-hold{height:auto}
+  .eagle-stick{position:static;height:auto;display:block}
+}
 .eagle-nav{display:flex;align-items:center;justify-content:center;gap:clamp(.9rem,.6rem + 1vw,1.6rem);
   margin:clamp(.6rem,.4rem + .6vw,1.1rem) auto 0;max-width:600px}
 /* ── 넓은 화면: 독수리가 가운데 있다가 왼쪽으로 미끄러지고, 오른쪽에 설명이 열린다 ──
@@ -693,7 +722,7 @@ html[lang="en"] .lab-en-only{display:none}
   color:var(--fc,var(--navy));opacity:.85}
 .fd-c-ko{font-family:var(--kr);font-weight:800;color:var(--ink);
   font-size:clamp(1.35rem,1.05rem + 1.1vw,1.75rem);line-height:1.18;letter-spacing:-.01em;margin-top:.5rem}
-.fd-c-count{font-family:var(--mono);font-weight:300;font-size:clamp(1.7rem,1.2rem + 1.4vw,2.2rem);
+.fd-c-count{font-family:var(--num);font-weight:300;font-size:clamp(1.7rem,1.2rem + 1.4vw,2.2rem);
   line-height:.9;color:var(--fc,var(--navy));font-variant-numeric:tabular-nums;white-space:nowrap;flex:none}
 .fd-c-count .u{font-family:var(--kr);font-size:.36em;font-weight:600;color:var(--muted);margin-left:.12em;letter-spacing:0}
 /* 요약(desc) — 접힘 상태에서 보이는 짧은 소개 */
@@ -999,6 +1028,11 @@ html[lang="en"] .lab-en-only{display:none}
     <!-- data-no-rv: nav.js 의 등장 애니메이션에서 빼 달라는 표시.
          이 구간은 스크롤로 열리는 제 움직임(가운데 → 오른쪽)을 이미 갖고 있는데,
          등장 애니메이션이 다 뜬 뒤 transform:none 을 박아 그 움직임을 지워 버린다. -->
+    <!-- 스크롤이 여기 닿으면 독수리가 화면 한가운데에 멈춰 선다.
+         .eagle-hold 가 흐름에서 화면보다 긴 자리를 잡고, 그 안의 .eagle-stick 이 붙는다 —
+         남는 길이가 곧 「멈춰 있는 시간」이다. -->
+    <div class="eagle-hold">
+     <div class="eagle-stick">
     <div class="eagle-body" id="eagleBody" data-no-rv>
       <div class="eagle-stage" id="eagleStage" role="img" aria-label="연세대학교 기계공학부 마스코트 독수리 — 부위별 연구 분야">
       <!-- 고른 분야의 색이 번지는 글로우. background-color 는 전환이 되므로 색이 부드럽게 넘어간다 -->
@@ -1030,6 +1064,8 @@ html[lang="en"] .lab-en-only{display:none}
     </div>
        </div>
       </div>
+    </div>
+     </div>
     </div>
     <div class="eagle-list" id="eagleList" aria-label="연구 분야 목록"></div>
   </section>
@@ -1957,8 +1993,8 @@ html[lang="en"] .lab-en-only{display:none}
   }
 })();
 </script>
-<script src="assets/nav.js?v=108"></script>
-<footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;color:#68727f">
+<script src="assets/nav.js?v=109"></script>
+<footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--num);font-size:.72rem;letter-spacing:.12em;color:#68727f">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>
 </body>

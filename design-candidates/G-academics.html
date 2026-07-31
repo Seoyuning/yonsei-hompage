@@ -29,7 +29,7 @@
 <link rel="stylesheet" href="assets/fonts.css?v=1" />
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d20" />
-<link rel="preload" as="script" href="assets/nav.js?v=108" />
+<link rel="preload" as="script" href="assets/nav.js?v=109" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    시안 G — 교육 (라이트)
@@ -56,6 +56,10 @@
   --card-hover:#faf9f6;
   --mono:"JetBrains Mono","Pretendard Variable","Pretendard","Apple SD Gothic Neo",ui-monospace,monospace;
   --kr:"Pretendard Variable","Pretendard","Apple SD Gothic Neo",system-ui,sans-serif;
+  /* 숫자는 고정폭(JetBrains Mono)을 쓰지 않는다 — 0 안의 점과 1의 밑받침이
+     본문 글꼴과 따로 놀아 화면마다 숫자 인상이 달라졌다.
+     값은 --kr 과 같지만 이름이 「숫자」라는 뜻을 담아야 나중에 헷갈리지 않는다. */
+  --num:"Pretendard Variable","Pretendard","Apple SD Gothic Neo",system-ui,sans-serif;
   /* 6개 연구 분야 색 토큰 (라이트 톤) */
   --c-solid:#2b4a7a;
   --c-thermal:#b0742c;
@@ -68,7 +72,9 @@
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 body{
-  font-family:var(--mono);
+  /* 예전엔 --mono 였다. 아래 :lang(ko) 가 한국어 화면에서만 이를 덮으므로,
+     영문으로 바꾸면(html lang="en") 쪽 전체가 JetBrains Mono 로 넘어갔다. */
+  font-family:var(--kr);
   background:#ffffff; color:var(--body);
   -webkit-font-smoothing:antialiased;
   overflow-x:hidden;overflow-x:clip; word-break:keep-all;
@@ -134,67 +140,47 @@ a{color:inherit;text-decoration:none}
 .sec-sub{font-family:var(--kr);font-size:.92rem;color:var(--sub);margin-top:.7rem;max-width:52rem;line-height:1.7}
 
 /* ── §01 교육과정 개관 ── */
-/* 배너 — 스크롤을 따라 사진이 화면을 꽉 채우는 구간(메인 화면 H-academic 과 같은 짜임).
-   .tw-scene 은 두 화면 남짓의 빈 통이고, 그 안의 .tw-pin 이 화면에 붙어 머문다.
-   통을 지나가는 동안 붙어 있는 화면 안에서 사진이 자라고, 다 자라면 핀이 풀려
-   아래의 「이수 흐름」이 자연스럽게 이어진다.
-   진행률(0~1)은 스크립트가 --p 로 넣어 주고, 크기·모서리·글자는 CSS 가 그린다. */
-.tw-scene{position:relative;background:#fff;
-  /* 섹션(.sec)은 1120px 로 좁으니 이 통만 화면 폭으로 되돌린다.
-     body 가 overflow-x:hidden 이라 100vw 가 만드는 가로 넘침은 잘려 나간다. */
-  width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw)}
-.tw-scene.is-zoom{height:220vh;height:220svh;margin-top:clamp(1.4rem,1rem + 1.2vw,2.2rem)}
-/* 이 페이지는 위에 붙어 있는 바가 셋이다(헤더 · 형제 탭 · 바로가기).
-   top:0 으로 붙이면 흰 바들이 사진 위쪽을 덮으므로, nav.js 가 재어 둔 --ys-bars 만큼
-   내려 붙여 「바 아래로 보이는 화면」을 사진이 정확히 채우게 한다.
-   100vh 는 휴대폰에서 주소창 때문에 화면보다 커지므로 100svh 를 뒤에 겹쳐 쓴다. */
-.tw-pin{position:sticky;top:var(--ys-bars,7.6rem);
-  height:calc(100vh - var(--ys-bars,7.6rem));
-  height:calc(100svh - var(--ys-bars,7.6rem));
-  display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff}
-/* 폭·높이를 같이 늘리면 object-fit 이 잘라내는 자리가 계속 바뀌어 그림이 미끄러지듯 어색해진다.
-   상자는 처음부터 화면 크기로 두고 transform 으로 통째로 키우기만 한다(잘림이 변하지 않는다). */
-/* --p 로 움직이는 것은 transform 하나뿐이다(그리고 캡션의 opacity).
-   이 둘은 합성기가 층을 옮겨 붙이기만 하면 되므로 거의 공짜다.
-   반대로 모서리(border-radius)와 그림자(box-shadow)를 --p 로 움직이면 값이 바뀔 때마다
-   그 층을 통째로 다시 칠해야 한다 — 특히 90px 흐림 그림자를 화면만 한 상자에 매 프레임
-   다시 그리는 것이 가장 비쌌다. 그래서 둘 다 고정값으로 못 박는다.
-   상자가 scale() 로 커지니 모서리도 함께 커졌다 작아져 보여, 카드가 펼쳐지는 듯 오히려 자연스럽다.
-   그림자는 다 커진 뒤엔 .tw-pin(overflow:hidden) 밖으로 밀려나 저절로 보이지 않는다. */
-.tw-zoom{position:relative;flex:0 0 auto;width:100%;height:100%;margin:0;overflow:hidden;
-  transform:scale(calc(.72 + min(1, var(--p,0) / .8) * .28));transform-origin:50% 50%;
-  border-radius:.9rem;
-  box-shadow:0 40px 90px rgba(15,27,48,.34);
-  /* 확대되는 동안 쓸 층을 미리 잡아 둔다 — 층에 한 번 칠해 두면 매 프레임 다시 칠하지 않는다.
-     이 페이지에 .tw-zoom 은 하나뿐이라 상시로 걸어도 안전하다(여럿이면 메모리가 위험하다). */
-  will-change:transform;
-  /* 모서리·그림자는 --p 로 따라가지 않고, 「다 커졌다」는 표시 하나로 한 번만 지운다.
-     매 프레임 calc 로 움직이면 그때마다 층을 통째로 다시 칠하지만, 이러면
-     전환이 도는 0.45초 동안만 칠하고 끝난다. 다 커진 뒤 모서리가 남으면
-     흰 배경에 흰 모서리가 파인 것처럼 보여 「꽉 찬」 느낌이 깎인다. */
-  transition:border-radius .45s ease,box-shadow .45s ease}
-.tw-zoom.is-full{border-radius:0;box-shadow:none}
-/* 확대 구간의 배경은 흰색이라 사진이 화면에서 유일한 색이다 — 흑백으로 누르지 않는다 */
-.tw-zoom img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
-  filter:saturate(1.04) contrast(1.03)}
-/* 글자까지 같이 커지면 안 되므로 배율의 역수로 되돌린다(글자 크기가 변하지 않는다).
-   기준을 아래 끝(50% 100%)으로 두어야 되돌린 만큼 위로만 자라 상자 밖으로 삐져나가지 않는다. */
-.tw-zoom figcaption{position:absolute;left:0;right:0;bottom:0;z-index:1;
-  transform:scale(calc(1 / (.72 + min(1, var(--p,0) / .8) * .28)));transform-origin:50% 100%;
-  background:linear-gradient(180deg,rgba(8,17,34,0),rgba(8,17,34,.82));
-  opacity:calc(min(1, max(0, var(--p,0) - .3) / .25));
-  /* 이 캡션도 프레임마다 transform · opacity 가 바뀐다. 층을 따로 잡아 두지 않으면
-     위 .tw-zoom 층 안에서 값이 바뀌는 셈이라 그 자리를 매 프레임 다시 칠하게 된다.
-     따로 층을 주면 둘 다 합성기가 층을 옮기고 겹치는 일로 끝난다. */
-  will-change:transform,opacity}
-.eb-txt{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;
-  padding:clamp(1.6rem,1.2rem + 2.5vw,3.4rem)}
-.eb-kick{font-family:var(--kr);font-size:.74rem;font-weight:700;letter-spacing:.18em;
-  color:rgba(255,255,255,.82);margin:0 0 .9rem;padding-bottom:.7rem;position:relative}
-.eb-kick::after{content:"";position:absolute;left:0;bottom:0;width:2.4rem;height:2px;background:var(--accent)}
-.eb-line{font-family:var(--kr);font-weight:700;color:#fff;margin:0;
-  font-size:clamp(1.35rem,1rem + 1.9vw,2.35rem);line-height:1.38;letter-spacing:-.02em;
-  text-shadow:0 2px 14px rgba(0,0,0,.28)}
+/* ── 학년별 이수 흐름 축 ──
+   사진 배너를 대신한다. 「주요 연혁」이 쓰는 [축 + 마디 점 + 큰 글자]를 가로로 눕힌 것이다.
+   축 자리(--cf-rail)를 절대값으로 못 박아 세 칸의 점이 반드시 한 줄에 선다 —
+   윗줄(학년)의 높이를 글자에 맡기면 칸마다 몇 px 씩 달라져 축이 계단처럼 꺾인다. */
+.cflow{--cf-rail:2.6rem;margin-top:clamp(1.4rem,1rem + 1.2vw,2.2rem)}
+.cflow-kick{font-family:var(--mono);font-size:.7rem;font-weight:600;letter-spacing:.2em;
+  text-transform:uppercase;color:#111318;margin:0;
+  padding-bottom:.7rem;border-bottom:1px solid #111318}
+.cflow-list{position:relative;list-style:none;margin:clamp(1.6rem,1.2rem + 1.4vw,2.4rem) 0 0;padding:0;
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  column-gap:clamp(1.2rem,.8rem + 1.6vw,2.4rem)}
+/* 축 — 칸 사이 여백까지 가로지르는 한 줄. 여백에서 끊기면 「축」이 아니라 밑줄 셋이 된다.
+   마지막 마디 뒤로는 더 갈 곳이 없으니 오른쪽 끝을 조금 남겨 흐름이 끝났음을 보인다. */
+.cflow-list::before{content:"";position:absolute;left:0;right:12%;top:var(--cf-rail);
+  height:1px;background:var(--line)}
+.cflow-st{position:relative;min-width:0;padding-top:calc(var(--cf-rail) + 1.4rem)}
+/* 학년 — 축 위에 앉는 마디 이름이다. 연혁 화면의 연도처럼 이 줄이 축에서 가장 큰 글자여야
+   「1·2학년 → 3·4학년」이라는 흐름이 먼저 읽힌다. 절대 배치라 아래 글줄을 밀지 않는다. */
+.cflow-yr{position:absolute;left:0;top:0;margin:0;
+  font-family:var(--kr);font-weight:800;letter-spacing:-.02em;color:var(--navy);
+  font-size:clamp(1.2rem,1rem + .85vw,1.7rem);line-height:1.1}
+/* 마디 — 축 위에 놓이는 작은 점. 가운데를 비워 축 선이 점을 통과하는 것처럼 보인다 */
+.cflow-dot{position:absolute;left:0;top:var(--cf-rail);width:9px;height:9px;
+  margin:-4px 0 0;border-radius:50%;background:var(--paper);
+  box-shadow:inset 0 0 0 2px var(--navy)}
+.cflow-t{font-family:var(--kr);font-weight:700;color:var(--ink);margin:0;
+  font-size:clamp(1rem,.95rem + .28vw,1.14rem);line-height:1.35;letter-spacing:-.01em}
+.cflow-d{font-family:var(--kr);font-size:.88rem;color:var(--sub);line-height:1.75;margin:.7rem 0 0}
+.cflow-d b{color:var(--ink);font-weight:600}
+.cflow-a{display:inline-flex;align-items:center;gap:.35rem;margin-top:.9rem;
+  font-family:var(--kr);font-size:.83rem;font-weight:600;color:var(--coral);transition:gap .15s}
+.cflow-a:hover{gap:.65rem}
+@media (prefers-reduced-motion:reduce){ .cflow-a{transition:none} }
+/* 좁은 화면 — 축을 세워 왼쪽에 붙이고 마디를 그 위에 꿴다(연혁 화면과 같은 처리) */
+@media (max-width:860px){
+  .cflow-list{grid-template-columns:1fr;row-gap:clamp(1.6rem,4vw,2.2rem)}
+  .cflow-list::before{left:4px;right:auto;top:.5rem;bottom:.5rem;width:1px;height:auto}
+  .cflow-st{padding:0 0 0 1.9rem}
+  .cflow-yr{position:static;margin:0 0 .15rem}
+  .cflow-dot{left:0;top:.55rem;margin:0}
+}
 
 /* 묶음 — 왼쪽 제목 칸, 오른쪽 항목 셋. 묶음끼리는 가로 헤어라인 하나로만 끊는다 */
 .edu-row{display:grid;grid-template-columns:minmax(12rem,1fr) 2.6fr;
@@ -219,7 +205,7 @@ a{color:inherit;text-decoration:none}
   row-gap:clamp(1.6rem,1.2rem + 1.4vw,2.4rem)}
 .edu-item{min-width:0}
 /* 번호 — 칸을 여는 라벨이다. 선언은 아래 .req-lab 과 같은 값(작은 글자·넓은 자간·먹색 줄) */
-.edu-no{display:block;font-family:var(--mono);font-weight:600;font-size:.7rem;letter-spacing:.2em;
+.edu-no{display:block;font-family:var(--num);font-weight:600;font-size:.7rem;letter-spacing:.2em;
   color:#111318;padding-bottom:.7rem;border-bottom:1px solid #111318;
   font-variant-numeric:tabular-nums}
 .edu-it{font-family:var(--kr);font-weight:700;color:var(--ink);
@@ -239,7 +225,7 @@ a{color:inherit;text-decoration:none}
    CSS order 로 뒤집지 않았다. 문구는 그대로다. */
 .edu-nl{font-family:var(--mono);font-size:.7rem;font-weight:600;letter-spacing:.2em;
   color:#111318;padding-bottom:.7rem;border-bottom:1px solid #111318;margin:0}
-.edu-nv{font-family:var(--mono);font-weight:700;letter-spacing:-.01em;line-height:.92;
+.edu-nv{font-family:var(--num);font-weight:700;letter-spacing:-.01em;line-height:.92;
   font-size:clamp(2rem,1.5rem + 2vw,2.9rem);color:#111318;
   font-variant-numeric:tabular-nums;margin:clamp(.6rem,.5rem + .4vw,.95rem) 0 0}
 /* .edu-nv.acc 삭제 — 세 숫자 중 하나만 색을 달리 주려던 규칙인데, 그 색(--navy)이
@@ -252,36 +238,7 @@ a{color:inherit;text-decoration:none}
 @media (max-width:860px){
   .edu-row{grid-template-columns:1fr;gap:1.1rem}
   .edu-items{grid-template-columns:1fr}
-  /* 휴대폰에서는 다시 칠할 거리를 아예 없앤다.
-     흐림 90px 짜리 그림자와 둥근 모서리는 화면만 한 상자에서 값이 고정이어도 칠하는 값이 비싸고,
-     사진에 건 filter 는 층을 하나 더 만들어 확대와 겹치면 프레임마다 다시 걸린다.
-     여기까지 걷어내면 스크롤 중에 움직이는 것은 transform:scale() 과 캡션 opacity 뿐이다. */
-  .tw-zoom{box-shadow:none;border-radius:0}
-  .tw-zoom img{filter:none}
 }
-/* 휴대폰에서는 통을 짧게 — 220svh 는 손가락으로 넘기기엔 너무 길다 */
-@media (max-width:640px){
-  .tw-scene.is-zoom{height:150vh;height:150svh}
-}
-/* 「동작 줄이기」를 켠 사람에게는 확대를 걸지 않는다.
-   스크립트도 이 경우 .is-live 를 붙이지 않지만, 나중에 스크립트가 바뀌어도
-   확대가 되살아나지 않도록 CSS 에서도 한 번 더 못 박아 둔다. */
-@media (prefers-reduced-motion:reduce){
-  .tw-scene.is-zoom{height:auto}
-  .tw-pin{position:static;height:auto}
-  /* 움직이지 않으니 층도 미리 잡아 둘 이유가 없다 — will-change 를 되돌린다 */
-  .tw-zoom{transform:none;height:auto;aspect-ratio:16/6;border-radius:0;box-shadow:none;will-change:auto}
-  .tw-zoom figcaption{transform:none;opacity:1;will-change:auto}
-}
-/* 스크립트가 진행률을 넣기 시작하면 .is-live 가 붙는다. 붙기 전(스크립트가 없거나 「동작 줄이기」)
-   에는 통 높이를 auto 로 두고 확대 없이 한 장으로 보여 준다 — 예전 배너와 같은 모습이다.
-   위의 휴대폰 규칙(150svh)과 굵기가 같으니, 반드시 그 뒤에 두어야 이 쪽이 이긴다. */
-.tw-scene:not(.is-live){height:auto}
-.tw-scene:not(.is-live) .tw-pin{position:static;height:auto}
-.tw-scene:not(.is-live) .tw-zoom{transform:none;height:auto;aspect-ratio:16/6;
-  border-radius:0;box-shadow:none;will-change:auto}
-.tw-scene:not(.is-live) .tw-zoom figcaption{transform:none;opacity:1;will-change:auto}
-
 /* ── 졸업 요건 요약 (#requirements) ──
    예전에는 [얇은 회색 테두리로 두른 큰 상자를 세로선 하나로 둘로 나눈] 모습이었다.
    왼쪽 칸(130학점)은 할 말이 한 줄인데 오른쪽 칸(전공필수 9과목 + 태그 9개)의 높이에
@@ -308,7 +265,7 @@ a{color:inherit;text-decoration:none}
   color:#111318;padding-bottom:.7rem;border-bottom:1px solid #111318}
 /* 숫자 — 이 묶음에서 가장 먼저 눈에 잡혀야 한다.
    메인 히어로 지표(.st b)의 굵기·자간·tabular-nums 를 그대로 따르되 색만 먹색으로. */
-.req-val{font-family:var(--mono);font-weight:700;letter-spacing:-.01em;line-height:.92;
+.req-val{font-family:var(--num);font-weight:700;letter-spacing:-.01em;line-height:.92;
   font-size:clamp(2.3rem,1.7rem + 2.4vw,3.4rem);color:#111318;
   font-variant-numeric:tabular-nums;margin-top:clamp(.6rem,.5rem + .4vw,.95rem)}
 /* 단위는 숫자에 딸린 꼬리표다 — 숫자 크기에 비례(em)하되 회색으로 한 단 낮춘다 */
@@ -339,7 +296,7 @@ a{color:inherit;text-decoration:none}
 @media (max-width:1080px){.req-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:640px){.req-list{grid-template-columns:1fr}}
 /* 번호는 눈으로 세는 표시다 — 01…09 가 위의 큰 숫자 「9」와 맞아떨어지는지 바로 보인다 */
-.rq-n{font-family:var(--mono);font-size:.7rem;font-weight:600;letter-spacing:.08em;
+.rq-n{font-family:var(--num);font-size:.7rem;font-weight:600;letter-spacing:.08em;
   color:var(--label);font-variant-numeric:tabular-nums}
 .rq-t{font-family:var(--kr);font-weight:600;letter-spacing:-.01em;line-height:1.4;
   font-size:clamp(.95rem,.9rem + .3vw,1.1rem);color:var(--ink);
@@ -380,7 +337,7 @@ a{color:inherit;text-decoration:none}
 .pick-btn.is-on::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;
   background:var(--accent);border-radius:0 0 .55rem .55rem}
 .pick-btn{position:relative;overflow:hidden}
-.pick-idx{font-family:var(--mono);font-weight:600;font-size:.76rem;line-height:1;color:var(--muted);
+.pick-idx{font-family:var(--num);font-weight:600;font-size:.76rem;line-height:1;color:var(--muted);
   font-variant-numeric:tabular-nums;letter-spacing:.06em;transition:color .18s}
 .pick-btn.is-on .pick-idx{color:var(--accent)}
 .pick-name{font-family:var(--kr);font-weight:700;font-size:clamp(1rem,.94rem + .3vw,1.15rem);
@@ -457,7 +414,7 @@ a{color:inherit;text-decoration:none}
 .pil:hover .pil-bar{background:var(--muted)}
 .pil[data-on] .pil-bar{background:var(--accent);width:5px;
   height:clamp(2.1rem,1.6rem + 2vw,3.1rem)}
-.pil-no{font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.08em;
+.pil-no{font-family:var(--num);font-size:.72rem;font-weight:600;letter-spacing:.08em;
   color:var(--muted);font-variant-numeric:tabular-nums}
 .pil[data-on] .pil-no{color:var(--accent)}
 .pil-ko{font-family:var(--kr);font-weight:700;color:var(--sub);line-height:1.25;letter-spacing:-.02em;
@@ -535,7 +492,7 @@ a{color:inherit;text-decoration:none}
 .tree-board{display:block;min-width:0}
 .tg-head{display:grid;grid-template-columns:5.4rem repeat(8,minmax(0,1fr));
   border-bottom:2px solid var(--navy);position:sticky;top:0;background:#fff;z-index:2}
-.tg-head span{padding:.6rem .2rem;text-align:center;font-family:var(--mono);
+.tg-head span{padding:.6rem .2rem;text-align:center;font-family:var(--num);
   font-size:.7rem;font-weight:700;letter-spacing:.04em;color:var(--ink)}
 .tg-head span:first-child{text-align:left;padding-left:.5rem}
 .tg-band{display:grid;grid-template-columns:5.4rem repeat(8,minmax(0,1fr));
@@ -611,7 +568,7 @@ a.tg-c.is-req:hover{background:var(--navy-d,#12294f);color:#fff}
 /* 학기 머리 — 기본형과 같은 표기 */
 .tf-head{display:grid;grid-template-columns:7.5rem repeat(8,1fr);
   border-bottom:2px solid var(--navy);position:sticky;top:0;background:#fff;z-index:3}
-.tf-head span{padding:.7rem .4rem;text-align:center;font-family:var(--mono);
+.tf-head span{padding:.7rem .4rem;text-align:center;font-family:var(--num);
   font-size:.74rem;font-weight:700;letter-spacing:.06em;color:var(--ink)}
 .tf-head span:first-child{text-align:left;padding-left:.9rem}
 /* 띠(MSC · 전공 · 종합) */
@@ -703,7 +660,7 @@ a.tf-box.is-req:hover{background:var(--navy-d,#12294f);color:#fff}
 /* 이수체계도에서 이동해 온 카드 — 네이비 테두리로 위치 표시 */
 .ug-card:target{box-shadow:inset 0 0 0 2px var(--navy)}
 .ug-card-top{display:flex;justify-content:space-between;align-items:center;gap:.6rem}
-.ug-card-code{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;color:var(--label);font-variant-numeric:tabular-nums}
+.ug-card-code{font-family:var(--num);font-size:.72rem;letter-spacing:.06em;color:var(--label);font-variant-numeric:tabular-nums}
 .ug-card-name{font-family:var(--kr);font-weight:700;font-size:1.02rem;color:var(--ink);margin-top:.6rem;line-height:1.3}
 .ug-card-en{font-family:var(--kr);font-size:.72rem;color:var(--label);margin-top:.3rem;line-height:1.45}
 .ug-card-desc{font-family:var(--kr);font-size:.82rem;color:var(--sub);line-height:1.65;margin-top:.7rem;
@@ -868,7 +825,7 @@ a.tf-box.is-req:hover{background:var(--navy-d,#12294f);color:#fff}
 .crs-pb:hover::before{transform:scaleX(1)}
 .crs-pb:hover::after{opacity:.09}
 .crs-pb:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
-.crs-pb-no{font-family:var(--mono);font-size:.7rem;font-weight:600;letter-spacing:.06em;
+.crs-pb-no{font-family:var(--num);font-size:.7rem;font-weight:600;letter-spacing:.06em;
   color:var(--label);font-variant-numeric:tabular-nums;position:relative;z-index:1}
 .crs-pb-t{font-family:var(--kr);font-weight:700;color:var(--ink);line-height:1.3;letter-spacing:-.01em;
   font-size:clamp(.98rem,.92rem + .3vw,1.12rem);position:relative;z-index:1}
@@ -1018,46 +975,33 @@ a.tf-box.is-req:hover{background:var(--navy-d,#12294f);color:#fff}
     <!-- 한양대 기계공학부 「교육 목표」 페이지의 짜임을 참고했다:
          (1) 사진 위에 한 문장을 얹은 배너, (2) 「제목 상자 + 항목 셋」 묶음의 반복.
          문구는 새로 짓지 않고 우리가 이미 쓰던 개관 문장을 그 틀에 나눠 담았다. -->
-    <!-- 배너 사진은 스크롤 확대 구간으로 — 메인 화면(H-academic)의 그 짜임을 그대로 옮겼다.
-         형제 탭(.ysub)이 main 안의 섹션들을 통째로 감추므로, 이 구간은 반드시
-         #curriculum **안에** 두어야 탭 전환이 깨지지 않는다. -->
-    <div class="tw-scene is-zoom">
-      <div class="tw-pin">
-        <figure class="tw-zoom">
-          <img src="assets/hero-academics.jpg" alt="" loading="lazy" decoding="async" />
-          <figcaption>
-            <div class="eb-txt">
-              <p class="eb-kick">Curriculum</p>
-              <p class="eb-line">기초 과학에서 종합설계까지,<br />4년의 이수 흐름</p>
-            </div>
-          </figcaption>
-        </figure>
-      </div>
-    </div>
-
-    <div class="edu-row">
-      <div class="edu-rh">
-        <p class="edu-rh-t">이수 흐름</p>
-      </div>
-      <ol class="edu-items">
-        <li class="edu-item">
-          <span class="edu-no" aria-hidden="true">01</span>
-          <p class="edu-it">기초 다지기</p>
-          <p class="edu-iy">1 · 2학년</p>
-          <p class="edu-id">수학 · 물리 등 기초 과학과 공학 소양 과목을 이수합니다.</p>
+    <!-- 스크롤 확대 배너를 걷어냈다 — 사진이 화면을 꽉 채웠다 다시 줄어드는 짜임은
+         헤어라인과 여백으로 구획하는 이 지면의 어법과 겉돌았다.
+         대신 「주요 연혁」이 쓰는 어법(축 + 마디 점 + 큰 글자)을 가로로 눕혀,
+         1학년부터 4학년까지의 이수 흐름을 한 줄로 보여 준다.
+         마디 셋과 문구는 아래에 따로 있던 「이수 흐름」 목록에서 그대로 옮겨 왔다 —
+         같은 내용을 두 번 싣지 않으려고 그 목록은 이 축이 흡수했다. -->
+    <div class="cflow">
+      <p class="cflow-kick">Curriculum Flow</p>
+      <ol class="cflow-list">
+        <li class="cflow-st">
+          <p class="cflow-yr">1 · 2학년</p>
+          <span class="cflow-dot" aria-hidden="true"></span>
+          <p class="cflow-t">기초 다지기</p>
+          <p class="cflow-d">수학 · 물리 등 기초 과학과 공학 소양 과목을 이수합니다.</p>
         </li>
-        <li class="edu-item">
-          <span class="edu-no" aria-hidden="true">02</span>
-          <p class="edu-it">4대 역학</p>
-          <p class="edu-iy">2학년부터</p>
-          <p class="edu-id"><b>고체역학 · 열역학 · 유체역학 · 동역학</b>을 이수하며 기계공학의 뼈대를 세웁니다.</p>
-          <a class="edu-ia" href="#mechanics">4대 역학 보기 <span aria-hidden="true">→</span></a>
+        <li class="cflow-st">
+          <p class="cflow-yr">2학년부터</p>
+          <span class="cflow-dot" aria-hidden="true"></span>
+          <p class="cflow-t">4대 역학</p>
+          <p class="cflow-d"><b>고체역학 · 열역학 · 유체역학 · 동역학</b>을 이수하며 기계공학의 뼈대를 세웁니다.</p>
+          <a class="cflow-a" href="#mechanics">4대 역학 보기 <span aria-hidden="true">→</span></a>
         </li>
-        <li class="edu-item">
-          <span class="edu-no" aria-hidden="true">03</span>
-          <p class="edu-it">종합 · 심화</p>
-          <p class="edu-iy">3 · 4학년</p>
-          <p class="edu-id">전공 과목을 선택 이수하고, <b>창의제품설계(캡스톤)</b>에서 종합합니다. 연구논문으로 학부 과정을 마무리합니다.</p>
+        <li class="cflow-st">
+          <p class="cflow-yr">3 · 4학년</p>
+          <span class="cflow-dot" aria-hidden="true"></span>
+          <p class="cflow-t">종합 · 심화</p>
+          <p class="cflow-d">전공 과목을 선택 이수하고, <b>창의제품설계(캡스톤)</b>에서 종합합니다. 연구논문으로 학부 과정을 마무리합니다.</p>
         </li>
       </ol>
     </div>
@@ -2242,88 +2186,7 @@ a.tf-box.is-req:hover{background:var(--navy-d,#12294f);color:#fff}
   });
 })();
 </script>
-<script src="assets/nav.js?v=108"></script>
-<script>
-/* ── 교육과정 배너 확대 — 스크롤 진행률 ──
-   바깥 통(.tw-scene)의 높이에서 화면 한 칸을 뺀 만큼이 「진행 구간」이다.
-   그 구간을 지나는 동안 0~1 을 --p 로 넣어 주면 크기와 글자는 CSS 가 그린다.
-   스크롤마다 재지 않고 rAF 로 한 프레임에 한 번만 재어 스크롤이 무거워지지 않게 한다.
-   한 프레임 안에서도 「전부 읽고 → 전부 쓴다」 순서를 지킨다(중간에 쓰면 레이아웃을 다시 계산한다). */
-(function () {
-  'use strict';
-  var reduce = false;
-  try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
-  var scenes = [].slice.call(document.querySelectorAll('.tw-scene'));
-  /* .is-live 를 붙이지 않고 나가면 CSS 가 확대 없는 한 장으로 둔다 — 스크립트가 없어도 멀쩡하다 */
-  if (!scenes.length || reduce) return;
-  scenes.forEach(function (s) { s.classList.add('is-live'); });
-
-  /* 통의 높이는 스크롤하는 동안에는 변하지 않는다. 그런데 offsetHeight 를 프레임마다 읽으면
-     그때마다 레이아웃을 강제로 다시 계산하게 된다 — 크기가 달라질 때(resize · 탭 전환)만
-     재어 캐시에 담아 두고, 스크롤 중에는 캐시를 쓴다. */
-  var heights = [];
-  var needMeasure = false;
-  function measure() {
-    needMeasure = false;
-    for (var i = 0; i < scenes.length; i++) heights[i] = scenes[i].offsetHeight;
-  }
-
-  /* 읽기와 쓰기를 갈라 두려고 진행률을 잠시 담아 두는 자리와, 직전에 쓴 값을 기억하는 자리 */
-  var next = [];
-  var last = [];
-  var ticking = false;
-  /* 프레임마다 DOM 을 찾지 않도록 한 번만 잡아 둔다 */
-  var zoomScene = document.querySelector('.tw-scene.is-zoom');
-  var zoomBox = zoomScene ? zoomScene.querySelector('.tw-zoom') : null;
-  function run() {
-    ticking = false;
-    /* 다시 재야 한다면 여기서 한 번만 잰다 — 휴대폰은 주소창이 접히며 resize 가 몰아쳐 오는데,
-       그때마다 바로 재면 다시 프레임마다 레이아웃을 강제하는 꼴이 된다. */
-    if (needMeasure) measure();
-    var vh = innerHeight || document.documentElement.clientHeight || 1;
-    var i;
-    /* ① 읽기 — 먼저 전부 읽어 담는다.
-       읽기 사이에 쓰기가 끼면 앞 요소에 쓴 값 때문에 뒤 요소를 읽을 때 레이아웃을
-       다시 계산해야 한다(layout thrashing). 그래서 한 줄도 쓰지 않고 읽기만 한다. */
-    for (i = 0; i < scenes.length; i++) {
-      var r = scenes[i].getBoundingClientRect();
-      var h = heights[i];
-      /* 다른 탭이 켜져 있는 동안 재었으면 display:none 이라 0 으로 잡혀 있다 —
-         이미 읽어 둔 rect 로 되살린다(새로 읽는 것이 아니라 값이 공짜다). */
-      if (!(h > 0) && r.height > 0) h = heights[i] = r.height;
-      var span = h - vh;
-      /* 아직 숨어 있으면 진행률도 0 으로 둔다 */
-      if (span < 1) { next[i] = '0'; continue; }
-      var p = -r.top / span;
-      next[i] = (p < 0 ? 0 : p > 1 ? 1 : p).toFixed(4);
-    }
-    /* ② 쓰기 — 다 읽은 뒤에 한꺼번에 쓴다. 값이 그대로면 아예 건드리지 않는다(헛된 스타일 무효화를 막는다) */
-    for (i = 0; i < scenes.length; i++) {
-      if (next[i] === last[i]) continue;
-      last[i] = next[i];
-      scenes[i].style.setProperty('--p', next[i]);
-      /* 다 커졌으면 모서리·그림자를 지운다. 표시 하나를 켜고 끄는 것이라
-         전환이 도는 동안만 다시 칠하고 그 밖에는 손대지 않는다. */
-      if (zoomBox && scenes[i] === zoomScene) zoomBox.classList.toggle('is-full', +next[i] >= .78);
-    }
-  }
-  function ask() { if (!ticking) { ticking = true; requestAnimationFrame(run); } }
-  /* 「다음 프레임에 높이부터 다시 재라」고 표시만 해 둔다 — 재는 일은 run() 안에서 한 번에 한다 */
-  function askMeasured() { needMeasure = true; ask(); }
-  addEventListener('scroll', ask, { passive: true });
-  addEventListener('resize', askMeasured, { passive: true });
-  addEventListener('load', askMeasured);
-  /* 형제 탭을 옮기면 이 구간이 숨었다 나타나며 위치가 통째로 바뀐다 — 그려진 뒤 다시 잰다.
-     탭 버튼과 바로가기 바는 nav.js 가 나중에 붙이므로 문서에 위임해 받는다. */
-  document.addEventListener('click', function (e) {
-    var t = e.target && e.target.closest ? e.target.closest('.ysub-tab,.yjump a') : null;
-    if (t) setTimeout(askMeasured, 60);
-  });
-  /* 첫 그림은 rAF 를 기다리지 않고 바로 그린다 — 페이지 중간으로 복원되어 들어와도 한 프레임도 튀지 않는다 */
-  measure();
-  run();
-})();
-</script>
+<script src="assets/nav.js?v=109"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--kr);font-size:.74rem;color:#68727f">
   © 2026 연세대학교 기계공학부 &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

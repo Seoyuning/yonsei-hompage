@@ -61,7 +61,7 @@
        남은 자리의 가운데가 아니라 화면의 정중앙에 선다. */
     '.ynv-brand{flex:1 1 0;display:flex;align-items:center;gap:.7rem;min-width:0;text-decoration:none}',
     '.ynv-brand img{height:2.75rem;width:auto;display:block}',
-    '.ynv-brand .bko{font-weight:800;font-size:1.24rem;letter-spacing:-.01em;color:' + NAVY + ';line-height:1.25}',
+    '.ynv-brand .bko{font-weight:850;font-size:1.24rem;letter-spacing:-.01em;color:' + NAVY + ';line-height:1.25}',
     /* 영문 학부명(School of Mechanical Engineering, Yonsei University)은 길어서
        세 줄로 늘어나 상단 바를 밀어냈다. 영문에서는 아래 영문 부제가 같은 말을
        되풀이하므로 감추고, 이름은 두 줄 안에 들어오게 줄인다. */

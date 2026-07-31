@@ -29,7 +29,7 @@
 <link rel="stylesheet" href="assets/fonts.css?v=1" />
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d20" />
-<link rel="preload" as="script" href="assets/nav.js?v=108" />
+<link rel="preload" as="script" href="assets/nav.js?v=109" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    교수진 디렉토리 — 아이보리 배경 · 네이비 제목 · 헤어라인 · 연회색 행
@@ -50,6 +50,10 @@
   --row:#f7f9fc;
   --mono:"JetBrains Mono","Pretendard Variable","Pretendard","Apple SD Gothic Neo",ui-monospace,monospace;
   --kr:"Pretendard Variable","Pretendard","Apple SD Gothic Neo",system-ui,sans-serif;
+  /* 숫자는 고정폭(JetBrains Mono)을 쓰지 않는다 — 0 안의 점과 1의 밑받침이
+     본문 글꼴과 따로 놀아 화면마다 숫자 인상이 달라졌다.
+     자릿수가 흔들리지 않아야 하는 곳은 font-variant-numeric:tabular-nums 로 잡는다. */
+  --num:"Pretendard Variable","Pretendard","Apple SD Gothic Neo",system-ui,sans-serif;
   /* 연구분야 색상 — 6개 분야 액센트 (사진 그리드 인디케이터·오버레이) */
   --c-solid:#2b4a7a;
   --c-thermal:#b0742c;
@@ -97,39 +101,41 @@ a{color:inherit;text-decoration:none}
 .phero-lead{margin:1.05rem auto 0;max-width:41rem;font-size:.98rem;line-height:1.75;color:rgba(255,255,255,.9)}
 .phero .bc{margin:0 0 1.05rem;font-size:.82rem;letter-spacing:.02em;color:rgba(255,255,255,.82)}
 
-/* ── 분야 서브내비 (sticky · 칩 필터) ── */
-/* 형제바(.ysub) 바로 아래에 붙는다. 값을 3.6rem 으로 박아 두면 형제바가 생긴 뒤로는
-   그 아래로 파묻혀 「전임교수 / 명예·퇴임교수」 줄이 가려진다(nav.js 가 --ys-bars 로 실측). */
-/* 분야 필터 줄만 화면에 붙는다 */
-/* 신분 구분 줄 아래에는 여백을 넉넉히 둔다 — 여백을 아래 분야 필터 줄(.is-chips)의
-   padding-top 으로 주면 그 줄이 화면 위에 붙을 때 띠가 같이 두꺼워지므로,
-   붙지 않는 이 줄의 padding-bottom 으로 준다.
-   아래 테두리는 지운다: 여백을 벌리면 .kseg 밑줄과 이 테두리가 1rem 남짓 떨어져
-   가로줄 두 개 사이에 빈 띠가 생긴다. 구분선 역할은 .kseg 밑줄이 이미 한다. */
-/* top:auto 를 반드시 되돌린다 — 공통 .filterbar 에 걸린 top:var(--ys-bars) 는
-   position:relative 에도 그대로 먹어 이 줄만 124px 아래로 밀려 내려간다.
-   그러면 뒤따르는 분야 필터 줄이 위로 올라와 순서가 뒤집혀 보인다. */
-.filterbar.is-kind{position:relative;top:auto;z-index:19;padding-bottom:clamp(.8rem,1.6vh,1.4rem);border-bottom:0}
-.filterbar.is-kind .kseg{margin-bottom:0}
-.filterbar.is-chips{padding-top:.85rem}
-.filterbar{position:sticky;top:var(--ys-bars,3.6rem);z-index:20;
-  background:#ffffff;
-  border-bottom:1px solid var(--line-soft);
-  padding:.9rem 0;
+/* ── 신분 구분 줄 (전임 / 명예·퇴임) ──
+   예전에는 이 줄 아래에 연구분야 필터 가로 줄이 하나 더 있었고, 그 줄만 화면 위에
+   sticky 로 붙어 스크롤 내내 본문 한 줄을 차지했다. 분야 선택이 명부 오른쪽 세로 바로
+   옮겨 가면서 이 줄 하나만 남았다 — 신분은 한 번 고르고 마는 것이라 붙들지 않는다.
+   (그래서 sticky·top·z-index 가 모두 사라졌다. 예전에 공통 .filterbar 의
+    top:var(--ys-bars) 가 relative 에도 먹어 이 줄만 124px 밀려 내려간 사고가 있었는데,
+    붙는 줄 자체가 없어졌으므로 그 되돌림 규칙도 함께 지운다.)
+   아래 테두리는 두지 않는다 — 신분 버튼이 제 헤어라인 테두리를 가지고 있어 겹쳐 보인다. */
+.filterbar{position:relative;background:#ffffff;
+  padding:.9rem 0 clamp(.8rem,1.6vh,1.4rem);
   scroll-margin-top:var(--ys-stick,7.6rem)}
+.filterbar .kseg{margin-bottom:0}
 /* 위 형제바(.ysub-w, nav.js)와 같은 상자를 써야 「전임교수」가 「교수진」과 같은 지점에서 시작한다.
    폭·좌우 여백을 그쪽 값과 똑같이 맞춘다 — 한쪽만 바뀌면 다시 어긋난다. */
 .filter-wrap{max-width:1232px;margin:0 auto;padding:0 clamp(1.2rem,.6rem + 2vw,2.6rem)}
 @media (max-width:640px){ .filter-wrap{padding:0 .9rem} }
-/* 신분 구분(전임 / 명예·퇴임) — 분야 필터보다 상위 구분이라 굵은 밑줄 탭으로 격을 달리한다 */
-.kseg{display:flex;gap:.2rem;margin-bottom:.85rem;border-bottom:1px solid var(--line)}
+/* 신분 구분(전임 / 명예·퇴임) — 「지금 어느 명단을 보고 있는가」는 이 화면에서 가장 큰
+   갈림길인데, 밑줄 탭은 밑줄 하나로만 말해서 눈에 잘 걸리지 않았다. 나란한 네모 버튼
+   두 개로 세우고 고른 쪽을 네이비로 칠해 확실히 가른다.
+   모서리는 각지게 둔다(border-radius:0) — 알약·둥근 배지는 이 지면의 어법이 아니다.
+   .kseg 의 아래 테두리도 지운다: 버튼이 제 테두리를 가져 가로줄이 이중으로 겹친다.
+   gap 은 .4rem — 더 좁히면 두 버튼의 테두리가 한 덩어리로 붙어 보인다. */
+.kseg{display:flex;gap:.4rem;margin-bottom:.85rem}
 .kseg-b{position:relative;font-family:var(--kr);font-size:.98rem;font-weight:700;color:var(--muted);
-  background:none;border:0;border-bottom:3px solid transparent;margin-bottom:-1px;
-  padding:.55rem .9rem .6rem;cursor:pointer;transition:color .15s,border-color .2s}
-.kseg-b:hover{color:var(--navy)}
-.kseg-b[aria-selected="true"]{color:var(--navy);border-bottom-color:var(--navy)}
+  background:#fff;border:1px solid var(--line);border-radius:0;
+  padding:.6rem 1.05rem;cursor:pointer;
+  transition:color .15s,background-color .15s,border-color .15s}
+.kseg-b:hover{color:var(--navy);border-color:var(--navy)}
+/* 초점 테두리는 버튼 바깥(흰 바탕) 위에 그린다 — 고른 버튼은 네이비로 칠해져 있어
+   네이비 테두리를 안쪽에 그리면 보이지 않는다. 사이트 공통 초점색(코랄)을 쓴다. */
+.kseg-b:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
+.kseg-b[aria-selected="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
 .kseg-b .kn{font-size:.8rem;font-weight:600;color:var(--label);margin-left:.15rem}
-.kseg-b[aria-selected="true"] .kn{color:var(--navy)}
+/* 칠한 버튼 위의 개수 — 흰색을 조금 눌러 이름보다 한 단계 뒤로 (네이비 대비 6.8:1) */
+.kseg-b[aria-selected="true"] .kn{color:rgba(255,255,255,.78)}
 /* 명예·퇴임 명단 — 사진이 없으므로 이름·전공·재직기간의 담백한 행 목록 */
 /* ── 명예·퇴임 교수 ──
    예전에는 [이름 영문명 재직기간]을 한 줄에 눕힌 목록이라, 사진이 없는 데다
@@ -157,52 +163,51 @@ a{color:inherit;text-decoration:none}
 .emcard{min-height:7.2rem}
 .emnote{margin-top:1.4rem;font-size:.84rem;color:var(--muted);line-height:1.7}
 @media (max-width:560px){
-  .kseg-b{font-size:.9rem;padding:.5rem .6rem .55rem}
+  /* 390px 에서도 두 버튼이 한 줄에 서야 한다 — 좌우 여백을 줄여 폭을 만든다 */
+  .kseg{gap:.35rem}
+  .kseg-b{font-size:.9rem;padding:.52rem .7rem}
   .emlist{grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem}
   .emcard{grid-template-columns:2rem minmax(0,1fr);padding:.8rem;min-height:0}
   .emcard .emini{font-size:1.25rem}
   .emcard .eko{font-size:.96rem}
 }
-/* 칩 사이는 여백으로만 나눈다 — 구분선을 넣으면 다시 상자처럼 보인다 */
-/* 영문에서는 분야 이름이 길어(Mechanics & Materials …) 여섯 개가 두 줄이 되고,
-   이 줄은 화면에 붙어 있는 sticky 라 그만큼 본문을 계속 가린다.
-   줄바꿈 대신 옆으로 밀리게 두고(넘치면 손가락으로 쓸어 넘긴다), 오른쪽 끝을 흐려
-   더 있다는 것을 알린다 — 형제 탭 바(.ysub)가 이미 쓰는 방식과 같다. */
-.fchips{display:flex;align-items:center;flex-wrap:nowrap;gap:0 .9rem;
-  overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;
-  overscroll-behavior-x:contain;scroll-padding-inline:.2rem}
-.fchips::-webkit-scrollbar{display:none}
-/* 오른쪽 끝 페이드 — position 을 다시 선언하면 안 된다.
-   .filterbar 는 sticky 인데 여기에 relative 를 주면 sticky 가 죽고,
-   top:var(--ys-bars) 가 「위에 붙는 자리」가 아니라 「아래로 미는 값」이 되어
-   필터 줄이 124px 아래로 떨어진다(앞서 .is-kind 에서 겪은 것과 같은 사고).
-   sticky 요소도 절대 배치 자식의 기준 상자가 되므로 그대로 두면 된다. */
-.filterbar.is-chips::after{content:"";position:absolute;top:0;right:0;bottom:0;width:2.2rem;
-  pointer-events:none;background:linear-gradient(90deg,rgba(255,255,255,0),#fff 72%)}
+/* ── 연구분야 선택 바 (명부 오른쪽 세로 줄) ──
+   예전에는 화면 위에 붙는 가로 칩 줄이었다. sticky 라 스크롤 내내 본문 위 한 줄을
+   먹었고, 영문에서는 이름이 길어(Design & Smart Manufacturing …) 일곱 개가 옆으로
+   밀려 나가 무엇이 더 있는지 손으로 쓸어 봐야 알 수 있었다.
+   명부 오른쪽에 세로로 세우면 일곱 개가 한 번에 다 보이고, 본문 위를 가리지도 않는다.
+   자리는 .dir 의 격자가 따로 떼어 준다 — absolute/fixed 로 띄우지 않으므로
+   교수 카드 위에 겹쳐 방해할 일이 구조적으로 없다.
+   색은 쓰지 않는다: 예전에 분야색 점을 찍었더니 여섯 색이 늘어서 무지개 띠처럼 튀었다.
+   상자도 두르지 않는다 — 목록 왼쪽 헤어라인 한 줄 위에 활성 항목만 네이비 기둥이 겹친다. */
+.fside{grid-column:2;grid-row:1;align-self:start;
+  position:sticky;top:calc(var(--ys-bars,3.6rem) + 1rem)}
+.fside[hidden]{display:none}
+/* 머리 라벨 — 분야 머리(.fg-en)·섹션 머리(.sec-kick)와 같은 [작은 영문 라벨 + 실선] */
+.fside-en{font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.22em;
+  text-transform:uppercase;color:#111318;line-height:1.5;
+  padding-bottom:.72rem;border-bottom:1px solid #111318;margin-bottom:.55rem}
+/* 세로 헤어라인 한 줄이 일곱 항목을 하나로 묶는다 */
+.fchips{display:flex;flex-direction:column;border-left:1px solid var(--line)}
 /* display:flex 가 hidden 속성의 display:none 을 이겨서 숨겨지지 않는다 */
 .fchips[hidden]{display:none}
-.filterbar[hidden]{display:none}
-.fchips-label{font-size:.78rem;color:var(--label);margin-right:.55rem;flex:none;letter-spacing:.02em}
-/* ── 분야 필터 ──
-   색은 쓰지 않는다: 예전에 칩마다 분야색 점을 찍었더니 여섯 색이 한 줄에 늘어서
-   무지개 띠처럼 튀었다(서울대·KAIST 기계공학부도 색을 쓰지 않는다).
-   테두리도 없앤다: 같은 굵기의 네모 일곱 개가 늘어서면 어느 것이 지금 상태인지
-   보려고 색 대비에 기대게 되고, 그래서 활성 칩을 네이비로 꽉 채워야 했다.
-   지금은 글자만 두고 활성 표시는 글자 밑 포인트색 선 하나로 한다 —
-   위의 신분 구분(.kseg, 굵은 네이비 밑줄 + 개수)과 격이 자연스럽게 갈린다. */
-.fchip{position:relative;display:inline-flex;align-items:center;cursor:pointer;
-  border:0;background:none;color:var(--muted);
-  font-family:var(--kr);font-size:.86rem;font-weight:500;
-  padding:.5rem .1rem .55rem;margin-right:.35rem;
-  transition:color .16s;white-space:nowrap}
-.fchip::after{content:"";position:absolute;left:0;right:0;bottom:.15rem;height:2px;
-  background:var(--accent);transform:scaleX(0);transform-origin:left;
+.fchip{position:relative;display:flex;align-items:baseline;gap:.5rem;width:100%;
+  cursor:pointer;border:0;background:none;color:var(--muted);text-align:left;
+  font-family:var(--kr);font-size:.86rem;font-weight:500;line-height:1.45;
+  padding:.5rem .1rem .5rem .75rem;transition:color .16s}
+/* 활성 기둥 — left:-1px 로 목록의 1px 헤어라인 위에 정확히 포갠다 */
+.fchip::before{content:"";position:absolute;left:-1px;top:0;bottom:0;width:2px;
+  background:var(--navy);transform:scaleY(0);transform-origin:top;
   transition:transform .22s cubic-bezier(.22,.61,.36,1)}
 .fchip:hover{color:var(--navy)}
-.fchip:focus-visible{outline:2px solid var(--navy);outline-offset:3px;border-radius:2px}
+.fchip:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
 .fchip[aria-pressed="true"]{color:var(--navy);font-weight:700}
-.fchip[aria-pressed="true"]::after{transform:scaleX(1)}
-@media (prefers-reduced-motion:reduce){ .fchip::after{transition:none} }
+.fchip[aria-pressed="true"]::before{transform:scaleY(1)}
+/* 분야별 인원수 — 줄 오른쪽 끝에 붙여 세로로 자릿수를 맞춘다 */
+.fcn{margin-left:auto;flex:none;font-size:.74rem;font-weight:600;color:var(--label);
+  font-variant-numeric:tabular-nums}
+.fchip[aria-pressed="true"] .fcn{color:var(--navy)}
+@media (prefers-reduced-motion:reduce){ .fchip::before{transition:none} }
 
 /* ═══ 교수진 명부 — 사진을 남긴 편집 지면 ═══
    예전에는 [사방 테두리 + 그림자 + 회색 사진판 + 네이비 정보 패널 + 떠오르는 상세 판]을
@@ -215,12 +220,22 @@ a{color:inherit;text-decoration:none}
    사진은 그대로 둔다 — 얼굴이 이 화면의 본문이다. 메인의 교수 레일(.pc)도 사진을 쓰되
    테두리가 없고, 맨 아래 두 칸만 헤어라인으로 나눈다. 그 처리를 그대로 옮긴다. */
 /* 히어로·형제바·제목·탭과 같은 폭·같은 왼쪽 선 (1320px) */
-.dir{max-width:1232px;margin:0 auto;padding:1.4rem clamp(1.2rem,.6rem + 2vw,2.6rem) 3rem}
+/* 그 폭 안을 [교수 카드 | 연구분야 선택 바] 두 칸으로 나눈다. 선택 바를 띄우지 않고
+   격자로 칸을 떼어 주는 것이 핵심이다 — 자리가 처음부터 따로라 카드를 덮을 수 없다.
+   align-items:start — 선택 바가 제 높이만 차지하고 격자 칸(=행 전체 높이) 안에서
+   sticky 로 내려온다. stretch 로 두면 칸을 꽉 채워 버려 붙을 여지가 없어진다. */
+.dir{max-width:1232px;margin:0 auto;padding:1.4rem clamp(1.2rem,.6rem + 2vw,2.6rem) 3rem;
+  display:grid;grid-template-columns:minmax(0,1fr) clamp(9rem,13vw,12rem);
+  column-gap:clamp(1.6rem,3vw,3rem);align-items:start}
+/* 카드 쪽. min-width:0 이 없으면 긴 이름 하나가 칸을 밀어 선택 바를 화면 밖으로 낸다 */
+.dir-main{grid-column:1;grid-row:1;min-width:0}
+/* 명예·퇴임 명단에는 분야 데이터가 없어 선택 바를 접는다 — 그때는 명단이 폭을 다 쓴다 */
+.dir.is-solo{grid-template-columns:minmax(0,1fr)}
 /* 분야 사이를 넉넉히 — 여섯 덩이가 붙어 있으면 어디서 분야가 바뀌는지 안 보인다 */
 .fgroup{padding:clamp(2.6rem,1.8rem + 3vw,4.4rem) 0 clamp(3.2rem,2rem + 4vw,5.2rem)}
 .fgroup:first-child{padding-top:clamp(1.2rem,.9rem + 1.4vw,2rem)}
 /* 그룹 사이에 따로 구분선을 긋지 않는다 — 바로 아래 분야 머리의 먹색 가로줄이 그 일을 한다.
-   둘 다 두면 1rem 남짓 떨어진 가로줄 두 개 사이에 빈 띠가 생긴다(.filterbar.is-kind 와 같은 판단). */
+   둘 다 두면 1rem 남짓 떨어진 가로줄 두 개 사이에 빈 띠가 생긴다(.filterbar 와 같은 판단). */
 
 /* 분야 머리 — 메뉴 페이지 섹션 머리(nav.js 의 .sec-kick)와 같은 형식으로 통일한다:
    [영문 라벨 + 먹색 가로줄] 아래 [분야 점 · 분야명 ······ 인원수].
@@ -258,6 +273,34 @@ a{color:inherit;text-decoration:none}
 /* 가로 카드가 되면서 휴대폰 2열은 글 칸이 100px 남짓밖에 안 된다 — 1열로 둔다.
    카드가 낮아져 1열이어도 예전 같은 긴 스크롤이 나오지 않는다. */
 @media (max-width:640px){.dir-list{--cols:1;--gap:.8rem}}
+
+/* ── 1080px 아래 — 두 칸을 접고 선택 바를 카드 위에 눕힌다 ──
+   좁은 화면에서 세로 바에 12rem 을 떼어 주면 카드 칸이 사진 한 장 폭밖에 안 남는다.
+   가로로 눕히고 넘치면 손가락으로 쓸어 넘기게 두되, 오른쪽 끝을 흐려 더 있다는 것을
+   알린다 — 형제 탭 바(.ysub)가 이미 쓰는 방식과 같다.
+   활성 표시는 왼쪽 기둥에서 아래 기둥으로 눕는다(DESIGN.md: 왼쪽 또는 아래 2~3px). */
+@media (max-width:1080px){
+  .dir{display:block}
+  /* 여기서 relative 로 바꾸는 이유는 두 가지다 — 화면에 붙일 자리가 아니고,
+     아래 오른쪽 끝 페이드(::after)의 기준 상자가 되어야 한다. */
+  .fside{position:relative;top:auto;margin-bottom:clamp(1.2rem,2.4vw,2rem)}
+  .fside-en{padding-bottom:.6rem;margin-bottom:.35rem}
+  .fchips{flex-direction:row;border-left:0;border-bottom:1px solid var(--line);
+    overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+    overscroll-behavior-x:contain;scroll-padding-inline:.2rem}
+  .fchips::-webkit-scrollbar{display:none}
+  .fchip{width:auto;flex:none;white-space:nowrap;padding:.5rem 1rem .55rem 0}
+  /* 세로일 때와 달리 bottom:-1px 로 헤어라인 위에 포개면 안 된다 — 여기서는 .fchips 가
+     가로 스크롤 상자라 padding box 밖(테두리 자리)이 잘리고, 1px 만큼 세로 스크롤도 생긴다.
+     헤어라인 바로 위에 얹어 [1px 회색 + 2px 네이비] 로 두껍게 보이게 한다. */
+  .fchip::before{left:0;right:0;top:auto;bottom:0;width:auto;height:2px;
+    transform:scaleX(0);transform-origin:left}
+  .fchip[aria-pressed="true"]::before{transform:scaleX(1)}
+  .fcn{margin-left:.35rem}
+  /* 목록 한 줄 높이만큼만 덮는다 — 더 키우면 위 라벨의 먹색 실선까지 흐려진다 */
+  .fside::after{content:"";position:absolute;right:0;bottom:0;width:2.2rem;height:2.45rem;
+    pointer-events:none;background:linear-gradient(90deg,rgba(255,255,255,0),#fff 72%)}
+}
 
 /* 한 사람 = [사진] + [이름·영문명·분야] + [헤어라인으로 나눈 두 칸].
    테두리는 실선 한 겹만 두른다 — 사진은 테두리에 딱 붙이고, 글자에만 안쪽 여백을 준다.
@@ -481,7 +524,7 @@ html[lang="en"] .ppos{display:none}
 .al-fact{min-width:0}
 .al-fk{display:block;font-size:.78rem;font-weight:600;color:var(--muted);line-height:1.5}
 /* 숫자 — 메인 히어로 지표(.st b)의 굵기·자간·tabular-nums 를 따르되 색만 먹색으로 */
-.al-fv{display:block;margin-top:.5rem;font-family:var(--mono);font-weight:700;
+.al-fv{display:block;margin-top:.5rem;font-family:var(--num);font-weight:700;
   font-size:clamp(1.6rem,1.15rem + 1.5vw,2.4rem);color:#111318;
   letter-spacing:-.01em;font-variant-numeric:tabular-nums;line-height:1}
 .al-tl{margin-top:1.6rem;border-top:1px solid var(--line)}
@@ -557,7 +600,7 @@ html[lang="en"] .ppos{display:none}
 .al-steps{margin-top:1.4rem;display:flex;flex-direction:column;gap:.75rem}
 .al-step{display:grid;grid-template-columns:auto 1fr;gap:.85rem;align-items:baseline}
 /* 번호는 눈으로 세는 표시다 — 테두리를 두르지 않는다(#requirements 의 .rq-n 과 같은 취급) */
-.al-sn{justify-self:start;font-family:var(--mono);font-size:.74rem;font-weight:600;
+.al-sn{justify-self:start;font-family:var(--num);font-size:.74rem;font-weight:600;
   letter-spacing:.08em;color:var(--label);font-variant-numeric:tabular-nums}
 .al-st{font-size:.88rem;color:var(--body);line-height:1.7}
 .al-st b{font-weight:700;color:var(--navy)}
@@ -620,10 +663,10 @@ html[lang="en"] .ppos{display:none}
     </div>
   </header>
 
-  <!-- 신분 구분 + 분야 서브내비 (교수진 섹션 앵커).
+  <!-- 신분 구분 (교수진 섹션 앵커).
        공식 홈페이지가 「교수 / 명예·퇴임 교수」로 나누어 싣는 구분을 그대로 따른다. -->
   <!-- 신분 구분은 한 번 고르고 마는 것이라 화면에 붙들지 않는다. 스크롤하며 계속
-       쓰는 것은 분야 필터뿐이라, 그 줄만 따로 떼어 화면에 붙인다. -->
+       쓰는 것은 연구분야 선택인데, 그건 명부 오른쪽 세로 바로 내려갔다. -->
   <!-- 교직원(.staff-head)·동문(.al-head)과 같은 머리를 교수진에도 둔다 —
        이 페이지에서 교수진만 제목 없이 바로 탭으로 시작하고 있었다. -->
   <div class="fac-head">
@@ -631,7 +674,7 @@ html[lang="en"] .ppos{display:none}
     <h2 id="fac-title">교수진</h2>
   </div>
 
-  <div class="filterbar is-kind" id="faculty" aria-label="교수 구분" aria-labelledby="fac-title">
+  <div class="filterbar" id="faculty" aria-labelledby="fac-title">
     <div class="filter-wrap">
       <div class="kseg" role="tablist" aria-label="교수 구분">
         <button type="button" class="kseg-b" role="tab" data-k="active" aria-selected="true">전임교수 <span class="kn">33</span></button>
@@ -639,24 +682,30 @@ html[lang="en"] .ppos{display:none}
       </div>
     </div>
   </div>
-  <!-- id 가 있어야 nav.js 의 탭 전환이 이 줄을 「교수진 탭의 것」으로 관리한다.
-       id 가 없으면 어느 탭에도 속하지 않아 교직원·동문에서도 그대로 떠 있었다. -->
-  <div class="filterbar is-chips" id="facultyChips" aria-label="연구분야 필터">
-    <div class="filter-wrap">
+
+  <!-- 교수진 사진 그리드 + 오른쪽 연구분야 선택 바.
+       두 칸은 .dir 의 격자가 나눈다(CSS) — 선택 바를 띄우지 않으므로 카드를 덮지 않는다. -->
+  <section class="dir" id="dir" aria-label="전임 교수 디렉토리">
+    <!-- 선택 바가 먼저 오는 이유: 화면에서는 오른쪽이지만, 읽는 순서·탭 순서로는
+         「거르고 나서 본다」가 맞다(예전 가로 필터 줄도 명부 앞에 있었다).
+         1080px 아래로 접힐 때도 이 순서 그대로 카드 위에 눕는다 — order 뒤집기가 필요 없다.
+         id="facultyChips" 는 옛 가로 줄에서 그대로 옮겨 왔다. 이 id 가 있어야 nav.js 의
+         탭 전환이 이 바를 「교수진 탭의 것」으로 관리한다(없으면 교직원·동문에서도 떠 있는다).
+         data-no-rv — nav.js 의 등장 애니메이션이 sticky 바를 아래에서 밀어 올리지 않게. -->
+    <div class="fside" id="facultyChips" data-no-rv>
+      <p class="fside-en">Research Field</p>
       <div class="fchips" role="group" aria-label="연구분야 필터" id="cChips"></div>
     </div>
-  </div>
-
-  <!-- 교수진 사진 그리드 -->
-  <section class="dir" id="dir" aria-label="전임 교수 디렉토리">
-    <div id="rows"></div>
-    <div class="empty" id="empty" hidden>
-      <p class="code">해당 분야 교수가 없습니다</p>
-      <p>다른 연구분야를 선택해 보세요.</p>
-      <button type="button" id="reset">전체 보기</button>
+    <div class="dir-main">
+      <div id="rows"></div>
+      <div class="empty" id="empty" hidden>
+        <p class="code">해당 분야 교수가 없습니다</p>
+        <p>다른 연구분야를 선택해 보세요.</p>
+        <button type="button" id="reset">전체 보기</button>
+      </div>
+      <!-- 명예·퇴임 교수 — 공식 사이트에도 사진이 없어 명단 표로 싣는다 -->
+      <div id="emrows" hidden></div>
     </div>
-    <!-- 명예·퇴임 교수 — 공식 사이트에도 사진이 없어 명단 표로 싣는다 -->
-    <div id="emrows" hidden></div>
   </section>
 
   <!-- 교직원 (행정팀) -->
@@ -1005,12 +1054,18 @@ html[lang="en"] .ppos{display:none}
     catch(e){ if(parts.length) location.hash='!'+parts.join('&'); }
   }
 
-  /* ── 분야 필터 칩 렌더 (연구분야만 · 카운트 없음) ── */
+  /* ── 연구분야 선택 바 렌더 (전체 + 6개 분야, 세로 목록) ──
+     인원수는 데이터에서 그때그때 센다 — 손으로 적어 두면 명단이 바뀔 때 조용히 틀어진다.
+     분야명은 버튼의 **직속 텍스트 노드**로 둔다: 한/영 전환(i18n.js)이 텍스트 노드
+     완전일치로만 치환하므로, 숫자를 같은 노드에 섞으면 사전 키가 어긋나 번역이 죽는다. */
+  function fieldCount(id){
+    return professors.filter(function(p){ return id==='all' || p.cluster===id; }).length;
+  }
   function chip(val,label,pressed){
     return '<button type="button" class="fchip" data-c="'+val+'" aria-pressed="'+pressed+'">'+
-      esc(label) + '</button>';
+      esc(label) + '<span class="fcn">' + fieldCount(val) + '</span></button>';
   }
-  cWrap.innerHTML = '<span class="fchips-label" aria-hidden="true">연구분야</span>' +
+  cWrap.innerHTML =
     chip('all','전체',state.c==='all') +
     clusters.map(function(c){ return chip(c.id,c.ko,state.c===c.id); }).join('');
 
@@ -1136,11 +1191,14 @@ html[lang="en"] .ppos{display:none}
     rowsEl.hidden = em;
     if(em) emptyEl.hidden = true;
     cWrap.hidden = em;
-    /* 감싼 sticky 띠까지 같이 접는다 — 칩만 숨기면 신분 구분 줄과 명단 사이에
-       빈 흰 띠와 헤어라인 한 줄이 그대로 남는다(명예·퇴임에는 분야 필터가 없다) */
-    var chipBar = cWrap.closest ? cWrap.closest('.filterbar.is-chips') : null;
-    if (chipBar) chipBar.hidden = em;
-    document.getElementById('dir').setAttribute('aria-label', em ? '명예·퇴임 교수 명단' : '전임 교수 디렉토리');
+    /* 감싼 세로 바까지 같이 접는다 — 목록만 숨기면 「RESEARCH FIELD」 라벨과 실선만
+       덩그러니 남는다(명예·퇴임에는 분야 데이터가 없다).
+       바를 접으면 격자도 한 칸으로 되돌려야 오른쪽에 빈 12rem 이 남지 않는다. */
+    var side = cWrap.closest ? cWrap.closest('.fside') : null;
+    if (side) side.hidden = em;
+    var dirEl = document.getElementById('dir');
+    dirEl.classList.toggle('is-solo', em);
+    dirEl.setAttribute('aria-label', em ? '명예·퇴임 교수 명단' : '전임 교수 디렉토리');
     if(kseg) [].forEach.call(kseg.querySelectorAll('.kseg-b'), function(b){
       b.setAttribute('aria-selected', String(b.dataset.k === state.k));
     });
@@ -1248,6 +1306,11 @@ html[lang="en"] .ppos{display:none}
   }
 
   apply();
+  /* 들어올 때 한 번 맞춘다 — 예전에는 클릭할 때만 불러서 ?k=emeritus 로 들어오면
+     state 만 명예·퇴임이고 화면은 전임 명단 그대로였다. 이제는 선택 바를 접는 일
+     (.dir.is-solo)까지 이 함수가 맡으므로, 첫 화면부터 어긋나지 않게 여기서 부른다.
+     apply() **뒤에** 부른다 — 앞에 두면 apply() 가 빈 상태(#empty)를 다시 켠다. */
+  syncKind();
 
   /* ── 해시 딥링크(G-research 교수명 링크 등) 진입 보정 ──
      카드는 JS 렌더 후 존재하므로 setTimeout으로 재스크롤(instant) */
@@ -1266,8 +1329,8 @@ html[lang="en"] .ppos{display:none}
   }
 })();
 </script>
-<script src="assets/nav.js?v=108"></script>
-<footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;color:var(--dimmer)">
+<script src="assets/nav.js?v=109"></script>
+<footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--num);font-size:.72rem;letter-spacing:.12em;color:var(--dimmer)">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>
 </body>

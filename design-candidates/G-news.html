@@ -23,7 +23,7 @@
 <meta name="twitter:image" content="https://yonsei-me-homepage.vercel.app/assets/og-cover.jpg" />
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d20" />
-<link rel="preload" as="script" href="assets/nav.js?v=108" />
+<link rel="preload" as="script" href="assets/nav.js?v=109" />
 <style>
 /* 소식 — 흰 배경 · 네이비 제목 · 실제 학과식 풀폭 게시판(표) 목록.
    히어로: 이미지 배너 + 중앙 정렬 타이틀 + 브레드크럼.
@@ -45,6 +45,10 @@
   --row:#f5f8fc;
   --mono:"JetBrains Mono","Pretendard Variable","Pretendard","Apple SD Gothic Neo",ui-monospace,monospace;
   --kr:"Pretendard Variable","Pretendard","Apple SD Gothic Neo",system-ui,sans-serif;
+  /* 숫자는 고정폭(JetBrains Mono)을 쓰지 않는다 — 0 안의 점과 1의 밑받침이
+     본문 글꼴과 따로 놀아 화면마다 숫자 인상이 달라졌다.
+     자릿수가 흔들리지 않아야 하는 곳은 font-variant-numeric:tabular-nums 로 잡는다. */
+  --num:"Pretendard Variable","Pretendard","Apple SD Gothic Neo",system-ui,sans-serif;
   /* 분류 배지 색 */
   --cat-acad:#2b4a7a;
   --cat-sch:#b0742c;
@@ -123,7 +127,7 @@ a{color:inherit;text-decoration:none}
 .board-search button{flex:none;border:0;background:var(--navy);color:#fff;cursor:pointer;
   font-family:var(--kr);font-size:.92rem;font-weight:700;padding:0 1.3rem;transition:background .15s}
 .board-search button:hover{background:#12305f}
-.board-status{font-family:var(--mono);font-size:.82rem;color:var(--muted);white-space:nowrap;
+.board-status{font-family:var(--num);font-size:.82rem;color:var(--muted);white-space:nowrap;
   font-variant-numeric:tabular-nums}
 .board-status b{color:var(--coral);font-weight:700}
 .board-meta{display:flex;align-items:center;justify-content:flex-end;padding:.2rem .1rem .9rem}
@@ -163,14 +167,14 @@ a{color:inherit;text-decoration:none}
 .ntable tbody tr:hover{background:var(--row)}
 .ntable tr.pinned{background:#f3f6fb}
 .ntable tr.pinned:hover{background:#eef2f9}
-.c-no{width:6rem;color:var(--muted);font-variant-numeric:tabular-nums;font-family:var(--mono);font-size:.86rem}
+.c-no{width:6rem;color:var(--muted);font-variant-numeric:tabular-nums;font-family:var(--num);font-size:.86rem}
 .c-cat{width:8.5rem}
 .ntable td.c-title{text-align:left}
 .c-title a{display:inline-block;color:var(--ink);line-height:1.5;font-weight:500;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;vertical-align:middle}
 .c-title a:hover{color:var(--navy);text-decoration:underline;text-underline-offset:3px}
 .c-writer{width:9rem;color:var(--muted);font-size:.86rem}
-.c-date{width:8rem;color:var(--muted);font-variant-numeric:tabular-nums;font-family:var(--mono);font-size:.86rem;letter-spacing:.02em}
+.c-date{width:8rem;color:var(--muted);font-variant-numeric:tabular-nums;font-family:var(--num);font-size:.86rem;letter-spacing:.02em}
 .cbadge{display:inline-block;font-size:.76rem;font-weight:600;line-height:1.3;
   padding:.22rem .6rem;border-radius:999px;color:#fff;letter-spacing:-.01em}
 .cat-acad{background:var(--cat-acad)}
@@ -193,7 +197,7 @@ a{color:inherit;text-decoration:none}
 .news-hero .cap .tag{display:inline-block;font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.16em;
   text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:.5rem}
 .news-hero .cap h3{font-size:1.22rem;font-weight:700;line-height:1.4;letter-spacing:-.01em}
-.news-hero .cap .date{font-family:var(--mono);font-size:.76rem;color:rgba(255,255,255,.75);margin-top:.55rem}
+.news-hero .cap .date{font-family:var(--num);font-size:.76rem;color:rgba(255,255,255,.75);margin-top:.55rem}
 .news-side{display:flex;flex-direction:column;justify-content:center}
 .news-side .side-h{font-size:.82rem;font-weight:700;color:var(--muted);letter-spacing:.02em;
   padding-bottom:.7rem;border-bottom:2px solid var(--navy);margin-bottom:.2rem}
@@ -204,7 +208,7 @@ a{color:inherit;text-decoration:none}
 .nlink .t{font-size:.95rem;color:var(--ink);line-height:1.5;min-width:0;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .nlink:hover .t{color:var(--navy)}
-.nlink .d{font-family:var(--mono);font-size:.76rem;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.nlink .d{font-family:var(--num);font-size:.76rem;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
 /* 뉴스 행 — 각 게시물 앞 작은 썸네일(원본 news.do 처럼). 세미나·행사(.nlink)에는 붙지 않는다 */
 .nlink.news-item{grid-template-columns:auto minmax(0,1fr) auto;gap:.95rem;align-items:center}
 .nthumb{width:64px;height:46px;border-radius:3px;overflow:hidden;flex:none;
@@ -653,8 +657,8 @@ a{color:inherit;text-decoration:none}
   boardRows('jobsRows', D.jobs, 'job');
 })();
 </script>
-<script src="assets/nav.js?v=108"></script>
-<footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;color:var(--dimmer)">
+<script src="assets/nav.js?v=109"></script>
+<footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--num);font-size:.72rem;letter-spacing:.12em;color:var(--dimmer)">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>
 </body>

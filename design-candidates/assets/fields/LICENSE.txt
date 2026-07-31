@@ -1,38 +1,59 @@
 연구 분야 사진 — 출처와 라이선스
 ──────────────────────────────────────────────────────────────
-모두 Wikimedia Commons 의 CC0 또는 퍼블릭 도메인 자료다.
+Wikimedia Commons 의 CC0·퍼블릭 도메인 자료와 Pexels 자료를 함께 쓴다.
 **어느 것도 저작자 표시(attribution)가 의무가 아니다.**
 그래서 화면에는 출처 자막을 넣지 않는다. 이 파일이 출처 기록을 대신한다.
 
 solid.jpg          Stator Blade with Thermal Barrier Testing on Hot Gas Rig (GRC-1975-C-01372)
-                   Public domain (NASA)
+                   열차폐 코팅을 입힌 터빈 정익을 고온 가스 리그에서 시험하는 장면
+                   Public domain (NASA) — 출처 표기 불필요
                    https://commons.wikimedia.org/wiki/File:Stator_Blade_with_Thermal_Barrier_Testing_on_Hot_Gas_Rig_(GRC-1975-C-01372).jpg
 
 thermal.jpg        NASA Continues Artemis Moon Rocket Engine Tests with 1st Hot Fire of 2024 (RS-25 test)
-                   Public domain (NASA)
+                   RS-25 로켓 엔진 연소 시험
+                   Public domain (NASA) — 출처 표기 불필요
                    https://commons.wikimedia.org/wiki/File:NASA_Continues_Artemis_Moon_Rocket_Engine_Tests_with_1st_Hot_Fire_of_2024_(S24-001_SSC-20240117-s00002_RS-25_test).jpg
 
 dynamics.jpg       RSGS robotic arm in NRL's thermal vacuum chamber (220616-N-CZ309-2106)
-                   Public domain (U.S. Navy)
+                   열진공 챔버 안에 놓인 위성 정비용 로봇 팔
+                   Public domain (U.S. Navy) — 출처 표기 불필요
                    https://commons.wikimedia.org/wiki/File:RSGS_robotic_arm_in_NRL%27s_thermal_vacuum_chamber_(220616-N-CZ309-2106).jpg
 
-manufacturing.jpg  Lathe, By John Lang & Sons, 1900
-                   CC0
-                   https://commons.wikimedia.org/wiki/File:Lathe,_By_John_Lang_%26_Sons,_1900.JPG
+manufacturing.jpg  Close-up shot of a CNC machine (촬영 Daniel Smyth)
+                   CNC 머시닝 센터. 주축에 물린 공구가 척에 고정된 금속 소재를 절삭한다.
+                   절삭 칩이 튀고 쿨런트 노즐이 함께 보인다.
+                   Pexels License — 출처 표기 불필요 (Attribution is not required)
+                   https://www.pexels.com/photo/close-up-shot-of-a-cnc-machine-8865187/
+                   라이선스 전문: https://www.pexels.com/license/
 
-micro.jpg          Silicon wafer researcher
-                   Public domain (NASA)
-                   https://commons.wikimedia.org/wiki/File:Silicon_wafer_researcher.jpg
+micro.jpg          Close-up of a microscope (촬영 Vladimir Srajber)
+                   실험실 광학현미경. 4X 대물렌즈와 조명이 켜진 시료 스테이지가 주인공이다.
+                   Pexels License — 출처 표기 불필요 (Attribution is not required)
+                   https://www.pexels.com/photo/close-up-of-a-microscope-13949979/
+                   라이선스 전문: https://www.pexels.com/license/
 
-optics.jpg         Gas Laser Interferometer in the Electric Conversion Laboratory (GRC-1966-C-03919)
-                   Public domain (NASA)
-                   https://commons.wikimedia.org/wiki/File:Gas_Laser_Interferometer_in_the_Electric_Conversion_Laboratory_(GRC-1966-C-03919).jpg
+optics.jpg         Red liquid in a plastic container (촬영 CDC)
+                   세포 배양 실험대. 12채널 피펫이 시약 트로프에 담긴 붉은 배지를 빨아올리고,
+                   왼쪽 아래에 빈 96웰 플레이트와 팁 박스가 놓여 있다. 바닥은 스테인리스 벤치다.
+                   Pexels License — 출처 표기 불필요 (Attribution is not required)
+                   https://www.pexels.com/photo/red-liquid-in-a-plastic-container-3993210/
+                   라이선스 전문: https://www.pexels.com/license/
 
-받은 날 2026-07-31 · 모두 1100x1375 (4:5) 로 축소·중앙 크롭
+받은 날 2026-07-31 · 모두 1100x1375 (4:5) 로 중앙 크롭·축소, 프로그레시브 JPEG
 
 바뀐 이유
   이전에는 CC BY / CC BY-SA 사진을 써서 저작자 표시가 법적 의무였고, 화면마다
   출처 자막을 달아야 했다. 표기 의무가 없는 자료로 모두 교체해 자막을 걷었다.
+  2026-07-31 에 설계·제조 / 마이크로·나노 / 바이오·포토닉스 세 장을 다시 바꿨다.
+  앞서 쓰던 사진은 각각 박물관에 놓인 선반, 클린룸 인물 사진, 1966년 가스 레이저
+  장비였다. 분야가 한눈에 읽히지 않아 제조 설비·현미경 장비·생체 조직 사진으로
+  갈아 끼웠다. 세 장 모두 Pexels 자료이고 Pexels License 는 출처 표기를 요구하지 않는다.
+
+  같은 날 바이오·포토닉스를 한 번 더 바꿨다. 갈아 끼웠던 생체 조직 사진은 둥근
+  현미경 시야가 가운데만 차지하고 위아래가 새까매서, 화면 오른쪽 절반을 세로로
+  채우면 사진이 비어 보였다. 게다가 마이크로·나노의 현미경 장비 사진과 인상이
+  겹쳤다. 그래서 세포 배양 실험대 사진으로 바꿨다. 네 변이 모두 내용으로 차고
+  현미경이 아예 나오지 않아 두 분야가 확실히 갈린다. 이 사진도 Pexels 자료다.
 
 여전히 표기가 필요한 것 하나
   마스코트 독수리(assets/me-eagle.png)는 CC BY 4.0 파생물이라 저작자 표시가 의무다.

@@ -28,7 +28,7 @@
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <link rel="stylesheet" href="assets/fonts.css?v=1" />
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
-<link rel="preload" as="script" href="assets/nav.js?v=108" />
+<link rel="preload" as="script" href="assets/nav.js?v=109" />
 <style>
 /* ───────────────────────────────────────────────
    시안 G — 학부 소개 (라이트 테마)
@@ -54,6 +54,10 @@
   --card-hover:#faf9f6;
   --mono:"JetBrains Mono","Pretendard Variable","Pretendard","Apple SD Gothic Neo",ui-monospace,monospace;
   --kr:"Pretendard Variable","Pretendard","Apple SD Gothic Neo",system-ui,sans-serif;
+  /* 숫자는 고정폭(JetBrains Mono)을 쓰지 않는다 — 0 안의 점과 1의 밑받침이
+     본문 글꼴과 따로 놀아 화면마다 숫자 인상이 달라졌다.
+     값은 --kr 과 같지만 이름이 「숫자」라는 뜻을 담아야 나중에 헷갈리지 않는다. */
+  --num:"Pretendard Variable","Pretendard","Apple SD Gothic Neo",system-ui,sans-serif;
   --c-solid:#2b4a7a;
   --c-thermal:#b0742c;
   --c-manuf:#26865e;
@@ -224,7 +228,7 @@ a{color:inherit;text-decoration:none}
   padding:.85rem .2rem;border-bottom:1px solid var(--line-soft)}
 .c-row .lab{font-size:.92rem;color:var(--ink)}
 .c-row .lab .note{display:block;font-size:.78rem;color:var(--muted);margin-top:.15rem}
-.c-row .val{font-family:var(--mono);font-size:.86rem;color:var(--coral);text-align:right;
+.c-row .val{font-family:var(--num);font-size:.86rem;color:var(--coral);text-align:right;
   font-variant-numeric:tabular-nums;white-space:nowrap}
 .c-row.addr{grid-template-columns:1fr}
 .c-row.addr .val{font-family:var(--kr);color:var(--sub);text-align:left;white-space:normal;
@@ -250,7 +254,7 @@ a{color:inherit;text-decoration:none}
   border-top:1px solid var(--line);border-bottom:1px solid var(--line-soft)}
 .org-stat li{display:flex;flex-direction:column;gap:.3rem;position:relative;padding-left:clamp(0px,.6vw,1rem)}
 .org-stat li + li{border-left:1px solid var(--line-soft)}
-.org-stat b{font-family:var(--mono);font-weight:700;font-size:clamp(1.7rem,1.2rem + 2vw,2.6rem);
+.org-stat b{font-family:var(--num);font-weight:700;font-size:clamp(1.7rem,1.2rem + 2vw,2.6rem);
   color:var(--navy);line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
 .org-stat span{font-size:.82rem;color:var(--muted);letter-spacing:.01em}
 
@@ -263,35 +267,40 @@ a{color:inherit;text-decoration:none}
 /* 보직 세 칸 — 메인·구성원의 교수 카드와 같은 짜임
    (사진이 카드 끝까지 → 흰 본문 → 헤어라인으로만 나눈 두 칸) */
 /* 카드 폭을 묶어 둔다 — 셋이 화면 폭을 다 쓰면 사진이 과하게 커진다 */
-.org-posts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:clamp(.9rem,.6rem + 1vw,1.4rem);max-width:56rem;margin:0 auto clamp(2.4rem,1.6rem + 2.4vw,3.6rem)}
-.opost{display:flex;flex-direction:column;overflow:hidden;background:#fff;
+/* 보직은 두 자리뿐이라 세로 카드로 두면 사진 아래가 휑하다 —
+   사진을 왼쪽에 작게 두고 글을 오른쪽에 싣는 가로 카드로 바꾼다(구성원 카드와 같은 짜임). */
+.org-posts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:clamp(.9rem,.6rem + 1vw,1.4rem);max-width:62rem;margin:0 auto clamp(2.4rem,1.6rem + 2.4vw,3.6rem)}
+.opost{display:grid;grid-template-columns:clamp(6rem,9vw,7.6rem) minmax(0,1fr);
+  align-items:start;overflow:hidden;background:#fff;
   border:1px solid var(--line-soft);border-radius:.35rem;scroll-margin-top:var(--ys-stick,7.6rem);
   transition:transform .5s var(--e,cubic-bezier(.16,1,.3,1)),box-shadow .5s var(--e,cubic-bezier(.16,1,.3,1)),border-color .3s}
 .opost:hover{transform:translateY(-5px);box-shadow:0 16px 36px rgba(15,27,48,.13);
   border-color:rgba(165,111,99,.4)}
 .opost.is-lead{box-shadow:inset 3px 0 0 var(--accent)}
 .opost.is-lead:hover{box-shadow:inset 3px 0 0 var(--accent),0 16px 36px rgba(15,27,48,.13)}
-.op-top{display:block;text-decoration:none;color:inherit}
+.op-top{grid-column:1;grid-row:1;display:block;text-decoration:none;color:inherit}
 /* 사진 원본이 240×240 이라 칸을 꽉 채우면 늘어나 흐려진다.
    흰 여백을 두껍게 둘러 원본 크기 가까이 앉힌다.
    여백은 padding 으로 준다 — 절대 배치로 inset 을 주면 대체 요소(img)가 제 원본 폭을
    그대로 써서 왼쪽 여백만 지켜지고 오른쪽이 좁아진다(좌우가 어긋나 보이던 원인). */
-.op-ph{display:block;background:#fff;padding:clamp(1rem,2.4vw,1.6rem);overflow:hidden}
+/* 배경을 깔지 않는다 — 카드가 이미 흰 바탕이고, 여기에 흰 칠을 얹으면
+   학부장 카드의 왼쪽 기둥(inset box-shadow)이 이 칸에서만 가려져 끊겨 보인다. */
+.op-ph{display:block;padding:.9rem .5rem .9rem .9rem;overflow:hidden}
 .op-ph img{display:block;width:100%;height:auto;aspect-ratio:1/1;
   object-fit:cover;object-position:center top;
   transition:transform .8s var(--e,cubic-bezier(.16,1,.3,1))}
 .opost:hover .op-ph img{transform:scale(1.05)}
-.op-in{display:block;padding:.9rem .95rem 1rem}
+.op-in{grid-column:2;grid-row:1;display:block;padding:1rem 1rem .9rem .35rem}
 .op-role{font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.16em;
   text-transform:uppercase;color:var(--accent-ink,#8E5A4F)}
 .op-role .en{color:var(--faint,#6a7486);margin-left:.45rem;letter-spacing:.14em}
-.op-name{display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap;margin-top:.5rem}
+.op-name{display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap;margin-top:.35rem}
 .op-name b{font-weight:800;font-size:clamp(1.15rem,1rem + .7vw,1.42rem);color:var(--navy);letter-spacing:-.02em}
 .op-name .en{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .op-rank{font-size:.84rem;color:var(--sub);margin-top:.28rem}
-.op-meta{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.3rem .75rem;
-  margin-top:.85rem;padding-top:.8rem;border-top:1px solid var(--line-soft);
+.op-meta{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.28rem .7rem;
+  margin-top:.7rem;padding-top:.65rem;border-top:1px solid var(--line-soft);
   font-size:.8rem;line-height:1.55}
 .op-meta dt{color:var(--label,#6a7486);font-size:.72rem;white-space:nowrap;padding-top:.1rem}
 .op-meta dd{margin:0;color:var(--sub);min-width:0;overflow-wrap:anywhere}
@@ -299,7 +308,7 @@ a{color:inherit;text-decoration:none}
   text-underline-offset:3px;transition:color .15s,text-decoration-color .15s}
 .op-meta a:hover{color:var(--navy);text-decoration-color:var(--accent)}
 /* 아래 두 칸 — 칠 없이 헤어라인으로만 나눈다(교수 카드와 같다) */
-.op-btns{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;margin-top:auto;
+.op-btns{grid-column:1 / -1;grid-row:2;display:grid;grid-auto-flow:column;grid-auto-columns:1fr;margin-top:0;
   border-top:1px solid var(--line)}
 .op-btn{display:flex;align-items:center;justify-content:center;
   font-family:var(--kr);font-size:.74rem;font-weight:700;letter-spacing:.04em;
@@ -318,7 +327,7 @@ a{color:inherit;text-decoration:none}
 .admin-line:hover{background:#fff;box-shadow:inset 0 0 0 1px rgba(165,111,99,.4),0 8px 20px rgba(15,27,48,.07);transform:translateY(-2px)}
 .admin-line .fn{font-size:.95rem;color:var(--ink);font-weight:700;letter-spacing:-.01em}
 .admin-line .note{font-size:.78rem;color:var(--muted)}
-.admin-line .tel{font-family:var(--mono);font-size:1.02rem;color:var(--navy);font-weight:600;
+.admin-line .tel{font-family:var(--num);font-size:1.02rem;color:var(--navy);font-weight:600;
   font-variant-numeric:tabular-nums;letter-spacing:-.01em;margin-top:.5rem}
 .admin-line:hover .tel{color:var(--accent-ink,#8E5A4F)}
 .admin-foot{margin-top:1.3rem;display:flex;align-items:baseline;gap:.4rem 1.4rem;flex-wrap:wrap;
@@ -337,21 +346,109 @@ a{color:inherit;text-decoration:none}
   /* .opost.is-lead{grid-column:1 / -1} 은 위 900px 규칙이 이미 걸어 둔다 — 중복이라 뺐다 */
 }
 
-/* ── §04 주요 연혁 — 타임라인 ── */
-.timeline{border-top:1px solid var(--line)}
-.tl-row{display:grid;grid-template-columns:7.4rem 1fr;gap:1.4rem;align-items:baseline;
-  padding:1.05rem .5rem 1.05rem .8rem;border-bottom:1px solid var(--line-soft);transition:background .12s}
-.tl-row:hover{background:var(--card)}
-.tl-row:hover .tl-year{color:var(--coral)}
-.tl-row.key{box-shadow:inset 2px 0 0 var(--coral)}
-.tl-row.key .tl-year{color:var(--coral)}
-.tl-year{font-family:var(--mono);font-size:.94rem;color:var(--navy);
-  font-variant-numeric:tabular-nums;transition:color .12s}
-.tl-body{font-size:.94rem;color:var(--sub);line-height:1.65}
-.tl-body b{color:var(--ink);font-weight:600}
+/* ── §04 주요 연혁 — 시대 탭 + 세로 축 타임라인 ──
+   연세대 공식 연혁(yonsei.ac.kr/sc/314)의 짜임을 옮겼다 — 위에 시대 탭(본교의 서브 탭 자리),
+   아래에 세로 축·연도·항목 점. 다만 본교의 좌우 지그재그 배치와 20px 파란 알약 축은 버렸다.
+   390px 에서 좌우 교차는 글줄이 반 토막 나고, 알약·칠은 이 지면의 금기다(DESIGN.md).
+   축을 연도 칸과 내용 칸 사이에 헤어라인 한 줄로 세우고 점만 얹는 것으로 번역했다.
+   옛 [연도 7.4rem | 내용] 2단 표(.tl-row/.tl-year/.tl-body)는 여기서 통째로 지웠다 — 죽은
+   규칙을 남겨 두면 새 레이아웃과 겹쳐 조용히 깨진다(이 저장소에서 이미 두 번 겪었다). */
+.timeline{
+  /* 축의 x. 연도 칸 폭과 같은 값이라 둘이 늘 붙어 선다 — 한 곳만 고치면 따라 움직인다 */
+  --tl-rail:7.4rem;
+  /* 점의 x. 데스크톱은 항목 상자의 왼쪽 끝이 곧 축이라 0, 모바일에서만 축 자리로 옮긴다 */
+  --tl-dot:0px;
+  /* 항목 위아래 여백. 점의 세로 위치 계산이 이 값을 되쓰므로 변수로 묶어 둔다 */
+  --tl-pt:.62rem;
+  position:relative;border-top:1px solid var(--line);
+  padding-top:clamp(1.4rem, 1.1rem + .8vw, 2rem)}
+/* 세로 축 */
+.timeline::before{content:"";position:absolute;left:var(--tl-rail);top:0;bottom:.5rem;
+  width:1px;background:var(--line)}
+/* 축의 머리 — 본교가 축을 굵게 세워 「여기서 시작」을 알리던 것을 3px 네이비 기둥으로 줄였다 */
+.timeline::after{content:"";position:absolute;left:var(--tl-rail);top:0;
+  width:3px;height:2.4rem;margin-left:-1px;background:var(--navy)}
+
+/* 시대 탭 — 알약·칠 없이 밑줄 위에 글자만 놓고, 고른 것 아래에 3px 네이비 기둥을 세운다 */
+.tl-eras{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--line);
+  margin-bottom:clamp(1.4rem, 1.1rem + 1vw, 2.2rem)}
+/* display:flex 가 UA 의 [hidden]{display:none} 을 이기므로 직접 꺼 준다 (.tl-g 도 같은 이유) */
+.tl-eras[hidden]{display:none}
+.tl-era{position:relative;appearance:none;-webkit-appearance:none;background:none;border:0;
+  cursor:pointer;font-family:var(--num);font-size:.78rem;font-weight:600;letter-spacing:.06em;
+  font-variant-numeric:tabular-nums;color:var(--muted);
+  padding:.72rem clamp(.7rem, .5rem + .7vw, 1.15rem);transition:color .18s ease}
+.tl-era + .tl-era{border-left:1px solid var(--line-soft)}
+.tl-era::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;
+  background:var(--navy);transform:scaleX(0);transform-origin:center;
+  transition:transform .26s cubic-bezier(.22,.61,.36,1)}
+.tl-era:hover{color:var(--navy)}
+.tl-era[aria-selected="true"]{color:var(--navy)}
+.tl-era[aria-selected="true"]::after{transform:scaleX(1)}
+.tl-era:focus-visible{outline:2px solid var(--navy);outline-offset:-3px}
+
+/* 연도 묶음 — 같은 해 항목을 한 덩이로 모은다(1972 처럼 두 줄인 해가 있다) */
+.tl-g{display:grid;grid-template-columns:var(--tl-rail) minmax(0,1fr);align-items:start}
+.tl-g[hidden]{display:none}
+.tl-g + .tl-g{margin-top:clamp(1.1rem, .85rem + .8vw, 1.7rem)}
+.tl-yr{font-family:var(--num);font-weight:700;
+  font-size:clamp(1.25rem, 1rem + .9vw, 1.7rem);line-height:1.1;letter-spacing:-.02em;
+  color:var(--navy);font-variant-numeric:tabular-nums;text-align:right;padding:.28rem 1.5rem 0 0}
+.tl-items{list-style:none;padding:0;margin:0}
+.tl-e{position:relative;display:grid;grid-template-columns:3rem minmax(0,1fr);gap:.9rem;
+  align-items:baseline;font-size:.94rem;line-height:1.65;
+  padding:var(--tl-pt) 0 var(--tl-pt) 1.5rem}
+/* 축 위의 점 — 세로 위치를 첫 글줄 한가운데로 되짚는다(위 여백 + 반 줄 - 점 반지름).
+   .82em 은 이 항목의 글자크기를 따라가므로 모바일에서 글자가 줄면 점도 알아서 따라 올라온다.
+   calc/clamp 안 부호 양옆의 공백은 반드시 둔다 — 없으면 값이 조용히 무효가 된다. */
+.tl-e::before{content:"";position:absolute;left:var(--tl-dot);
+  top:calc(var(--tl-pt) + .82em - 2.5px);margin-left:-2px;
+  width:5px;height:5px;border-radius:50%;background:var(--accent)}
+/* 축에서 항목으로 건너가는 선 — 본교의 점선 연결선을 헤어라인으로 바꿨다 */
+.tl-e::after{content:"";position:absolute;left:calc(var(--tl-dot) + 4px);
+  top:calc(var(--tl-pt) + .82em);width:.8rem;height:1px;background:var(--line)}
+.tl-mo{font-family:var(--num);font-size:.8rem;font-weight:600;letter-spacing:.02em;
+  color:var(--label,#6a7486);font-variant-numeric:tabular-nums}
+.tl-t{color:var(--sub)}
+.tl-t b{color:var(--ink);font-weight:700}
+/* 굵은 마디 — 예전엔 줄 왼쪽의 2px 코랄 기둥이었다. 축이 생겼으니 축 위에서 점을 키워 알린다 */
+.tl-e.is-key::before{width:9px;height:9px;margin-left:-4px;background:#fff;
+  box-shadow:inset 0 0 0 2px var(--navy);top:calc(var(--tl-pt) + .82em - 4.5px)}
+.tl-e.is-key .tl-mo{color:var(--navy)}
+/* 시대를 바꿀 때만 도는 등장 — transform·opacity 뿐이고, 모션 축소에서는 아예 끈다 */
+@keyframes tlIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.timeline.tl-in .tl-g{animation:tlIn .34s cubic-bezier(.22,.61,.36,1) both}
 .hist-more{margin-top:1.6rem;font-size:.9rem;color:var(--muted)}
-@media (max-width:640px){.tl-row{grid-template-columns:5.6rem 1fr;gap:.9rem}
-  .tl-year{font-size:.86rem}.tl-body{font-size:.88rem}}
+@media (prefers-reduced-motion:reduce){
+  .timeline.tl-in .tl-g{animation:none}
+  .tl-era::after{transition:none}
+}
+@media (max-width:860px){
+  .timeline{--tl-rail:5.8rem}
+  .tl-yr{padding-right:1.1rem}
+  .tl-e{grid-template-columns:2.8rem minmax(0,1fr);gap:.75rem;padding-left:1.3rem}
+}
+@media (max-width:600px){
+  /* 좁은 화면에서 [연도 | 내용] 두 칸은 서로를 밀어낸다 — 연도를 위로 올려 한 칸으로 편다.
+     축은 화면 왼쪽 끝으로 붙이고, 연도와 항목이 같은 왼쪽 선(1.4rem)에 선다. */
+  .timeline{--tl-rail:.5rem; --tl-dot:.5rem; --tl-pt:.55rem; padding-top:1.2rem}
+  .timeline::after{height:1.7rem}
+  .tl-g{grid-template-columns:minmax(0,1fr)}
+  .tl-yr{text-align:left;font-size:1.22rem;padding:0 0 .4rem 1.4rem}
+  .tl-e{grid-template-columns:2.6rem minmax(0,1fr);gap:.6rem;
+    padding-left:1.4rem;font-size:.88rem}
+  /* 축이 왼쪽 끝으로 오면서 연결선이 길면 월 숫자 밑으로 파고든다 — 짧게 줄인다 */
+  .tl-e::after{width:.5rem}
+  .tl-mo{font-size:.76rem}
+  /* 탭 다섯 개는 390px 한 줄에 못 들어간다(재어 보면 ~350px 로 딱 걸려 글꼴이 조금만
+     달라져도 넘친다). 가로로 흘려 감추는 대신 두 칸 격자로 접는다 — 하나도 숨지 않는다.
+     마지막 하나는 홀수라 남으니 한 줄을 다 쓰게 해서 빈칸과 헛나온 세로선을 없앤다. */
+  .tl-eras{display:grid;grid-template-columns:1fr 1fr;border-bottom:0}
+  .tl-era{font-size:.74rem;padding:.7rem .5rem;border-bottom:1px solid var(--line)}
+  .tl-era + .tl-era{border-left:0}
+  .tl-era:nth-child(odd){border-right:1px solid var(--line-soft)}
+  .tl-era:last-child:nth-child(odd){grid-column:1 / -1;border-right:0}
+}
 
 /* 「학부 현황 (숫자)」 CSS(.stats/.stats-inner/.ct .lab/.ct .num) 와 그 카운트업
    스크립트 삭제 — 해당 섹션이 §03 의 .org-stat 로 옮겨 가면서 마크업이 사라졌다. */
@@ -582,25 +679,124 @@ a{color:inherit;text-decoration:none}
         <h2 id="hist-h" class="sec-title">주요 연혁</h2>
     </div>
     <!-- 학부 공식 연혁(faculty/history.do) 17줄을 연월·문장 그대로 옮겼다.
-         1972.01 과 1974.01 은 원문에 같은 문장이 두 번 적혀 있어 그대로 둔다. -->
-    <div class="timeline" role="list" aria-label="주요 연혁">
-      <div class="tl-row" role="listitem"><span class="tl-year">1958. 12.</span><span class="tl-body">이공대학 건설공학과 신설</span></div>
-      <div class="tl-row" role="listitem"><span class="tl-year">1960. 03.</span><span class="tl-body">이공대학 건설공학과 첫 신입생 입학</span></div>
-      <div class="tl-row key" role="listitem"><span class="tl-year">1962. 12.</span><span class="tl-body"><b>이공대학 공학부 기계공학과로 분리</b></span></div>
-      <div class="tl-row" role="listitem"><span class="tl-year">1963. 02.</span><span class="tl-body">이공대학 공학부 기계공학과 첫 신입생 입학</span></div>
-      <div class="tl-row" role="listitem"><span class="tl-year">1964. 02.</span><span class="tl-body">이공대학 공학부 기계공학과 첫 졸업생 졸업</span></div>
-      <div class="tl-row" role="listitem"><span class="tl-year">1971. 03.</span><span class="tl-body">본과 대학원 석사과정 신설</span></div>
-      <div class="tl-row" role="listitem"><span class="tl-year">1972. 01.</span><span class="tl-body">산업대학원에 산업기계 전공 신설</span></div>
-      <div class="tl-row" role="listitem"><span class="tl-year">1972. 03.</span><span class="tl-body">본과 대학원 박사과정 신설</span></div>
-      <div class="tl-row" role="listitem"><span class="tl-year">1974. 01.</span><span class="tl-body">산업대학원에 산업기계 전공 신설</span></div>
-      <div class="tl-row" role="listitem"><span class="tl-year">1980. 03.</span><span class="tl-body">산업대학원 산업기계전공이 기계공학 전공으로 전공명칭 변경</span></div>
-      <div class="tl-row" role="listitem"><span class="tl-year">1996. 03.</span><span class="tl-body">기전 공학부로 통합</span></div>
-      <div class="tl-row" role="listitem"><span class="tl-year">1999. 03.</span><span class="tl-body">기계공학과와 기계설계학과를 기계공학전공으로 통합</span></div>
-      <div class="tl-row key" role="listitem"><span class="tl-year">2002. 03.</span><span class="tl-body"><b>기계전자공학부에서 기계공학부로 분리 독립 (현 입학정원 180명)</b></span></div>
-      <div class="tl-row" role="listitem"><span class="tl-year">2003. 03.</span><span class="tl-body">ABEEK 인증 프로그램 가입</span></div>
-      <div class="tl-row key" role="listitem"><span class="tl-year">2010. 11.</span><span class="tl-body"><b>기계공학과 창립 50주년</b></span></div>
-      <div class="tl-row" role="listitem"><span class="tl-year">2016. 03.</span><span class="tl-body">3단계 BK21 플러스 사업단 협약 체결</span></div>
-      <div class="tl-row key" role="listitem"><span class="tl-year">2020. 08.</span><span class="tl-body"><b>4단계 BK21 사업 선정</b></span></div>
+         1972.01 과 1974.01 은 원문에 같은 문장이 두 번 적혀 있어 그대로 둔다.
+         짜임만 연세대 공식 연혁(yonsei.ac.kr/sc/314)을 따라 다시 담았다 — 위 시대 탭,
+         아래 세로 축. 연도와 문구는 한 글자도 손대지 않았고, 「1958. 12.」의 해와 달을
+         두 칸으로 나눠 놓았을 뿐이다(사이의 마침표만 짜임에 흡수됐다).
+         한/영 전환은 텍스트 노드 완전일치 사전(en.json)이라, 문장을 쪼개지 않고
+         .tl-t 안에 통째로 두어야 그대로 번역된다. 탭 이름 「전체」도 사전에 있다. -->
+
+    <!-- 시대 탭 — 기본은 hidden 이고 스크립트가 켠다.
+         JS 가 꺼져 있으면 탭이 아예 나타나지 않고 17줄이 전부 펼쳐진 채로 남는다. -->
+    <div class="tl-eras" id="tlEras" role="tablist" aria-label="연혁" hidden>
+      <button type="button" role="tab" class="tl-era" id="tlera-all"  data-era="all"  aria-controls="tlList" aria-selected="true"  tabindex="0">전체</button>
+      <button type="button" role="tab" class="tl-era" id="tlera-1958" data-era="1958" aria-controls="tlList" aria-selected="false" tabindex="-1">1958–1969</button>
+      <button type="button" role="tab" class="tl-era" id="tlera-1970" data-era="1970" aria-controls="tlList" aria-selected="false" tabindex="-1">1970–1989</button>
+      <button type="button" role="tab" class="tl-era" id="tlera-1990" data-era="1990" aria-controls="tlList" aria-selected="false" tabindex="-1">1990–1999</button>
+      <button type="button" role="tab" class="tl-era" id="tlera-2000" data-era="2000" aria-controls="tlList" aria-selected="false" tabindex="-1">2000–2020</button>
+    </div>
+
+    <!-- 연도는 h3 가 아니라 p 로 둔다 — nav.js buildJump 가 이 섹션 안의 h3 를 모아
+         「소제목 바로가기」 줄을 만드는데, 그러면 1958·1960·1962… 가 목차인 척 서 버린다.
+         목록의 이름은 aria-labelledby 로 연도를 가리켜 읽어 주게 했다. -->
+    <div class="timeline" id="tlList">
+      <div class="tl-g" data-era="1958">
+        <p class="tl-yr" id="tly1958">1958</p>
+        <ul class="tl-items" aria-labelledby="tly1958">
+          <li class="tl-e"><span class="tl-mo">12.</span><span class="tl-t">이공대학 건설공학과 신설</span></li>
+        </ul>
+      </div>
+      <div class="tl-g" data-era="1958">
+        <p class="tl-yr" id="tly1960">1960</p>
+        <ul class="tl-items" aria-labelledby="tly1960">
+          <li class="tl-e"><span class="tl-mo">03.</span><span class="tl-t">이공대학 건설공학과 첫 신입생 입학</span></li>
+        </ul>
+      </div>
+      <div class="tl-g" data-era="1958">
+        <p class="tl-yr" id="tly1962">1962</p>
+        <ul class="tl-items" aria-labelledby="tly1962">
+          <li class="tl-e is-key"><span class="tl-mo">12.</span><span class="tl-t"><b>이공대학 공학부 기계공학과로 분리</b></span></li>
+        </ul>
+      </div>
+      <div class="tl-g" data-era="1958">
+        <p class="tl-yr" id="tly1963">1963</p>
+        <ul class="tl-items" aria-labelledby="tly1963">
+          <li class="tl-e"><span class="tl-mo">02.</span><span class="tl-t">이공대학 공학부 기계공학과 첫 신입생 입학</span></li>
+        </ul>
+      </div>
+      <div class="tl-g" data-era="1958">
+        <p class="tl-yr" id="tly1964">1964</p>
+        <ul class="tl-items" aria-labelledby="tly1964">
+          <li class="tl-e"><span class="tl-mo">02.</span><span class="tl-t">이공대학 공학부 기계공학과 첫 졸업생 졸업</span></li>
+        </ul>
+      </div>
+      <div class="tl-g" data-era="1970">
+        <p class="tl-yr" id="tly1971">1971</p>
+        <ul class="tl-items" aria-labelledby="tly1971">
+          <li class="tl-e"><span class="tl-mo">03.</span><span class="tl-t">본과 대학원 석사과정 신설</span></li>
+        </ul>
+      </div>
+      <div class="tl-g" data-era="1970">
+        <p class="tl-yr" id="tly1972">1972</p>
+        <ul class="tl-items" aria-labelledby="tly1972">
+          <li class="tl-e"><span class="tl-mo">01.</span><span class="tl-t">산업대학원에 산업기계 전공 신설</span></li>
+          <li class="tl-e"><span class="tl-mo">03.</span><span class="tl-t">본과 대학원 박사과정 신설</span></li>
+        </ul>
+      </div>
+      <div class="tl-g" data-era="1970">
+        <p class="tl-yr" id="tly1974">1974</p>
+        <ul class="tl-items" aria-labelledby="tly1974">
+          <li class="tl-e"><span class="tl-mo">01.</span><span class="tl-t">산업대학원에 산업기계 전공 신설</span></li>
+        </ul>
+      </div>
+      <div class="tl-g" data-era="1970">
+        <p class="tl-yr" id="tly1980">1980</p>
+        <ul class="tl-items" aria-labelledby="tly1980">
+          <li class="tl-e"><span class="tl-mo">03.</span><span class="tl-t">산업대학원 산업기계전공이 기계공학 전공으로 전공명칭 변경</span></li>
+        </ul>
+      </div>
+      <div class="tl-g" data-era="1990">
+        <p class="tl-yr" id="tly1996">1996</p>
+        <ul class="tl-items" aria-labelledby="tly1996">
+          <li class="tl-e"><span class="tl-mo">03.</span><span class="tl-t">기전 공학부로 통합</span></li>
+        </ul>
+      </div>
+      <div class="tl-g" data-era="1990">
+        <p class="tl-yr" id="tly1999">1999</p>
+        <ul class="tl-items" aria-labelledby="tly1999">
+          <li class="tl-e"><span class="tl-mo">03.</span><span class="tl-t">기계공학과와 기계설계학과를 기계공학전공으로 통합</span></li>
+        </ul>
+      </div>
+      <div class="tl-g" data-era="2000">
+        <p class="tl-yr" id="tly2002">2002</p>
+        <ul class="tl-items" aria-labelledby="tly2002">
+          <li class="tl-e is-key"><span class="tl-mo">03.</span><span class="tl-t"><b>기계전자공학부에서 기계공학부로 분리 독립 (현 입학정원 180명)</b></span></li>
+        </ul>
+      </div>
+      <div class="tl-g" data-era="2000">
+        <p class="tl-yr" id="tly2003">2003</p>
+        <ul class="tl-items" aria-labelledby="tly2003">
+          <li class="tl-e"><span class="tl-mo">03.</span><span class="tl-t">ABEEK 인증 프로그램 가입</span></li>
+        </ul>
+      </div>
+      <div class="tl-g" data-era="2000">
+        <p class="tl-yr" id="tly2010">2010</p>
+        <ul class="tl-items" aria-labelledby="tly2010">
+          <li class="tl-e is-key"><span class="tl-mo">11.</span><span class="tl-t"><b>기계공학과 창립 50주년</b></span></li>
+        </ul>
+      </div>
+      <div class="tl-g" data-era="2000">
+        <p class="tl-yr" id="tly2016">2016</p>
+        <ul class="tl-items" aria-labelledby="tly2016">
+          <li class="tl-e"><span class="tl-mo">03.</span><span class="tl-t">3단계 BK21 플러스 사업단 협약 체결</span></li>
+        </ul>
+      </div>
+      <div class="tl-g" data-era="2000">
+        <p class="tl-yr" id="tly2020">2020</p>
+        <ul class="tl-items" aria-labelledby="tly2020">
+          <li class="tl-e is-key"><span class="tl-mo">08.</span><span class="tl-t"><b>4단계 BK21 사업 선정</b></span></li>
+        </ul>
+      </div>
     </div>
     <p class="hist-more">학부 공식 홈페이지 연혁을 그대로 옮겼습니다.</p>
   </section>
@@ -674,9 +870,69 @@ a{color:inherit;text-decoration:none}
 <!-- 카운트업 스크립트 삭제 — 이 페이지에는 [data-count] 요소가 하나도 없고
      data.js 도 싣지 않아(nav.js 뿐) 요소가 생길 경로가 없다. §03 학부 규모 숫자는
      .org-stat 에 그냥 적힌 값이라 애니메이션 대상이 아니다. -->
-<script src="assets/nav.js?v=108"></script>
-<footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;color:var(--dimmer)">
+<script src="assets/nav.js?v=109"></script>
+<footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--num);font-size:.72rem;letter-spacing:.12em;color:var(--dimmer)">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>
+
+<!-- §04 주요 연혁 — 시대 탭.
+     연혁은 HTML 에 17줄이 전부 적혀 있고, 이 스크립트는 그 위에 「거르기」만 얹는다.
+     그래서 JS 가 죽거나 꺼져 있으면 탭이 안 보일 뿐(마크업의 hidden 이 그대로 남는다)
+     연혁 자체는 하나도 사라지지 않는다. -->
+<script>
+(function () {
+  var bar = document.getElementById('tlEras');
+  var tl  = document.getElementById('tlList');
+  if (!bar || !tl) return;
+  var tabs = [].slice.call(bar.querySelectorAll('[role="tab"]'));
+  var groups = [].slice.call(tl.querySelectorAll('.tl-g'));
+  if (!tabs.length || !groups.length) return;
+
+  /* 여기까지 왔으면 거르기가 실제로 동작한다 — 그때서야 탭을 보여 준다 */
+  bar.hidden = false;
+  tl.setAttribute('role', 'tabpanel');
+  tl.setAttribute('tabindex', '0');
+
+  var first = true;
+  function pick(i, focus) {
+    var era = tabs[i].getAttribute('data-era');
+    tabs.forEach(function (t, k) {
+      var on = (k === i);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;      /* 탭 묶음은 화살표로 옮긴다 — Tab 키는 한 번만 들른다 */
+      if (on && focus) t.focus();
+    });
+    var vi = 0;
+    groups.forEach(function (g) {
+      var show = (era === 'all' || g.getAttribute('data-era') === era);
+      g.hidden = !show;
+      /* 살짝 어긋나게 들어오게 — 여덟 번째부터는 더 늦추지 않는다(기다림이 길어진다) */
+      if (show) { g.style.animationDelay = (Math.min(vi, 7) * 26) + 'ms'; vi++; }
+    });
+    tl.setAttribute('aria-labelledby', tabs[i].id);
+    if (first) { first = false; return; }   /* 첫 그리기는 그냥 둔다 — 페이지 진입 애니메이션과 겹친다 */
+    /* 같은 애니메이션을 다시 돌리려면 클래스를 뗀 뒤 한 번 강제로 재배치시켜야 한다 */
+    tl.classList.remove('tl-in');
+    void tl.offsetWidth;
+    tl.classList.add('tl-in');
+  }
+
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () { pick(i, false); });
+    t.addEventListener('keydown', function (e) {
+      var n = -1, k = e.key;
+      if (k === 'ArrowRight' || k === 'ArrowDown') n = (i + 1) % tabs.length;
+      else if (k === 'ArrowLeft' || k === 'ArrowUp') n = (i - 1 + tabs.length) % tabs.length;
+      else if (k === 'Home') n = 0;
+      else if (k === 'End') n = tabs.length - 1;
+      if (n < 0) return;
+      e.preventDefault();
+      pick(n, true);
+    });
+  });
+
+  pick(0, false);   /* 기본값 = 전체 */
+})();
+</script>
 </body>
 </html>

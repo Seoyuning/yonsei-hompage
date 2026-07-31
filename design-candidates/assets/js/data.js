@@ -289,7 +289,6 @@ window.YSME = {
    "ko": "민경민",
    "en": "Kyoungmin Min",
    "rank": "부교수",
-   "role": "대회 담당",
    "cluster": "solid",
    "labId": "csai",
    "initial": "민",

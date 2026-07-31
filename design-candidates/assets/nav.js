@@ -970,7 +970,11 @@
       /* 같은 쪽 안의 앵커 이동은 넘어가는 것이 아니다 */
       if (u.pathname === location.pathname && u.search === location.search) return;
       showLoader();
-    }, true);
+      /* 잡는 단계(capture)가 아니라 올라오는 단계(bubble)로 듣는다.
+         쪽 안에서 스스로 처리하는 링크(예: 소식의 공지 본문 — 자리에서 펴고 preventDefault)
+         는 이 시점에 이미 defaultPrevented 가 켜져 있어 위 검사에 걸러진다.
+         capture 로 들으면 그보다 먼저 돌아 「가지도 않는데 로딩 판이 뜨는」 화면이 된다. */
+    }, false);
 
     /* ③ 뒤로 가기로 되돌아오면(bfcache) 판이 켜진 채 남아 있을 수 있다 */
     addEventListener('pageshow', function (ev) { if (ev.persisted) hideLoader(); });

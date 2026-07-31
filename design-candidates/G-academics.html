@@ -28,7 +28,7 @@
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <link rel="stylesheet" href="assets/fonts.css?v=1" />
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
-<link rel="preload" as="script" href="assets/js/data.js?v=d19" />
+<link rel="preload" as="script" href="assets/js/data.js?v=d20" />
 <link rel="preload" as="script" href="assets/nav.js?v=108" />
 <style>
 /* ═══════════════════════════════════════════════════════════
@@ -531,6 +531,48 @@ a{color:inherit;text-decoration:none}
   border-left:4px solid transparent;border-right:4px solid transparent;border-top:5px solid rgba(26,61,117,.55)}
 
 /* 스크롤은 이 컨테이너 안에서만 — 페이지 전체는 절대 가로로 밀리지 않는다 */
+/* ── 기본형 표 — 트리형과 같은 분야 구분, 과목은 학기 칸에 모아 담는다 ── */
+.tree-board{display:block;min-width:0}
+.tg-head{display:grid;grid-template-columns:5.4rem repeat(8,minmax(0,1fr));
+  border-bottom:2px solid var(--navy);position:sticky;top:0;background:#fff;z-index:2}
+.tg-head span{padding:.6rem .2rem;text-align:center;font-family:var(--mono);
+  font-size:.7rem;font-weight:700;letter-spacing:.04em;color:var(--ink)}
+.tg-head span:first-child{text-align:left;padding-left:.5rem}
+.tg-band{display:grid;grid-template-columns:5.4rem repeat(8,minmax(0,1fr));
+  border-top:1px solid var(--line)}
+.tg-bl{display:flex;align-items:center;padding:.7rem .5rem;
+  font-family:var(--kr);font-size:.75rem;font-weight:800;word-break:keep-all;letter-spacing:-.01em;
+  color:var(--navy);border-right:1px solid var(--line)}
+.tg-cell{display:flex;flex-direction:column;gap:.3rem;padding:.6rem .3rem;min-width:0}
+.tg-cell:empty{padding:0}
+.tg-c{display:flex;align-items:center;justify-content:space-between;gap:.25rem;
+  padding:.4rem .45rem;border:1px solid var(--line);background:#fff;border-radius:2px;
+  font-family:var(--kr);font-size:.73rem;font-weight:600;letter-spacing:-.03em;
+  line-height:1.26;color:var(--ink);text-decoration:none;word-break:keep-all;
+  transition:border-color .18s,color .18s}
+a.tg-c:hover{border-color:var(--navy);color:var(--navy)}
+.tg-c.is-req{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:700}
+a.tg-c.is-req:hover{background:var(--navy-d,#12294f);color:#fff}
+.tg-req{flex:none;font-family:var(--mono);font-size:.6rem;font-weight:700;letter-spacing:.06em;
+  color:rgba(255,255,255,.82)}
+/* 교양 — 학기에 매이지 않으므로 여덟 칸을 통째로 쓴다 */
+.tg-band--lib .tg-lib{grid-column:2 / -1;display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:1rem clamp(1rem,2.5vw,2.2rem);
+  padding:.9rem .6rem}
+.tg-lsub h4{margin:0 0 .5rem;font-family:var(--kr);font-size:.78rem;font-weight:800;
+  letter-spacing:-.01em;color:var(--ink)}
+.tg-lsub ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.3rem}
+.tg-lsub li{font-family:var(--kr);font-size:.76rem;font-weight:500;line-height:1.55;color:var(--muted)}
+.tg-area + .tg-area{margin-top:.7rem;padding-top:.7rem;border-top:1px solid var(--line)}
+.tg-area-l{margin:0;font-family:var(--mono);font-size:.7rem;font-weight:700;letter-spacing:.06em;color:var(--navy)}
+.tg-area-t{margin:.25rem 0 0;font-family:var(--kr);font-size:.75rem;font-weight:500;line-height:1.55;color:var(--muted)}
+.tg-area-r{margin:.2rem 0 0;font-family:var(--kr);font-size:.75rem;font-weight:700;color:var(--ink)}
+@media (max-width:860px){
+  .tree-board{min-width:760px}
+  .tg-head,.tg-band{grid-template-columns:5.6rem repeat(8,1fr)}
+  .tg-bl{padding:.6rem;font-size:.76rem}
+  .tg-c{font-size:.72rem;padding:.38rem .42rem}
+}
 /* ── 기본형 / 트리형 ──
    트리형은 학기 격자를 그대로 두되 과목을 한 칸에 한 줄씩 펼친다.
    그래야 과목 사이를 잇는 선이 지나갈 빈자리가 생긴다 —
@@ -550,11 +592,15 @@ a{color:inherit;text-decoration:none}
 .tree-mode:hover,.tree-mode[aria-pressed="true"]{background:var(--navy);color:#fff}
 .tree-mode:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .tree-legend .only-tree{display:none}
-.is-tree .tree-legend .only-grid{display:none}
 .is-tree .tree-legend .only-tree{display:inline-flex}
 .is-tree .tree-scroll{display:none}
-.tf-sw-req{width:22px;height:0;border-top:2px solid var(--navy)}
-.tf-sw-seq{width:22px;height:0;border-top:2px dashed var(--dim)}
+/* 범례 표시 — 표에서 쓰는 모양을 그대로 작게 보여 준다 */
+.tree-legend li{gap:.4rem}
+.tree-legend b{font-weight:800;color:var(--ink)}
+.lg-fill{width:15px;height:15px;background:var(--navy);border:1px solid var(--navy);border-radius:2px}
+.lg-line2{width:15px;height:15px;background:#fff;border:1px solid var(--line);border-radius:2px}
+.lg-solid{width:24px;height:0;border-top:2px solid var(--navy)}
+.lg-dash{width:24px;height:0;border-top:2px dashed #6b7688}
 
 /* ── 트리형 판 ── */
 .tree-flow{margin-top:clamp(.9rem,2vh,1.4rem);overflow-x:auto;overflow-y:hidden;
@@ -601,70 +647,17 @@ a.tf-box.is-req:hover{background:var(--navy-d,#12294f);color:#fff}
   .tree-top-row{flex-wrap:wrap}
   .tree-legend{min-height:0}
 }
-.tree-scroll{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
-  border:1px solid var(--line-soft);background:#fff}
-.tree-board{display:grid;
-  grid-template-columns:3.9rem repeat(8,minmax(6.4rem,1fr));
-  gap:.42rem;padding:.7rem;min-width:56rem;align-items:stretch}
-.tree-board > *{grid-column:var(--c,auto) / span var(--cs,1);
-  grid-row:var(--r,auto) / span var(--rs,1);min-width:0}
-.tree-sem{font-family:var(--kr);font-size:.74rem;font-weight:600;color:var(--sub);
-  text-align:center;padding:.25rem .2rem .35rem;border-bottom:1px solid var(--line);
-  letter-spacing:.02em;font-variant-numeric:tabular-nums}
-.tree-band{display:flex;align-items:flex-end;
-  background:var(--navy);color:#fff;font-family:var(--kr);font-size:.78rem;font-weight:700;
-  letter-spacing:.02em;padding:.5rem .2rem;line-height:1.25}
-
-.tree-cell{background:var(--card);border:1px solid var(--line-soft);
-  padding:.5rem .5rem .55rem;display:flex;flex-direction:column;gap:.35rem}
-.tree-cell-h{font-family:var(--kr);font-size:.8rem;font-weight:700;color:var(--ink);line-height:1.35}
-.tree-h-band{display:inline-block;background:var(--navy);color:#fff;font-weight:700;
-  font-size:.72rem;letter-spacing:.02em;padding:.12rem .38rem;margin-right:.35rem;vertical-align:.06em}
-.tree-courses{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.28rem}
-.tree-course{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.15rem .35rem;
-  font-family:var(--kr);font-size:.77rem;line-height:1.35;color:#2a3a56;background:#fff;
-  border:1px solid var(--line);padding:.36rem .45rem;
-  transition:border-color .15s,color .15s,background .15s}
-/* 8열에서는 칸이 좁다 — body 의 keep-all 을 이 칩 안에서만 풀어 과목명이 칸 밖으로 새지 않게 한다 */
-.tree-course .tc-name{min-width:0;word-break:normal;overflow-wrap:anywhere}
-.tree-course .cur-badge.tree-req{flex:none}
-a.tree-course:hover,a.tree-course:focus-visible{border-color:var(--navy);color:var(--navy)}
-a.tree-course:hover .tc-name,a.tree-course:focus-visible .tc-name{text-decoration:underline;text-underline-offset:2px}
-/* 원본에서 파란 채움이던 필수 과목 — 색만으로 구분하지 않도록 '필수' 라벨을 함께 둔다 */
-.tree-course.is-req{background:var(--navy);border-color:var(--navy);color:#fff}
-.tree-course.is-req .cur-badge.tree-req{background:rgba(255,255,255,.22);color:#fff}
-a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f;border-color:#16345f;color:#fff}
-
-/* 선수과목 관문 — 원본의 빨간 점선·화살표를 네이비 점선 + 작은 화살표로 절제해 옮긴다 */
-.tree-gate{position:relative;display:flex;align-items:center;
-  padding:.2rem .2rem .6rem .65rem;min-height:2.6rem}
-.tree-gate::before{content:"";position:absolute;left:0;top:0;bottom:.5rem;
-  border-left:1px dashed rgba(26,61,117,.55)}
-.tree-gate::after{content:"";position:absolute;left:-3.5px;bottom:0;width:0;height:0;
-  border-left:4px solid transparent;border-right:4px solid transparent;border-top:5px solid rgba(26,61,117,.55)}
-.tree-gate p{font-family:var(--kr);font-size:.7rem;color:var(--muted);line-height:1.45}
-.tree-gate b{color:var(--navy);font-weight:600}
-
-/* 3-4학년 묶음 — 1학기 / 2학기 / 설계·연구, 그 아래 스페셜 토픽 가로 띠 */
-.tree-upper-grid{display:grid;grid-template-columns:1fr 1fr minmax(0,.92fr);gap:.45rem}
-.tree-sub{display:flex;flex-direction:column;gap:.3rem;min-width:0}
-.tree-sub-h{font-family:var(--kr);font-size:.74rem;font-weight:700;color:var(--sub);
-  padding-bottom:.25rem;border-bottom:1px solid var(--line);line-height:1.35}
-.tree-special{display:flex;align-items:flex-end;
-  border:1px dashed var(--line);background:#fff;padding:.42rem .5rem;
-  font-family:var(--kr);font-size:.76rem;color:var(--sub);line-height:1.4}
-
-/* 교양 행 */
-.tree-lib-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:.6rem 1.1rem}
-.tree-lib-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.22rem}
-.tree-lib-list li{position:relative;font-family:var(--kr);font-size:.76rem;color:#2a3a56;
-  line-height:1.5;padding-left:.62rem}
-.tree-lib-list li::before{content:"";position:absolute;left:0;top:.6em;width:3px;height:3px;background:var(--label)}
-.tree-area{margin-top:.55rem}
-.tree-area:first-of-type{margin-top:.1rem}
-.tree-area-lab{font-family:var(--kr);font-size:.74rem;font-weight:700;color:var(--navy);line-height:1.4}
-.tree-area-txt{font-family:var(--kr);font-size:.74rem;color:var(--sub);line-height:1.5;margin-top:.12rem}
-.tree-area-rule{font-family:var(--kr);font-size:.74rem;color:#2a3a56;font-weight:600;line-height:1.5;margin-top:.1rem}
+/* 한눈에 들어와야 한다 — 옆으로 밀어 봐야 하면 흐름이 끊긴다.
+   글자를 조금 줄이고 칸 여백을 좁혀 여덟 학기를 화면 안에 담는다.
+   휴대폰에서만 가로로 민다. */
+.tree-scroll{overflow-x:visible;border:1px solid var(--line-soft);background:#fff}
+@media (max-width:860px){
+  .tree-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .tree-board{min-width:60rem}
+}
+/* 옛 격자 규칙(.tree-board 그리드 · .tree-cell · .tree-course …)은 걷었다 —
+   기본형을 분야별 표(.tg-*)로 다시 짜면서 쓰이지 않는다. 남겨 두면
+   .tree-board > * 가 새 띠에 grid-column 을 걸어 줄이 겹쳐 보였다. */
 
 /* 넓은 화면 — 열 머리·세로 라벨이 구분을 보여주므로 칸마다 붙은 제목은 눈에서만 감춘다
    (보조기술에는 남겨 두어 좁은 화면과 같은 정보를 읽는다) */
@@ -1149,10 +1142,9 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
       <div>
         <p class="sec-kick">Course Map</p>
         <h2 id="rm-h" class="sec-title">기계공학부 교과목 트리</h2>
+        <!-- 학번 안내는 대제목 바로 밑에 — 표를 보기 전에 먼저 읽어야 하는 단서다 -->
+        <p class="tree-note" id="treeNote"></p>
       </div>
-    </div>
-    <div class="tree-top">
-      <p class="tree-note" id="treeNote"></p>
     </div>
     <!-- 범례와 전환 버튼은 표 바로 위에 붙인다 — 표를 보다 눈을 멀리 옮기지 않아도 된다 -->
     <div class="tree-bar">
@@ -1160,10 +1152,10 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
         <!-- 범례는 보기에 따라 줄 수가 달라진다. 버튼이 따라 내려가지 않도록
              버튼을 위쪽에 고정하고 범례 자리를 두 줄로 잡아 둔다. -->
         <ul class="tree-legend" aria-label="범례">
-          <li class="only-grid"><span class="tree-sw" aria-hidden="true"></span>필수 — 반드시 이수하는 과목</li>
-          <li class="only-grid"><span class="tree-sw-gate" aria-hidden="true"></span>선수과목 — 앞 과목을 이수해야 다음 학년 전공에 들어갑니다</li>
-          <li class="only-tree"><span class="tf-sw-req" aria-hidden="true"></span>공식 선수과목 — 앞 과목을 이수해야 들을 수 있습니다</li>
-          <li class="only-tree"><span class="tf-sw-seq" aria-hidden="true"></span>이어지는 과목 — 같은 과목의 다음 편(1 → 2)</li>
+          <li><span class="lg-fill" aria-hidden="true"></span><b>채움</b> — 전공필수</li>
+          <li><span class="lg-line2" aria-hidden="true"></span><b>테두리</b> — 전공선택</li>
+          <li class="only-tree"><span class="lg-solid" aria-hidden="true"></span><b>실선</b> — 공식 선수과목</li>
+          <li class="only-tree"><span class="lg-dash" aria-hidden="true"></span><b>점선</b> — 이어지는 과목(1 → 2)</li>
         </ul>
         <button type="button" class="tree-mode" id="treeMode" aria-pressed="false">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h6M4 17h6M14 12h6M10 7v10M10 12h4"/></svg>
@@ -1259,7 +1251,7 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
   </section>
 
 <!-- 단일 데이터 소스 (window.YSME) -->
-<script src="assets/js/data.js?v=d19"></script>
+<script src="assets/js/data.js?v=d20"></script>
 <script>
 (function(){
   'use strict';
@@ -1390,125 +1382,54 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
   if (treeNote && tree && tree.note) treeNote.textContent = tree.note;
 
   if (treeBoard && tree) {
-    var R_HEAD = 1, R_MSC = 2, R_GATE = 3, R_MAJOR = 4, R_LIB = 5;
+    /* 기본형 — 트리형과 같은 분야 구분(tracks)으로 나누되, 과목을 학기 칸에 모아 담는다.
+       트리형은 관계를 보여 주려 한 과목당 한 줄을 쓰지만, 기본형은 한눈에 훑는 것이
+       목적이라 촘촘한 편이 낫다. 교양은 학기와 무관한 요건이라 맨 아래 한 줄로 둔다. */
     var sems = tree.semesters || [];
-    var colOf = {}; sems.forEach(function(s,i){ colOf[s] = i + 2; });  /* 1열은 세로 라벨 */
+    var lib  = tree.liberal || null;
+    var ugByKo = {}; coursesUG.forEach(function (c) { ugByKo[c.ko] = c.code; });
+    function codeOf(c) { return c.code || ugByKo[c.ko] || ''; }
 
-    var rowById = {}; (tree.rows || []).forEach(function(r){ rowById[r.id] = r; });
-    var mscRow   = rowById.msc   || {};
-    var majorRow = rowById.major || {};
-    var lib      = tree.liberal  || null;
-    var gateAt = {}; (tree.prereq || []).forEach(function(p){ gateAt[p.gateAt] = p; });
-
-    function cellAt(row, at){
-      var found = null;
-      (row.cells || []).forEach(function(c){ if(c.at === at) found = c; });
-      return found;
-    }
-    function semKo(at){
-      var p = String(at).split('-');
-      return p.length === 2 ? (p[0] + '학년 ' + p[1] + '학기') : String(at);
-    }
-    /* 과목 링크 — 트리 데이터의 code 우선, 없으면 coursesUG 의 국문명 '완전일치'로만 해석한다.
-       (코드를 지어내지 않는다. §04 에 같은 이름의 상세 항목이 실제로 있을 때만 링크가 된다) */
-    var ugByKo = {}; coursesUG.forEach(function(c){ ugByKo[c.ko] = c.code; });
-    function codeOf(c){ return c.code || ugByKo[c.ko] || ''; }
-
-    function courseHtml(c){
+    function courseHtml(c) {
       var code = codeOf(c);
-      var cls  = 'tree-course' + (c.req ? ' is-req' : '');
-      var tag  = ' data-tc="' + esc(c.ko) + '"';
-      var body = '<span class="tc-name">' + esc(c.ko) + '</span>'
-               + (c.req ? '<span class="cur-badge tree-req">필수</span>' : '');
-      return '<li>' + (code
-        ? '<a class="' + cls + '"' + tag + ' href="#course-' + esc(code) + '" title="' + esc(c.ko) + ' — 상세 설명으로 이동">' + body + '</a>'
-        : '<span class="' + cls + '"' + tag + '>' + body + '</span>') + '</li>';
-    }
-    function listHtml(arr){
-      return '<ul class="tree-courses">' + (arr || []).map(courseHtml).join('') + '</ul>';
-    }
-    function textList(arr){
-      return '<ul class="tree-lib-list">' + (arr || []).map(function(t){
-        return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>';
-    }
-    function pos(c, r, cs, rs){
-      return ' style="--c:' + c + ';--r:' + r
-        + (cs ? ';--cs:' + cs : '') + (rs ? ';--rs:' + rs : '') + '"';
-    }
-    /* 칸 제목 — 넓은 화면에서는 눈에서 감추고(quiet) 열 머리·세로 라벨이 대신한다.
-       좁은 화면에서는 그대로 드러나 MSC/전공/교양 구분을 유지한다. */
-    function headHtml(band, txt, quiet){
-      return '<h3 class="tree-cell-h' + (quiet ? ' tree-h-quiet' : '') + '">'
-        + '<span class="tree-h-band">' + esc(band) + '</span>' + (txt ? esc(txt) : '') + '</h3>';
-    }
-    function subHtml(label, arr){
-      return '<div class="tree-sub"><h4 class="tree-sub-h">' + esc(label) + '</h4>' + listHtml(arr) + '</div>';
+      var cls  = 'tg-c' + (c.req ? ' is-req' : '');
+      var body = esc(c.ko) + (c.req ? '<b class="tg-req">필수</b>' : '');
+      return code
+        ? '<a class="' + cls + '" href="#course-' + esc(code) + '" title="' + esc(c.ko) + ' — 상세 설명으로 이동">' + body + '</a>'
+        : '<span class="' + cls + '">' + body + '</span>';
     }
 
-    var P = [];
-    /* 1) 시각 뼈대 — 열 머리(1-1…4-2)와 좌측 세로 라벨. 각 칸이 자체 제목을 가지므로 보조기술에는 숨긴다 */
-    P.push('<div class="tree-corner" aria-hidden="true"' + pos(1, R_HEAD) + '></div>');
-    sems.forEach(function(s){
-      P.push('<div class="tree-sem" aria-hidden="true"' + pos(colOf[s], R_HEAD) + '>' + esc(s) + '</div>');
-    });
-    if (mscRow.label)   P.push('<div class="tree-band" aria-hidden="true"' + pos(1, R_MSC) + '>' + esc(mscRow.label) + '</div>');
-    if (majorRow.label) P.push('<div class="tree-band" aria-hidden="true"' + pos(1, R_GATE, 0, 2) + '>' + esc(majorRow.label) + '</div>');
-    if (lib && lib.label) P.push('<div class="tree-band" aria-hidden="true"' + pos(1, R_LIB) + '>' + esc(lib.label) + '</div>');
+    var H = '<div class="tg-head"><span>구분</span>'
+          + sems.map(function (x) { return '<span>' + esc(x) + '</span>'; }).join('') + '</div>';
 
-    /* 2) 학기 순서대로 — 관문 → MSC 칸 → 전공 칸 (좁은 화면의 읽기 순서가 곧 이 순서) */
-    sems.forEach(function(s){
-      var col = colOf[s], g = gateAt[s];
-      /* 관문 문구는 한 열에 넣기엔 길다 — 점선은 해당 학기 열의 왼쪽 경계에 두고 글자만 두 열 폭으로 */
-      if (g) P.push('<div class="tree-gate"' + pos(col, R_GATE, 2) + '>'
-        + '<p>선수과목 · <b>' + esc(g.from) + '</b> 이수 후 ' + esc(g.label) + '</p></div>');
-      var m = cellAt(mscRow, s);
-      if (m) P.push('<div class="tree-cell tree-cell--msc"' + pos(col, R_MSC) + '>'
-        + headHtml(mscRow.label, semKo(s), true) + listHtml(m.courses) + '</div>');
-      var j = cellAt(majorRow, s);
-      if (j) P.push('<div class="tree-cell tree-cell--major"' + pos(col, R_MAJOR) + '>'
-        + headHtml(majorRow.label, semKo(s), true) + listHtml(j.courses) + '</div>');
+    (tree.tracks || []).forEach(function (tr) {
+      var bySem = {};
+      (tr.courses || []).forEach(function (c) { (bySem[c.at] = bySem[c.at] || []).push(c); });
+      H += '<section class="tg-band"><div class="tg-bl">' + esc(tr.label) + '</div>';
+      sems.forEach(function (at) {
+        var list = bySem[at] || [];
+        H += '<div class="tg-cell">' + list.map(courseHtml).join('') + '</div>';
+      });
+      H += '</section>';
     });
 
-    /* 3) 3학년 이후 묶음 — MSC 「1과목 선택」 박스, 전공 3-4학년 묶음 */
-    var upCol  = colOf[sems[4]] || 6;                 /* 3-1 열 */
-    var upSpan = Math.max(1, sems.length - 4);        /* 3-1 … 4-2 */
-    if (mscRow.choose) {
-      P.push('<div class="tree-cell tree-cell--msc"' + pos(upCol, R_MSC, 2) + '>'
-        + headHtml(mscRow.label, mscRow.choose.label, false)
-        + listHtml(mscRow.choose.courses) + '</div>');
-    }
-    var up = majorRow.upper;
-    if (up) {
-      var inner = (up.terms || []).map(function(t){ return subHtml(t.label, t.courses); }).join('');
-      if (majorRow.capstone && majorRow.capstone.length) inner += subHtml('설계 · 연구 · 세미나', majorRow.capstone);
-      P.push('<div class="tree-cell tree-cell--major"' + pos(upCol, R_MAJOR, upSpan) + '>'
-        + headHtml(majorRow.label, up.label, false)
-        + '<div class="tree-upper-grid">' + inner + '</div>'
-        + (up.special ? '<p class="tree-special">' + esc(up.special.ko) + '</p>' : '')
-        + '</div>');
-    }
-
-    /* 4) 교양 행 — 공통 / 과학기술 교양 / 영역 교양(학번 그룹별 요건) */
+    /* 교양 — 학기에 매이지 않는 요건이라 아래에 한 줄로 편다 */
     if (lib) {
-      var libCols = '';
+      var L = '';
       if (lib.common && lib.common.length)
-        libCols += '<div class="tree-sub"><h4 class="tree-sub-h">공통</h4>' + textList(lib.common) + '</div>';
+        L += '<div class="tg-lsub"><h4>공통</h4><ul>' + lib.common.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>';
       if (lib.tech && lib.tech.length)
-        libCols += '<div class="tree-sub"><h4 class="tree-sub-h">과학기술 교양</h4>' + textList(lib.tech) + '</div>';
+        L += '<div class="tg-lsub"><h4>과학기술 교양</h4><ul>' + lib.tech.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>';
       if (lib.areas && lib.areas.length)
-        libCols += '<div class="tree-sub"><h4 class="tree-sub-h">영역 교양</h4>'
-          + lib.areas.map(function(a){
-              return '<div class="tree-area">'
-                + '<p class="tree-area-lab">' + esc(a.label) + '</p>'
-                + '<p class="tree-area-txt">' + esc(a.fields) + '</p>'
-                + '<p class="tree-area-rule">' + esc(a.rule) + '</p></div>';
-            }).join('') + '</div>';
-      P.push('<div class="tree-cell tree-cell--lib"' + pos(2, R_LIB, sems.length) + '>'
-        + headHtml(lib.label, '', true)
-        + '<div class="tree-lib-grid">' + libCols + '</div></div>');
+        L += '<div class="tg-lsub"><h4>영역 교양</h4>' + lib.areas.map(function (a) {
+              return '<div class="tg-area"><p class="tg-area-l">' + esc(a.label) + '</p>'
+                   + '<p class="tg-area-t">' + esc(a.fields) + '</p>'
+                   + '<p class="tg-area-r">' + esc(a.rule) + '</p></div>'; }).join('') + '</div>';
+      H += '<section class="tg-band tg-band--lib"><div class="tg-bl">' + esc(lib.label || '교양') + '</div>'
+         + '<div class="tg-lib">' + L + '</div></section>';
     }
 
-    treeBoard.innerHTML = P.join('');
+    treeBoard.innerHTML = H;
   }
 
   /* ── §03 트리는 학번 구분 없는 공식 단일 도식.

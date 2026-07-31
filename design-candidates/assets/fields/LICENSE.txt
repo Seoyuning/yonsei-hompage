@@ -4,27 +4,36 @@
 **어느 것도 저작자 표시(attribution)가 의무가 아니다.**
 그래서 화면에는 출처 자막을 넣지 않는다. 이 파일이 출처 기록을 대신한다.
 
-solid.jpg          MetalFatigue 006
-                   Public domain · https://commons.wikimedia.org/wiki/File:MetalFatigue_006.jpg
-                   (대비 보정 후 1100x1375 로 잘라 씀)
+solid.jpg          Stator Blade with Thermal Barrier Testing on Hot Gas Rig (GRC-1975-C-01372)
+                   Public domain (NASA)
+                   https://commons.wikimedia.org/wiki/File:Stator_Blade_with_Thermal_Barrier_Testing_on_Hot_Gas_Rig_(GRC-1975-C-01372).jpg
 
-thermal.jpg        Cutaway jet engine
-                   CC0 · https://commons.wikimedia.org/wiki/File:Cutaway_jet_engine.jpg
+thermal.jpg        NASA Continues Artemis Moon Rocket Engine Tests with 1st Hot Fire of 2024 (RS-25 test)
+                   Public domain (NASA)
+                   https://commons.wikimedia.org/wiki/File:NASA_Continues_Artemis_Moon_Rocket_Engine_Tests_with_1st_Hot_Fire_of_2024_(S24-001_SSC-20240117-s00002_RS-25_test).jpg
 
-dynamics.jpg       Humanoid robot is being programmed
-                   CC0 · https://commons.wikimedia.org/wiki/File:Humanoid_robot_is_being_programmed.jpg
+dynamics.jpg       RSGS robotic arm in NRL's thermal vacuum chamber (220616-N-CZ309-2106)
+                   Public domain (U.S. Navy)
+                   https://commons.wikimedia.org/wiki/File:RSGS_robotic_arm_in_NRL%27s_thermal_vacuum_chamber_(220616-N-CZ309-2106).jpg
 
 manufacturing.jpg  Lathe, By John Lang & Sons, 1900
-                   CC0 · https://commons.wikimedia.org/wiki/File:Lathe,_By_John_Lang_%26_Sons,_1900.JPG
+                   CC0
+                   https://commons.wikimedia.org/wiki/File:Lathe,_By_John_Lang_%26_Sons,_1900.JPG
 
 micro.jpg          Silicon wafer researcher
-                   Public domain (NASA) · https://commons.wikimedia.org/wiki/File:Silicon_wafer_researcher.jpg
+                   Public domain (NASA)
+                   https://commons.wikimedia.org/wiki/File:Silicon_wafer_researcher.jpg
 
 optics.jpg         Gas Laser Interferometer in the Electric Conversion Laboratory (GRC-1966-C-03919)
-                   Public domain (NASA) · https://commons.wikimedia.org/wiki/File:Gas_Laser_Interferometer_in_the_Electric_Conversion_Laboratory_(GRC-1966-C-03919).jpg
+                   Public domain (NASA)
+                   https://commons.wikimedia.org/wiki/File:Gas_Laser_Interferometer_in_the_Electric_Conversion_Laboratory_(GRC-1966-C-03919).jpg
 
 받은 날 2026-07-31 · 모두 1100x1375 (4:5) 로 축소·중앙 크롭
 
 바뀐 이유
   이전에는 CC BY / CC BY-SA 사진을 써서 저작자 표시가 법적 의무였고, 화면마다
   출처 자막을 달아야 했다. 표기 의무가 없는 자료로 모두 교체해 자막을 걷었다.
+
+여전히 표기가 필요한 것 하나
+  마스코트 독수리(assets/me-eagle.png)는 CC BY 4.0 파생물이라 저작자 표시가 의무다.
+  모든 페이지 푸터(nav.js .yft-credit)에 적어 두었다.

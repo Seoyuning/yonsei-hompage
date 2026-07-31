@@ -531,6 +531,40 @@ a{color:inherit;text-decoration:none}
   border-left:4px solid transparent;border-right:4px solid transparent;border-top:5px solid rgba(26,61,117,.55)}
 
 /* 스크롤은 이 컨테이너 안에서만 — 페이지 전체는 절대 가로로 밀리지 않는다 */
+/* ── 기본형 / 트리형 ──
+   트리형은 격자 위에 선을 한 겹 덮어 과목 사이 관계를 잇는다.
+   근거가 있는 것만 긋는다 — 공식 트리 이미지의 선수과목 두 개(실선)와
+   번호로 이어지는 과목(1→2, 점선). 없는 관계를 지어내지 않는다. */
+.tree-top-row{display:flex;align-items:flex-end;justify-content:space-between;
+  gap:1rem;flex-wrap:wrap}
+.tree-mode{flex:0 0 auto;display:inline-flex;align-items:center;gap:.45rem;
+  font-family:var(--kr);font-size:.82rem;font-weight:700;letter-spacing:-.01em;
+  color:var(--navy);background:none;border:1px solid var(--navy);border-radius:0;
+  padding:.5rem .85rem;cursor:pointer;transition:background .18s,color .18s}
+.tree-mode svg{width:15px;height:15px;display:block}
+.tree-mode:hover{background:var(--navy);color:#fff}
+.tree-mode[aria-pressed="true"]{background:var(--navy);color:#fff}
+.tree-mode:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tree-legend .only-tree{display:none}
+.is-tree .tree-legend .only-tree{display:inline-flex}
+.tree-sw-line{width:20px;height:0;border-top:1.5px solid var(--navy)}
+.tree-sw-dash{width:20px;height:0;border-top:1.5px dashed var(--dim)}
+/* 선을 덮을 자리 — 격자와 같은 크기로 겹친다 */
+.tree-wrap2{position:relative}
+.tree-links{position:absolute;inset:0;width:100%;height:100%;
+  pointer-events:none;z-index:2;opacity:0;transition:opacity .35s ease}
+.is-tree .tree-links{opacity:1}
+.tree-links path{fill:none;stroke:var(--navy);stroke-width:1.5}
+.tree-links path.seq{stroke:var(--dim);stroke-dasharray:4 4}
+/* 트리형에서는 이어진 과목이 또렷하게, 나머지는 한 단계 물러난다 */
+.is-tree .tree-course:not(.linked){opacity:.5}
+@media (max-width:860px){
+  /* 좁은 화면은 세로 스택이라 선을 그릴 자리가 없다 */
+  .tree-mode{display:none}
+  .tree-links{display:none}
+  .is-tree .tree-course:not(.linked){opacity:1}
+}
+@media (prefers-reduced-motion:reduce){.tree-links{transition:none}}
 .tree-scroll{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
   border:1px solid var(--line-soft);background:#fff}
 .tree-board{display:grid;
@@ -1083,13 +1117,25 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
     </div>
     <div class="tree-top">
       <p class="tree-note" id="treeNote"></p>
-      <ul class="tree-legend" aria-label="범례">
-        <li><span class="tree-sw" aria-hidden="true"></span>필수 — 반드시 이수하는 과목</li>
-        <li><span class="tree-sw-gate" aria-hidden="true"></span>선수과목 — 앞 과목을 이수해야 다음 학년 전공에 들어갑니다</li>
-      </ul>
+      <div class="tree-top-row">
+        <ul class="tree-legend" aria-label="범례">
+          <li><span class="tree-sw" aria-hidden="true"></span>필수 — 반드시 이수하는 과목</li>
+          <li><span class="tree-sw-gate" aria-hidden="true"></span>선수과목 — 앞 과목을 이수해야 다음 학년 전공에 들어갑니다</li>
+          <li class="only-tree"><span class="tree-sw-line" aria-hidden="true"></span>실선 — 공식 선수과목</li>
+          <li class="only-tree"><span class="tree-sw-dash" aria-hidden="true"></span>점선 — 이어지는 과목(1 → 2)</li>
+        </ul>
+        <!-- 기본형 / 트리형 — 트리형은 과목 사이 관계를 선으로 잇는다 -->
+        <button type="button" class="tree-mode" id="treeMode" aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h6M4 17h6M14 12h6M10 7v10M10 12h4"/></svg>
+          <span id="treeModeLabel">트리형으로</span>
+        </button>
+      </div>
     </div>
     <div class="tree-scroll" tabindex="0" role="group" aria-label="기계공학부 교과목 트리">
-      <div class="tree-board" id="treeBoard"></div>
+      <div class="tree-wrap2">
+        <div class="tree-board" id="treeBoard"></div>
+        <svg class="tree-links" id="treeLinks" aria-hidden="true"></svg>
+      </div>
     </div>
     <noscript><p class="table-note">교과목 트리는 JavaScript 활성 시 표시됩니다 — 과목별 상세는 아래 <a href="#courses" style="color:var(--navy);font-weight:600">학부 전공 교과</a> 목록에서 확인하세요.</p></noscript>
     <p class="table-note">학부가 배포한 「기계공학 교과목 이수체계」를 옮긴 것입니다 · 개설 교과목과 학점은 학번·학기에 따라 달라질 수 있으니 연세포털과 학사요람에서 확인하세요.</p>
@@ -1331,11 +1377,12 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
     function courseHtml(c){
       var code = codeOf(c);
       var cls  = 'tree-course' + (c.req ? ' is-req' : '');
+      var tag  = ' data-tc="' + esc(c.ko) + '"';
       var body = '<span class="tc-name">' + esc(c.ko) + '</span>'
                + (c.req ? '<span class="cur-badge tree-req">필수</span>' : '');
       return '<li>' + (code
-        ? '<a class="' + cls + '" href="#course-' + esc(code) + '" title="' + esc(c.ko) + ' — 상세 설명으로 이동">' + body + '</a>'
-        : '<span class="' + cls + '">' + body + '</span>') + '</li>';
+        ? '<a class="' + cls + '"' + tag + ' href="#course-' + esc(code) + '" title="' + esc(c.ko) + ' — 상세 설명으로 이동">' + body + '</a>'
+        : '<span class="' + cls + '"' + tag + '>' + body + '</span>') + '</li>';
     }
     function listHtml(arr){
       return '<ul class="tree-courses">' + (arr || []).map(courseHtml).join('') + '</ul>';
@@ -1671,6 +1718,94 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
     });
     grShow(grLatest);
   }
+
+
+  /* ── 기본형 / 트리형 ──
+     트리형은 격자 위에 선을 덮어 과목 사이 관계를 잇는다. 근거가 있는 것만 긋는다:
+       실선 — 공식 「교과목 트리」 이미지의 선수과목 화살표, 그리고 data.js courses[].prereq
+       점선 — 번호로 이어지는 과목(공학수학 1→2→3→4 처럼 같은 과목의 다음 편)
+     없는 관계는 지어내지 않는다. 좁은 화면은 세로 스택이라 선을 긋지 않는다. */
+  (function () {
+    var wrap = document.querySelector('.tree-wrap2');
+    var svg  = document.getElementById('treeLinks');
+    var btn  = document.getElementById('treeMode');
+    var lab  = document.getElementById('treeModeLabel');
+    var sec  = document.getElementById('roadmap');
+    if (!wrap || !svg || !btn || !sec || !tree) return;
+
+    /* 이어지는 과목 — 이름의 번호만 보고 잇는다(관계를 지어내는 것이 아니라
+       「공학수학 2」 다음이 「공학수학 3」이라는 이름의 사실을 따르는 것이다) */
+    var SEQ = [
+      ['공학수학 1','공학수학 2'], ['공학수학 2','공학수학 3'], ['공학수학 3','공학수학 4'],
+      ['공학물리학 및 실험 1','공학물리학 및 실험 2'],
+      ['공학화학 및 실험 1','공학화학 및 실험 2'],
+      ['기계공학실험(1)','기계공학실험(2)']
+    ];
+    /* 공식 선수과목 — data.js courses[].prereq (코드 기준) */
+    var PRE = [];
+    (D.courses || []).forEach(function (c) {
+      (c.prereq || []).forEach(function (pc) {
+        var from = null;
+        (D.courses || []).forEach(function (x) { if (x.code === pc) from = x.ko; });
+        if (from) PRE.push([from, c.ko]);
+      });
+    });
+
+    function find(name) {
+      /* 트리 안의 과목 상자를 이름으로 찾는다 — 트리 표기와 courses 의 표기가
+         다를 수 있어(기계공학실험1 / 기계공학실험(1)) 괄호·공백을 지우고 맞춘다 */
+      var key = String(name).replace(/[()\s]/g, '');
+      var hit = null;
+      [].forEach.call(wrap.querySelectorAll('[data-tc]'), function (el) {
+        if (hit) return;
+        if (el.getAttribute('data-tc').replace(/[()\s]/g, '') === key) hit = el;
+      });
+      return hit;
+    }
+
+    function elbow(a, b) {
+      /* ㄱ 자로 꺾어 잇는다 — 곧은 대각선은 격자 위에서 어디로 가는지 읽기 어렵다 */
+      var W = wrap.getBoundingClientRect();
+      var A = a.getBoundingClientRect(), B = b.getBoundingClientRect();
+      var x1 = A.right - W.left, y1 = A.top + A.height / 2 - W.top;
+      var x2 = B.left - W.left,  y2 = B.top + B.height / 2 - W.top;
+      if (x2 < x1) { x1 = A.left - W.left; x2 = B.right - W.left; }
+      var mx = x1 + (x2 - x1) / 2;
+      return 'M' + x1 + ',' + y1 + ' H' + mx + ' V' + y2 + ' H' + x2;
+    }
+
+    function draw() {
+      svg.innerHTML = '';
+      [].forEach.call(wrap.querySelectorAll('.linked'), function (e) { e.classList.remove('linked'); });
+      if (!sec.classList.contains('is-tree')) return;
+      var W = wrap.getBoundingClientRect();
+      svg.setAttribute('viewBox', '0 0 ' + Math.round(W.width) + ' ' + Math.round(W.height));
+      var ns = 'http://www.w3.org/2000/svg';
+      function line(pair, cls) {
+        var a = find(pair[0]), b = find(pair[1]);
+        if (!a || !b) return;
+        var p = document.createElementNS(ns, 'path');
+        p.setAttribute('d', elbow(a, b));
+        if (cls) p.setAttribute('class', cls);
+        svg.appendChild(p);
+        a.classList.add('linked'); b.classList.add('linked');
+      }
+      PRE.forEach(function (p) { line(p, ''); });
+      SEQ.forEach(function (p) { line(p, 'seq'); });
+    }
+
+    btn.addEventListener('click', function () {
+      var on = !sec.classList.contains('is-tree');
+      sec.classList.toggle('is-tree', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      if (lab) lab.textContent = on ? '기본형으로' : '트리형으로';
+      draw();
+    });
+    addEventListener('resize', function () { if (sec.classList.contains('is-tree')) draw(); }, { passive: true });
+    /* 가로로 밀어 볼 때도 선이 따라온다 — 선은 격자와 같은 좌표계에 있다 */
+    var sc = sec.querySelector('.tree-scroll');
+    if (sc) sc.addEventListener('scroll', function () { if (sec.classList.contains('is-tree')) draw(); }, { passive: true });
+  })();
 
   /* ── §04 학부 전공 교과 — 영역별 편집형(재디자인).
      전공필수는 이수 순서 그대로 한 블록, 전공선택은 6개 연구 분야로 묶어 정돈.

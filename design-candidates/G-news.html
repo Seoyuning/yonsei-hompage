@@ -22,7 +22,7 @@
 <meta name="twitter:description" content="학부·대학원 공지와 뉴스·연구성과, 세미나·행사, 학위논문심사, 취업 정보." />
 <meta name="twitter:image" content="https://yonsei-me-homepage.vercel.app/assets/og-cover.jpg" />
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
-<link rel="preload" as="script" href="assets/js/data.js?v=d20" />
+<link rel="preload" as="script" href="assets/js/data.js?v=d21" />
 <link rel="preload" as="script" href="assets/nav.js?v=111" />
 <style>
 /* 소식 — 흰 배경 · 네이비 제목 · 실제 학과식 풀폭 게시판(표) 목록.
@@ -323,10 +323,10 @@ a{color:inherit;text-decoration:none}
 .cal-range{font-family:var(--num);font-size:.78rem;color:var(--label);margin:.55rem 0 0;
   font-variant-numeric:tabular-nums}
 .cal-list{border-top:0;margin-top:.3rem}
-.cal-e{display:grid;grid-template-columns:3.9rem minmax(0,1fr);gap:.2rem .8rem;
+.cal-e{display:grid;grid-template-columns:4.7rem minmax(0,1fr);gap:.2rem .8rem;
   padding:.85rem .1rem;border-bottom:1px solid var(--line-soft);text-decoration:none;color:inherit}
 .cal-e:hover .cal-e-t{color:var(--coral)}
-.cal-e-d{grid-row:1 / span 2;font-family:var(--num);font-size:.78rem;font-weight:700;
+.cal-e-d{grid-row:1 / span 2;font-family:var(--num);font-size:.76rem;font-weight:700;white-space:nowrap;
   color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.5;padding-top:.08rem}
 .cal-e-k{font-family:var(--mono);font-size:.66rem;font-weight:600;letter-spacing:.12em;
   text-transform:uppercase;color:var(--k-c,var(--muted))}
@@ -498,11 +498,12 @@ a{color:inherit;text-decoration:none}
         <p class="cal-range" id="calRange"></p>
         <div class="cal-list" id="calList" aria-live="polite"></div>
         <p class="cal-src">
-          날짜는 학부 공식 게시판 글 <b>제목에 적힌 일정 날짜</b>를 그대로 옮긴 것입니다.
-          제목에 날짜가 없는 글은 달력에 올리지 않았습니다.
-          <br />출처 — <a href="https://me.yonsei.ac.kr/me/community/seminar.do" target="_blank" rel="noopener">학부 세미나 <span aria-hidden="true">↗</span></a>
+          <b>학사일정 · 시험 · 휴일</b>은 연세대학교 공식 학사일정(2026학년도 1·2학기)을 그대로 옮긴 것입니다.
+          <b>세미나 · 행사</b>는 학부 공식 게시판 글 <b>제목에 적힌 일정 날짜</b>를 옮겼고,
+          제목에 날짜가 없는 글은 올리지 않았습니다.
+          <br />출처 — <a href="https://www.yonsei.ac.kr/sc/373/subview.do" target="_blank" rel="noopener">연세대학교 학사일정 <span aria-hidden="true">↗</span></a>
+          · <a href="https://me.yonsei.ac.kr/me/community/seminar.do" target="_blank" rel="noopener">학부 세미나 <span aria-hidden="true">↗</span></a>
           · <a href="https://me.yonsei.ac.kr/me/community/seminar_graduate1.do" target="_blank" rel="noopener">행사 <span aria-hidden="true">↗</span></a>
-          · <a href="https://me.yonsei.ac.kr/me/community/degree_thesis_review.do" target="_blank" rel="noopener">학위논문심사 <span aria-hidden="true">↗</span></a>
         </p>
       </div>
     </div>
@@ -567,7 +568,7 @@ a{color:inherit;text-decoration:none}
   </section>
   </main>
 
-<script src="assets/js/data.js?v=d20"></script>
+<script src="assets/js/data.js?v=d21"></script>
 <script>
 (function(){
   'use strict';
@@ -913,10 +914,14 @@ a{color:inherit;text-decoration:none}
     var legEl = document.getElementById('calLegend');
     var prevB = document.getElementById('calPrev'), nextB = document.getElementById('calNext');
 
+    /* 학위논문심사는 달력에서 뺐다(소식 › 학위논문심사 목록에는 그대로 있다).
+       대신 본교 공식 학사일정을 세 갈래로 나눠 얹는다. */
     var KIND = {
-      sem:    { ko:'세미나',      en:'Seminar', c:'var(--navy)' },
-      evt:    { ko:'행사',        en:'Event',   c:'var(--accent)' },
-      thesis: { ko:'학위논문심사', en:'Defense', c:'var(--dim,#6b7688)' }
+      acad:    { ko:'학사일정', en:'Academic', c:'var(--navy)' },
+      exam:    { ko:'시험',     en:'Exam',     c:'#a33' },
+      holiday: { ko:'휴일·기념일', en:'Holiday', c:'var(--dim,#6b7688)' },
+      sem:     { ko:'세미나',   en:'Seminar',  c:'#2f6db5' },
+      evt:     { ko:'행사',     en:'Event',    c:'var(--accent)' }
     };
     var LANES = 3;   /* 한 칸에 보여 줄 띠 수. 넘치면 「+n」으로 접는다 */
 
@@ -954,7 +959,14 @@ a{color:inherit;text-decoration:none}
     }
 
     var EV = [];
-    [['sem', D.seminars], ['evt', D.events], ['thesis', D.thesisReview]].forEach(function(pair){
+    /* ① 본교 공식 학사일정 — 날짜가 데이터에 그대로 들어 있어 제목을 캘 필요가 없다 */
+    var ACS = D.academicCalendarSource || null;
+    (D.academicCalendar || []).forEach(function(x){
+      EV.push({ k:x.k || 'acad', s:x.s, e:x.e || x.s, title:x.t, short:x.t,
+                url:(ACS && ACS.url) || '' });
+    });
+    /* ② 학부 게시판의 세미나 · 행사 — 제목에 적힌 날짜만 읽는다 */
+    [['sem', D.seminars], ['evt', D.events]].forEach(function(pair){
       (pair[1] || []).forEach(function(x){
         var d = pick(x.title, x.date);
         if(!d) return;
@@ -1010,11 +1022,13 @@ a{color:inherit;text-decoration:none}
 
     function rowHtml(ev){
       var d = md(ev.s) + (ev.s !== ev.e ? ' – '+md(ev.e) : '');
-      return '<a class="cal-e" style="--k-c:'+KIND[ev.k].c+'" href="'+esc(ev.url)+'" target="_blank" rel="noopener">'
-        + '<span class="cal-e-d">'+esc(d)+'</span>'
+      var inner = '<span class="cal-e-d">'+esc(d)+'</span>'
         + '<span class="cal-e-k">'+esc(isEn()?KIND[ev.k].en:KIND[ev.k].ko)+'</span>'
-        + '<span class="cal-e-t">'+esc(ev.title)+'</span>'
-        + '</a>';
+        + '<span class="cal-e-t">'+esc(ev.title)+'</span>';
+      /* 학사일정에는 글 하나하나의 주소가 없다 — 링크인 척하지 않고 그냥 줄로 둔다 */
+      return ev.url
+        ? '<a class="cal-e" style="--k-c:'+KIND[ev.k].c+'" href="'+esc(ev.url)+'" target="_blank" rel="noopener">'+inner+'</a>'
+        : '<div class="cal-e" style="--k-c:'+KIND[ev.k].c+'">'+inner+'</div>';
     }
 
     /* 오른쪽 — 고른 날이 든 주(일~토)의 일정. 고른 날이 없으면 그 달 첫 주. */
@@ -1098,8 +1112,10 @@ a{color:inherit;text-decoration:none}
           if(L >= LANES){ if(lanes[L]) over++; continue; }
           var ev = lanes[L];
           if(!ev){ chips += '<span class="cal-c is-gap" aria-hidden="true"></span>'; continue; }
-          /* 그 주에서 이 일정이 처음 나오는 칸에만 이름을 쓴다. 이어지는 칸은 띠만 */
-          var mid = !(ev.s === k || (c % 7) === 0);
+          /* 이름을 쓰는 칸 — 일정이 시작하는 날 · 그 주의 첫 칸 · 이 달의 1일.
+             달을 넘어 온 일정은 앞 달 칸을 그리지 않으므로, 1일에도 이름을 써 주지 않으면
+             그 주 내내 이름 없는 빈 띠만 남는다(지난 달 4/28 시작 → 5/1 칸이 그랬다). */
+          var mid = !(ev.s === k || (c % 7) === 0 || dt.getDate() === 1);
           chips += '<span class="cal-c'+(mid?' is-mid':'')+'" style="--k-c:'+KIND[ev.k].c+'">'
                  + (mid ? '' : esc(ev.short)) + '</span>';
         }

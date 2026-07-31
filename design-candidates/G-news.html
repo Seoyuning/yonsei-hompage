@@ -1041,22 +1041,15 @@ a{color:inherit;text-decoration:none}
         cur.setDate(cur.getDate()+1);
       }
       items.sort(function(a,b){ return a.s < b.s ? -1 : a.s > b.s ? 1 : 0; });
-      /* 「8/9 – 8/15 · 8/10 선택」은 무슨 말인지 읽히지 않았다.
-         고른 날이 있으면 그 날을 제목으로 올리고, 같은 주라는 사실은 아랫줄에 풀어 쓴다. */
+      /* 머리는 늘 「이번 주 일정」, 아랫줄은 지금 보고 있는 주의 날짜 범위 하나.
+         예전엔 「7월 13일이 든 주 (7월 12일 ~ 7월 18일) 전체」처럼 풀어 썼는데
+         한 줄에 날짜가 셋이라 오히려 읽히지 않았다. */
       var mdKo = function(k){ var q=k.split('-'); return (q[1]|0)+'월 '+(q[2]|0)+'일'; };
-      var head = isEn() ? 'This week' : '이번 주 일정';
-      var line = isEn()
-        ? (md(toKey(ws)) + ' – ' + md(toKey(we)))
-        : (mdKo(toKey(ws)) + ' ~ ' + mdKo(toKey(we)));
-      if(sel){
-        head = isEn() ? md(sel) : mdKo(sel);
-        line = isEn()
-          ? ('Week of ' + md(toKey(ws)) + ' – ' + md(toKey(we)))
-          : (mdKo(sel) + '이 든 주 (' + mdKo(toKey(ws)) + ' ~ ' + mdKo(toKey(we)) + ') 전체');
-      }
-      headEl.childNodes[0].nodeValue = head;
+      headEl.childNodes[0].nodeValue = isEn() ? 'This week' : '이번 주 일정';
       cntEl.textContent = items.length + (isEn() ? ' items' : '건');
-      rangeEl.textContent = line;
+      rangeEl.textContent = (isEn() ? 'Selected : ' : '현재 선택 : ')
+        + (isEn() ? (md(toKey(ws)) + ' – ' + md(toKey(we)))
+                  : (mdKo(toKey(ws)) + ' ~ ' + mdKo(toKey(we))));
       /* 고른 날에 일정이 없으면 그것부터 알린다 — 「없다」도 찾으러 온 사람에게는 답이다.
          그 아래에 같은 주의 일정은 그대로 이어 둔다(주간 화면이므로 비워 두지 않는다). */
       var note = '';

@@ -105,6 +105,20 @@
   /* ── 저장(초안) ── */
   var schedule = U.debounce(function () { flush(); }, 700);
 
+  /** 두 사전 원문이 **내용상** 같은가 (표기 차이는 무시한다) */
+  function sameDict(a, b) {
+    var x = parse(a), y = parse(b);
+    if (!x || !y) return false;
+    var kx = Object.keys(x), ky = Object.keys(y);
+    if (kx.length !== ky.length) return false;
+    for (var i = 0; i < kx.length; i++) {
+      var k = kx[i];
+      if (!Object.prototype.hasOwnProperty.call(y, k)) return false;
+      if (x[k] !== y[k]) return false;
+    }
+    return true;
+  }
+
   function flush() {
     if (!map || locked) return Promise.resolve();
     var src = serialize(map);
@@ -117,7 +131,10 @@
       status();
       pushToScreen();
     };
-    if (baseSrc != null && src === baseSrc) {
+    /* 표기가 원문과 조금 달라도(들여쓰기·키 순서·마지막 줄바꿈) 내용이 같으면 바뀐 게 아니다.
+       문자열만 비교하면 한/영 패널을 **열기만 해도** 사전이 「미저장」으로 잡혀
+       게시 목록에 아무 내용 없는 파일이 끼어든다. */
+    if (baseSrc != null && (src === baseSrc || sameDict(src, baseSrc))) {
       isDirty = false;
       return Y.store.del('drafts', DICT_PATH).then(done, done);
     }

@@ -233,6 +233,9 @@
     Y.bus.on('align:change', onAlignChange);
     Y.bus.on('live:stale', onStale);
     Y.bus.on('session:change', function () { setStatus({ author: Y.session.author() }); });
+    /* 모바일 모드는 Esc 나 프레임 안 「닫기」 로도 꺼진다. 그때도 버튼 불이 꺼져야 한다 —
+       버튼을 눌러 끈 경우에만 맞추면 상태 표시와 버튼이 어긋난다. */
+    Y.bus.on('mobile:change', function () { syncButtons(); });
 
     setStatus({ page: U.pagePath(), author: Y.session.author(), mode: '보기' });
     refreshDrafts();
@@ -304,10 +307,14 @@
   /* ══════════════════════════════════════════════════════════
      2. 상태바
      ══════════════════════════════════════════════════════════ */
-  function langLabel() {
-    var v = 'ko';
-    try { v = localStorage.getItem('ysme-lang') || 'ko'; } catch (e) {}
-    return v === 'en' ? 'EN' : 'KO';
+  /* 값을 주면 그것을, 안 주면 저장된 언어를 표기로 바꾼다.
+     i18n-edit 는 'ko'/'en' 소문자를 넘기므로 여기서 표기를 통일해야
+     화면마다 KO / ko 가 섞이지 않는다. */
+  function langLabel(v) {
+    if (v == null || v === '') {
+      try { v = localStorage.getItem('ysme-lang') || 'ko'; } catch (e) { v = 'ko'; }
+    }
+    return String(v).toLowerCase() === 'en' ? 'EN' : 'KO';
   }
 
   function setStatus(patch) {
@@ -323,7 +330,7 @@
       { t: status.drafts ? '미저장 ' + status.drafts + '건' : '초안 없음', c: status.drafts ? 'is-dirty' : '' },
       { t: status.author || Y.session.author(), c: '' },
       { t: (status.mode || '보기') + ' 모드', c: editing ? 'is-edit' : '' },
-      { t: status.lang || langLabel(), c: '' }
+      { t: langLabel(status.lang), c: '' }
     ];
     if (status.saved) items.push({ t: '게시 ' + status.saved, c: '' });
     for (var i = 0; i < items.length; i++) {
@@ -1493,6 +1500,21 @@
     });
   }
 
+  /** 초안 하나를 사람 말로 요약한다 — "글 13건" · 안 되면 줄·글자 수로 물러선다. */
+  function describeDraft(d) {
+    var orig = d.origSrc == null ? '' : d.origSrc;
+    if (Y.changes && Y.changes.of) {
+      try {
+        var r = Y.changes.of(d.path, orig, d.src);
+        if (r && r.ok && r.list && r.list.length) return Y.changes.summarize(r.list);
+      } catch (e) { /* 아래로 물러선다 */ }
+    }
+    var la = orig.split('\n').length, lb = d.src.split('\n').length;
+    if (la !== lb) return la + '줄 → ' + lb + '줄';
+    var dl = d.src.length - orig.length;
+    return dl === 0 ? '내용 바뀜' : (dl > 0 ? '+' : '') + dl + '자';
+  }
+
   function askPublish(recs) {
     var body = mk('div', 'ys-pub');
     body.appendChild(mk('p', 'ys-modal-p',
@@ -1502,10 +1524,10 @@
       var d = recs[i];
       var row = mk('div', 'ys-frow');
       row.appendChild(mk('span', 'ys-frow-p', d.path));
-      var dl = (d.src.length - (d.origSrc ? d.origSrc.length : 0));
-      row.appendChild(mk('span', 'ys-frow-d', (dl > 0 ? '+' : '') + dl + '자'));
-      var lb = d.src.split('\n').length, la = (d.origSrc || '').split('\n').length;
-      if (lb !== la) row.appendChild(mk('span', 'ys-frow-d', la + '줄 → ' + lb + '줄'));
+      /* 글자 수 차이는 "무엇이 바뀌었나" 를 말해 주지 못한다.
+         '연세대학교'→'고려대학교' 처럼 길이가 같은 치환은 「0자」로 보여
+         아무것도 안 바뀐 것처럼 읽힌다. 항목별 요약을 우선 쓴다. */
+      row.appendChild(mk('span', 'ys-frow-d', describeDraft(d)));
       row.appendChild(mk('span', 'ys-frow-a', (d.author || '') + (d.ts ? ' · ' + U.ago(d.ts) : '')));
       listEl.appendChild(row);
     }

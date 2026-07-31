@@ -28,7 +28,7 @@
   var PANEL_ID = 'ai';
   var CFG_KEY = 'ai-config';
   var SS_PLAN = 'ysme-ai-plan';        // 지금 보고 있는 계획 id (탭 단위)
-  var SS_FOCUS = 'ysme-ai-focus';      // '<계획id>|<항목id>' — 페이지 이동 뒤 펼칠 항목
+  var SS_FOCUS = 'ysme-ai-focus';      // '<계획id>|<항목id>[|<곳번호>]' — 페이지 이동 뒤 되찾을 자리
   var MAX_CHANGES = 10;
   var OUTLINE_MAX = 400;
   var OUTER_MAX = 6000;                // 선택 요소 원문 첨부 상한(문자)
@@ -60,7 +60,7 @@
   };
   var STATE_LABEL = { pending: '대기', approved: '승인', rejected: '거절' };
   /* 곳 목록에서 「어디를」 고치는지 한눈에 — 화면 글자인지, 검색·공유용 정보인지, 번역 사전인지 */
-  var HIT_KIND = { text: '글', attr: '정보', script: '사전' };
+  var HIT_KIND = { text: '글', head: '탭·검색', attr: '정보', script: '사전' };
 
   /* ── 모듈 상태 ── */
   var st = {
@@ -75,7 +75,8 @@
     error: '',
     expand: {},          // {항목id: true}
     nodes: {},           // {항목id: 항목 DOM}
-    focusId: null        // 이동 후 펼칠 항목 id
+    focusId: null,       // 이동 후 펼칠 항목 id
+    focusHit: null       // 이동 후 다시 찍어 줄 곳 번호(찾아 바꾸기)
   };
 
   /* ── 폴백 스타일 ──
@@ -1334,8 +1335,11 @@
   function goToHit(ch, path, hit) {
     if (path !== U.pagePath()) {
       if (!safePage(path)) { Y.toast('이동할 페이지 경로가 올바르지 않습니다: ' + path, 'error'); return; }
+      /* 다른 페이지는 브라우저가 통째로 다시 연다(화면이 한 번 깜빡이고 편집 모드가 풀린다).
+         **어느 곳이었는지**까지 남겨야 새 페이지에서 그 자리를 다시 찍어 줄 수 있다. */
+      Y.toast(path + ' 로 이동합니다…');
       savePlan().then(function () {
-        try { sessionStorage.setItem(SS_FOCUS, st.plan.id + '|' + ch.id); } catch (e) {}
+        try { sessionStorage.setItem(SS_FOCUS, st.plan.id + '|' + ch.id + '|' + hit.index); } catch (e) {}
         rememberPlan(st.plan.id);
         location.href = path + (location.search || '');
       });
@@ -1594,21 +1598,45 @@
     host.appendChild(list);
 
     /* 이동 후 복원: 해당 항목을 보이게 스크롤하고 대상을 강조한다.
-       버퍼가 아직 열리지 않았으면 focusId 를 남겨 다음 렌더에서 강조한다. */
+       버퍼가 아직 열리지 않았으면 focusId 를 남겨 다음 렌더에서 강조한다.
+
+       다른 페이지의 곳을 눌렀으면 브라우저가 그 페이지를 통째로 다시 연다 —
+       화면이 한 번 검게 깜빡이고 편집 모드도 초기값(보기)으로 돌아간다.
+       그래서 **여기서 그 자리를 다시 찍어 줘야** 「이동했는데 아무 표시도 없다」가 되지 않는다. */
     if (st.focusId) {
       var fid = st.focusId;
       var target = st.nodes[fid];
       if (target) { try { target.scrollIntoView({ block: 'nearest' }); } catch (e) {} }
       var ch = null;
       for (var k = 0; k < plan.changes.length; k++) if (plan.changes[k].id === fid) ch = plan.changes[k];
-      if (!ch || !isHere(ch)) {
+      if (!ch || (ch.op !== 'replaceText' && !isHere(ch))) {
         st.focusId = null;
       } else if (Y.engine.mapped()) {
         st.focusId = null;
-        var ti = idxOf(ch);
-        if (ti != null && Y.engine.info(ti) && Y.hud && Y.hud.revealIdx) Y.hud.revealIdx(ti, { select: true });
+        if (ch.op === 'replaceText') armFocusHit(ch, st.focusHit);
+        else {
+          var ti = idxOf(ch);
+          if (ti != null && Y.engine.info(ti) && Y.hud && Y.hud.revealIdx) {
+            Y.hud.revealIdx(ti, { arm: true, label: OPS[ch.op] || ch.op });
+          }
+        }
+        st.focusHit = null;
       }
     }
+  }
+
+  /** 페이지를 옮겨 온 뒤, 그 페이지에서 문제의 곳을 다시 찾아 표시한다.
+      곳 번호는 이 페이지 원문을 다시 훑어 매긴 순서와 같다. */
+  function armFocusHit(ch, hitIndex) {
+    if (hitIndex == null || !Y.replace) return;
+    var src = Y.engine.src();
+    if (!src) return;
+    var r;
+    try { r = Y.replace.plan(src, ch.find, ch.replace); } catch (e) { return; }
+    var hit = null;
+    for (var i = 0; i < r.hits.length; i++) if (r.hits[i].index === hitIndex) hit = r.hits[i];
+    if (!hit) return;
+    goToHit(ch, U.pagePath(), hit);
   }
 
   /* ── 렌더 진입점 ── */
@@ -1653,10 +1681,14 @@
       focus = sessionStorage.getItem(SS_FOCUS);
       planId = sessionStorage.getItem(SS_PLAN);
     } catch (e) {}
-    var wantPlan = null, wantChange = null;
+    var wantPlan = null, wantChange = null, wantHit = null;
     if (focus) {
       var p = String(focus).split('|');
       wantPlan = p[0]; wantChange = p[1] || null;
+      if (p.length > 2 && p[2] !== '') {
+        var hn = parseInt(p[2], 10);
+        if (isFinite(hn)) wantHit = hn;
+      }
       try { sessionStorage.removeItem(SS_FOCUS); } catch (e2) {}
     }
     var id = wantPlan || planId;
@@ -1675,6 +1707,7 @@
         if (wantChange) {
           st.expand[wantChange] = true;
           st.focusId = wantChange;
+          st.focusHit = wantHit;              // 어느 곳이었는지 — 새 페이지에서 다시 찍어 준다
           afterEngine(function () {
             if (Y.hud && Y.hud.openPanel) Y.hud.openPanel(PANEL_ID);
             render();

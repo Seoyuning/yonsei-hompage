@@ -48,11 +48,11 @@
   /* ── 원문 훑기 ──
      구간을 종류별로 넘겨준다. 태그 안의 '>' 가 따옴표에 싸여 있어도 속지 않는다. */
   function walk(src, cb) {
-    var i = 0, n = src.length;
+    var i = 0, n = src.length, inHead = false;
     while (i < n) {
       var lt = src.indexOf('<', i);
-      if (lt < 0) { cb.text(i, n); return; }
-      if (lt > i) cb.text(i, lt);
+      if (lt < 0) { cb.text(i, n, inHead); return; }
+      if (lt > i) cb.text(i, lt, inHead);
 
       if (src.substr(lt, 4) === '<!--') {                    // 주석 — 통째로 지나간다
         var ce = src.indexOf('-->', lt + 4);
@@ -70,6 +70,10 @@
 
       var closing = src.charAt(lt + 1) === '/';
       var tag = m[1].toLowerCase();
+      /* <head> 안의 글자(<title> 등)는 화면에 그려지지 않는다 —
+         화면 글자와 같은 종류로 묶으면 「이동」을 눌러도 아무 일이 없어 고장으로 보인다. */
+      if (tag === 'head') inHead = !closing;
+      else if (tag === 'body' && !closing) inHead = false;
 
       var j = lt + m[0].length, q = '';
       while (j < n) {
@@ -160,7 +164,7 @@
 
     var wantAttrs = opts.attrs !== false;
     var wantScripts = opts.scripts !== false;      // i18n 사전이 여기 있어 기본으로 연다
-    var empty = { newSrc: src, hits: [], counts: { text: 0, attr: 0, script: 0 }, changed: 0, applied: [] };
+    var empty = { newSrc: src, hits: [], counts: { text: 0, head: 0, attr: 0, script: 0 }, changed: 0, applied: [] };
     if (!find || find === replace) return empty;
 
     var edits = [];
@@ -188,9 +192,10 @@
     var insAttr = S.encodeAttr(replace);
 
     walk(src, {
-      text: function (s, e) {
-        collect(s, e, 'text', findText, insText);
-        if (findTextEnc !== findText) collect(s, e, 'text', findTextEnc, insText);
+      text: function (s, e, inHead) {
+        var kind = inHead ? 'head' : 'text';
+        collect(s, e, kind, findText, insText, inHead ? '탭·검색 제목' : '');
+        if (findTextEnc !== findText) collect(s, e, kind, findTextEnc, insText, inHead ? '탭·검색 제목' : '');
       },
       tag: function (s, e, tag) {
         if (!wantAttrs) return;
@@ -224,7 +229,7 @@
     /* 겹치는 편집을 걸러내고(있을 수 없지만 방어) 앞에서부터 이어 붙인다 */
     edits.sort(function (a, b) { return a.s - b.s; });
 
-    var outParts = [], last = 0, hits = [], counts = { text: 0, attr: 0, script: 0 };
+    var outParts = [], last = 0, hits = [], counts = { text: 0, head: 0, attr: 0, script: 0 };
     var applied = [], hitNo = 0, delta = 0;
     /* 줄 번호는 앞에서부터 한 번만 세면 된다 — 곳마다 처음부터 세면 파일이 클수록 느려진다 */
     var lineCur = 1, linePos = 0;

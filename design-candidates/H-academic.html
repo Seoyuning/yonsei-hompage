@@ -315,6 +315,65 @@ html[lang="en"] .as-ko{display:none}
 .ar-cred{margin-top:clamp(1.6rem,3vh,2.4rem);
   font-family:var(--kr);font-size:.75rem;font-weight:500;line-height:1.6;
   color:var(--dim);letter-spacing:0}
+/* ── 연구 분야 구간의 움직임 (참고: flim.ai) ──
+   becomeautonomous 의 「길고 조용한 페이드」와 달리 flim 은 짧고 탄력 있다 —
+   0.3~0.8초 ease-out, 그리고 clip-path 로 걷어내는 가림막.
+   여기서는 두 가지가 같이 돈다.
+   (1) 구간에 처음 들어설 때(.rv-seen): 머리 실선이 왼쪽에서 그어지고 탭 줄이 차례로 그어진다.
+   (2) 편이 바뀔 때마다(.is-on): 번호·제목·설명·사진이 다시 제자리를 잡는다.
+       바뀔 때마다 다시 도는 것이 핵심이다 — 그냥 겹쳐 사라지면 넘어간 줄도 모른다. */
+.areas .kick{position:relative;border-bottom-color:transparent}
+.areas .kick::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
+  background:#111318;transform:scaleX(0);transform-origin:0 50%;
+  transition:transform .85s cubic-bezier(.16,1,.3,1)}
+.areas.rv-seen .kick::after{transform:scaleX(1)}
+/* 대제목 — 아래에서 위로 가림막을 걷는다 */
+.areas .sec-title{clip-path:inset(0 0 110% 0);transform:translateY(.18em);
+  transition:clip-path .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1);
+  transition-delay:.12s}
+.areas.rv-seen .sec-title{clip-path:inset(0 0 -10% 0);transform:none}
+.areas .sec-head .more{opacity:0;transform:translateY(8px);
+  transition:opacity .5s ease .3s,transform .6s cubic-bezier(.16,1,.3,1) .3s}
+.areas.rv-seen .sec-head .more{opacity:1;transform:none}
+
+/* 편 안쪽 — 켜질 때마다 다시 돈다 */
+.as-n,.as-ko,.as-d,.as-more{opacity:0;transform:translateY(10px);
+  transition:opacity .42s ease,transform .55s cubic-bezier(.16,1,.3,1)}
+.areas.rv-seen .ar-slide.is-on .as-n{opacity:1;transform:none;transition-delay:.04s}
+.areas.rv-seen .ar-slide.is-on .as-ko{opacity:1;transform:none;transition-delay:.20s}
+.areas.rv-seen .ar-slide.is-on .as-d{opacity:1;transform:none;transition-delay:.26s}
+.areas.rv-seen .ar-slide.is-on .as-more{opacity:1;transform:none;transition-delay:.32s}
+/* 큰 영문명 — 가림막을 걷어 「쓰이는」 느낌을 준다 */
+.as-en{clip-path:inset(0 0 110% 0);transform:translateY(.16em);
+  transition:clip-path .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1);
+  transition-delay:.1s}
+.areas.rv-seen .ar-slide.is-on .as-en{clip-path:inset(0 0 -10% 0);transform:none}
+/* 사진 — 아래에서 걷히면서 안쪽 그림이 아주 조금 물러나 앉는다 */
+.as-shot{clip-path:inset(0 0 100% 0);transition:clip-path .78s cubic-bezier(.16,1,.3,1) .14s}
+.areas.rv-seen .ar-slide.is-on .as-shot{clip-path:inset(0 0 0 0)}
+.as-shot img{transform:scale(1.09);transition:transform 1.15s cubic-bezier(.16,1,.3,1) .14s}
+.areas.rv-seen .ar-slide.is-on .as-shot img{transform:none}
+
+/* 아래 여섯 칸 — 줄이 왼쪽에서 하나씩 그어진다 */
+.ar-tab{border-top-color:transparent}
+.ar-tab::before{content:"";position:absolute;left:0;right:0;top:-1px;height:1px;
+  background:var(--line);transform:scaleX(0);transform-origin:0 50%;
+  transition:transform .6s cubic-bezier(.16,1,.3,1)}
+.areas.rv-seen .ar-tab::before{transform:scaleX(1);transition-delay:calc(.3s + var(--i,0) * .07s)}
+.ar-tab i,.ar-tab b{opacity:0;transform:translateY(6px);
+  transition:opacity .45s ease,transform .5s cubic-bezier(.16,1,.3,1)}
+.areas.rv-seen .ar-tab i,.areas.rv-seen .ar-tab b{opacity:1;transform:none;
+  transition-delay:calc(.36s + var(--i,0) * .07s)}
+.ar-cred{opacity:0;transition:opacity .6s ease .9s}
+.areas.rv-seen .ar-cred{opacity:1}
+
+@media (prefers-reduced-motion:reduce){
+  .areas .kick::after,.areas .sec-title,.areas .sec-head .more,
+  .as-n,.as-ko,.as-d,.as-more,.as-en,.as-shot,.as-shot img,
+  .ar-tab::before,.ar-tab i,.ar-tab b,.ar-cred{transition:none;
+    opacity:1;transform:none;clip-path:none}
+  .ar-tab{border-top-color:var(--line)}
+}
 @media (max-width:860px){
   .ar-slide{grid-template-columns:1fr;gap:1.4rem}
   /* 좁은 화면에서는 사진을 글 위로 올려 큰 제목이 바로 눈에 들어오게 한다 */
@@ -560,7 +619,8 @@ html[lang="en"] .as-ko{display:none}
 <!-- 여섯 연구 분야 — 히어로·지표 바로 뒤. 한 번에 한 분야를 크게 보여 주고
      시간이 지나면 다음으로 넘어간다. 아래 여섯 칸으로 전체를 함께 보여 주고,
      눌러서 바로 건너뛸 수도 있다. -->
-<section class="areas" id="twAreas" aria-labelledby="h-research" aria-roledescription="carousel">
+<main>
+<section class="areas" id="twAreas" data-no-rv aria-labelledby="h-research" aria-roledescription="carousel">
   <div class="ar-wrap">
     <div class="sec-head">
       <p class="kick">Research Area</p>
@@ -632,12 +692,12 @@ html[lang="en"] .as-ko{display:none}
       </article>
     </div>
     <div class="ar-tabs" id="arTabs" role="tablist" aria-label="연구 분야 고르기">
-      <button type="button" class="ar-tab is-on" data-i="0"><i>01</i><b>역학·소재</b></button>
-      <button type="button" class="ar-tab" data-i="1"><i>02</i><b>에너지·열유체</b></button>
-      <button type="button" class="ar-tab" data-i="2"><i>03</i><b>로보틱스·제어</b></button>
-      <button type="button" class="ar-tab" data-i="3"><i>04</i><b>설계·제조</b></button>
-      <button type="button" class="ar-tab" data-i="4"><i>05</i><b>마이크로·나노</b></button>
-      <button type="button" class="ar-tab" data-i="5"><i>06</i><b>바이오·포토닉스</b></button>
+      <button type="button" style="--i:0" class="ar-tab is-on" data-i="0"><i>01</i><b>역학·소재</b></button>
+      <button type="button" style="--i:1" class="ar-tab" data-i="1"><i>02</i><b>에너지·열유체</b></button>
+      <button type="button" style="--i:2" class="ar-tab" data-i="2"><i>03</i><b>로보틱스·제어</b></button>
+      <button type="button" style="--i:3" class="ar-tab" data-i="3"><i>04</i><b>설계·제조</b></button>
+      <button type="button" style="--i:4" class="ar-tab" data-i="4"><i>05</i><b>마이크로·나노</b></button>
+      <button type="button" style="--i:5" class="ar-tab" data-i="5"><i>06</i><b>바이오·포토닉스</b></button>
     </div>
     <!-- 분야 사진은 우리 연구실 사진이 아니라 그 분야를 보여 주는 자유 이용 사진이다.
          CC BY 계열은 저작자 표시가 조건이라 화면에 그대로 남겨 둔다. -->
@@ -651,7 +711,6 @@ html[lang="en"] .as-ko{display:none}
   </div>
 </section>
 
-<main>
   <!-- 교수진을 히어로·지표 바로 뒤로 올렸다 — 어두운 화면 셋이 이어져 도입이 묵직해진다.
        예전에는 흰 섹션 사이에 어두운 교수진이 끼어 명암이 줄무늬처럼 번갈았다. -->
   <!-- 공지·세미나도 원래 짙은 밴드라, 흰 섹션 사이에 두면 명암이 다시 줄무늬가 된다.
@@ -1487,9 +1546,12 @@ html[lang="en"] .as-ko{display:none}
   try {
     new IntersectionObserver(function (es) {
       seen = es[0].isIntersecting;
+      /* 한 번 들어서면 머리 실선·탭 줄이 그어진다. 다시 나가도 되돌리지 않는다 —
+         오르내릴 때마다 다시 그어지면 산만하다. */
+      if (seen) sec.classList.add('rv-seen');
       if (seen) plan(); else stop();
     }, { threshold: .18 }).observe(sec);
-  } catch (e) { seen = true; plan(); }
+  } catch (e) { seen = true; sec.classList.add('rv-seen'); plan(); }
 
   /* 다른 탭으로 가 있는 동안에도 세워 둔다 */
   document.addEventListener('visibilitychange', function () {

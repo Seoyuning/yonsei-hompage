@@ -85,3 +85,30 @@
 @media (prefers-reduced-motion: reduce) {
   .hl-eagle, .eg-drift { animation: none !important; }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   손가락으로 누르는 자리 — 휴대폰에서 44px 을 지킨다
+   ──────────────────────────────────────────────────────────────
+   390px 에서 재어 보니 언어 버튼 30px · 「전체 보기 →」 25px ·
+   「연구실 6곳 →」 26px · 이수 흐름 링크 20px · breadcrumb 16px 처럼
+   손끝보다 작은 것이 여럿이었다. 글자 크기는 그대로 두고 **누르는 상자만** 키운다
+   (padding 으로 키우면 줄 간격이 흐트러지므로 min-height + 세로 가운데 정렬로 한다).
+   글 안에 섞인 링크(문장 속 밑줄 링크)는 건드리지 않는다 —
+   그건 문장의 일부라 키우면 줄 리듬이 깨지고, 주변 여백이 이미 오폭을 막아 준다.
+   여덟 페이지가 모두 이 파일을 읽으므로 여기 한 곳에 모은다.
+   ══════════════════════════════════════════════════════════════ */
+@media (max-width: 640px) {
+  .ynv-lang button,
+  .bc a, .yft-h,
+  .more, .fx-go, .cflow-a, .pt-go, .al-more,
+  .nseg-b, .kseg-b, .fchip, .bcat, .tab,
+  .pdetail .il, .op-btn, .eg-dot, .pick-btn {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  /* 격자·목록 안에 있는 것들은 inline-flex 로 바꾸면 칸이 무너진다 — 높이만 준다 */
+  .pdetail .il, .op-btn, .nseg-b, .kseg-b { display: flex; }
+  /* breadcrumb 는 두 링크가 붙어 있어 상자가 겹치지 않게 좌우 여백을 조금 준다 */
+  .bc a { padding: 0 .15rem; }
+}

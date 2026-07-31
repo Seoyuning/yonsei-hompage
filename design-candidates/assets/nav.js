@@ -258,7 +258,9 @@
     /* 휴대폰 — 유틸 바가 두 줄로 접히고 링크가 손가락보다 작았다 */
     '@media(max-width:640px){' +
       '.ynv-lang{margin-left:.15rem}' +
-      '.ynv-lang button{padding:.3rem .6rem;min-height:1.9rem}' +
+      /* 손끝 자리 44px — 1.9rem(30px)은 눌러야 할 것치고 작았다 */
+      '.ynv-lang button{padding:.3rem .6rem;min-height:44px}' +
+      '.ynv-brand{min-height:44px}' +
       '.ynv-hdr .ynv-w{gap:.8rem;padding:.6rem .9rem}' +
       '.ynv-brand img{height:2rem}' +
       '.ynv-brand .bko{font-size:.95rem}' +

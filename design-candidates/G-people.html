@@ -28,7 +28,7 @@
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d17" />
-<link rel="preload" as="script" href="assets/nav.js?v=86" />
+<link rel="preload" as="script" href="assets/nav.js?v=88" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    교수진 디렉토리 — 아이보리 배경 · 네이비 제목 · 헤어라인 · 연회색 행
@@ -75,7 +75,7 @@ a{color:inherit;text-decoration:none}
 .skip:focus{top:.6rem}
 
 /* ── 페이지 히어로 (이미지 배너 + 중앙 정렬 타이틀 + 브레드크럼) ── */
-.phero{position:relative;min-height:clamp(19rem,42vh,26rem);display:flex;align-items:center;justify-content:center;text-align:center;background:#12294f url("assets/hero-people.jpg") center 42%/cover no-repeat;color:#fff;overflow:hidden}
+.phero{position:relative;min-height:clamp(19rem,42vh,26rem);display:flex;align-items:flex-end;background:#12294f url("assets/hero-people.jpg") center 42%/cover no-repeat;color:#fff;overflow:hidden}
 /* 사진은 배경 질감으로 — 흑백 + 네이비 모노톤. 스톡 사진은 잘 보이게 할수록
    "다국적 학생들이 웃는 강의실" 전형이 드러나 티가 난다. 인물이 주인공이 되지 않게 눌러
    질감으로만 남긴다. filter 를 요소에 걸면 글자까지 흐려지므로 사진 층(::before)에만 건다.
@@ -87,8 +87,11 @@ a{color:inherit;text-decoration:none}
 .phero::after{content:"";position:absolute;inset:0;background:
   radial-gradient(125% 95% at 50% 58%,rgba(10,22,44,.50) 0%,rgba(10,22,44,.70) 52%,rgba(8,17,34,.90) 100%),
   linear-gradient(180deg,rgba(18,41,79,.62) 0%,rgba(16,35,68,.50) 40%,rgba(10,22,44,.78) 100%)}
-.phero-in{position:relative;z-index:1;padding:clamp(9.5rem,7rem + 4vw,11.5rem) 1.2rem clamp(2.6rem,5vh,4rem);max-width:60rem}
-.phero h1{font-size:clamp(1.9rem,1.2rem + 2.6vw,3rem);font-weight:800;letter-spacing:-.01em;line-height:1.16;color:#fff}
+/* 히어로 글은 본문과 같은 폭·같은 왼쪽 선에서 시작한다 — 예전에는 60rem 로
+   가운데 모아 두어 본문(1320px)보다 좁았고, 그래서 위쪽만 가운데로 몰려 보였다. */
+.phero-in{position:relative;z-index:1;width:100%;max-width:1232px;margin:0 auto;text-align:left;
+  padding:clamp(9.5rem,7rem + 4vw,11.5rem) clamp(1.2rem,.6rem + 2vw,2.6rem) clamp(2.6rem,5vh,4rem)}
+.phero h1{font-size:clamp(2.1rem,1.25rem + 3.4vw,3.9rem);font-weight:800;letter-spacing:-.01em;line-height:1.16;color:#fff}
 .phero-kick{font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.72);margin-bottom:.6rem}
 .phero-lead{margin:1.05rem auto 0;max-width:41rem;font-size:.98rem;line-height:1.75;color:rgba(255,255,255,.9)}
 .phero .bc{margin:0 0 1.05rem;font-size:.82rem;letter-spacing:.02em;color:rgba(255,255,255,.82)}
@@ -115,7 +118,7 @@ a{color:inherit;text-decoration:none}
   scroll-margin-top:var(--ys-stick,7.6rem)}
 /* 위 형제바(.ysub-w, nav.js)와 같은 상자를 써야 「전임교수」가 「교수진」과 같은 지점에서 시작한다.
    폭·좌우 여백을 그쪽 값과 똑같이 맞춘다 — 한쪽만 바뀌면 다시 어긋난다. */
-.filter-wrap{max-width:72rem;margin:0 auto;padding:0 clamp(1.1rem,4vw,2rem)}
+.filter-wrap{max-width:1232px;margin:0 auto;padding:0 clamp(1.2rem,.6rem + 2vw,2.6rem)}
 @media (max-width:640px){ .filter-wrap{padding:0 .9rem} }
 /* 신분 구분(전임 / 명예·퇴임) — 분야 필터보다 상위 구분이라 굵은 밑줄 탭으로 격을 달리한다 */
 .kseg{display:flex;gap:.2rem;margin-bottom:.85rem;border-bottom:1px solid var(--line)}
@@ -210,6 +213,7 @@ a{color:inherit;text-decoration:none}
      · G-research .cluster    「상자를 없애고 헤어라인으로만 나눈 '차례' 형태로 바꾼다」
    사진은 그대로 둔다 — 얼굴이 이 화면의 본문이다. 메인의 교수 레일(.pc)도 사진을 쓰되
    테두리가 없고, 맨 아래 두 칸만 헤어라인으로 나눈다. 그 처리를 그대로 옮긴다. */
+/* 히어로·형제바·제목·탭과 같은 폭·같은 왼쪽 선 (1320px) */
 .dir{max-width:1232px;margin:0 auto;padding:1.4rem clamp(1.2rem,.6rem + 2vw,2.6rem) 3rem}
 /* 분야 사이를 넉넉히 — 여섯 덩이가 붙어 있으면 어디서 분야가 바뀌는지 안 보인다 */
 .fgroup{padding:clamp(2.6rem,1.8rem + 3vw,4.4rem) 0 clamp(3.2rem,2rem + 4vw,5.2rem)}
@@ -243,19 +247,26 @@ a{color:inherit;text-decoration:none}
    목록 폭을 따로 좁히지 않는다 — 왼쪽 끝이 분야 머리의 가로줄과 맞아야 한 지면으로 읽힌다.
    align-items:flex-start — 「자세히」를 편 한 장만 아래로 늘어나고 옆 카드는 제자리에 있게.
    (상자가 없어진 덕에 카드마다 아랫단이 조금 어긋나도 드러나지 않는다) */
-.dir-list{--cols:4;--gap:1.4rem;
+.dir-list{--cols:2;--gap:1.4rem;
   display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--gap)}
 .dir-list > *{flex:0 0 calc((100% - (var(--cols) - 1) * var(--gap)) / var(--cols))}
 @media (max-width:760px){.dir-list{--gap:1.1rem}}
 /* 휴대폰에서도 2열 유지 — 1열로 두면 카드 한 장이 화면을 채워
    교수 33명을 보는 데 스크롤이 17,000px 넘게 나온다. 카드 속을 줄이는 규칙은
    카드 정의 뒤(아래 「휴대폰 명부 축소」)에 둔다 — 여기 두면 뒤 규칙에 덮인다 */
-@media (max-width:460px){.dir-list{--gap:.8rem}}
+/* 가로 카드가 되면서 휴대폰 2열은 글 칸이 100px 남짓밖에 안 된다 — 1열로 둔다.
+   카드가 낮아져 1열이어도 예전 같은 긴 스크롤이 나오지 않는다. */
+@media (max-width:640px){.dir-list{--cols:1;--gap:.8rem}}
 
 /* 한 사람 = [사진] + [이름·영문명·분야] + [헤어라인으로 나눈 두 칸].
    테두리는 실선 한 겹만 두른다 — 사진은 테두리에 딱 붙이고, 글자에만 안쪽 여백을 준다.
    (그림자·둥근 모서리는 두지 않는다. 편집 지면 톤은 그대로다) */
-.pcard{position:relative;display:flex;flex-direction:column;
+/* 사진을 작게 왼쪽에 두고 글을 오른쪽에 크게 싣는다 — 교수 사진 원본이 240px 라
+   크게 키우면 화질이 먼저 눈에 띈다. 작게 두면 흠이 보이지 않고, 대신 이름·분야·
+   연락처가 카드의 주인공이 된다(참고: yonsei-me 교수진). */
+.pcard{position:relative;display:grid;
+  grid-template-columns:clamp(4.6rem,5.2vw,6.2rem) minmax(0,1fr);
+  align-items:start;
   border:1px solid var(--line);background:#fff;
   opacity:0;transform:translateY(22px);transition:opacity .55s ease,transform .55s ease;
   scroll-margin-top:var(--ys-stick,7.6rem)}
@@ -284,7 +295,8 @@ a{color:inherit;text-decoration:none}
 /* 사진 — 원본이 240×240 정사각이라 1/1 비율로 과확대 최소화.
    배경판(회색 칠)을 깔지 않는다: 사진이 덮어 보이지도 않으면서 33장 × 두 겹이
    회색 판 66개로 잡혔다. 사진이 없는 경우는 .pfallback 이 받는다. */
-.pphoto{position:relative;display:block;aspect-ratio:1/1;overflow:hidden}
+.pphoto{position:relative;display:block;aspect-ratio:1/1;overflow:hidden;
+  grid-column:1;grid-row:1}
 .pphoto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 18%;
   transition:transform .45s ease}
 .pcard:hover .pphoto img{transform:scale(1.03)}
@@ -297,7 +309,8 @@ a{color:inherit;text-decoration:none}
    높이를 억지로 맞추지 않는다: 위 .dir-list 가 align-items:flex-start 라 카드마다 제 키로 서고,
    가로 폭이 같으니 이름·영문명·분야가 모두 한 줄인 데스크톱에서는 저절로 아랫단이 맞는다. */
 /* 테두리가 생겼으니 글자를 안쪽으로 들인다 */
-.pbody{padding:.85rem .95rem .95rem;display:flex;flex-direction:column;gap:.22rem}
+.pbody{grid-column:2;grid-row:1;
+  padding:.8rem .95rem .55rem;display:flex;flex-direction:column;gap:.22rem}
 .pname{display:flex;align-items:baseline;gap:.45rem;flex-wrap:wrap}
 .pname .ko{font-family:var(--kr);font-weight:800;font-size:1.1rem;letter-spacing:-.015em;
   line-height:1.25;color:#111318}
@@ -338,8 +351,13 @@ html[lang="en"] .ppos{display:none}
    그 '빈 채로 늘어난 상자'가 이제 없다 — 칠도 테두리도 없는 지면이라 늘어나도 보이지 않고,
    위 .dir-list 의 align-items:flex-start 가 옆 카드를 제자리에 붙들어 둔다.
    높이는 애니메이션하지 않는다(G-research 연구실 펼침 패널과 같은 방식). */
-.pdetail{display:none;padding:.15rem .1rem 0}
-.pcard.open .pdetail{display:block}
+/* 예전에는 「＋」를 눌러야 펴지는 줄 묶음이었다. 사진을 줄인 만큼 글에 자리가 생겨
+   연구실·사무실·연락처를 처음부터 보여 준다 — 한 번 더 누르지 않아도 읽힌다. */
+/* 상세 줄은 카드 전체 폭을 쓴다 — 2열에만 두면 사진 아래로 빈 칸이 길게 남는다 */
+.pdetail{display:block;grid-column:1 / -1;grid-row:2;padding:.1rem .95rem .2rem}
+.pbtns{grid-column:1 / -1;grid-row:3;margin-top:.55rem}
+/* 「자세히」 버튼은 더 이상 할 일이 없다 — 내용이 이미 펼쳐져 있다 */
+.pbtn.more{display:none}
 .pdetail .rows{display:flex;flex-direction:column}
 .pdetail .il{display:flex;align-items:center;gap:.5rem;font-family:var(--kr);
   font-size:.78rem;font-weight:500;color:var(--body);min-width:0;line-height:1.45;
@@ -380,6 +398,11 @@ html[lang="en"] .ppos{display:none}
 .staff{max-width:1232px;margin:0 auto;
   padding:1rem clamp(1.2rem,.6rem + 2vw,2.6rem) 3.6rem;
   scroll-margin-top:var(--ys-stick,7.6rem);border-top:1px solid var(--line-soft)}
+.fac-head{max-width:1232px;margin:0 auto clamp(1.4rem,2.6vh,2.2rem);
+  padding:clamp(2.2rem,4vh,3.4rem) clamp(1.2rem,.6rem + 2vw,2.6rem) 0}
+.fac-head h2{font-size:clamp(1.6rem,1.15rem + 2vw,2.4rem);font-weight:800;color:#111318;letter-spacing:-.01em}
+.fac-head .lead{margin-top:.6rem;max-width:44rem;font-family:var(--kr);
+  font-size:clamp(.88rem,.84rem + .16vw,.96rem);font-weight:500;line-height:1.75;color:var(--muted)}
 .staff-head{padding-top:2rem;margin-bottom:1.6rem}
 /* ── 섹션 머리 (대학원 페이지에서 시작해 전 페이지 공통) ──
    제목 아래 슬래시 요약 줄을 둔다.
@@ -602,7 +625,15 @@ html[lang="en"] .ppos{display:none}
        공식 홈페이지가 「교수 / 명예·퇴임 교수」로 나누어 싣는 구분을 그대로 따른다. -->
   <!-- 신분 구분은 한 번 고르고 마는 것이라 화면에 붙들지 않는다. 스크롤하며 계속
        쓰는 것은 분야 필터뿐이라, 그 줄만 따로 떼어 화면에 붙인다. -->
-  <div class="filterbar is-kind" id="faculty" aria-label="교수 구분">
+  <!-- 교직원(.staff-head)·동문(.al-head)과 같은 머리를 교수진에도 둔다 —
+       이 페이지에서 교수진만 제목 없이 바로 탭으로 시작하고 있었다. -->
+  <div class="fac-head">
+    <p class="sec-kick">Faculty</p>
+    <h2 id="fac-title">교수진</h2>
+    <p class="lead">여섯 연구 분야에서 교육과 연구를 맡고 있는 전임 교수와 명예·퇴임 교수입니다.</p>
+  </div>
+
+  <div class="filterbar is-kind" id="faculty" aria-label="교수 구분" aria-labelledby="fac-title">
     <div class="filter-wrap">
       <div class="kseg" role="tablist" aria-label="교수 구분">
         <button type="button" class="kseg-b" role="tab" data-k="active" aria-selected="true">전임교수 <span class="kn">33</span></button>
@@ -1030,7 +1061,6 @@ html[lang="en"] .ppos{display:none}
     if(p.office) det += '<span class="il">'+ICON_PIN+'<span class="it">'+esc(officeKo(p.office))+'</span></span>';
     if(p.phone) det += '<span class="il">'+ICON_TEL+'<span class="it">'+esc(p.phone)+'</span></span>';
     if(lab.ko) det += '<span class="il">'+ICON_LAB+'<span class="it">'+esc(lab.ko)+'</span></span>';
-    if(p.detail) det += '<a class="il" href="'+esc(p.detail)+'" target="_blank" rel="noopener"><span class="it" style="text-decoration:underline;text-underline-offset:2px">교수 프로필 새 창에서 열기 ↗</span></a>';
 
     return '<article class="pcard" id="'+esc(p.id)+'" style="--card-c:'+accent+'">'
       + photoOpen + photo + '</a>'
@@ -1133,7 +1163,8 @@ html[lang="en"] .ppos{display:none}
      그 한 장은 왼쪽 끝에 그대로 선다(분야 머리의 가로줄과 같은 축). */
   function fitCols(){
     var w = innerWidth;
-    var max = w <= 760 ? 2 : w <= 1100 ? 3 : 4;
+    /* 가로 카드(사진 왼쪽·글 오른쪽)라 열을 적게 쓴다 — 4열이면 글 칸이 100px 남짓이다 */
+    var max = w <= 640 ? 1 : 2;
     [].forEach.call(document.querySelectorAll('.dir-list'), function(list){
       /* 열 수는 화면 폭만 보고 정한다. 예전에는 마지막 줄에 한 장만 남지 않게
          열을 줄였는데(5명이면 4+1 대신 3+2), 그러면 분야마다 카드 크기가 달라져
@@ -1239,7 +1270,7 @@ html[lang="en"] .ppos{display:none}
   }
 })();
 </script>
-<script src="assets/nav.js?v=86"></script>
+<script src="assets/nav.js?v=88"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--dimmer)">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

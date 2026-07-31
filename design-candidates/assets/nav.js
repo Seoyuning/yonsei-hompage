@@ -16,7 +16,7 @@
     '.hud-top{display:none!important}',
     '.ynav-ph{display:none!important}',
     '.ynv{position:fixed;top:0;left:0;right:0;z-index:50;font-family:' + KR + '}',
-    '.ynv-w{max-width:72rem;margin:0 auto;padding:0 clamp(1.1rem,4vw,2rem)}',
+    '.ynv-w{max-width:1232px;margin:0 auto;padding:0 clamp(1.2rem,.6rem + 2vw,2.6rem)}',
     /* 유틸 바 */
     '.ynv-top{background:' + INK + ';color:#c6d2e6;font-size:.74rem;overflow:hidden;max-height:2.3rem;' +
       'transition:max-height .4s ' + E + ',opacity .3s ease}',
@@ -70,20 +70,22 @@
     '.bc a.bc-cur,.bc .bc-tab{color:#fff;font-weight:600}',
     '.bc span{color:rgba(255,255,255,.5)}',
     /* 하위페이지 탭 바 — 유일한 형제 내비(뷰 전환), 히어로 아래 sticky, 크고 잘 보이게 */
-    '.ysub{position:sticky;top:4.35rem;z-index:38;background:#fff;border-bottom:1px solid ' + LINE + ';' +
-      'box-shadow:0 6px 18px rgba(15,27,48,.06)}',
-    '.ysub-w{max-width:72rem;margin:0 auto;padding:0 clamp(1.1rem,4vw,2rem);' +
+    /* 히어로 바로 아래 붙는 띠라 히어로와 같은 네이비로 이어 둔다 — 흰 띠로 끊으면
+       위쪽이 히어로·바·본문 세 토막으로 나뉘어 보인다(참고: yonsei-me 학부소개). */
+    '.ysub{position:sticky;top:4.35rem;z-index:38;background:' + NAVYD + ';' +
+      'border-bottom:1px solid rgba(255,255,255,.14)}',
+    '.ysub-w{max-width:1232px;margin:0 auto;padding:0 clamp(1.2rem,.6rem + 2vw,2.6rem);' +
       'display:flex;gap:.15rem;align-items:stretch;overflow-x:auto;scrollbar-width:none}',
     '.ysub-w::-webkit-scrollbar{display:none}',
-    '.ysub-tab{flex:0 0 auto;font-family:' + KR + ';font-size:1rem;font-weight:700;color:' + MUTED + ';' +
+    '.ysub-tab{flex:0 0 auto;font-family:' + KR + ';font-size:1rem;font-weight:700;color:rgba(255,255,255,.66);' +
       'background:none;border:0;border-bottom:3px solid transparent;cursor:pointer;padding:1rem 1.15rem .85rem;' +
       'white-space:nowrap;letter-spacing:-.01em;transition:color .18s,border-color .2s ' + E + ',background .18s}',
-    '.ysub-tab:hover{color:' + NAVY + ';background:' + PAPER + '}',
-    '.ysub-tab.cur{color:' + NAVY + ';border-bottom-color:' + NAVY + '}',
+    '.ysub-tab:hover{color:#fff;background:rgba(255,255,255,.08)}',
+    '.ysub-tab.cur{color:#fff;border-bottom-color:#fff}',
     '.ysub-hide{display:none!important}',
     /* 소제목 바로가기 바 — 탭 바 바로 아래. 탭 바보다 한 단계 낮은 무게로 둔다 */
     '.yjump{position:sticky;top:7.5rem;z-index:37;background:#fbfbfc;border-bottom:1px solid ' + LINE + '}',
-    '.yjump-w{max-width:72rem;margin:0 auto;padding:.5rem clamp(1.1rem,4vw,2rem);' +
+    '.yjump-w{max-width:1232px;margin:0 auto;padding:.5rem clamp(1.2rem,.6rem + 2vw,2.6rem);' +
       'display:flex;gap:.15rem;align-items:center;overflow-x:auto;scrollbar-width:none}',
     '.yjump-w::-webkit-scrollbar{display:none}',
     '.yjump a{flex:0 0 auto;font-family:' + KR + ';font-size:.86rem;font-weight:600;color:' + MUTED + ';' +
@@ -102,7 +104,7 @@
     '@media(max-width:640px){' +
       '.ysub{overflow:hidden}' +   /* sticky 유지 — 위치는 그대로, 페이드만 얹는다 */
       '.ysub::after{content:"";position:absolute;top:0;right:0;bottom:0;width:2.2rem;pointer-events:none;' +
-        'background:linear-gradient(90deg,rgba(255,255,255,0),#fff 72%)}' +
+        'background:linear-gradient(90deg,rgba(18,41,79,0),' + NAVYD + ' 72%)}' +
       '.ysub-w{padding:0 .9rem;scroll-padding-inline:.9rem;scroll-snap-type:x proximity;' +
         '-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}' +
       '.ysub-tab{scroll-snap-align:start;font-size:.9rem;padding:.8rem .72rem .62rem;min-height:2.9rem}' +

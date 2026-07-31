@@ -30,7 +30,7 @@
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트를 미리 받아 둔다 — 파서가 해당 줄에 닿았을 때 이미 캐시에 있어 멈춤이 짧아진다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d17" />
-<link rel="preload" as="script" href="assets/nav.js?v=86" />
+<link rel="preload" as="script" href="assets/nav.js?v=88" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    시안 H · 아카데믹 (Reference: me.kaist.ac.kr / me.snu.ac.kr)
@@ -55,7 +55,7 @@ body{font-family:var(--kr);background:var(--paper);color:var(--ink);
   -webkit-font-smoothing:antialiased;word-break:keep-all;line-height:1.6;overflow-x:hidden}
 a{color:inherit;text-decoration:none}
 img{display:block;max-width:100%}
-.wrap{max-width:72rem;margin:0 auto;padding:0 clamp(1.1rem,4vw,2rem)}
+.wrap{max-width:1232px;margin:0 auto;padding:0 clamp(1.2rem,.6rem + 2vw,2.6rem)}
 
 /* 상단 유틸 바·헤더·드롭다운·푸터의 CSS는 여기 없다 — 그 마크업은 이 페이지가 아니라
    assets/nav.js 가 .ynv-* / .yft 로 만들고, 제 스타일도 함께 주입한다.
@@ -246,7 +246,7 @@ img{display:block;max-width:100%}
    아래 칸은 눌러서 바로 건너뛸 수도 있고, 켜진 칸의 줄이 차오르며 다음 차례를 알린다. */
 .areas{background:var(--paper);
   padding:clamp(4rem,8vh,6.5rem) 0 clamp(3.4rem,7vh,5.5rem)}
-.ar-wrap{width:100%;max-width:1320px;margin:0 auto;padding:0 clamp(1.2rem,.6rem + 2vw,3rem)}
+.ar-wrap{width:100%;max-width:1232px;margin:0 auto;padding:0 clamp(1.2rem,.6rem + 2vw,2.6rem)}
 /* 구간 머리 — 가로줄 위에 이름표가 얹힌다 */
 .ar-top{position:relative;height:0;border-top:1px solid var(--line);
   margin-bottom:clamp(2.6rem,5vh,4rem)}
@@ -1295,7 +1295,7 @@ html[lang="en"] .as-ko{display:none}
 })();
 </script>
 <!-- 공용 헤더·사이트맵 푸터(서브페이지와 동일) 주입 -->
-<script src="assets/nav.js?v=86"></script>
+<script src="assets/nav.js?v=88"></script>
 <script>
 /* 인트로 두 구간 — 스크롤 진행률(0~1)을 --p 로 넣고, 문장 구간은 단어를 하나씩 켠다.
    바깥 통의 높이에서 화면 한 칸을 뺀 만큼이 「진행 구간」이다. */

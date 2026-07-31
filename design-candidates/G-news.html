@@ -298,6 +298,14 @@ a{color:inherit;text-decoration:none}
 .cal-d.has .n{color:var(--ink);font-weight:800}
 .cal-d:hover:not(.is-out){background:#fbfcfe}
 .cal-d:focus-visible{outline:2px solid var(--navy);outline-offset:-2px;z-index:2}
+/* 오늘 — 테두리 하나로만 짚는다. 칠하면 「고른 날」(왼쪽 네이비 기둥)과 헷갈린다.
+   깜빡임은 opacity 만 움직인다 — 테두리 색이나 그림자를 프레임마다 바꾸면
+   그 칸을 매번 다시 칠하게 된다. */
+.cal-d.today::after{content:"";position:absolute;inset:0;pointer-events:none;
+  border:2px solid var(--navy);animation:calToday 2.4s ease-in-out infinite}
+.cal-d.today .n{color:var(--navy);font-weight:800}
+@keyframes calToday{0%,100%{opacity:1}50%{opacity:.3}}
+@media (prefers-reduced-motion:reduce){ .cal-d.today::after{animation:none} }
 /* 고른 날 — 칠하지 않고 왼쪽에 네이비 기둥 하나 (이 사이트의 활성 표시) */
 .cal-d.on{background:#fbfcfe;box-shadow:inset 3px 0 0 var(--navy)}
 /* 일정 띠 — 칸마다 같은 자리(lane)에 놓아야 여러 날짜리가 한 줄로 이어져 보인다.
@@ -333,10 +341,6 @@ a{color:inherit;text-decoration:none}
 .cal-e-t{font-size:.88rem;line-height:1.6;color:var(--sub);transition:color .18s;
   overflow-wrap:anywhere}
 .cal-empty{padding:1.2rem .1rem;font-size:.85rem;color:var(--muted);line-height:1.75}
-.cal-src{margin-top:1.4rem;font-size:.78rem;color:var(--muted);line-height:1.8}
-.cal-src a{color:var(--sub);text-decoration:underline;text-decoration-color:var(--line);
-  text-underline-offset:3px}
-.cal-src a:hover{color:var(--navy);text-decoration-color:var(--accent)}
 @media (max-width:1080px){
   .cal-wrap{grid-template-columns:1fr;gap:1.8rem}
 }
@@ -497,14 +501,6 @@ a{color:inherit;text-decoration:none}
         <h3 id="calSideH">이주의 일정<span class="cnt" id="calCount"></span></h3>
         <p class="cal-range" id="calRange"></p>
         <div class="cal-list" id="calList" aria-live="polite"></div>
-        <p class="cal-src">
-          <b>학사일정 · 시험 · 휴일</b>은 연세대학교 공식 학사일정(2026학년도 1·2학기)을 그대로 옮긴 것입니다.
-          <b>세미나 · 행사</b>는 학부 공식 게시판 글 <b>제목에 적힌 일정 날짜</b>를 옮겼고,
-          제목에 날짜가 없는 글은 올리지 않았습니다.
-          <br />출처 — <a href="https://www.yonsei.ac.kr/sc/373/subview.do" target="_blank" rel="noopener">연세대학교 학사일정 <span aria-hidden="true">↗</span></a>
-          · <a href="https://me.yonsei.ac.kr/me/community/seminar.do" target="_blank" rel="noopener">학부 세미나 <span aria-hidden="true">↗</span></a>
-          · <a href="https://me.yonsei.ac.kr/me/community/seminar_graduate1.do" target="_blank" rel="noopener">행사 <span aria-hidden="true">↗</span></a>
-        </p>
       </div>
     </div>
   </section>
@@ -994,21 +990,20 @@ a{color:inherit;text-decoration:none}
     });
 
     var days = Object.keys(BY).sort();
-    var perMonth = {};
-    /* 첫 화면은 「일정이 가장 많은 달」로 연다. 가장 최근 달로 열었더니 한 건짜리 달이
-       걸려 달력이 비어 보였다. 일정의 「시작한 달」로 세야 여름 강연 시리즈 하나가
-       한 달을 통째로 채워 그 달을 가장 바쁜 달로 만드는 일이 없다. */
-    EV.forEach(function(ev){
-      var ym = ev.s.slice(0,7);
-      perMonth[ym] = (perMonth[ym] || 0) + 1;
-    });
-    var best = Object.keys(perMonth).sort(function(a,b){
-      return perMonth[b] - perMonth[a] || (a < b ? 1 : -1);
-    })[0].split('-');
-    var view = { y:+best[0], m:+best[1] };
     var firstDay = days[0].split('-'), lastDay = days[days.length-1].split('-');
     var minYM = (+firstDay[0])*12 + (+firstDay[1]);
     var maxYM = (+lastDay[0])*12 + (+lastDay[1]);
+    /* 오늘 — 이 화면을 여는 그 날. 달력은 「지금」에서 시작해야 읽는 사람이 자기를 찾는다 */
+    var NOW = new Date();
+    var TODAY = key(NOW.getFullYear(), NOW.getMonth()+1, NOW.getDate());
+    /* 처음 여는 달은 오늘이 든 달. 다만 일정이 하나도 없는 해로 열리지 않게
+       데이터가 있는 구간(minYM~maxYM) 안으로 당긴다. */
+    var view = (function(){
+      var y = NOW.getFullYear(), m = NOW.getMonth()+1, n = y*12 + m;
+      if(n < minYM) n = minYM;
+      if(n > maxYM) n = maxYM;
+      return { y: Math.floor((n-1)/12), m: ((n-1) % 12) + 1 };
+    })();
     var sel = null;   /* 고른 날(YYYY-MM-DD). 오른쪽은 이 날이 든 주를 보여 준다 */
 
     function ymNum(){ return view.y*12 + view.m; }
@@ -1033,7 +1028,9 @@ a{color:inherit;text-decoration:none}
 
     /* 오른쪽 — 고른 날이 든 주(일~토)의 일정. 고른 날이 없으면 그 달 첫 주. */
     function paintSide(){
-      var base = sel || key(view.y, view.m, 1);
+      /* 고른 날이 없으면 오늘이 든 주부터. 다른 달을 보고 있으면 그 달 1일이 든 주 */
+      var base = sel
+        || (TODAY.slice(0,7) === (view.y + '-' + pad(view.m)) ? TODAY : key(view.y, view.m, 1));
       var ws = weekStart(base), we = new Date(ws); we.setDate(we.getDate()+6);
       var seen = {}, items = [];
       var cur = new Date(ws);
@@ -1122,11 +1119,12 @@ a{color:inherit;text-decoration:none}
         if(over) chips += '<span class="cal-more">+'+over+'</span>';
 
         var cls = 'cal-d' + (out ? ' is-out' : '') + (sun ? ' is-sun' : '')
-                + (evs ? ' has' : '') + (sel === k ? ' on' : '');
+                + (evs ? ' has' : '') + (sel === k ? ' on' : '')
+                + (k === TODAY ? ' today' : '');
         h += '<button type="button" class="'+cls+'" data-k="'+k+'" role="gridcell"'
           + (out ? ' tabindex="-1" aria-hidden="true"' : '')
           + ' aria-pressed="'+(sel === k)+'"'
-          + ' aria-label="'+esc((dt.getMonth()+1)+'월 '+dt.getDate()+'일'
+          + ' aria-label="'+esc((k === TODAY ? '오늘 ' : '') + (dt.getMonth()+1)+'월 '+dt.getDate()+'일'
               + (evs ? ' 일정 '+evs.length+'건' : ' 일정 없음'))+'">'
           + '<span class="n">'+dt.getDate()+'</span>'
           + (chips ? '<span class="cal-lanes">'+chips+'</span>' : '')

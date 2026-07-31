@@ -1160,3 +1160,68 @@ div.ys-vs-warn {
 .ys-ai-del { background: var(--ys-del-bg); }
 .ys-ai-add { background: var(--ys-add-bg); }
 .ys-ai-sign { flex: none; font-weight: 700; opacity: .6; }
+
+/* ── 찾아 바꾸기: 바뀔 곳 목록 ──
+   "85곳을 바꿉니다" 만 보여 주고 승인을 받는 건 눈 감고 서명하라는 것과 같다.
+   어디가 바뀌는지 한 줄씩 보여 주고, 골라 승인하고, 그 자리로 갈 수 있어야 한다. */
+.ys-ai-hits {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  max-height: 22rem;
+  overflow-y: auto;
+  padding: .1rem;
+}
+.ys-ai-hitpage {
+  flex: none;                 /* 세로 flex 안에서 눌리면 안쪽 줄이 잘려 보이지 않는다 */
+  border: 1px solid var(--ys-line);
+  border-radius: 9px;
+  background: #fff;
+  overflow: hidden;
+}
+.ys-ai-hithead {
+  display: flex;
+  gap: .45rem;
+  align-items: center;
+  min-height: 2.1rem;
+  padding: .35rem .55rem;
+  background: var(--ys-tint);
+  border-bottom: 1px solid var(--ys-line-2);
+  cursor: pointer;
+  font-size: .78rem;
+}
+.ys-ai-hithead input[type="checkbox"] { flex: none; width: 1rem; height: 1rem; margin: 0; accent-color: var(--ys-navy-2); }
+.ys-ai-hitpath { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; color: var(--ys-navy); }
+.ys-ai-hitrows { display: flex; flex-direction: column; }
+.ys-ai-hitrow {
+  display: flex;
+  gap: .4rem;
+  align-items: center;
+  padding: .22rem .5rem;
+  border-top: 1px solid var(--ys-line-2);
+  font-size: .76rem;
+}
+.ys-ai-hitrow:first-child { border-top: 0; }
+.ys-ai-hitrow:hover { background: var(--ys-tint); }
+.ys-ai-hitrow.is-off { opacity: .42; }
+.ys-ai-hitlab { display: flex; gap: .4rem; align-items: center; flex: 1 1 auto; min-width: 0; cursor: pointer; }
+.ys-ai-hitlab input[type="checkbox"] { flex: none; width: .95rem; height: .95rem; margin: 0; accent-color: var(--ys-navy-2); }
+.ys-ai-hitline { flex: none; color: var(--ys-dim); font-variant-numeric: tabular-nums; }
+.ys-ai-hitctx {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--ys-muted);
+}
+.ys-ai-hitgo { flex: none; min-height: 1.7rem; padding: .16rem .5rem; font-size: .72rem; }
+.ys-ai-hitkind {
+  flex: none;
+  font-size: .68rem;
+  font-weight: 700;
+  padding: .05rem .34rem;
+  border-radius: 999px;
+  background: var(--ys-line-2);
+  color: var(--ys-muted);
+}

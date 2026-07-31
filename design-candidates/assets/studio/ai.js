@@ -59,6 +59,8 @@
     remove: '요소 삭제'
   };
   var STATE_LABEL = { pending: '대기', approved: '승인', rejected: '거절' };
+  /* 곳 목록에서 「어디를」 고치는지 한눈에 — 화면 글자인지, 검색·공유용 정보인지, 번역 사전인지 */
+  var HIT_KIND = { text: '글', attr: '정보', script: '사전' };
 
   /* ── 모듈 상태 ── */
   var st = {
@@ -696,6 +698,58 @@
     }, function () { return [cur]; });
   }
 
+  /** 훑어 둔 곳 목록에서 이 페이지 몫을 찾는다 */
+  function scanPageOf(ch, path) {
+    var pages = (ch.scan && ch.scan.pages) || [];
+    for (var i = 0; i < pages.length; i++) if (pages[i].path === path) return pages[i];
+    return null;
+  }
+
+  /* ── 되돌리기 ──
+     바꾼 자리를 그대로 되감는다(바이트 동일). 그 사이 사람이 같은 자리를 또 고쳤다면
+     그 곳만 건너뛰고 몇 곳을 못 되돌렸는지 알린다 — 남의 편집을 조용히 덮지 않는다. */
+  function undoReplace(ch, onProgress) {
+    var undo = (ch.result && ch.result.undo) || [];
+    if (!undo.length) return Promise.resolve({ ok: false, msg: '되돌릴 정보가 없습니다.' });
+    if (!Y.replace || !Y.replace.revert) return Promise.resolve({ ok: false, msg: '찾아 바꾸기 모듈을 불러오지 못했습니다.' });
+
+    var okAll = 0, missAll = 0, cur = U.pagePath(), curTouched = false;
+
+    function step(i) {
+      if (i >= undo.length) {
+        if (curTouched && Y.replace.live) {
+          try { Y.replace.live(Y.engine.liveDoc() || document, ch.replace, ch.find); } catch (e) {}
+        }
+        /* 사전은 **바꾼 쌍만** 되돌린다. 문자열로 되돌리면 원래부터 그 말이 있던 키
+           (예: 「고려대학교 기계공학과 강용태 교수」 세미나 공지)까지 바꿔 버린다. */
+        var pairs = (ch.result && ch.result.dictPairs) || [];
+        var dictP = (pairs.length && Y.i18nEdit && Y.i18nEdit.renameKeys)
+          ? Y.i18nEdit.renameKeys(pairs).then(null, function () { return 0; })
+          : Promise.resolve(0);
+        return dictP.then(function (dn) {
+          if (!okAll) return { ok: false, msg: '되돌릴 자리를 찾지 못했습니다 — 그 사이 원문이 바뀌었습니다.' };
+          return {
+            ok: true,
+            msg: okAll + '곳을 되돌렸습니다' +
+              (missAll ? ' (' + missAll + '곳은 그 사이 바뀌어 건드리지 않았습니다)' : '') +
+              (dn ? ' · 사전 ' + dn + '항목' : '') + '.'
+          };
+        });
+      }
+      var u = undo[i];
+      if (typeof onProgress === 'function') { try { onProgress(i, undo.length); } catch (e) {} }
+      return Y.engine.patchPage(u.path, function (src) {
+        var r = Y.replace.revert(src, u.applied);
+        okAll += r.ok; missAll += r.miss;
+        if (r.ok && u.path === cur) curTouched = true;
+        return r.ok ? r.src : null;
+      }).then(function () { return step(i + 1); }, function () { missAll += u.applied.length; return step(i + 1); });
+    }
+
+    var run = function () { return step(0); };
+    return (Y.i18nEdit && Y.i18nEdit.suspend) ? Y.i18nEdit.suspend(run) : Promise.resolve().then(run);
+  }
+
   function applyReplace(ch, onProgress) {
     var find = ch.find, rep = ch.replace;
     function tick(done, total) { if (typeof onProgress === 'function') { try { onProgress(done, total); } catch (e) {} } }
@@ -715,16 +769,21 @@
 
     function runPages() {
     return pagesFor(ch).then(function (pages) {
-      var files = [], total = 0, curTouched = false;
+      var files = [], total = 0, curTouched = false, undo = [];
 
       function step(i) {
         if (i >= pages.length) {
           if (!total) {
-            return { ok: false, msg: '「' + shorten(find, 40) + '」 을(를) 어디에서도 찾지 못했습니다.' };
+            return {
+              ok: false,
+              msg: pickedCount(ch) === 0 && ch.scan
+                ? '고른 곳이 없습니다. 바꿀 곳을 하나 이상 선택하세요.'
+                : '「' + shorten(find, 40) + '」 을(를) 어디에서도 찾지 못했습니다.'
+            };
           }
           var hit = [];
           for (var k = 0; k < files.length; k++) if (files[k].n) hit.push(files[k]);
-          ch.result = { total: total, files: files };
+          ch.result = { total: total, files: files, undo: undo };
 
           /* 화면에도 곧바로 반영한다 — 원문만 고치면 사람은 아무 일도 안 일어난 줄 안다.
              (data-i18n·nav.js 가 그리는 글자는 resyncLive 가 손대지 않는다) */
@@ -732,11 +791,14 @@
           if (curTouched && Y.replace.live) {
             try { shown = Y.replace.live(Y.engine.liveDoc() || document, find, rep); } catch (e) { shown = 0; }
           }
-          /* 사전 키도 같은 규칙으로 갈아 끼운다(끝나야 결과를 돌려준다) */
+          /* 사전 키도 같은 규칙으로 갈아 끼운다(끝나야 결과를 돌려준다).
+             바꾼 키 쌍을 남겨 두어야 되돌릴 때 그 쌍만 정확히 되돌릴 수 있다. */
           var dictP = (Y.i18nEdit && Y.i18nEdit.replaceInKeys)
-            ? Y.i18nEdit.replaceInKeys(find, rep).then(null, function () { return 0; })
-            : Promise.resolve(0);
-          return dictP.then(function (dn) {
+            ? Y.i18nEdit.replaceInKeys(find, rep).then(null, function () { return { n: 0, pairs: [] }; })
+            : Promise.resolve({ n: 0, pairs: [] });
+          return dictP.then(function (d) {
+            var dn = (d && d.n) || 0;
+            ch.result.dictPairs = (d && d.pairs) || [];
             if (dn) files.push({ path: '사전 assets/i18n/en.json', n: dn });
             return {
               ok: true, replaced: total, files: files, structural: false,
@@ -746,15 +808,33 @@
             };
           });
         }
-        var p = pages[i], n = 0;
+        var p = pages[i], n = 0, appliedHere = null, mismatch = false;
         tick(i, pages.length);
+
+        /* 사람이 곳 목록에서 고른 것만 바꾼다. 훑어 본 적이 없으면(scan 없음) 전부 바꾼다. */
+        var pg = scanPageOf(ch, p);
+        var only = pg ? pickedFor(ch, pg) : null;
+        var expect = pg ? pg.hits.length : -1;
+        if (only && !only.length) {                    // 이 페이지는 하나도 안 골랐다
+          files.push({ path: p, n: 0 });
+          return step(i + 1);
+        }
+
         return Y.engine.patchPage(p, function (src) {
-          var r = Y.replace.plan(src, find, rep);
+          var r = Y.replace.plan(src, find, rep, only ? { only: only } : undefined);
+          /* 훑어 본 뒤에 원문이 바뀌었으면 번호가 어긋난다 — 엉뚱한 곳을 고치느니 건너뛴다 */
+          if (expect >= 0 && r.hits.length !== expect) { mismatch = true; return null; }
           n = r.changed;
+          appliedHere = r.applied;
           return r.changed ? r.newSrc : null;
         }).then(function () {
+          if (mismatch) {
+            files.push({ path: p, n: 0, err: '그 사이 원문이 바뀌어 건너뛰었습니다' });
+            return step(i + 1);
+          }
           total += n;
           if (n && p === cur) curTouched = true;
+          if (n && appliedHere) undo.push({ path: p, applied: appliedHere });
           files.push({ path: p, n: n });
           return step(i + 1);
         }, function (err) {
@@ -1041,22 +1121,73 @@
     return (i + 1) + '. ' + pre + head + ' · ' + where + (body ? ' — ' + body : '');
   }
 
-  /* 찾아 바꾸기 항목의 본문 — 어디를 몇 곳 바꾸는지 미리 세어 보여 준다.
-     사람이 승인 버튼을 누르기 전에 규모를 알 수 있어야 한다. */
-  function replaceBody(ch, body) {
-    var meta = [];
-    meta.push('범위 ' + (ch.site ? '사이트 전체(모든 페이지)' : '현재 페이지 ' + U.pagePath()));
-    body.appendChild(el('div', 'ys-ai-meta', meta.join(' · ')));
-    if (ch.why) body.appendChild(el('p', 'ys-ai-why', ch.why));
+  /* ── 곳 목록 ──
+     "85곳을 바꿉니다" 만 보여 주고 승인을 받는 것은 사람에게 눈 감고 서명하라는 것과 같다.
+     어디가 바뀌는지 한 줄씩 보여 주고, 골라서 승인하고, 그 자리로 갈 수 있어야 한다. */
+  function hitKey(path, index) { return path + '#' + index; }
+  function isOff(ch, path, index) { return !!(ch.off && ch.off[hitKey(path, index)]); }
+  function setOff(ch, path, index, off) {
+    if (!ch.off) ch.off = {};
+    if (off) ch.off[hitKey(path, index)] = true;
+    else delete ch.off[hitKey(path, index)];
+  }
+  /* 이 페이지에서 실제로 바꿀 곳 번호들 */
+  function pickedFor(ch, page) {
+    var out = [];
+    for (var i = 0; i < page.hits.length; i++) {
+      if (!isOff(ch, page.path, page.hits[i].index)) out.push(page.hits[i].index);
+    }
+    return out;
+  }
+  function pickedCount(ch) {
+    var n = 0, pages = (ch.scan && ch.scan.pages) || [];
+    for (var i = 0; i < pages.length; i++) n += pickedFor(ch, pages[i]).length;
+    return n;
+  }
 
+  /** 원문 위치 → 그 자리를 담고 있는 가장 안쪽 요소의 eid */
+  function idxAtOffset(at) {
+    var buf = Y.engine.current();
+    if (!buf || !buf.mapped || !buf.els) return null;
+    var best = null;
+    for (var i = 0; i < buf.els.length; i++) {
+      var e = buf.els[i];
+      if (e && e.openStart <= at && at < e.endEnd) best = i;   // 전순회 — 뒤에 오는 것이 더 안쪽
+    }
+    return best;
+  }
+
+  /** 모든 대상 페이지를 훑어 곳 목록을 만든다(원문은 고치지 않는다) */
+  function scanReplace(ch, onProgress) {
+    return pagesFor(ch).then(function (paths) {
+      var pages = [];
+      function step(i) {
+        if (i >= paths.length) return pages;
+        if (typeof onProgress === 'function') { try { onProgress(i, paths.length); } catch (e) {} }
+        var p = paths[i];
+        return Y.engine.pageSrc(p).then(function (src) {
+          var r = Y.replace.plan(src, ch.find, ch.replace);
+          if (r.hits.length) pages.push({ path: p, hits: r.hits });
+          return step(i + 1);
+        }, function () { return step(i + 1); });
+      }
+      return step(0);
+    });
+  }
+
+  /* 찾아 바꾸기 항목의 본문 */
+  function replaceBody(ch, body, i) {
+    body.appendChild(el('div', 'ys-ai-meta',
+      '범위 ' + (ch.site ? '사이트 전체(모든 페이지)' : '현재 페이지 ' + U.pagePath())));
+    if (ch.why) body.appendChild(el('p', 'ys-ai-why', ch.why));
     body.appendChild(diffBlock(ch.find, ch.replace));
 
-    /* 이미 반영했다면 실제 결과를, 아직이면 이 페이지 기준 예상치를 보여 준다 */
+    /* 반영한 뒤 — 결과와 되돌리기 */
     if (ch.result && ch.result.files) {
       var done = el('div', 'ys-ai-meta');
       var lines = ['반영 결과 — 모두 ' + ch.result.total + '곳'];
-      for (var i = 0; i < ch.result.files.length; i++) {
-        var f = ch.result.files[i];
+      for (var k = 0; k < ch.result.files.length; k++) {
+        var f = ch.result.files[k];
         if (f.err) lines.push('  ' + f.path + ' — ' + f.err);
         else if (f.n) lines.push('  ' + f.path + ' — ' + f.n + '곳');
       }
@@ -1065,12 +1196,132 @@
       body.appendChild(done);
       return;
     }
-    var here = 0;
-    try { here = Y.replace ? Y.replace.plan(Y.engine.src() || '', ch.find, ch.replace).changed : 0; } catch (e) { here = 0; }
-    body.appendChild(el('p', 'ys-ai-note',
-      '이 페이지에서 ' + here + '곳이 바뀝니다' +
-      (ch.site ? '. 다른 페이지는 승인할 때 함께 셉니다.' : '.') +
-      ' 제목·설명·이미지 대체문구·번역 사전까지 포함하고, 주소(href)·class·주석은 건드리지 않습니다.'));
+
+    /* 아직 반영 전 — 곳 목록을 훑어 보여 준다 */
+    if (!ch.scan) {
+      var loading = el('p', 'ys-ai-note', '바뀔 곳을 찾는 중…');
+      body.appendChild(loading);
+      if (!ch._scanning) {
+        ch._scanning = true;
+        scanReplace(ch, function (d, t) {
+          if (t > 1) loading.textContent = '바뀔 곳을 찾는 중… ' + (d + 1) + '/' + t;
+        }).then(function (pages) {
+          ch._scanning = false;
+          ch.scan = { pages: pages };
+          refreshItem(ch, i);
+        }, function () {
+          ch._scanning = false;
+          ch.scan = { pages: [] };
+          refreshItem(ch, i);
+        });
+      }
+      return;
+    }
+
+    var pages = ch.scan.pages || [];
+    var total = 0;
+    for (var t = 0; t < pages.length; t++) total += pages[t].hits.length;
+    if (!total) {
+      body.appendChild(el('p', 'ys-ai-msg ys-ai-err', '「' + shorten(ch.find, 40) + '」 을(를) 찾지 못했습니다.'));
+      return;
+    }
+
+    var summary = el('p', 'ys-ai-note', '');
+    function refreshSummary() {
+      summary.textContent = '모두 ' + total + '곳 중 ' + pickedCount(ch) + '곳을 바꿉니다. ' +
+        '제목·설명·이미지 대체문구·번역 사전까지 포함하고, 주소(href)·class·주석은 건드리지 않습니다.';
+    }
+    body.appendChild(summary);
+
+    var all = el('div', 'ys-ai-row');
+    all.appendChild(btn('전체 선택', 'ys-ai-btn2', function () { ch.off = {}; savePlan(); refreshItem(ch, i); }));
+    all.appendChild(btn('전체 해제', 'ys-ai-btn2', function () {
+      ch.off = {};
+      for (var a = 0; a < pages.length; a++) {
+        for (var b = 0; b < pages[a].hits.length; b++) setOff(ch, pages[a].path, pages[a].hits[b].index, true);
+      }
+      savePlan(); refreshItem(ch, i);
+    }));
+    body.appendChild(all);
+
+    var listWrap = el('div', 'ys-ai-hits');
+    for (var p = 0; p < pages.length; p++) listWrap.appendChild(renderHitPage(ch, pages[p], i, refreshSummary));
+    body.appendChild(listWrap);
+    refreshSummary();
+  }
+
+  /** 페이지 한 개의 곳 목록 */
+  function renderHitPage(ch, page, itemIdx, refreshSummary) {
+    var wrap = el('div', 'ys-ai-hitpage');
+    var head = el('label', 'ys-ai-hithead');
+
+    var box = document.createElement('input');
+    box.type = 'checkbox';
+    var picked = pickedFor(ch, page).length;
+    box.checked = picked > 0;
+    box.indeterminate = picked > 0 && picked < page.hits.length;
+    head.appendChild(box);
+    head.appendChild(el('span', 'ys-ai-hitpath', page.path + (page.path === U.pagePath() ? ' (지금 이 페이지)' : '')));
+    var countEl = el('span', 'ys-ai-chip', picked + '/' + page.hits.length + '곳');
+    head.appendChild(countEl);
+    wrap.appendChild(head);
+
+    var rows = el('div', 'ys-ai-hitrows');
+    for (var h = 0; h < page.hits.length; h++) rows.appendChild(row(page.hits[h]));
+    wrap.appendChild(rows);
+
+    box.addEventListener('change', function () {
+      for (var h2 = 0; h2 < page.hits.length; h2++) setOff(ch, page.path, page.hits[h2].index, !box.checked);
+      savePlan();
+      refreshItem(ch, itemIdx);
+    });
+    return wrap;
+
+    function row(hit) {
+      var r = el('div', 'ys-ai-hitrow');
+      var cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.checked = !isOff(ch, page.path, hit.index);
+      cb.addEventListener('change', function () {
+        setOff(ch, page.path, hit.index, !cb.checked);
+        savePlan();
+        var n = pickedFor(ch, page).length;
+        countEl.textContent = n + '/' + page.hits.length + '곳';
+        box.checked = n > 0;
+        box.indeterminate = n > 0 && n < page.hits.length;
+        r.classList.toggle('is-off', !cb.checked);
+        if (refreshSummary) refreshSummary();
+      });
+      var lab = el('label', 'ys-ai-hitlab');
+      lab.appendChild(cb);
+      lab.appendChild(el('span', 'ys-ai-hitline', '줄 ' + hit.line));
+      lab.appendChild(el('span', 'ys-ai-hitkind', HIT_KIND[hit.kind] || hit.kind));
+      lab.appendChild(el('span', 'ys-ai-hitctx', hit.before));
+      r.appendChild(lab);
+      if (!cb.checked) r.classList.add('is-off');
+
+      r.appendChild(btn('이동', 'ys-ai-btn2 ys-ai-hitgo', function () { goToHit(ch, page.path, hit); }));
+      return r;
+    }
+  }
+
+  /** 그 곳으로 데려간다 — 같은 페이지면 요소를 비추고, 다른 페이지면 그 페이지로 옮긴다 */
+  function goToHit(ch, path, hit) {
+    if (path !== U.pagePath()) {
+      if (!safePage(path)) { Y.toast('이동할 페이지 경로가 올바르지 않습니다: ' + path, 'error'); return; }
+      savePlan().then(function () {
+        try { sessionStorage.setItem(SS_FOCUS, st.plan.id + '|' + ch.id); } catch (e) {}
+        rememberPlan(st.plan.id);
+        location.href = path + (location.search || '');
+      });
+      return;
+    }
+    var idx = idxAtOffset(hit.at);
+    if (idx == null || !Y.engine.info(idx)) {
+      Y.toast('그 자리를 화면에서 찾지 못했습니다(줄 ' + hit.line + '). 원문에는 그대로 있습니다.', 'warn');
+      return;
+    }
+    if (Y.hud && Y.hud.revealIdx) Y.hud.revealIdx(idx);
   }
 
   function renderItem(ch, i) {
@@ -1095,9 +1346,29 @@
       var body = el('div', 'ys-ai-body');
 
       if (ch.op === 'replaceText') {
-        replaceBody(ch, body);
+        replaceBody(ch, body, i);
         var rActs = el('div', 'ys-ai-row');
         if (ch.state === 'approved') {
+          /* 되돌리기 — 바꾼 자리를 그대로 되감는다(바이트 동일). 그 사이 사람이
+             같은 자리를 또 고쳤다면 그 곳만 건너뛰고 알려 준다. */
+          rActs.appendChild(btn('되돌리기', 'ys-ai-btn2', function (ev) {
+            var ub = ev && ev.currentTarget;
+            if (ub) { ub.disabled = true; ub.textContent = '되돌리는 중…'; }
+            undoReplace(ch, function (d, t) {
+              if (ub && t > 1) ub.textContent = '되돌리는 중… ' + (d + 1) + '/' + t;
+            }).then(function (r) {
+              if (ub) { ub.disabled = false; ub.textContent = '되돌리기'; }
+              Y.toast(r.msg, r.ok ? null : 'error');
+              if (r.ok) {
+                ch.state = 'pending';
+                ch.result = null;
+                ch.scan = null;                 // 다시 훑어 지금 상태를 보여 준다
+                ch.msg = r.msg;
+                savePlan();
+              }
+              refreshItem(ch, i);
+            });
+          }));
           rActs.appendChild(el('span', 'ys-ai-note', '초안에 반영됨'));
         } else if (ch.state === 'rejected') {
           rActs.appendChild(btn('거절 취소', 'ys-ai-btn2', function () {

@@ -298,12 +298,14 @@
      새 키를 미번역으로 덧붙여 사전이 두 벌이 된다.
      여기서는 무엇이 무엇으로 바뀌었는지 이미 알고 있으니 키를 그대로 갈아 끼운다. */
   var bulk = 0;
+  /** 키 안의 말을 바꾼다. **무엇을 무엇으로 바꿨는지 쌍을 돌려준다** —
+      되돌릴 때 그 쌍만 정확히 되돌리기 위해서다(renameKeys). */
   function replaceInKeys(find, replace) {
     var a = String(find == null ? '' : find), b = String(replace == null ? '' : replace);
-    if (!a || a === b) return Promise.resolve(0);
+    if (!a || a === b) return Promise.resolve({ n: 0, pairs: [] });
     return ensure().then(function () {
-      if (locked) return 0;
-      var keys = Object.keys(map), n = 0;
+      if (locked) return { n: 0, pairs: [] };
+      var keys = Object.keys(map), pairs = [];
       for (var i = 0; i < keys.length; i++) {
         var k = keys[i];
         if (k.indexOf(a) < 0) continue;
@@ -312,6 +314,27 @@
         /* 값이 비어 있는 새 키가 이미 있으면 덮어써도 잃을 것이 없다 */
         if (!Object.prototype.hasOwnProperty.call(map, nk) || (!map[nk] && map[k])) map[nk] = map[k];
         delete map[k];
+        pairs.push({ from: k, to: nk });
+      }
+      if (pairs.length) { schedule(); if (opened) renderList(); }
+      return { n: pairs.length, pairs: pairs };
+    });
+  }
+
+  /** 기록해 둔 쌍을 그대로 되돌린다.
+      되돌리기를 다시 문자열 치환으로 하면 **원래부터 그 말이 있던 키까지** 바꿔 버린다
+      (사전에는 「고려대학교 기계공학과 강용태 교수」 같은 남의 학교 이름이 실제로 들어 있다).
+      그래서 반드시 바꾼 쌍만 되돌린다. */
+  function renameKeys(pairs) {
+    if (!pairs || !pairs.length) return Promise.resolve(0);
+    return ensure().then(function () {
+      if (locked) return 0;
+      var n = 0;
+      for (var i = pairs.length - 1; i >= 0; i--) {
+        var p = pairs[i];
+        if (!Object.prototype.hasOwnProperty.call(map, p.to)) continue;   // 그 사이 사라졌다
+        if (!Object.prototype.hasOwnProperty.call(map, p.from) || !map[p.from]) map[p.from] = map[p.to];
+        delete map[p.to];
         n++;
       }
       if (n) { schedule(); if (opened) renderList(); }
@@ -603,6 +626,7 @@
     keyFor: keyFor,
     rekey: rekey,
     replaceInKeys: replaceInKeys,
+    renameKeys: renameKeys,
     suspend: suspend,
     survey: survey,
     dict: function () { return map; },

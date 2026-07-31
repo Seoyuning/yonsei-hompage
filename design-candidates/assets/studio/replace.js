@@ -139,10 +139,16 @@
     for (var i = 0; i < idx && i < src.length; i++) if (src.charCodeAt(i) === 10) n++;
     return n;
   }
-  function snippet(src, s, e, pad) {
-    pad = pad || 24;
-    var a = Math.max(0, s - pad), b = Math.min(src.length, e + pad);
-    return (a > 0 ? '…' : '') + src.slice(a, b).replace(/\s+/g, ' ').trim() + (b < src.length ? '…' : '');
+  /* 문맥은 **그 곳이 속한 구간 안쪽으로만** 자른다.
+     구간 밖까지 퍼 오면 `1.0" /> <title>…</title> <meta na…` 처럼 태그가 섞여
+     사람이 어디를 고치는지 알아볼 수 없다. */
+  function snippet(src, s, e, lo, hi, pad) {
+    pad = pad || 28;
+    if (lo == null) lo = 0;
+    if (hi == null) hi = src.length;
+    var a = Math.max(lo, s - pad), b = Math.min(hi, e + pad);
+    var text = src.slice(a, b).replace(/\s+/g, ' ').trim();
+    return (a > lo ? '…' : '') + text + (b < hi ? '…' : '');
   }
 
   /* ── 본체 ── */
@@ -154,7 +160,7 @@
 
     var wantAttrs = opts.attrs !== false;
     var wantScripts = opts.scripts !== false;      // i18n 사전이 여기 있어 기본으로 연다
-    var empty = { newSrc: src, hits: [], counts: { text: 0, attr: 0, script: 0 }, changed: 0 };
+    var empty = { newSrc: src, hits: [], counts: { text: 0, attr: 0, script: 0 }, changed: 0, applied: [] };
     if (!find || find === replace) return empty;
 
     var edits = [];
@@ -169,7 +175,7 @@
         edits.push({
           s: abs, e: abs + needle.length, ins: ins,
           kind: kind, label: label || '',
-          line: 0, ctx: ''
+          rs: s, re: e                      // 이 곳이 속한 구간 — 문맥을 여기 안쪽으로만 잘라 보여 준다
         });
         at = hay.indexOf(needle, at + needle.length);
       }
@@ -207,31 +213,77 @@
 
     if (!edits.length) return empty;
 
+    /* 고를 곳만 고르기 — opts.only 는 hit 번호(0부터) 목록이다.
+       주지 않으면 전부 바꾼다(종전 동작). */
+    var only = null;
+    if (opts.only && typeof opts.only.length === 'number') {
+      only = {};
+      for (var q = 0; q < opts.only.length; q++) only[opts.only[q]] = true;
+    }
+
     /* 겹치는 편집을 걸러내고(있을 수 없지만 방어) 앞에서부터 이어 붙인다 */
     edits.sort(function (a, b) { return a.s - b.s; });
+
     var outParts = [], last = 0, hits = [], counts = { text: 0, attr: 0, script: 0 };
+    var applied = [], hitNo = 0, delta = 0;
+    /* 줄 번호는 앞에서부터 한 번만 세면 된다 — 곳마다 처음부터 세면 파일이 클수록 느려진다 */
+    var lineCur = 1, linePos = 0;
+
     for (var i = 0; i < edits.length; i++) {
       var ed = edits[i];
       if (ed.s < last) continue;                              // 겹침 — 건너뛴다
-      outParts.push(src.slice(last, ed.s), ed.ins);
-      counts[ed.kind]++;
+
+      while (linePos < ed.s) { if (src.charCodeAt(linePos) === 10) lineCur++; linePos++; }
+
+      var idx = hitNo++;
+      var take = !only || !!only[idx];
+      var from = src.slice(ed.s, ed.e);
+      var ctx = snippet(src, ed.s, ed.e, ed.rs, ed.re);
       hits.push({
+        index: idx,
         kind: ed.kind,
         label: ed.label,
-        line: lineAt(src, ed.s),
-        before: snippet(src, ed.s, ed.e),
-        after: snippet(src, ed.s, ed.e).split(src.slice(ed.s, ed.e)).join(replace)
+        at: ed.s,                       // 원문에서의 위치 — 「이 위치로 이동」이 이걸 쓴다
+        line: lineCur,
+        before: ctx,
+        after: ctx.split(from).join(replace),
+        applied: take
       });
+      if (!take) continue;                                    // 고르지 않은 곳은 원문 그대로 둔다
+
+      outParts.push(src.slice(last, ed.s), ed.ins);
+      counts[ed.kind]++;
+      /* 되돌리기용 — **바뀐 뒤** 원문 기준 위치를 적어 둔다 */
+      applied.push({ at: ed.s + delta, from: from, to: ed.ins });
+      delta += ed.ins.length - (ed.e - ed.s);
       last = ed.e;
     }
     outParts.push(src.slice(last));
 
     return {
       newSrc: outParts.join(''),
-      hits: hits,
+      hits: hits,                 // 후보 전체(고르지 않은 것 포함)
       counts: counts,
-      changed: hits.length
+      changed: applied.length,    // 실제로 바꾼 개수
+      applied: applied            // 되돌리기 정보
     };
+  }
+
+  /* ── 되돌리기 ──
+     plan() 이 준 applied 를 **뒤에서부터** 되감는다(뒤부터 해야 앞쪽 위치가 안 밀린다).
+     그 사이 사람이 같은 자리를 또 고쳤다면 글자가 맞지 않으므로 그 곳은 건너뛰고 센다 —
+     남의 편집을 조용히 덮어쓰지 않는 것이 먼저다. */
+  function revert(src, applied) {
+    var out = String(src == null ? '' : src);
+    if (!applied || !applied.length) return { src: out, ok: 0, miss: 0 };
+    var ok = 0, miss = 0;
+    for (var i = applied.length - 1; i >= 0; i--) {
+      var a = applied[i];
+      if (out.substr(a.at, a.to.length) !== a.to) { miss++; continue; }
+      out = out.slice(0, a.at) + a.from + out.slice(a.at + a.to.length);
+      ok++;
+    }
+    return { src: out, ok: ok, miss: miss };
   }
 
   /* 미리 세어만 본다 */
@@ -289,6 +341,7 @@
 
   Y.replace = {
     plan: plan,
+    revert: revert,
     count: count,
     live: live,
     /* 검사·설명용으로 열어 둔다 */

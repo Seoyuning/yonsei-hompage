@@ -340,6 +340,16 @@
     saveDraft: saveDraft,
     flush: function () { return saveDraft(); },
 
+    /** 지금 유효한 원문을 준다 — 열려 있으면 버퍼, 초안이 있으면 초안, 없으면 파일.
+        고치지 않고 보기만 할 때 쓴다(찾아 바꾸기의 「곳 목록」). */
+    pageSrc: function (path) {
+      if (buf && buf.path === path) return Promise.resolve(buf.src);
+      return Y.store.get('drafts', path).then(function (d) {
+        if (d && typeof d.src === 'string') return d.src;
+        return Y.net.read(path).then(function (r) { return r.content; });
+      });
+    },
+
     /** 지금 열려 있지 않은 페이지의 원문을 고친다 (전영역 찾아 바꾸기용).
         fn(src) 이 새 원문을 돌려주면 초안으로 남긴다. 이미 초안이 있으면 그 위에 얹는다.
         현재 페이지면 열린 버퍼를 그대로 쓴다 — 같은 파일의 초안이 두 벌 생기면 안 된다.

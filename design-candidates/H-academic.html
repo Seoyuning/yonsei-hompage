@@ -31,7 +31,7 @@
 <link rel="stylesheet" href="assets/fonts.css?v=1" />
 <!-- 스크립트를 미리 받아 둔다 — 파서가 해당 줄에 닿았을 때 이미 캐시에 있어 멈춤이 짧아진다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d21" />
-<link rel="preload" as="script" href="assets/nav.js?v=113" />
+<link rel="preload" as="script" href="assets/nav.js?v=114" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    시안 H · 아카데믹 (Reference: me.kaist.ac.kr / me.snu.ac.kr)
@@ -338,24 +338,34 @@ main{position:relative;z-index:2;background:var(--paper)}
 
 /* ── 소식 구간에 「걸리는」 느낌 ──
    scroll-snap 을 proximity 로 건다. mandatory 로 걸면 스크롤을 놓을 때마다 붙잡혀
-   지나가려는 사람까지 가둔다. proximity 는 구간 머리 가까이서 멈췄을 때만 당겨 준다.
-   붙는 자리는 상단 바 아래 — scroll-padding-top 이 그 몫이다.
-   붙는 표시(scroll-snap-align)는 이 두 구간에만 준다. 히어로·연구 분야·문장 구간은
-   저마다 sticky 로 화면을 붙들고 있어, 거기까지 스냅을 걸면 두 장치가 서로 당긴다. */
+   지나가려는 사람까지 가둔다. proximity 는 가까이서 멈췄을 때만 당겨 준다.
+
+   붙는 표시는 구간(section)이 아니라 **구간 머리(.sec-head · .bhead)** 에 준다.
+   구간에 주면 「상자의 위」가 화면 위에 서는데, 이 구간들은 위쪽 여백이 5~8rem 이라
+   화면 한 폭이 빈 채로 걸리고 제목은 화면 한가운데쯤에 남았다.
+   머리에 주면 「RESEARCH & NEWS / 연구 소식」이 상단 바 바로 아래에 서고,
+   그 아래로 목록이 이어져 구간이 한눈에 들어온다.
+   히어로·연구 분야·문장 구간에는 걸지 않는다 — 저마다 sticky 로 화면을 붙들고 있어
+   두 장치가 서로 당긴다. */
 @media (min-width:861px) and (prefers-reduced-motion:no-preference){
-  html{scroll-snap-type:y proximity;scroll-padding-top:var(--ys-bars,5rem)}
-  #secNews,.board-band{scroll-snap-align:start;scroll-snap-stop:normal}
+  html{scroll-snap-type:y proximity;scroll-padding-top:calc(var(--ys-bars,5rem) + 1.6rem)}
+  #secNews .sec-head,.board-band .bhead{scroll-snap-align:start;scroll-snap-stop:normal}
 }
 
 /* ── 소식 구간에 「걸리는」 느낌 ──
    scroll-snap 을 proximity 로 건다. mandatory 로 걸면 스크롤을 놓을 때마다 붙잡혀
-   지나가려는 사람까지 가둔다. proximity 는 구간 머리 가까이서 멈췄을 때만 당겨 준다.
-   붙는 자리는 상단 바 아래 — scroll-padding-top 이 그 몫이다.
-   붙는 표시(scroll-snap-align)는 이 두 구간에만 준다. 히어로·연구 분야·문장 구간은
-   저마다 sticky 로 화면을 붙들고 있어, 거기까지 스냅을 걸면 두 장치가 서로 당긴다. */
+   지나가려는 사람까지 가둔다. proximity 는 가까이서 멈췄을 때만 당겨 준다.
+
+   붙는 표시는 구간(section)이 아니라 **구간 머리(.sec-head · .bhead)** 에 준다.
+   구간에 주면 「상자의 위」가 화면 위에 서는데, 이 구간들은 위쪽 여백이 5~8rem 이라
+   화면 한 폭이 빈 채로 걸리고 제목은 화면 한가운데쯤에 남았다.
+   머리에 주면 「RESEARCH & NEWS / 연구 소식」이 상단 바 바로 아래에 서고,
+   그 아래로 목록이 이어져 구간이 한눈에 들어온다.
+   히어로·연구 분야·문장 구간에는 걸지 않는다 — 저마다 sticky 로 화면을 붙들고 있어
+   두 장치가 서로 당긴다. */
 @media (min-width:861px) and (prefers-reduced-motion:no-preference){
-  html{scroll-snap-type:y proximity;scroll-padding-top:var(--ys-bars,5rem)}
-  #secNews,.board-band{scroll-snap-align:start;scroll-snap-stop:normal}
+  html{scroll-snap-type:y proximity;scroll-padding-top:calc(var(--ys-bars,5rem) + 1.6rem)}
+  #secNews .sec-head,.board-band .bhead{scroll-snap-align:start;scroll-snap-stop:normal}
 }
 
 
@@ -1409,7 +1419,7 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
 })();
 </script>
 <!-- 공용 헤더·사이트맵 푸터(서브페이지와 동일) 주입 -->
-<script src="assets/nav.js?v=113"></script>
+<script src="assets/nav.js?v=114"></script>
 <script>
 /* 인트로 두 구간 — 스크롤 진행률(0~1)을 --p 로 넣고, 문장 구간은 단어를 하나씩 켠다.
    바깥 통의 높이에서 화면 한 칸을 뺀 만큼이 「진행 구간」이다. */

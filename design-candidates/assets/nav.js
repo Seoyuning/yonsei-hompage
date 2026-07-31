@@ -315,12 +315,12 @@
       '.yft-base{padding:1.1rem .9rem calc(1.1rem + env(safe-area-inset-bottom));line-height:1.7}' +
     '}',
     /* ── 로딩 판 ──
-       화면을 덮지 않는다. 상단 바(z-50)와 지금 보고 있는 쪽은 그대로 두고,
-       가운데에 흰 판 하나만 뜬다. 그래서 z-index 는 상단 바보다 낮은 44,
+       화면을 덮지 않는다. 지금 보고 있는 쪽은 그대로 두고 가운데에 흰 원 하나만 뜬다.
        바탕은 투명, pointer-events 도 끈다.
+       z-index 는 모바일 메뉴(70)보다 높은 90 — 메뉴를 열어 둔 채 눌러도 원이 메뉴 위에 뜬다.
        쪽을 옮길 때 브라우저는 새 쪽이 그려질 때까지 지금 쪽을 계속 보여 준다 —
        그 틈에 이 판이 떠 있어 「넘어가는 중」이 눈에 보인다. */
-    '.yld{position:fixed;inset:0;z-index:44;display:grid;place-items:center;pointer-events:none;' +
+    '.yld{position:fixed;inset:0;z-index:90;display:grid;place-items:center;pointer-events:none;' +
       'opacity:0;visibility:hidden;transition:opacity .22s ease,visibility 0s .22s;font-family:' + KR + '}',
     /* 켤 때는 즉시 — 쪽을 옮기는 틈이 0.2초쯤일 때가 많아, 켜는 데 0.22초를 쓰면
        판이 다 뜨기도 전에 새 쪽이 그려져 아무것도 안 보인다. 끌 때만 부드럽게. */
@@ -969,17 +969,6 @@
       if (u.origin !== location.origin) return;
       /* 같은 쪽 안의 앵커 이동은 넘어가는 것이 아니다 */
       if (u.pathname === location.pathname && u.search === location.search) return;
-      /* 열려 있던 메뉴는 먼저 닫는다 — 메가 메뉴(z-59)·모바일 메뉴(z-70)가 로딩 판(z-44)
-         위에 남으면, 메뉴 뒤에서 독수리가 날갯짓하는 우스운 화면이 된다.
-         어차피 곧 다른 쪽으로 넘어가므로 닫는 편이 자연스럽다. */
-      nav.classList.remove('mega-on');
-      var ovlEl = document.getElementById('ynvOvl');
-      if (ovlEl && ovlEl.classList.contains('open')) {
-        /* 오버레이가 잠가 둔 스크롤을 제 손으로 풀게 한다 — 여기서 직접 지우면
-           원래 overflow 값이 있던 쪽에서 그 값을 잃는다 */
-        var cl = ovlEl.parentNode ? ovlEl.parentNode.querySelector('.ynv-ovl-close') : null;
-        if (cl) cl.click(); else ovlEl.classList.remove('open');
-      }
       showLoader();
     }, true);
 

@@ -20,7 +20,8 @@
     /* 유틸 바 */
     '.ynv-top{background:' + INK + ';color:#c6d2e6;font-size:.74rem;overflow:hidden;max-height:2.3rem;' +
       'transition:max-height .4s ' + E + ',opacity .3s ease}',
-    '.ynv-top .ynv-w{display:flex;align-items:center;justify-content:flex-end;gap:1.4rem;padding:.42rem clamp(1.1rem,4vw,2rem)}',
+    '.ynv-top .ynv-w{max-width:none;display:flex;align-items:center;justify-content:flex-end;' +
+      'gap:1.4rem;padding:.42rem clamp(1.2rem,2.6vw,3rem)}',
     '.ynv-top a{color:#c6d2e6;text-decoration:none;transition:color .15s}',
     '.ynv-top a:hover{color:#fff}',
     '.ynv.min .ynv-top{max-height:0;opacity:0}',
@@ -29,12 +30,26 @@
       'background:none;border:0;border-radius:99px;padding:.16rem .62rem;cursor:pointer;transition:background .12s,color .12s}',
     '.ynv-lang button.on{background:#fff;color:' + NAVYD + '}',
     /* 흰 헤더 */
-    '.ynv-hdr{background:rgba(255,255,255,.9);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1px solid ' + LINE + '}',
-    '.ynv-hdr .ynv-w{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;padding-top:.85rem;padding-bottom:.85rem}',
+    '.ynv-hdr{background:rgba(255,255,255,.9);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);' +
+      'border-bottom:1px solid ' + LINE + ';transition:background .32s ease,border-color .32s ease}',
+    /* 히어로 위에 얹혀 있는 동안에는 바탕을 지운다 — 사진이 바 밑으로 이어져 보인다.
+       히어로를 지나가면 흰 바탕으로 돌아온다(.over 를 뗀다). */
+    '.ynv.over .ynv-hdr{background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;' +
+      'border-bottom-color:transparent}',
+    '.ynv.over .ynv-brand .bko{color:#fff}',
+    '.ynv.over .ynv-brand .ben{color:rgba(255,255,255,.72)}',
+    '.ynv.over .ynv-i>a{color:#fff}',
+    '.ynv.over .ynv-i>a::after{background:#fff}',
+    '.ynv.over .ynv-i:hover>a,.ynv.over .ynv-i>a.cur{color:#fff}',
+    '.ynv.over .ynv-burger span{background:#fff}',
+    /* 상단 바만 본문 폭(1232px)을 벗어나 화면 끝까지 쓴다 — 학부 이름은 왼쪽 끝,
+       메뉴는 오른쪽 끝에 붙는다. 가운데로 모여 있으면 바가 떠 보인다. */
+    '.ynv-hdr .ynv-w{max-width:none;display:flex;align-items:center;justify-content:space-between;' +
+      'gap:1.5rem;padding:.85rem clamp(1.2rem,2.6vw,3rem)}',
     '.ynv-brand{display:flex;align-items:center;gap:.7rem;min-width:0;text-decoration:none}',
-    '.ynv-brand img{height:2.4rem;width:auto;display:block}',
-    '.ynv-brand .bko{font-weight:800;font-size:1.06rem;letter-spacing:-.01em;color:' + NAVY + ';line-height:1.25}',
-    '.ynv-brand .ben{display:block;font-size:.62rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:' + DIM + '}',
+    '.ynv-brand img{height:2.75rem;width:auto;display:block}',
+    '.ynv-brand .bko{font-weight:800;font-size:1.24rem;letter-spacing:-.01em;color:' + NAVY + ';line-height:1.25}',
+    '.ynv-brand .ben{display:block;font-size:.66rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:' + DIM + '}',
     '.ynv-menu{display:flex;gap:clamp(2rem,3.8vw,3.6rem);font-weight:600;font-size:.98rem;white-space:nowrap}',
     '.ynv-i{position:relative}',
     '.ynv-i>a{position:relative;display:inline-block;padding:.55rem 0;color:' + INK + ';text-decoration:none;transition:color .2s}',
@@ -808,12 +823,24 @@
     buildFooter();
     setupReveal();
 
-    /* 스크롤 시 유틸바 접힘 */
-    var min = false;
-    addEventListener('scroll', function () {
-      var m = (pageYOffset || 0) > 40;
+    /* 스크롤 시 유틸바 접힘 + 히어로 위에서는 투명 헤더 */
+    var min = false, over = false;
+    /* 히어로가 있는 화면(메인)에서만 투명하게 둔다. 하위 페이지는 늘 흰 바다. */
+    var heroEl = document.querySelector('.hero');
+    var heroH = 0;
+    function measureHero() { heroH = heroEl ? heroEl.offsetHeight : 0; }
+    measureHero();
+    addEventListener('resize', measureHero, { passive: true });
+    function onScroll() {
+      var y = pageYOffset || 0;
+      var m = y > 40;
       if (m !== min) { min = m; nav.classList.toggle('min', m); }
-    }, { passive: true });
+      /* 헤더 높이만큼 미리 되돌린다 — 바가 히어로 밖으로 나가기 전에 흰 바탕이 깔린다 */
+      var o = !!heroEl && y < Math.max(0, heroH - 120);
+      if (o !== over) { over = o; nav.classList.toggle('over', o); }
+    }
+    addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
 
     /* 한/영 토글 — 서브페이지는 선호도만 저장(홈에서 반영). 시각 상태 동기화 */
     var ko = nav.querySelector('#ynvKo'), en = nav.querySelector('#ynvEn');

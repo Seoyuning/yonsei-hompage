@@ -293,13 +293,13 @@ img{display:block;max-width:100%}
    여섯을 겹쳐 두고 켜진 것만 보이므로, 넘어갈 때 자리가 흔들리지 않는다. */
 .fx-scene{position:relative;background:var(--paper)}
 .fx-pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;display:flex;align-items:center}
-/* 왼쪽 끝은 본문(1232px)과 같은 선에 두고, 오른쪽은 화면 끝까지 내보낸다 —
-   사진이 화면 밖으로 잘려 나가야 「더 있다」는 느낌이 난다.
-   margin:0 auto 로 가운데 두면 오른쪽에도 여백이 생겨 잘리지 않는다. */
+/* 참고 화면처럼 글을 화면 왼쪽 끝에 바짝 붙인다 — 본문 격자(1232px)를 따르지 않는다.
+   큰 글씨는 왼쪽 여백이 넓으면 힘이 빠진다.
+   오른쪽 사진은 화면 끝에 딱 붙이지 않고 같은 만큼 띄워 숨통을 준다. */
 .fx-grid{width:100%;max-width:none;margin:0;
-  padding:clamp(4.5rem,9vh,6.5rem) 0 clamp(2rem,4vh,3rem)
-    max(clamp(1.2rem,.6rem + 2vw,2.6rem), calc((100vw - 1232px) / 2 + clamp(1.2rem,.6rem + 2vw,2.6rem)));
-  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,40vw);
+  padding:clamp(4.5rem,9vh,6.5rem) clamp(1.5rem,3vw,3.6rem) clamp(2rem,4vh,3rem)
+    clamp(1.5rem,3vw,3.6rem);
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,44vw);
   gap:clamp(1.6rem,4vw,4rem);align-items:center}
 .fx-left{min-width:0}
 .fx-left .kick{display:inline-block;width:auto;margin-bottom:clamp(1.4rem,3vh,2.2rem)}
@@ -341,7 +341,7 @@ img{display:block;max-width:100%}
 /* 가로세로비를 주면 max-height 가 폭까지 잡아 사진이 화면 끝에 못 닿는다 —
    폭은 칸을 다 쓰게 두고 높이만 정한다. */
 .fx-right{position:relative;width:100%;height:min(74vh,40rem);overflow:hidden;
-  border-radius:10px 0 0 10px;background:var(--soft)}
+  border-radius:10px;background:var(--soft)}
 .fx-s{position:absolute;inset:0;margin:0;opacity:0;visibility:hidden;
   transition:opacity .7s ease,visibility .7s}
 .fx-s.is-on{opacity:1;visibility:visible}

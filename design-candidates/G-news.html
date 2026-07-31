@@ -258,8 +258,8 @@ a{color:inherit;text-decoration:none}
    글의 「제목 안에 이미 적혀 있는 날짜」(5/29(금) · [4/13(월)] · [260424] · [7/1~7/29])를
    읽어 달력에 놓을 뿐이다. 제목에서 날짜를 못 찾으면 그 글은 달력에 올리지 않는다 —
    게시일을 일정 날짜인 척 쓰면 없는 사실을 만드는 셈이 된다. */
-.cal-wrap{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);
-  gap:clamp(1.6rem,1rem + 2.4vw,3.2rem);align-items:start}
+.cal-wrap{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);
+  gap:clamp(1.6rem,1rem + 2.4vw,3rem);align-items:start}
 .cal-bar{display:flex;align-items:baseline;gap:.9rem;
   padding-bottom:.8rem;border-bottom:1px solid #111318;margin-bottom:1rem}
 .cal-ym{font-family:var(--num);font-weight:800;letter-spacing:-.02em;color:var(--navy);
@@ -274,44 +274,56 @@ a{color:inherit;text-decoration:none}
 .cal-nav button:disabled{opacity:.35;cursor:default}
 .cal-nav button:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
 .cal-nav svg{width:1rem;height:1rem}
-/* 격자 — 칠 없이 헤어라인으로만 나눈다. 요일 머리는 작은 라벨 어법 */
 .cal-dow{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));
   font-family:var(--mono);font-size:.7rem;font-weight:600;letter-spacing:.14em;
   text-transform:uppercase;color:var(--label);text-align:center;padding-bottom:.6rem}
 .cal-dow span:first-child{color:var(--accent-ink,#8E5A4F)}
 .cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));
   border-top:1px solid var(--line);border-left:1px solid var(--line)}
-.cal-d{position:relative;min-height:clamp(3.4rem,7vw,4.6rem);
+/* 칸 — 반드시 flex 로 세우고 justify-content 를 직접 잡는다.
+   <button> 은 display 값과 무관하게 제 내용을 세로 가운데로 모으는 상자를 하나 갖고 있어,
+   display:block 만으로는 막히지 않는다(그래서 일정 수에 따라 날짜 숫자가 위아래로 흔들렸다).
+   테두리도 0 으로 지운 뒤 두 변만 다시 긋는다 — 버튼 기본 테두리가 남으면 그 칸만 상자가 된다. */
+.cal-d{display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;
+  position:relative;min-height:clamp(4.6rem,9vw,6rem);
   border:0;border-right:1px solid var(--line);border-bottom:1px solid var(--line);
-  padding:.4rem .45rem .5rem;background:none;text-align:left;cursor:default;
-  font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
-.cal-d .n{font-family:var(--num);font-size:.82rem;font-weight:600;color:var(--sub);
-  font-variant-numeric:tabular-nums;line-height:1}
+  padding:.4rem 0 .45rem;background:none;text-align:left;cursor:pointer;
+  font:inherit;color:inherit;-webkit-tap-highlight-color:transparent;
+  transition:background .16s}
+.cal-d .n{display:block;flex:none;padding:0 .45rem;font-family:var(--num);font-size:.82rem;font-weight:600;
+  color:var(--sub);font-variant-numeric:tabular-nums;line-height:1}
+.cal-d.is-out{cursor:default}
 .cal-d.is-out .n{color:#c4cbd6}
 .cal-d.is-sun .n{color:var(--accent-ink,#8E5A4F)}
-.cal-d.has{cursor:pointer;transition:background .16s}
-.cal-d.has:hover{background:#fbfcfe}
 .cal-d.has .n{color:var(--ink);font-weight:800}
-.cal-d:focus-visible{outline:2px solid var(--navy);outline-offset:-2px;z-index:1}
+.cal-d:hover:not(.is-out){background:#fbfcfe}
+.cal-d:focus-visible{outline:2px solid var(--navy);outline-offset:-2px;z-index:2}
 /* 고른 날 — 칠하지 않고 왼쪽에 네이비 기둥 하나 (이 사이트의 활성 표시) */
 .cal-d.on{background:#fbfcfe;box-shadow:inset 3px 0 0 var(--navy)}
-/* 그 날 무엇이 있는지 — 점 색으로 갈래를 나눈다. 점은 장식이므로 글자에는 색을 쓰지 않는다 */
-.cal-dots{position:absolute;left:.45rem;bottom:.5rem;display:flex;flex-wrap:wrap;gap:3px;max-width:calc(100% - .9rem)}
-.cal-dots i{width:5px;height:5px;border-radius:50%;background:var(--k-c,var(--navy))}
-/* 여러 날에 걸친 일정 — 점 대신 가는 띠로 「이어짐」을 보인다 */
-.cal-d .span{position:absolute;left:0;right:0;bottom:.42rem;height:2px;background:var(--k-c,var(--navy));opacity:.5}
+/* 일정 띠 — 칸마다 같은 자리(lane)에 놓아야 여러 날짜리가 한 줄로 이어져 보인다.
+   좌우로 1px 씩 빼내 칸 경계 위를 덮으므로, 이어지는 날들이 끊기지 않는다. */
+.cal-lanes{display:block;margin-top:.3rem;flex:none}
+.cal-c{display:block;height:1.15rem;margin:0 -1px 2px;padding:0 .3rem;
+  font-size:.66rem;line-height:1.15rem;color:var(--ink);
+  background:#eef2f7;border-left:2px solid var(--k-c,var(--navy));
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal-c.is-mid{border-left:0;padding-left:0}      /* 이어지는 날 — 왼쪽 기둥 없이 띠만 */
+.cal-c.is-gap{background:none;border-left:0}     /* 그 자리를 비워 두는 칸(줄 맞춤용) */
+.cal-more{display:block;padding:0 .3rem;font-size:.64rem;color:var(--muted);line-height:1.1rem}
 .cal-legend{display:flex;flex-wrap:wrap;gap:.35rem 1.1rem;margin-top:.9rem;
   font-size:.76rem;color:var(--muted)}
 .cal-legend b{display:inline-flex;align-items:center;gap:.4rem;font-weight:500}
 .cal-legend i{width:6px;height:6px;border-radius:50%;background:var(--k-c)}
-/* 오른쪽 — 고른 날(또는 그 달 전체)의 일정 목록 */
+/* 오른쪽 — 고른 날이 든 그 주(일~토)의 일정 */
 .cal-side{min-width:0}
 .cal-side h3{font-size:1.02rem;font-weight:700;color:var(--navy);margin:0 0 .2rem;
   padding-bottom:.7rem;border-bottom:2px solid var(--navy)}
 .cal-side h3 .cnt{font-family:var(--num);font-size:.8rem;font-weight:500;color:var(--muted);
   margin-left:.45rem;font-variant-numeric:tabular-nums}
-.cal-list{border-top:0}
-.cal-e{display:grid;grid-template-columns:3.4rem minmax(0,1fr);gap:.2rem .8rem;
+.cal-range{font-family:var(--num);font-size:.78rem;color:var(--label);margin:.55rem 0 0;
+  font-variant-numeric:tabular-nums}
+.cal-list{border-top:0;margin-top:.3rem}
+.cal-e{display:grid;grid-template-columns:3.9rem minmax(0,1fr);gap:.2rem .8rem;
   padding:.85rem .1rem;border-bottom:1px solid var(--line-soft);text-decoration:none;color:inherit}
 .cal-e:hover .cal-e-t{color:var(--coral)}
 .cal-e-d{grid-row:1 / span 2;font-family:var(--num);font-size:.78rem;font-weight:700;
@@ -325,12 +337,19 @@ a{color:inherit;text-decoration:none}
 .cal-src a{color:var(--sub);text-decoration:underline;text-decoration-color:var(--line);
   text-underline-offset:3px}
 .cal-src a:hover{color:var(--navy);text-decoration-color:var(--accent)}
-@media (max-width:860px){
+@media (max-width:1080px){
   .cal-wrap{grid-template-columns:1fr;gap:1.8rem}
-  .cal-d{min-height:2.9rem;padding:.32rem .3rem .4rem}
-  .cal-d .n{font-size:.76rem}
 }
-@media (prefers-reduced-motion:reduce){ .cal-d.has,.cal-e-t,.cal-nav button{transition:none} }
+@media (max-width:640px){
+  /* 좁은 화면에서는 띠에 글자를 넣을 자리가 없다 — 색 막대만 남겨 「있다」만 알린다 */
+  .cal-d{min-height:3.4rem;padding:.3rem 0 .35rem}
+  .cal-d .n{padding:0 .3rem;font-size:.76rem}
+  .cal-c{height:.42rem;margin:0 -1px 2px;padding:0;font-size:0;
+    background:var(--k-c,var(--navy));border-left:0}
+  .cal-c.is-gap{background:none}
+  .cal-more{display:none}
+}
+@media (prefers-reduced-motion:reduce){ .cal-d,.cal-e-t,.cal-nav button{transition:none} }
 
 /* ── 반응형 ── */
 @media (max-width:860px){
@@ -475,7 +494,8 @@ a{color:inherit;text-decoration:none}
         <p class="cal-legend" id="calLegend"></p>
       </div>
       <div class="cal-side">
-        <h3 id="calSideH">이 달의 일정<span class="cnt" id="calCount"></span></h3>
+        <h3 id="calSideH">이주의 일정<span class="cnt" id="calCount"></span></h3>
+        <p class="cal-range" id="calRange"></p>
         <div class="cal-list" id="calList" aria-live="polite"></div>
         <p class="cal-src">
           날짜는 학부 공식 게시판 글 <b>제목에 적힌 일정 날짜</b>를 그대로 옮긴 것입니다.
@@ -889,39 +909,48 @@ a{color:inherit;text-decoration:none}
     var listEl = document.getElementById('calList');
     var cntEl = document.getElementById('calCount');
     var headEl = document.getElementById('calSideH');
+    var rangeEl = document.getElementById('calRange');
     var legEl = document.getElementById('calLegend');
     var prevB = document.getElementById('calPrev'), nextB = document.getElementById('calNext');
 
     var KIND = {
-      sem:    { ko:'세미나',    en:'Seminar', c:'var(--navy)' },
-      evt:    { ko:'행사',      en:'Event',   c:'var(--accent)' },
+      sem:    { ko:'세미나',      en:'Seminar', c:'var(--navy)' },
+      evt:    { ko:'행사',        en:'Event',   c:'var(--accent)' },
       thesis: { ko:'학위논문심사', en:'Defense', c:'var(--dim,#6b7688)' }
     };
+    var LANES = 3;   /* 한 칸에 보여 줄 띠 수. 넘치면 「+n」으로 접는다 */
 
     function pad(n){ return (n<10?'0':'')+n; }
     function key(y,m,d){ return y+'-'+pad(m)+'-'+pad(d); }
+    function fromKey(k){ var p=k.split('-'); return new Date(+p[0], +p[1]-1, +p[2]); }
+    function toKey(dt){ return key(dt.getFullYear(), dt.getMonth()+1, dt.getDate()); }
+    function md(k){ var p=k.split('-'); return (p[1]|0)+'/'+(p[2]|0); }
 
     /* 제목에서 일정 날짜를 캔다. 못 캐면 null 을 돌려 그 글을 버린다. */
     function pick(title, posted){
       var py = +String(posted).slice(0,4) || 0;
       var pm = +String(posted).slice(5,7) || 0;
       var m;
-      /* [260424] — 연·월·일이 다 들어 있어 게시일이 필요 없다 */
       if((m = /\[(\d{2})(\d{2})(\d{2})\]/.exec(title))){
         var yy = 2000 + (+m[1]);
         return { s:key(yy, +m[2], +m[3]), e:key(yy, +m[2], +m[3]) };
       }
       /* 연도가 없는 표기는 게시일의 해를 쓴다. 12월에 올린 1월 일정이면 한 해를 더한다 */
       function yearFor(mo){ return (pm >= 11 && mo <= 2) ? py + 1 : py; }
-      /* [7/1~7/29] · 7/1~7/29 — 여러 날에 걸친 일정 */
       if((m = /(\d{1,2})\/(\d{1,2})\s*[~〜–—-]\s*(\d{1,2})\/(\d{1,2})/.exec(title))){
         return { s:key(yearFor(+m[1]), +m[1], +m[2]), e:key(yearFor(+m[3]), +m[3], +m[4]) };
       }
-      /* 5/29(금) · [4/13(월)] · ]5/8(금) — 하루짜리 */
       if((m = /(\d{1,2})\/(\d{1,2})\s*\(/.exec(title))){
         return { s:key(yearFor(+m[1]), +m[1], +m[2]), e:key(yearFor(+m[1]), +m[1], +m[2]) };
       }
       return null;
+    }
+    /* 띠에 넣을 짧은 이름 — 앞머리 대괄호와 날짜 표기를 걷어 제목만 남긴다 */
+    function shortOf(t){
+      return String(t)
+        .replace(/^\s*\[[^\]]*\]\s*/, '')
+        .replace(/^\s*\d{1,2}\/\d{1,2}\s*(?:[~〜–—-]\s*\d{1,2}\/\d{1,2}\s*)?(?:\([^)]*\))?\s*/, '')
+        .trim() || String(t);
     }
 
     var EV = [];
@@ -929,48 +958,49 @@ a{color:inherit;text-decoration:none}
       (pair[1] || []).forEach(function(x){
         var d = pick(x.title, x.date);
         if(!d) return;
-        EV.push({ k:pair[0], s:d.s, e:d.e, title:x.title, url:x.url, posted:x.date });
+        if(d.e < d.s) d.e = d.s;
+        EV.push({ k:pair[0], s:d.s, e:d.e, title:x.title, short:shortOf(x.title), url:x.url });
       });
     });
     if(!EV.length){ grid.closest('section').hidden = true; return; }
-    EV.sort(function(a,b){ return a.s < b.s ? -1 : a.s > b.s ? 1 : 0; });
+    EV.sort(function(a,b){
+      if(a.s !== b.s) return a.s < b.s ? -1 : 1;
+      var la = (fromKey(a.e) - fromKey(a.s)), lb = (fromKey(b.e) - fromKey(b.s));
+      return lb - la;   /* 같은 날 시작이면 긴 것부터 — 긴 띠가 위 줄에 놓여야 덜 끊겨 보인다 */
+    });
+    EV.forEach(function(ev, i){ ev.id = i; });
 
-    /* 어느 날에 무엇이 있는지 미리 펴 둔다 — 여러 날짜리는 걸친 날마다 넣는다 */
+    /* 날짜별 색인 — 여러 날짜리는 걸친 날마다 넣는다 */
     var BY = {};
     EV.forEach(function(ev){
-      var a = ev.s.split('-'), b = ev.e.split('-');
-      var cur = new Date(+a[0], +a[1]-1, +a[2]), end = new Date(+b[0], +b[1]-1, +b[2]);
-      if(end < cur) end = cur;
-      var guard = 0;
+      var cur = fromKey(ev.s), end = fromKey(ev.e), guard = 0;
       while(cur <= end && guard++ < 400){
-        var k = key(cur.getFullYear(), cur.getMonth()+1, cur.getDate());
+        var k = toKey(cur);
         (BY[k] = BY[k] || []).push(ev);
         cur.setDate(cur.getDate() + 1);
       }
     });
 
     var days = Object.keys(BY).sort();
-    var last = days[days.length-1].split('-');
-    /* 첫 화면은 「일정이 가장 많은 달」로 연다.
-       가장 최근 달로 열었더니 한 건짜리 달이 걸려 달력이 비어 보였다.
-       어느 달이든 화살표로 오갈 수 있으니, 처음 보이는 한 화면을 채우는 쪽을 택한다. */
     var perMonth = {};
-    /* 일정의 「시작한 달」로 센다. 걸친 날짜 수로 세면 여름학기 강연 시리즈 하나가
-       한 달을 통째로 채워, 실제 일정이 둘뿐인 달이 가장 바쁜 달로 뽑힌다. */
+    /* 첫 화면은 「일정이 가장 많은 달」로 연다. 가장 최근 달로 열었더니 한 건짜리 달이
+       걸려 달력이 비어 보였다. 일정의 「시작한 달」로 세야 여름 강연 시리즈 하나가
+       한 달을 통째로 채워 그 달을 가장 바쁜 달로 만드는 일이 없다. */
     EV.forEach(function(ev){
       var ym = ev.s.slice(0,7);
       perMonth[ym] = (perMonth[ym] || 0) + 1;
     });
     var best = Object.keys(perMonth).sort(function(a,b){
-      return perMonth[b] - perMonth[a] || (a < b ? 1 : -1);   /* 같으면 나중 달 */
+      return perMonth[b] - perMonth[a] || (a < b ? 1 : -1);
     })[0].split('-');
     var view = { y:+best[0], m:+best[1] };
-    var firstDay = days[0].split('-');
+    var firstDay = days[0].split('-'), lastDay = days[days.length-1].split('-');
     var minYM = (+firstDay[0])*12 + (+firstDay[1]);
-    var maxYM = (+last[0])*12 + (+last[1]);
-    var sel = null;   /* 고른 날. null 이면 그 달 전체 */
+    var maxYM = (+lastDay[0])*12 + (+lastDay[1]);
+    var sel = null;   /* 고른 날(YYYY-MM-DD). 오른쪽은 이 날이 든 주를 보여 준다 */
 
     function ymNum(){ return view.y*12 + view.m; }
+    function weekStart(k){ var d = fromKey(k); d.setDate(d.getDate() - d.getDay()); return d; }
 
     function paintLegend(){
       legEl.innerHTML = Object.keys(KIND).map(function(k){
@@ -979,8 +1009,7 @@ a{color:inherit;text-decoration:none}
     }
 
     function rowHtml(ev){
-      var a = ev.s.split('-'), b = ev.e.split('-');
-      var d = (a[1]|0)+'/'+(a[2]|0) + (ev.s !== ev.e ? '–'+((b[1]|0)+'/'+(b[2]|0)) : '');
+      var d = md(ev.s) + (ev.s !== ev.e ? ' – '+md(ev.e) : '');
       return '<a class="cal-e" style="--k-c:'+KIND[ev.k].c+'" href="'+esc(ev.url)+'" target="_blank" rel="noopener">'
         + '<span class="cal-e-d">'+esc(d)+'</span>'
         + '<span class="cal-e-k">'+esc(isEn()?KIND[ev.k].en:KIND[ev.k].ko)+'</span>'
@@ -988,31 +1017,33 @@ a{color:inherit;text-decoration:none}
         + '</a>';
     }
 
+    /* 오른쪽 — 고른 날이 든 주(일~토)의 일정. 고른 날이 없으면 그 달 첫 주. */
     function paintSide(){
-      var items, label;
-      if(sel && BY[sel]){
-        items = BY[sel];
-        var p = sel.split('-');
-        label = isEn() ? ((p[1]|0)+'/'+(p[2]|0)) : ((p[1]|0)+'월 '+(p[2]|0)+'일');
-      } else {
-        var pre = view.y+'-'+pad(view.m)+'-';
-        var seen = {};
-        items = [];
-        Object.keys(BY).forEach(function(k){
-          if(k.indexOf(pre) !== 0) return;
-          BY[k].forEach(function(ev){
-            var id = ev.k+'|'+ev.s+'|'+ev.title;
-            if(seen[id]) return; seen[id] = 1; items.push(ev);
-          });
+      var base = sel || key(view.y, view.m, 1);
+      var ws = weekStart(base), we = new Date(ws); we.setDate(we.getDate()+6);
+      var seen = {}, items = [];
+      var cur = new Date(ws);
+      for(var i=0;i<7;i++){
+        (BY[toKey(cur)] || []).forEach(function(ev){
+          if(seen[ev.id]) return; seen[ev.id] = 1; items.push(ev);
         });
-        items.sort(function(x,y){ return x.s < y.s ? -1 : x.s > y.s ? 1 : 0; });
-        label = isEn() ? 'This month' : '이 달의 일정';
+        cur.setDate(cur.getDate()+1);
       }
-      headEl.childNodes[0].nodeValue = label;
+      items.sort(function(a,b){ return a.s < b.s ? -1 : a.s > b.s ? 1 : 0; });
+      headEl.childNodes[0].nodeValue = isEn() ? 'This week' : '이주의 일정';
       cntEl.textContent = items.length + (isEn() ? ' items' : '건');
-      listEl.innerHTML = items.length
+      rangeEl.textContent = md(toKey(ws)) + ' – ' + md(toKey(we))
+        + (sel ? (isEn() ? '  ·  ' + md(sel) + ' selected' : '  ·  ' + md(sel) + ' 선택') : '');
+      /* 고른 날에 일정이 없으면 그것부터 알린다 — 「없다」도 찾으러 온 사람에게는 답이다.
+         그 아래에 같은 주의 일정은 그대로 이어 둔다(주간 화면이므로 비워 두지 않는다). */
+      var note = '';
+      if(sel && !(BY[sel] && BY[sel].length)){
+        note = '<p class="cal-empty">' + esc(md(sel)) + ' — '
+             + (isEn() ? 'no scheduled items.' : '일정이 없습니다.') + '</p>';
+      }
+      listEl.innerHTML = note + (items.length
         ? items.map(rowHtml).join('')
-        : '<p class="cal-empty">'+(isEn()?'No scheduled items.':'등록된 일정이 없습니다.')+'</p>';
+        : (note ? '' : '<p class="cal-empty">'+(isEn()?'No scheduled items this week.':'이 주에는 등록된 일정이 없습니다.')+'</p>'));
     }
 
     function paint(){
@@ -1021,44 +1052,79 @@ a{color:inherit;text-decoration:none}
       nextB.disabled = ymNum() >= maxYM;
 
       var first = new Date(view.y, view.m-1, 1);
-      var lead = first.getDay();                       /* 그 달 1일의 요일(일=0) */
-      var len = new Date(view.y, view.m, 0).getDate();  /* 그 달의 마지막 날 */
-      var prevLen = new Date(view.y, view.m-1, 0).getDate();
+      var lead = first.getDay();
+      var len = new Date(view.y, view.m, 0).getDate();
       var cells = Math.ceil((lead + len) / 7) * 7;
+
+      /* ① 한 주씩, 그 주에 걸치는 일정에 「줄 번호(lane)」를 붙인다.
+            같은 일정이 그 주 내내 같은 줄에 놓여야 여러 날짜리가 한 줄로 이어져 보인다. */
+      var laneOf = {};   /* '주시작키|일정id' → 줄 번호 */
+      for(var w = 0; w < cells/7; w++){
+        var wsDate = new Date(view.y, view.m-1, 1 - lead + w*7);
+        var wk = toKey(wsDate);
+        var taken = [];   /* taken[lane] = 그 줄을 마지막으로 쓴 날짜(0~6) */
+        var inWeek = [];
+        for(var i=0;i<7;i++){
+          var dd = new Date(wsDate); dd.setDate(dd.getDate()+i);
+          (BY[toKey(dd)] || []).forEach(function(ev){
+            if(inWeek.indexOf(ev) < 0) inWeek.push(ev);
+          });
+        }
+        inWeek.sort(function(a,b){ return a.id - b.id; });
+        inWeek.forEach(function(ev){
+          var L = 0;
+          while(taken[L] != null) L++;
+          laneOf[wk+'|'+ev.id] = L;
+          taken[L] = 1;
+        });
+      }
+
       var h = '';
-      for(var i = 0; i < cells; i++){
-        var dnum = i - lead + 1, out = false, y = view.y, mo = view.m;
-        if(dnum < 1){ out = true; dnum = prevLen + dnum; mo = view.m-1; if(mo < 1){ mo = 12; y--; } }
-        else if(dnum > len){ out = true; dnum = dnum - len; mo = view.m+1; if(mo > 12){ mo = 1; y++; } }
-        var k = key(y, mo, dnum);
-        var evs = out ? null : BY[k];
-        var sun = (i % 7) === 0;
+      for(var c = 0; c < cells; c++){
+        var dt = new Date(view.y, view.m-1, 1 - lead + c);
+        var k = toKey(dt);
+        var out = (dt.getMonth()+1) !== view.m || dt.getFullYear() !== view.y;
+        var evs = out ? null : (BY[k] || null);
+        var sun = (c % 7) === 0;
+        var wsKey = toKey(new Date(view.y, view.m-1, 1 - lead + Math.floor(c/7)*7));
+
+        var lanes = [];
+        if(evs) evs.forEach(function(ev){
+          var L = laneOf[wsKey+'|'+ev.id];
+          if(L != null) lanes[L] = ev;
+        });
+        var over = 0, chips = '';
+        for(var L = 0; L < lanes.length; L++){
+          if(L >= LANES){ if(lanes[L]) over++; continue; }
+          var ev = lanes[L];
+          if(!ev){ chips += '<span class="cal-c is-gap" aria-hidden="true"></span>'; continue; }
+          /* 그 주에서 이 일정이 처음 나오는 칸에만 이름을 쓴다. 이어지는 칸은 띠만 */
+          var mid = !(ev.s === k || (c % 7) === 0);
+          chips += '<span class="cal-c'+(mid?' is-mid':'')+'" style="--k-c:'+KIND[ev.k].c+'">'
+                 + (mid ? '' : esc(ev.short)) + '</span>';
+        }
+        if(over) chips += '<span class="cal-more">+'+over+'</span>';
+
         var cls = 'cal-d' + (out ? ' is-out' : '') + (sun ? ' is-sun' : '')
                 + (evs ? ' has' : '') + (sel === k ? ' on' : '');
-        var dots = '';
-        if(evs){
-          var kinds = {}; evs.forEach(function(e){ kinds[e.k] = 1; });
-          dots = '<span class="cal-dots">' + Object.keys(kinds).map(function(kk){
-            return '<i style="--k-c:'+KIND[kk].c+'"></i>'; }).join('') + '</span>';
-          /* 여러 날에 걸친 일정이 하나라도 있으면 바닥에 띠를 그어 「이어짐」을 보인다 */
-          if(evs.some(function(e){ return e.s !== e.e; })){
-            dots += '<span class="span" style="--k-c:'+KIND[evs[0].k].c+'"></span>';
-          }
-        }
-        h += (evs ? '<button type="button" ' : '<div ')
-          + 'class="'+cls+'" data-k="'+k+'" role="gridcell"'
-          + (evs ? ' aria-label="'+esc(mo+'월 '+dnum+'일 일정 '+evs.length+'건')+'"' : '')
-          + '><span class="n">'+dnum+'</span>'+dots
-          + (evs ? '</button>' : '</div>');
+        h += '<button type="button" class="'+cls+'" data-k="'+k+'" role="gridcell"'
+          + (out ? ' tabindex="-1" aria-hidden="true"' : '')
+          + ' aria-pressed="'+(sel === k)+'"'
+          + ' aria-label="'+esc((dt.getMonth()+1)+'월 '+dt.getDate()+'일'
+              + (evs ? ' 일정 '+evs.length+'건' : ' 일정 없음'))+'">'
+          + '<span class="n">'+dt.getDate()+'</span>'
+          + (chips ? '<span class="cal-lanes">'+chips+'</span>' : '')
+          + '</button>';
       }
       grid.innerHTML = h;
       paintSide();
     }
 
+    /* 일정이 없는 날도 고를 수 있다 — 「이 날엔 없다」도 알아야 할 사실이다 */
     grid.addEventListener('click', function(e){
-      var b = e.target.closest('.cal-d.has'); if(!b) return;
+      var b = e.target.closest('.cal-d'); if(!b || b.classList.contains('is-out')) return;
       var k = b.getAttribute('data-k');
-      sel = (sel === k) ? null : k;   /* 한 번 더 누르면 그 달 전체로 돌아온다 */
+      sel = (sel === k) ? null : k;
       paint();
     });
     prevB.addEventListener('click', function(){

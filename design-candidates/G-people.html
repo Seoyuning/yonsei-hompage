@@ -28,7 +28,7 @@
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <link rel="stylesheet" href="assets/fonts.css?v=1" />
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
-<link rel="preload" as="script" href="assets/js/data.js?v=d17" />
+<link rel="preload" as="script" href="assets/js/data.js?v=d18" />
 <link rel="preload" as="script" href="assets/nav.js?v=107" />
 <style>
 /* ═══════════════════════════════════════════════════════════
@@ -323,7 +323,7 @@ a{color:inherit;text-decoration:none}
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 html[lang="en"] .ppos{display:none}
 /* 연구분야 — 분야 배지 + 라벨 + 분야명 한 줄.
-   flex-wrap — 2열이 되는 좁은 화면에서 「로보틱스·제어」가 한 줄에 안 들어가면
+   flex-wrap — 2열이 되는 좁은 화면에서 「동역학·제어」가 한 줄에 안 들어가면
    칸을 밀어내지 말고 아랫줄로 내려간다(가로 넘침 방지) */
 .pfieldline{display:flex;align-items:center;flex-wrap:wrap;gap:.1rem .4rem;margin-top:.3rem;
   min-width:0;font-family:var(--kr);font-size:.79rem;font-weight:600;color:var(--sub);letter-spacing:-.005em}
@@ -798,7 +798,7 @@ html[lang="en"] .ppos{display:none}
               <p class="al-meta">2014년 석사 졸업</p>
             </div>
           </div>
-          <p class="al-field">에너지·열유체</p>
+          <p class="al-field">열·유체</p>
           <blockquote class="al-quote">측정값을 한 번 더 의심하는 습관이 연구의 시작이었습니다.</blockquote>
           <p class="al-txt">에너지 분야 연구기관에서 열전달 해석을 담당합니다. 대학원 시절 실험과 수치해석을 함께 다뤘던 훈련이 지금의 업무로 이어졌다고 말합니다.</p>
         </article>
@@ -811,7 +811,7 @@ html[lang="en"] .ppos{display:none}
               <p class="al-meta">2017년 학사 졸업</p>
             </div>
           </div>
-          <p class="al-field">로보틱스·제어</p>
+          <p class="al-field">동역학·제어</p>
           <blockquote class="al-quote">제어 과목 과제로 만든 작은 장치가 진로를 정했습니다.</blockquote>
           <p class="al-txt">로봇 소프트웨어를 개발하는 기업에서 제어 알고리즘을 맡고 있습니다. 학부 동아리에서 팀으로 기계를 만들어 본 경험을 가장 도움이 된 준비로 꼽습니다.</p>
         </article>
@@ -895,7 +895,7 @@ html[lang="en"] .ppos{display:none}
   </section>
   </main>
 
-<script src="assets/js/data.js?v=d17"></script>
+<script src="assets/js/data.js?v=d18"></script>
 <script>
 (function(){
   'use strict';
@@ -935,11 +935,11 @@ html[lang="en"] .ppos{display:none}
      클러스터에 맞춰 옮긴 것) */
   var SV = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
   var FIELD_ICON = {
-    /* 역학·소재 — 재료 격자 */
+    /* 역학·재료 — 재료 격자 */
     solid: SV + '<rect x="3.5" y="6" width="17" height="12" rx="1.2"/><path d="M3.5 12h17M9.2 6v12M14.8 6v12"/></svg>',
-    /* 에너지·열유체 — 흐름 */
+    /* 열·유체 — 흐름 */
     thermal: SV + '<path d="M3 7.5c3-2.8 5 2.8 8 0s5-2.8 8 0"/><path d="M3 12c3-2.8 5 2.8 8 0s5-2.8 8 0"/><path d="M3 16.5c3-2.8 5 2.8 8 0s5-2.8 8 0"/></svg>',
-    /* 로보틱스·제어 — 관절 팔 */
+    /* 동역학·제어 — 관절 팔 */
     dynamics: SV + '<circle cx="5.5" cy="18.5" r="2"/><path d="M5.5 18.5 10.5 10l5.5 1.8"/><circle cx="10.5" cy="10" r="1.7"/><rect x="15" y="5" width="6" height="6" rx="1.2"/></svg>',
     /* 설계·제조 — 기어 */
     manufacturing: SV + '<circle cx="12" cy="12" r="3.3"/><path d="M12 3.6v2.6M12 17.8v2.6M3.6 12h2.6M17.8 12h2.6M6.1 6.1l1.8 1.8M16.1 16.1l1.8 1.8M17.9 6.1l-1.8 1.8M7.9 16.1l-1.8 1.8"/></svg>',

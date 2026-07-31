@@ -909,9 +909,33 @@
     if (isHere(ch)) {
       var idx = idxOf(ch);
       if (idx == null) { Y.toast('대상 eid 를 알 수 없습니다.', 'warn'); return; }
-      if (!Y.engine.info(idx)) { Y.toast('이 페이지에서 대상 요소를 찾지 못했습니다.', 'warn'); return; }
-      /* 골라 둔 채로 남긴다 — 무엇을 고칠 자리인지 계속 보이게 */
-      if (Y.hud && Y.hud.revealIdx) Y.hud.revealIdx(idx, { select: true, label: OPS[ch.op] || ch.op });
+      var jInfo = Y.engine.info(idx);
+      if (!jInfo) { Y.toast('이 페이지에서 대상 요소를 찾지 못했습니다.', 'warn'); return; }
+
+      /* 화면에 그려지지 않는 요소(<title>·<meta>·<script>)는 옮겨 봐야 보이지 않는다 */
+      var jr = (jInfo.live && jInfo.live.getBoundingClientRect) ? jInfo.live.getBoundingClientRect() : null;
+      if (!jr || (!jr.width && !jr.height)) {
+        Y.toast('이 대상은 화면에 그려지지 않는 자리입니다. 승인하면 파일에는 그대로 반영됩니다.', 'warn', 6000);
+        return;
+      }
+
+      /* 그 자리로 데려가고 **바로 고칠 수 있는 상태**로 만든다.
+         선택만 해 두면 테두리만 보이고 정작 바꿀 칸이 없다 — 찾아 바꾸기 쪽과 같은 규칙이다.
+         승인 버튼이 있는 변경안 목록으로는 인스펙터 맨 위에서 한 번에 돌아온다. */
+      if (Y.hud && Y.hud.revealIdx) {
+        Y.hud.revealIdx(idx, {
+          edit: true,
+          label: OPS[ch.op] || ch.op,
+          back: {
+            label: '변경안 목록으로',
+            fn: function () {
+              st.expand[ch.id] = true;
+              if (Y.hud.openPanel) Y.hud.openPanel(PANEL_ID);
+              render();
+            }
+          }
+        });
+      }
       return;
     }
     var page = pageOf(ch);
@@ -1502,7 +1526,7 @@
               if (r.structural && n) Y.toast('구조가 바뀌어 남은 ' + n + '건은 승인 전에 대상을 확인하세요.', 'warn');
               /* 일괄 치환은 data-i18n 요소를 화면에 되밀 수 없다 — 새로고침 배너를 띄운다 */
               if (r.reload) Y.bus.emit('live:stale', { path: U.pagePath() });
-              if (isHere(ch) && r.idx != null && Y.hud && Y.hud.revealIdx) Y.hud.revealIdx(r.idx);
+              if (isHere(ch) && r.idx != null && Y.hud && Y.hud.revealIdx) Y.hud.revealIdx(r.idx, { select: true });
             } else {
               ch.msg = r.msg || '적용하지 못했습니다.';
               Y.toast(ch.msg, 'error');
@@ -1583,7 +1607,7 @@
       } else if (Y.engine.mapped()) {
         st.focusId = null;
         var ti = idxOf(ch);
-        if (ti != null && Y.engine.info(ti) && Y.hud && Y.hud.revealIdx) Y.hud.revealIdx(ti);
+        if (ti != null && Y.engine.info(ti) && Y.hud && Y.hud.revealIdx) Y.hud.revealIdx(ti, { select: true });
       }
     }
   }

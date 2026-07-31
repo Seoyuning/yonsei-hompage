@@ -923,7 +923,7 @@ html[lang="en"] .lab-en-only{display:none}
 <style>h1,h2,.sec-title,.phero h1,.hero h1,.hero-title,.club-name,.vt,.staff-head h2,.brand .bko,.ynv-brand .bko{font-family:"Pretendard Variable","Pretendard","Apple SD Gothic Neo",system-ui,sans-serif;letter-spacing:-.01em}
 /* ── 대외협력 (구성원 동문 탭에서 옮겨 왔다) ── */
 @media (max-width:760px){
-  .al-cards,.al-types{grid-template-columns:1fr}
+  .al-cards{grid-template-columns:1fr}
 }
 @media (max-width:640px){
   .al-thead{display:none}
@@ -933,7 +933,7 @@ html[lang="en"] .lab-en-only{display:none}
 @media (max-width:480px){
   .al-block{margin-top:2.2rem;padding-top:2rem}
   .al-card{padding:1.15rem .1rem 1.25rem}
-  .al-type,.al-use{padding:1rem .1rem 1.1rem}
+  .al-use{padding:1rem .1rem 1.1rem}
 }
 /* ── 섹션 머리 (대학원 페이지에서 시작해 전 페이지 공통) ──
    제목 아래 슬래시 요약 줄을 둔다.
@@ -958,24 +958,44 @@ html[lang="en"] .lab-en-only{display:none}
   text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line);
   transition:text-decoration-color .15s}
 .al-more:hover{text-decoration-color:var(--navy)}
-/* 대외협력 — 실제 공고에서 뽑은 기관 목록. 칠하지 않고 헤어라인으로만 나눈다 */
-.al-orgs{margin-top:clamp(1.8rem,3.6vw,2.8rem);padding-top:clamp(1.4rem,2.6vw,2rem);
-  border-top:1px solid var(--line)}
-.al-orgs-h{font-family:var(--kr);font-weight:700;font-size:clamp(1rem,.94rem + .3vw,1.15rem);
-  color:var(--navy);margin:0}
-.al-orgs-s{font-size:.84rem;color:var(--muted);line-height:1.75;margin:.5rem 0 1.2rem}
-.al-orgs-s a{color:var(--sub);text-decoration:underline;text-decoration-color:var(--line);
-  text-underline-offset:3px}
-.al-orgs-s a:hover{color:var(--navy);text-decoration-color:var(--accent)}
+/* ── 대외협력 ──
+   예전에는 제목과 문단만 세로로 쌓여 있었다(.al-types/.al-type 의 본 규칙이 아예 없었다).
+   상자도 칠도 없이 [번호 + 먹색 가로줄] 로 네 칸을 나눈다 — 학사 화면의 이수 흐름과 같은 어법. */
+.pt-lead{margin:.2rem 0 0;font-size:clamp(.92rem,.88rem + .2vw,1.02rem);color:var(--sub);
+  line-height:1.8;max-width:44rem}
+.pt-lead b{color:var(--ink);font-weight:700}
+.pt-ways{list-style:none;margin:clamp(1.8rem,3.6vw,2.8rem) 0 0;padding:0;display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  column-gap:clamp(1.2rem,.8rem + 1.6vw,2.4rem);row-gap:clamp(1.8rem,3vw,2.6rem)}
+.pt-way{min-width:0}
+.pt-no{display:block;font-family:var(--num);font-weight:600;font-size:.7rem;letter-spacing:.2em;
+  color:#111318;padding-bottom:.7rem;border-bottom:1px solid #111318;font-variant-numeric:tabular-nums}
+.pt-t{font-family:var(--kr);font-weight:700;color:var(--ink);margin:clamp(.85rem,2vw,1.15rem) 0 0;
+  font-size:clamp(1rem,.95rem + .28vw,1.14rem);line-height:1.35;letter-spacing:-.01em}
+.pt-d{font-family:var(--kr);font-size:.88rem;color:var(--sub);line-height:1.75;margin:.6rem 0 0}
+.pt-go{display:inline-flex;align-items:center;gap:.35rem;min-height:44px;margin-top:.3rem;
+  font-family:var(--kr);font-size:.83rem;font-weight:600;color:var(--coral);
+  text-decoration:none;transition:gap .15s}
+.pt-go:hover{gap:.65rem}
+/* 기관 목록 — 사이트 공통 [작은 영문 라벨 + 실선 + 제목] 머리를 그대로 쓴다 */
+.al-orgs{margin-top:clamp(2.4rem,5vw,3.6rem)}
+.pt-kick{font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.22em;
+  text-transform:uppercase;color:#111318;margin:0;padding-bottom:.7rem;border-bottom:1px solid #111318}
+.pt-h{font-family:var(--kr);font-weight:800;letter-spacing:-.015em;color:var(--ink);
+  font-size:clamp(1.15rem,1.02rem + .55vw,1.45rem);line-height:1.35;margin:clamp(1rem,2.2vw,1.4rem) 0 0}
+.pt-s{font-size:.86rem;color:var(--muted);line-height:1.75;margin:.5rem 0 clamp(1.1rem,2.4vw,1.6rem)}
 .al-org-list{list-style:none;margin:0;padding:0;
   display:grid;grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));gap:0 clamp(1.2rem,2.4vw,2rem)}
 .al-org{border-top:1px solid var(--line-soft)}
-.al-org a{display:flex;align-items:baseline;gap:.6rem;padding:.78rem .1rem;text-decoration:none;color:inherit}
+.al-org a{display:flex;align-items:baseline;gap:.6rem;padding:.82rem .1rem;text-decoration:none;color:inherit}
 .al-org .nm{flex:1;min-width:0;font-family:var(--kr);font-size:.9rem;font-weight:600;color:var(--ink);
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:color .16s}
 .al-org a:hover .nm{color:var(--coral)}
 .al-org .dt{flex:none;font-family:var(--num);font-size:.74rem;color:var(--label);
   font-variant-numeric:tabular-nums}
+@media (max-width:900px){ .pt-ways{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (max-width:560px){ .pt-ways{grid-template-columns:1fr;row-gap:1.5rem} }
+@media (prefers-reduced-motion:reduce){ .pt-go{transition:none} .pt-go:hover{gap:.35rem} }
 .al-contact{margin-top:1.3rem;padding-top:1rem;border-top:1px solid var(--line);
   display:flex;flex-wrap:wrap;align-items:center;gap:.3rem 1.3rem}
 .al-ck2{font-size:.76rem;color:var(--label);flex:none}
@@ -1186,34 +1206,44 @@ html[lang="en"] .lab-en-only{display:none}
         <h2 class="sec-title" id="pt-h">대외협력</h2>
       </div>
     </div>
-          <p class="al-sub">기업·기관과 학부가 함께하는 협력의 형태를 안내합니다. 협력은 아래 네 가지 형태로 이루어집니다.</p>
+      <p class="pt-lead">기업 · 기관과 학부가 함께하는 협력은 아래 <b>네 가지 형태</b>로 이루어집니다.</p>
 
-      <div class="al-types">
-        <div class="al-type">
-          <h3>공동연구</h3>
-          <p>기업이 제시한 과제를 연구실과 함께 수행합니다. 계약과 연구비 집행은 산학협력단 절차를 따릅니다.</p>
-        </div>
-        <div class="al-type">
-          <h3>채용 연계</h3>
-          <p>채용 설명회와 현장 견학을 학기 중에 진행합니다. 모집 공고는 소식 페이지의 취업 정보에 올립니다.</p>
-        </div>
-        <div class="al-type">
-          <h3>장학 후원</h3>
-          <p>기업과 기관, 동문이 지정 기부로 재학생 장학금을 후원합니다. 운영 중인 장학은 입학 안내의 장학 항목에서 확인할 수 있습니다.</p>
-        </div>
-        <div class="al-type">
-          <h3>현장실습</h3>
-          <p>방학 기간에 기업 현장에서 실무를 경험하는 과정입니다. 참여 방법은 학부 행정팀에 문의해 주세요.</p>
-        </div>
-      </div>
+      <!-- 네 가지 형태 — [번호 + 먹색 가로줄] 아래 제목·설명.
+           학사 화면의 이수 흐름(.edu-no)과 같은 어법이라 페이지끼리 인상이 어긋나지 않는다.
+           예전에는 제목과 문단만 세로로 쌓여 있어(전용 CSS 가 아예 없었다) 벽처럼 읽혔다. -->
+      <ol class="pt-ways">
+        <li class="pt-way">
+          <span class="pt-no" aria-hidden="true">01</span>
+          <p class="pt-t">공동연구</p>
+          <p class="pt-d">기업이 제시한 과제를 연구실과 함께 수행합니다. 계약과 연구비 집행은 산학협력단 절차를 따릅니다.</p>
+        </li>
+        <li class="pt-way">
+          <span class="pt-no" aria-hidden="true">02</span>
+          <p class="pt-t">채용 연계</p>
+          <p class="pt-d">채용 설명회와 현장 견학을 학기 중에 진행합니다. 모집 공고는 소식 페이지의 취업 정보에 올립니다.</p>
+          <a class="pt-go" href="G-news.html#jobs">취업 정보 보기 <span aria-hidden="true">→</span></a>
+        </li>
+        <li class="pt-way">
+          <span class="pt-no" aria-hidden="true">03</span>
+          <p class="pt-t">장학 후원</p>
+          <p class="pt-d">기업과 기관, 동문이 지정 기부로 재학생 장학금을 후원합니다.</p>
+          <a class="pt-go" href="G-admissions.html#scholarships">장학 안내 보기 <span aria-hidden="true">→</span></a>
+        </li>
+        <li class="pt-way">
+          <span class="pt-no" aria-hidden="true">04</span>
+          <p class="pt-t">현장실습</p>
+          <p class="pt-d">방학 기간에 기업 현장에서 실무를 경험하는 과정입니다. 참여 방법은 학부 행정팀에 문의해 주세요.</p>
+        </li>
+      </ol>
 
       <!-- 지어낸 표를 걷어냈다. 예전엔 「예시 데이터」라 밝힌 협력 사례 여섯 줄이 있었는데,
            밝혔더라도 없는 사실을 화면에 세운 것이라 실제 데이터로 갈아 끼운다.
            아래 목록은 학부 공식 게시판(취업 정보)에 실제로 공고를 올린 기업·기관이다 —
            「협약을 맺었다」가 아니라 「공고를 올렸다」로만 적는다. 사실은 거기까지다. -->
       <div class="al-orgs" id="ptOrgs" hidden>
-        <h3 class="al-orgs-h">학부 게시판에 채용 · 연계 공고를 올린 기업 · 기관</h3>
-        <p class="al-orgs-s">최근 공고에서 기관명이 확인되는 것만 모았습니다. 전체 공고는 <a href="G-news.html#jobs">소식 › 취업 정보</a>에서 볼 수 있습니다.</p>
+        <p class="pt-kick">Recent</p>
+        <h3 class="pt-h">학부 게시판에 공고를 올린 기업 · 기관</h3>
+        <p class="pt-s">최근 채용 · 연계 공고에서 기관명이 확인되는 것만 모았습니다.</p>
         <ul class="al-org-list" id="ptOrgList"></ul>
       </div>
 
@@ -1221,10 +1251,6 @@ html[lang="en"] .lab-en-only{display:none}
         <span class="al-ck2">협력 문의</span>
         <span class="al-cv"><a href="tel:0221234426">02-2123-4426</a></span>
         <span class="al-cn">(03722) 서울특별시 서대문구 연세로 50 · 연세대학교 공과대학 기계공학부 행정팀</span>
-      </div>
-      <div class="al-mores">
-        <a class="al-more" href="G-news.html#jobs">취업 정보 보기 <span aria-hidden="true">→</span></a>
-        <a class="al-more" href="G-admissions.html#scholarships">장학 안내 보기 <span aria-hidden="true">→</span></a>
       </div>
   </section>
   </main>

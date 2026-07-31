@@ -931,7 +931,6 @@ html[lang="en"] .lab-en-only{display:none}
 @media (max-width:480px){
   .al-block{margin-top:2.2rem;padding-top:2rem}
   .al-card{padding:1.15rem .1rem 1.25rem}
-  .al-note{padding-left:.8rem}
   .al-type,.al-use{padding:1rem .1rem 1.1rem}
 }
 /* ── 섹션 머리 (대학원 페이지에서 시작해 전 페이지 공통) ──
@@ -957,40 +956,24 @@ html[lang="en"] .lab-en-only{display:none}
   text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line);
   transition:text-decoration-color .15s}
 .al-more:hover{text-decoration-color:var(--navy)}
-/* 예시 데이터 고지 — 사실과 자리표시자를 화면에서 구분한다.
-   상자 + 회색 판을 걷고 왼쪽 먹선 하나로만 세운다(아래 .al-quote 가 이미 쓰는 어법). */
-.al-note{display:flex;gap:.7rem;flex-wrap:wrap;align-items:baseline;
-  margin-top:1.3rem;padding:.1rem 0 .1rem .9rem;border-left:2px solid var(--navy);
-  font-size:.85rem;color:var(--sub);line-height:1.7}
-.al-note-t{flex:none;font-size:.74rem;font-weight:700;color:#fff;background:var(--navy);
-  padding:.22rem .55rem;letter-spacing:.02em}
-.al-note-b{flex:1 1 16rem;min-width:0}
-/* ── 2) 동문 인터뷰 ──
-   상자 넷 대신 [위 테두리 + 사람마다 아래 테두리] 목록. 두 단으로 늘어서도
-   위·아래 선이 한 격자로 이어져 지면이 조용해진다(.emlist / .req-list 와 같은 짜임). */
-.al-cards{display:grid;gap:0 clamp(1.4rem,1rem + 2vw,2.8rem);margin-top:1.3rem;
-  grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--line)}
-.al-card{display:flex;flex-direction:column;padding:1.3rem .1rem 1.5rem;
-  border-bottom:1px solid var(--line-soft)}
-/* ── 3) 대외협력 유형 + 협력 사례 표 ── */
-/* 네 유형도 같은 헤어라인 목록으로 */
-.al-types{display:grid;gap:0 clamp(1.4rem,1rem + 2vw,2.8rem);margin-top:1.4rem;
-  grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--line)}
-.al-type{padding:1.1rem .1rem 1.25rem;border-bottom:1px solid var(--line-soft)}
-.al-type h4{font-size:1rem;font-weight:700;color:var(--navy);line-height:1.35}
-.al-type p{margin-top:.5rem;font-size:.85rem;color:var(--body);line-height:1.75}
-/* 표 — 좁은 화면에서는 행 카드로 펴서 가로 스크롤이 생기지 않게 한다 */
-.al-tbl{margin-top:1.3rem;border-top:1px solid var(--line)}
-.al-thead,.al-row{display:grid;grid-template-columns:7.5rem 10rem 1fr;gap:1rem;
-  padding:.82rem .2rem;border-bottom:1px solid var(--line-soft);align-items:baseline}
-/* 머리줄은 칠하지 않는다 — G-research 의 연구실 목록 머리(.lab-legend)처럼
-   회색 글자와 아래 선만으로 충분히 머리로 읽힌다 */
-.al-thead{font-size:.78rem;color:var(--label);letter-spacing:.02em}
-.al-row{font-size:.88rem;color:var(--body);transition:background .12s}
-.al-row:hover{background:var(--row)}
-.al-c{min-width:0;overflow-wrap:anywhere}
-.al-ck{display:none;font-size:.74rem;color:var(--muted);line-height:1.5;margin-bottom:.1rem}
-/* 문의 창구 — 회색 판과 테두리를 걷고 얇은 선 아래 한 줄로 */
+/* 대외협력 — 실제 공고에서 뽑은 기관 목록. 칠하지 않고 헤어라인으로만 나눈다 */
+.al-orgs{margin-top:clamp(1.8rem,3.6vw,2.8rem);padding-top:clamp(1.4rem,2.6vw,2rem);
+  border-top:1px solid var(--line)}
+.al-orgs-h{font-family:var(--kr);font-weight:700;font-size:clamp(1rem,.94rem + .3vw,1.15rem);
+  color:var(--navy);margin:0}
+.al-orgs-s{font-size:.84rem;color:var(--muted);line-height:1.75;margin:.5rem 0 1.2rem}
+.al-orgs-s a{color:var(--sub);text-decoration:underline;text-decoration-color:var(--line);
+  text-underline-offset:3px}
+.al-orgs-s a:hover{color:var(--navy);text-decoration-color:var(--accent)}
+.al-org-list{list-style:none;margin:0;padding:0;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));gap:0 clamp(1.2rem,2.4vw,2rem)}
+.al-org{border-top:1px solid var(--line-soft)}
+.al-org a{display:flex;align-items:baseline;gap:.6rem;padding:.78rem .1rem;text-decoration:none;color:inherit}
+.al-org .nm{flex:1;min-width:0;font-family:var(--kr);font-size:.9rem;font-weight:600;color:var(--ink);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:color .16s}
+.al-org a:hover .nm{color:var(--coral)}
+.al-org .dt{flex:none;font-family:var(--num);font-size:.74rem;color:var(--label);
+  font-variant-numeric:tabular-nums}
 .al-contact{margin-top:1.3rem;padding-top:1rem;border-top:1px solid var(--line);
   display:flex;flex-wrap:wrap;align-items:center;gap:.3rem 1.3rem}
 .al-ck2{font-size:.76rem;color:var(--label);flex:none}
@@ -1222,39 +1205,14 @@ html[lang="en"] .lab-en-only{display:none}
         </div>
       </div>
 
-      <p class="al-note"><span class="al-note-t">예시 데이터</span><span class="al-note-b">아래 협력 사례는 화면 구성을 위한 예시이며, 실제 협력 기관은 학부 확인 후 등재됩니다. 기관은 업종으로만 표기했습니다.</span></p>
-
-      <div class="al-tbl" role="table" aria-label="협력 사례 예시">
-        <div class="al-thead" role="row">
-          <span class="al-c" role="columnheader">협력 유형</span>
-          <span class="al-c" role="columnheader">연구 분야</span>
-          <span class="al-c" role="columnheader">참여 기관</span>
-        </div>
-        <div class="al-row" role="row">
-          <span class="al-c" role="cell"><span class="al-ck">협력 유형</span>공동연구</span>
-          <span class="al-c" role="cell"><span class="al-ck">연구 분야</span>열·유체</span>
-          <span class="al-c" role="cell"><span class="al-ck">참여 기관</span>발전 설비 기업</span>
-        </div>
-        <div class="al-row" role="row">
-          <span class="al-c" role="cell"><span class="al-ck">협력 유형</span>공동연구</span>
-          <span class="al-c" role="cell"><span class="al-ck">연구 분야</span>마이크로·나노</span>
-          <span class="al-c" role="cell"><span class="al-ck">참여 기관</span>반도체 장비 기업</span>
-        </div>
-        <div class="al-row" role="row">
-          <span class="al-c" role="cell"><span class="al-ck">협력 유형</span>채용 연계</span>
-          <span class="al-c" role="cell"><span class="al-ck">연구 분야</span>설계·제조</span>
-          <span class="al-c" role="cell"><span class="al-ck">참여 기관</span>제조 대기업</span>
-        </div>
-        <div class="al-row" role="row">
-          <span class="al-c" role="cell"><span class="al-ck">협력 유형</span>장학 후원</span>
-          <span class="al-c" role="cell"><span class="al-ck">연구 분야</span>전 분야</span>
-          <span class="al-c" role="cell"><span class="al-ck">참여 기관</span>자동차 부품 기업</span>
-        </div>
-        <div class="al-row" role="row">
-          <span class="al-c" role="cell"><span class="al-ck">협력 유형</span>현장실습</span>
-          <span class="al-c" role="cell"><span class="al-ck">연구 분야</span>동역학·제어</span>
-          <span class="al-c" role="cell"><span class="al-ck">참여 기관</span>산업용 로봇 기업</span>
-        </div>
+      <!-- 지어낸 표를 걷어냈다. 예전엔 「예시 데이터」라 밝힌 협력 사례 여섯 줄이 있었는데,
+           밝혔더라도 없는 사실을 화면에 세운 것이라 실제 데이터로 갈아 끼운다.
+           아래 목록은 학부 공식 게시판(취업 정보)에 실제로 공고를 올린 기업·기관이다 —
+           「협약을 맺었다」가 아니라 「공고를 올렸다」로만 적는다. 사실은 거기까지다. -->
+      <div class="al-orgs" id="ptOrgs" hidden>
+        <h3 class="al-orgs-h">학부 게시판에 채용 · 연계 공고를 올린 기업 · 기관</h3>
+        <p class="al-orgs-s">최근 공고에서 기관명이 확인되는 것만 모았습니다. 전체 공고는 <a href="G-news.html#jobs">소식 › 취업 정보</a>에서 볼 수 있습니다.</p>
+        <ul class="al-org-list" id="ptOrgList"></ul>
       </div>
 
       <div class="al-contact">
@@ -1995,6 +1953,33 @@ html[lang="en"] .lab-en-only{display:none}
     lvm.querySelector('.lvm-back').addEventListener('click', lvClose);
     document.addEventListener('keydown', function(e){ if(e.key==='Escape' && !lvm.hidden) lvClose(); });
   }
+
+  /* ── 대외협력 — 실제 공고에서 기관명을 뽑는다 ──
+     학부 공식 게시판(취업 정보) 글 제목 앞머리 대괄호가 기관명이다:
+       「[두산로보틱스] "AI·로봇 엔지니어 양성과정(초급)" – 5기 모집」
+     제목에 없으면 넣지 않는다. 기관명을 지어내지 않는다. */
+  (function(){
+    var box = document.getElementById('ptOrgs'), list = document.getElementById('ptOrgList');
+    if(!box || !list || !D.jobs) return;
+    /* 대괄호 안이 기관명이 아닌 것 — 「인턴직무 추가」·「추가모집: ~6/15까지」처럼 안내 문구 */
+    var NOT_ORG = /모집|추가|마감|필독|공지|안내|접수|채용공고|주관|~|까지|[0-9]/;
+    var seen = {}, rows = [];
+    D.jobs.forEach(function(j){
+      var m = /^\s*\[([^\]]{2,24})\]/.exec(String(j.title || ''));
+      if(!m) return;
+      var name = m[1].trim();
+      if(NOT_ORG.test(name) || seen[name]) return;
+      seen[name] = 1;
+      rows.push({ n:name, d:j.date, u:j.url });
+    });
+    if(!rows.length) return;
+    list.innerHTML = rows.map(function(r){
+      return '<li class="al-org"><a href="' + esc(r.u) + '" target="_blank" rel="noopener">'
+        + '<span class="nm">' + esc(r.n) + '</span>'
+        + '<span class="dt">' + esc(r.d) + '</span></a></li>';
+    }).join('');
+    box.hidden = false;
+  })();
 })();
 </script>
 <script src="assets/nav.js?v=115"></script>

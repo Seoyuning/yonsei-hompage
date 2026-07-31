@@ -1251,6 +1251,17 @@ a.tf-box.is-req:hover{background:var(--navy-d,#12294f);color:#fff}
     { code:'MEU2640', cluster:'thermal'  },
     { code:'MEU2650', cluster:'dynamics' }
   ];
+  /* 고른 버튼 줄을 화면 위로 붙인다 — 아래로 펴진 내용이 화면 밖에 있으면
+     「눌렀는데 아무 일도 안 난다」로 보인다. 위 바 셋(--ys-bars) 아래에 세운다. */
+  function stickRowToTop(row){
+    if(!row) return;
+    var bars = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--ys-bars')) || 122;
+    var top = row.getBoundingClientRect().top + (window.pageYOffset || 0) - bars - 12;
+    if(Math.abs(top - (window.pageYOffset || 0)) < 8) return;   /* 이미 그 자리면 흔들지 않는다 */
+    try{ window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' }); }
+    catch(e){ window.scrollTo(0, Math.max(0, top)); }
+  }
+
   var mechGrid = document.getElementById('mechGrid');
   if (mechGrid) {
     /* ── 4대 역학 = 「네 기둥」 ──
@@ -1303,14 +1314,15 @@ a.tf-box.is-req:hover{background:var(--navy-d,#12294f);color:#fff}
           if(pn) pn.hidden = !on;
         });
       }
+      var pilRow = mechGrid.querySelector('.pil-row');
       tabs.forEach(function(t, i){
-        t.addEventListener('click', function(){ sel(i); });
+        t.addEventListener('click', function(){ sel(i); stickRowToTop(pilRow); });
         t.addEventListener('keydown', function(e){
           var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
           if(!d) return;
           e.preventDefault();
           var n = (i + d + tabs.length) % tabs.length;
-          sel(n); tabs[n].focus();
+          sel(n); tabs[n].focus(); stickRowToTop(pilRow);
         });
       });
     })();
@@ -1926,7 +1938,13 @@ a.tf-box.is-req:hover{background:var(--navy-d,#12294f);color:#fff}
 
     pickWrap.addEventListener('click', function(e){
       var b = e.target.closest('.crs-pb'); if(!b) return;
-      selectBlock(b.classList.contains('is-sel') ? null : b.dataset.b, true);
+      var opening = !b.classList.contains('is-sel');
+      selectBlock(opening ? b.dataset.b : null, true);
+      /* 열 때만 위로 붙인다 — 닫을 때 화면을 움직이면 방금 본 자리를 잃는다.
+         FLIP 애니메이션이 자리를 다시 잡은 뒤라야 목표 위치가 정확하다. */
+      /* rAF 가 아니라 타이머로 미룬다 — 배경 탭에서는 rAF 가 아예 돌지 않아
+         그 탭으로 돌아왔을 때 스크롤이 밀리지 않는다. */
+      if(opening) setTimeout(function(){ stickRowToTop(pickWrap); }, 0);
     });
     /* 좌우 화살표로도 옮겨 다닌다 */
     pickWrap.addEventListener('keydown', function(e){
@@ -1936,6 +1954,7 @@ a.tf-box.is-req:hover{background:var(--navy-d,#12294f);color:#fff}
       e.preventDefault();
       var i = pbs.indexOf(b), n = (i + d + pbs.length) % pbs.length;
       pbs[n].focus(); selectBlock(pbs[n].dataset.b, true);
+      setTimeout(function(){ stickRowToTop(pickWrap); }, 0);
     });
 
     /* 검색 — 행 단위 필터. 검색 중에는 고른 묶음만 보면 다른 묶음의 결과를 놓치므로

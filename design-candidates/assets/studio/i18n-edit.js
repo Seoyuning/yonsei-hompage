@@ -275,8 +275,52 @@
     } else if (opened) renderList();
   }, 500);
 
+  /* ── 일괄 치환 전용 경로 ──
+     checkDiff 는 "잃은 문장 1건 : 얻은 문장 1건" 일 때만 키를 이관한다.
+     찾아 바꾸기는 한 번에 수십 건을 바꾸므로 그 짝짓기가 무너지고, 옛 키를 남긴 채
+     새 키를 미번역으로 덧붙여 사전이 두 벌이 된다.
+     여기서는 무엇이 무엇으로 바뀌었는지 이미 알고 있으니 키를 그대로 갈아 끼운다. */
+  var bulk = 0;
+  function replaceInKeys(find, replace) {
+    var a = String(find == null ? '' : find), b = String(replace == null ? '' : replace);
+    if (!a || a === b) return Promise.resolve(0);
+    return ensure().then(function () {
+      if (locked) return 0;
+      var keys = Object.keys(map), n = 0;
+      for (var i = 0; i < keys.length; i++) {
+        var k = keys[i];
+        if (k.indexOf(a) < 0) continue;
+        var nk = norm(k.split(a).join(b));
+        if (!nk || nk === k) continue;
+        /* 값이 비어 있는 새 키가 이미 있으면 덮어써도 잃을 것이 없다 */
+        if (!Object.prototype.hasOwnProperty.call(map, nk) || (!map[nk] && map[k])) map[nk] = map[k];
+        delete map[k];
+        n++;
+      }
+      if (n) { schedule(); if (opened) renderList(); }
+      return n;
+    });
+  }
+  /** 치환 중에는 추측 기반 감지를 재운다. 끝나면 현재 화면을 새 기준으로 삼는다. */
+  function suspend(fn) {
+    bulk++;
+    return Promise.resolve()
+      .then(fn)
+      .then(function (v) { return finish().then(function () { return v; }); },
+        function (e) { return finish().then(function () { throw e; }); });
+    function finish() {
+      bulk--;
+      if (bulk <= 0) {
+        bulk = 0;
+        try { lastList = isEnMode() ? lastList : counts(survey()); } catch (e2) {}
+      }
+      return Promise.resolve();
+    }
+  }
+
   Y.bus.on('buffer:change', function (e) {
     if (!e) return;
+    if (bulk > 0) return;                       // 일괄 치환이 스스로 사전을 맞춘다
     if (e.label === 'attr' || e.label === 'style') return;
     checkDiff();
   });
@@ -541,6 +585,8 @@
     translationOf: translationOf,
     keyFor: keyFor,
     rekey: rekey,
+    replaceInKeys: replaceInKeys,
+    suspend: suspend,
     survey: survey,
     dict: function () { return map; },
     dirty: function () { return isDirty; },

@@ -39,6 +39,7 @@
     { name: 'source', req: true },
     { name: 'align', req: true },
     { name: 'engine', req: true },
+    { name: 'replace', req: false },        // 찾아 바꾸기 — source 만 있으면 되고 engine 뒤에 와도 무방
     { name: 'diff', req: false },
     { name: 'changes', req: false },
     { name: 'pagedict', req: false },

@@ -339,6 +339,44 @@
     /* ── 초안 ── */
     saveDraft: saveDraft,
     flush: function () { return saveDraft(); },
+
+    /** 지금 열려 있지 않은 페이지의 원문을 고친다 (전영역 찾아 바꾸기용).
+        fn(src) 이 새 원문을 돌려주면 초안으로 남긴다. 이미 초안이 있으면 그 위에 얹는다.
+        현재 페이지면 열린 버퍼를 그대로 쓴다 — 같은 파일의 초안이 두 벌 생기면 안 된다.
+        게시는 IndexedDB 의 초안을 전부 모으므로, 여기서 남긴 초안도 같은 커밋에 실린다. */
+    patchPage: function (path, fn) {
+      if (buf && buf.path === path) {
+        var next = fn(buf.src);
+        var ok = (next != null && next !== buf.src) ? engine.applyRawSrc(next, 'replace') : false;
+        return Promise.resolve({ path: path, changed: !!ok, open: true });
+      }
+      return Y.store.get('drafts', path).then(function (d) {
+        if (d && typeof d.src === 'string') {
+          return { src: d.src, origSrc: d.origSrc == null ? d.src : d.origSrc, baseSha: d.baseSha };
+        }
+        return Y.net.read(path).then(function (r) {
+          return { src: r.content, origSrc: r.content, baseSha: headSha };
+        });
+      }).then(function (rec) {
+        var next = fn(rec.src);
+        if (next == null || next === rec.src) return { path: path, changed: false };
+        /* 원래대로 되돌아왔으면 초안을 남기지 않는다 — 빈 초안이 게시 목록을 더럽힌다 */
+        if (next === rec.origSrc) {
+          return Y.store.del('drafts', path).then(function () {
+            Y.bus.emit('draft:change', { path: path, dirty: false });
+            return { path: path, changed: true };
+          });
+        }
+        return Y.store.put('drafts', {
+          path: path, src: next, origSrc: rec.origSrc,
+          baseSha: rec.baseSha || headSha || null, ts: Date.now(), author: Y.session.author()
+        }).then(function () {
+          Y.bus.emit('draft:change', { path: path, dirty: true });
+          return { path: path, changed: true };
+        });
+      });
+    },
+
     discardDraft: function () {
       if (!buf) return Promise.resolve();
       var path = buf.path;

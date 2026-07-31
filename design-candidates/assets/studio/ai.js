@@ -50,6 +50,7 @@
     claude: '키는 console.anthropic.com 에서 발급합니다(유료 크레딧 필요).'
   };
   var OPS = {
+    replaceText: '찾아 바꾸기',
     setText: '텍스트 수정',
     setAttr: '속성 수정',
     setStyle: '스타일 수정',
@@ -342,11 +343,28 @@
       },
       required: ['id', 'page', 'lang', 'target', 'op', 'before', 'after', 'why']
     };
+    /* 「A 를 B 로 바꿔」 처럼 기계적인 치환은 요소를 열거하면 안 된다.
+       아웃라인에 없는 <title>·<meta>·속성값·인라인 사전을 통째로 놓치기 때문이다.
+       그런 요청은 여기에 한 건으로 적으면 클라이언트가 빠짐없이 찾아 바꾼다. */
+    var replacement = {
+      type: 'OBJECT',
+      properties: {
+        id: { type: 'STRING', description: '항목 식별자. r1, r2 처럼 짧게.' },
+        find: { type: 'STRING', description: '찾을 말. 원문에 있는 그대로.' },
+        replace: { type: 'STRING', description: '바꿀 말.' },
+        why: { type: 'STRING', description: '한 줄 근거(한국어).' }
+      },
+      required: ['id', 'find', 'replace', 'why']
+    };
     return {
       type: 'OBJECT',
       properties: {
         summary: { type: 'STRING', description: '무엇을 왜 바꿨는지 2~3줄(한국어).' },
-        changes: { type: 'ARRAY', items: change, description: '최대 10건.' }
+        replacements: {
+          type: 'ARRAY', items: replacement,
+          description: '같은 말을 문서 전체에서 일괄로 바꿀 때. 요소를 하나씩 열거하지 말고 여기 한 건으로 적는다.'
+        },
+        changes: { type: 'ARRAY', items: change, description: '개별 요소만 고칠 때. 최대 10건.' }
       },
       required: ['summary', 'changes']
     };
@@ -358,8 +376,13 @@
       '너는 연세대학교 기계공학부 웹사이트를 고치는 편집 보조다. 편집자의 요청을 "패치 계획"으로 바꾼다.',
       '',
       '규칙(반드시 지킨다):',
+      '0. **같은 말을 여러 곳에서 똑같이 바꾸는 요청**(예: "A 를 B 로 바꿔", "전부 C 로 고쳐")은',
+      '   changes 에 요소를 하나씩 열거하지 말고 **replacements 에 한 건**으로 적는다.',
+      '   아웃라인에는 제목·설명·이미지 대체문구·번역 사전이 빠져 있어서, 요소를 열거하면 반드시 누락된다.',
+      '   replacements 한 건이면 클라이언트가 문서 전체에서 빠짐없이 찾아 바꾼다.',
+      '   find 에는 원문에 있는 그대로를 적는다(앞뒤 공백·조사를 붙이지 않는다).',
       '1. 한국어로 답한다. summary·why 도 한국어로 쓴다.',
-      '2. 문서 전체를 반환하지 마라. 주어진 JSON 스키마의 변경안(패치)만 만든다. 항목은 최대 ' + MAX_CHANGES + '건.',
+      '2. 문서 전체를 반환하지 마라. 주어진 JSON 스키마의 변경안(패치)만 만든다. changes 는 최대 ' + MAX_CHANGES + '건.',
       '3. target.kind 는 항상 \'eid\' 를 우선 쓴다. target.value 에는 아웃라인의 idx 를 문자열로 적는다.',
       '4. 제공된 아웃라인에 없는 idx 를 만들어내지 마라. 대상이 확실하지 않으면 항목을 만들지 말고 summary 에 이유를 적는다.',
       '5. before 에는 아웃라인에 적힌 지금 값을 그대로 옮긴다(추측·재작성 금지). after 에는 바꿀 값만 적는다.',
@@ -380,6 +403,11 @@
     var L = [];
     L.push('현재 페이지: ' + page);
     L.push('편집 언어: ko (HTML 원문)');
+    L.push('선택한 범위: ' + (st.scope === 'site' ? '전영역(사이트의 모든 페이지)'
+      : st.scope === 'element' ? '선택한 요소' : '현재 페이지'));
+    if (st.scope === 'site') {
+      L.push('→ 전영역이 선택됐다. **replacements 로만** 답한다. changes 는 이 페이지에만 적용되므로 비워 둔다.');
+    }
     L.push('');
     L.push('[편집자 요청]');
     L.push(promptText);
@@ -416,6 +444,7 @@
     if (!raw || typeof raw !== 'object') return null;
     var op = String(raw.op == null ? '' : raw.op).trim();
     if (!OPS[op]) return null;
+    if (op === 'replaceText') return null;      // 치환은 replacements 로만 받는다(target 이 없다)
     var t = raw.target || {};
     var value = String(t.value == null ? '' : t.value).trim();
     if (!value) return null;
@@ -441,10 +470,43 @@
     };
   }
 
+  /* 일괄 치환 항목 — 대상이 요소가 아니라 「말」이라 target 이 없다. */
+  function normReplacement(raw, i, page, scope, seen) {
+    if (!raw || typeof raw !== 'object') return null;
+    var find = raw.find == null ? '' : String(raw.find);
+    var rep = raw.replace == null ? '' : String(raw.replace);
+    if (!find || find === rep) return null;
+    var id = String(raw.id == null ? '' : raw.id).trim() || ('r' + (i + 1));
+    var base = id, k = 2;
+    while (seen[id]) { id = base + '#' + k; k++; }
+    seen[id] = true;
+    return {
+      id: id,
+      page: page,
+      lang: 'ko',
+      target: { kind: 'text', value: find },
+      op: 'replaceText',
+      attr: '',
+      find: find,
+      replace: rep,
+      /* 전영역이면 사이트 전체, 아니면 이 페이지 안에서만 */
+      site: scope === 'site',
+      before: find,
+      after: rep,
+      why: raw.why == null ? '' : String(raw.why),
+      state: 'pending',
+      stale: false,
+      msg: ''
+    };
+  }
+
   function normPlan(data, promptText, scope, page) {
     if (!data || typeof data !== 'object') return null;
     var arr = data.changes;
-    if (!arr || typeof arr.length !== 'number') return null;     // 스키마 불일치
+    var reps = data.replacements;
+    if (!arr || typeof arr.length !== 'number') arr = [];
+    if (!reps || typeof reps.length !== 'number') reps = [];
+    if (!arr.length && !reps.length) return null;                // 스키마 불일치·빈 응답
     var plan = {
       id: U.uid('plan'),
       ts: Date.now(),
@@ -459,11 +521,17 @@
       dropped: 0
     };
     var seen = {};
-    for (var i = 0; i < arr.length && plan.changes.length < MAX_CHANGES; i++) {
-      var c = normChange(arr[i], i, page, seen);
-      if (c) plan.changes.push(c);
+    /* 일괄 치환을 먼저 넣는다 — 상한(MAX_CHANGES)에 밀려 잘리면 안 되는 항목이다. */
+    for (var r = 0; r < reps.length; r++) {
+      var rc = normReplacement(reps[r], r, page, scope, seen);
+      if (rc) plan.changes.push(rc);
     }
-    plan.dropped = Math.max(0, arr.length - plan.changes.length);
+    var kept = 0;
+    for (var i = 0; i < arr.length && kept < MAX_CHANGES; i++) {
+      var c = normChange(arr[i], i, page, seen);
+      if (c) { plan.changes.push(c); kept++; }
+    }
+    plan.dropped = Math.max(0, arr.length - kept);
     return plan;
   }
 
@@ -606,6 +674,103 @@
       c.stale = true; n++;
     }
     return n;
+  }
+
+  /* ── 찾아 바꾸기 적용 ──
+     요소를 열거하지 않고 원문을 훑어 빠짐없이 바꾼다(replace.js).
+     「전영역」이면 사이트의 모든 페이지에 같은 일을 하고, 각 페이지는 초안으로 남는다.
+     게시는 초안을 전부 모으므로 결과적으로 커밋 1개가 된다. */
+  function pagesFor(ch) {
+    var cur = U.pagePath();
+    if (!ch.site) return Promise.resolve([cur]);
+    return Y.net.list().then(function (r) {
+      var list = (r && r.pages) || [], out = [];
+      for (var i = 0; i < list.length; i++) {
+        var p = String(list[i].path || '').split('/').pop();
+        if (safePage(p) && out.indexOf(p) < 0) out.push(p);
+      }
+      if (!out.length) return [cur];
+      /* 현재 페이지를 먼저 — 화면이 곧바로 갱신되어 사람이 결과를 확인할 수 있다 */
+      out.sort(function (a, b) { return (b === cur ? 0 : 1) - (a === cur ? 0 : 1); });
+      return out;
+    }, function () { return [cur]; });
+  }
+
+  function applyReplace(ch) {
+    var find = ch.find, rep = ch.replace;
+    if (!find) return Promise.resolve({ ok: false, msg: '찾을 말이 비어 있습니다.' });
+    if (find === rep) return Promise.resolve({ ok: false, msg: '찾을 말과 바꿀 말이 같습니다.' });
+    if (!Y.replace) return Promise.resolve({ ok: false, msg: '찾아 바꾸기 모듈을 불러오지 못했습니다.' });
+
+    var cur = U.pagePath();
+    /* 사전(en.json)은 한국어 원문을 키로 쓴다. 원문을 바꾸면 키도 같이 바꿔야
+       영문 전환이 깨지지 않는다. i18n-edit 의 추측 기반 감지는 잠시 재우고,
+       무엇이 무엇으로 바뀌는지 아는 우리가 직접 갈아 끼운다. */
+    var withDict = (Y.i18nEdit && Y.i18nEdit.suspend)
+      ? function (fn) { return Y.i18nEdit.suspend(fn); }
+      : function (fn) { return Promise.resolve().then(fn); };
+
+    return withDict(function () { return runPages(); });
+
+    function runPages() {
+    return pagesFor(ch).then(function (pages) {
+      var files = [], total = 0, curTouched = false;
+
+      function step(i) {
+        if (i >= pages.length) {
+          if (!total) {
+            return { ok: false, msg: '「' + shorten(find, 40) + '」 을(를) 어디에서도 찾지 못했습니다.' };
+          }
+          var hit = [];
+          for (var k = 0; k < files.length; k++) if (files[k].n) hit.push(files[k]);
+          ch.result = { total: total, files: files };
+
+          /* 화면에도 곧바로 반영한다 — 원문만 고치면 사람은 아무 일도 안 일어난 줄 안다.
+             (data-i18n·nav.js 가 그리는 글자는 resyncLive 가 손대지 않는다) */
+          var shown = 0;
+          if (curTouched && Y.replace.live) {
+            try { shown = Y.replace.live(Y.engine.liveDoc() || document, find, rep); } catch (e) { shown = 0; }
+          }
+          /* 사전 키도 같은 규칙으로 갈아 끼운다(끝나야 결과를 돌려준다) */
+          var dictP = (Y.i18nEdit && Y.i18nEdit.replaceInKeys)
+            ? Y.i18nEdit.replaceInKeys(find, rep).then(null, function () { return 0; })
+            : Promise.resolve(0);
+          return dictP.then(function (dn) {
+            if (dn) files.push({ path: '사전 assets/i18n/en.json', n: dn });
+            return {
+              ok: true, replaced: total, files: files, structural: false,
+              reload: curTouched && !shown,        // 화면을 못 맞췄을 때만 새로고침을 권한다
+              msg: total + '곳을 바꿨습니다 (' + hit.length + '개 파일)' +
+                (dn ? ' · 사전 ' + dn + '항목' : '') + '. 게시해야 사이트에 반영됩니다.'
+            };
+          });
+        }
+        var p = pages[i], n = 0;
+        return Y.engine.patchPage(p, function (src) {
+          var r = Y.replace.plan(src, find, rep);
+          n = r.changed;
+          return r.changed ? r.newSrc : null;
+        }).then(function () {
+          total += n;
+          if (n && p === cur) curTouched = true;
+          files.push({ path: p, n: n });
+          return step(i + 1);
+        }, function (err) {
+          files.push({ path: p, n: 0, err: (err && err.message) || '읽지 못했습니다' });
+          return step(i + 1);
+        });
+      }
+      return step(0);
+    });
+    }
+  }
+
+  /* 승인 경로 — 모든 op 를 Promise 로 통일한다(전영역 치환은 다른 페이지를 읽어야 한다). */
+  function applyChangeAsync(ch) {
+    if (ch.state === 'approved') return Promise.resolve({ ok: false, msg: '이미 승인된 항목입니다.' });
+    if (ch.op === 'replaceText') return applyReplace(ch);
+    try { return Promise.resolve(applyChange(ch)); }
+    catch (e) { return Promise.resolve({ ok: false, msg: (e && e.message) || '적용 중 오류가 발생했습니다.' }); }
   }
 
   function applyChange(ch) {
@@ -822,10 +987,22 @@
       w.appendChild(el('span', null, label));
       box.appendChild(w);
     }
-    radio('page', '현재 페이지 (' + U.pagePath() + ')', false);
     radio('element', '선택한 요소' + (selInfo ? ' (' + selInfo.label + ')' : ''), selIdx == null);
-    host.appendChild(field('범위', box,
-      selIdx == null ? '요소를 클릭해 선택하면 범위를 좁힐 수 있습니다.' : '선택한 요소와 그 안쪽만 대상으로 합니다.'));
+    radio('page', '현재 페이지 (' + U.pagePath() + ')', false);
+    radio('site', '전영역 (모든 페이지)', false);
+
+    function scopeHintText() {
+      if (st.scope === 'site') {
+        return '「A 를 B 로 바꿔」 같은 일괄 치환을 사이트의 모든 페이지에 적용합니다. 문장을 다듬는 요청은 현재 페이지에만 반영됩니다.';
+      }
+      return selIdx == null ? '요소를 클릭해 선택하면 범위를 좁힐 수 있습니다.' : '선택한 요소와 그 안쪽만 대상으로 합니다.';
+    }
+    var scopeField = field('범위', box);
+    var scopeNote = el('p', 'ys-ai-note', scopeHintText());
+    scopeField.appendChild(scopeNote);
+    host.appendChild(scopeField);
+    /* 안내 문구만 갈아 끼운다 — 여기서 패널을 통째로 다시 그리면 포커스와 입력이 날아간다 */
+    box.addEventListener('change', function () { scopeNote.textContent = scopeHintText(); });
 
     var lang = 'ko';
     try { lang = (localStorage.getItem('ysme-lang') === 'en') ? 'en' : 'ko'; } catch (e) {}
@@ -852,10 +1029,46 @@
 
   function itemLine(ch, i) {
     var head = OPS[ch.op] || ch.op;
+    if (ch.op === 'replaceText') {
+      return (i + 1) + '. ' + head + (ch.site ? ' · 전영역' : ' · 이 페이지') +
+        ' — 「' + shorten(ch.find, 24) + '」 → 「' + shorten(ch.replace, 24) + '」';
+    }
     var body = ch.op === 'remove' ? shorten(ch.before, 44) : shorten(ch.after || ch.why, 56);
     var where = ch.target.kind === 'eid' ? ('eid ' + (idxOf(ch) == null ? '?' : idxOf(ch))) : ch.target.kind;
     var pre = isHere(ch) ? '' : '[' + pageOf(ch) + '] ';
     return (i + 1) + '. ' + pre + head + ' · ' + where + (body ? ' — ' + body : '');
+  }
+
+  /* 찾아 바꾸기 항목의 본문 — 어디를 몇 곳 바꾸는지 미리 세어 보여 준다.
+     사람이 승인 버튼을 누르기 전에 규모를 알 수 있어야 한다. */
+  function replaceBody(ch, body) {
+    var meta = [];
+    meta.push('범위 ' + (ch.site ? '사이트 전체(모든 페이지)' : '현재 페이지 ' + U.pagePath()));
+    body.appendChild(el('div', 'ys-ai-meta', meta.join(' · ')));
+    if (ch.why) body.appendChild(el('p', 'ys-ai-why', ch.why));
+
+    body.appendChild(diffBlock(ch.find, ch.replace));
+
+    /* 이미 반영했다면 실제 결과를, 아직이면 이 페이지 기준 예상치를 보여 준다 */
+    if (ch.result && ch.result.files) {
+      var done = el('div', 'ys-ai-meta');
+      var lines = ['반영 결과 — 모두 ' + ch.result.total + '곳'];
+      for (var i = 0; i < ch.result.files.length; i++) {
+        var f = ch.result.files[i];
+        if (f.err) lines.push('  ' + f.path + ' — ' + f.err);
+        else if (f.n) lines.push('  ' + f.path + ' — ' + f.n + '곳');
+      }
+      done.textContent = lines.join('\n');
+      done.style.whiteSpace = 'pre-wrap';
+      body.appendChild(done);
+      return;
+    }
+    var here = 0;
+    try { here = Y.replace ? Y.replace.plan(Y.engine.src() || '', ch.find, ch.replace).changed : 0; } catch (e) { here = 0; }
+    body.appendChild(el('p', 'ys-ai-note',
+      '이 페이지에서 ' + here + '곳이 바뀝니다' +
+      (ch.site ? '. 다른 페이지는 승인할 때 함께 셉니다.' : '.') +
+      ' 제목·설명·이미지 대체문구·번역 사전까지 포함하고, 주소(href)·class·주석은 건드리지 않습니다.'));
   }
 
   function renderItem(ch, i) {
@@ -878,6 +1091,49 @@
 
     if (open) {
       var body = el('div', 'ys-ai-body');
+
+      if (ch.op === 'replaceText') {
+        replaceBody(ch, body);
+        var rActs = el('div', 'ys-ai-row');
+        if (ch.state === 'approved') {
+          rActs.appendChild(el('span', 'ys-ai-note', '초안에 반영됨'));
+        } else if (ch.state === 'rejected') {
+          rActs.appendChild(btn('거절 취소', 'ys-ai-btn2', function () {
+            ch.state = 'pending'; ch.msg = '';
+            savePlan(); refreshItem(ch, i);
+          }));
+        } else {
+          rActs.appendChild(btn('승인', 'ys-ai-btn', function (ev) {
+            var b2 = ev && ev.currentTarget;
+            if (b2) { b2.disabled = true; b2.textContent = '바꾸는 중…'; }
+            applyChangeAsync(ch).then(function (r) {
+              if (b2) { b2.disabled = false; b2.textContent = '승인'; }
+              if (r.ok) {
+                ch.state = 'approved'; ch.stale = false; ch.msg = r.msg || '';
+                savePlan();
+                Y.toast(r.msg || '찾아 바꾸기를 초안에 반영했습니다.');
+                if (r.reload) Y.bus.emit('live:stale', { path: U.pagePath() });
+              } else {
+                ch.msg = r.msg || '적용하지 못했습니다.';
+                Y.toast(ch.msg, 'error');
+              }
+              refreshItem(ch, i);
+            });
+          }));
+          rActs.appendChild(btn('거절', 'ys-ai-btn2', function () {
+            ch.state = 'rejected'; ch.msg = '';
+            savePlan(); refreshItem(ch, i);
+          }));
+        }
+        body.appendChild(rActs);
+        if (ch.msg) {
+          var rMsg = el('p', 'ys-ai-msg' + (ch.state === 'approved' ? '' : ' ys-ai-err'), ch.msg);
+          body.appendChild(rMsg);
+        }
+        wrap.appendChild(body);
+        st.nodes[ch.id] = wrap;
+        return wrap;
+      }
 
       var meta = [];
       meta.push('페이지 ' + pageOf(ch));
@@ -922,23 +1178,29 @@
           savePlan(); refreshItem(ch, i);
         }));
       } else {
-        acts.appendChild(btn('승인', 'ys-ai-btn', function () {
-          var r = applyChange(ch);
-          if (r.ok) {
-            ch.state = 'approved';
-            ch.stale = false;
-            ch.msg = r.msg || '';
-            var n = r.structural ? markStale(ch.id) : 0;
-            savePlan();
-            Y.toast(r.msg ? r.msg : '변경안을 초안에 반영했습니다.');
-            if (r.structural && n) Y.toast('구조가 바뀌어 남은 ' + n + '건은 승인 전에 대상을 확인하세요.', 'warn');
-            if (isHere(ch) && r.idx != null && Y.hud && Y.hud.revealIdx) Y.hud.revealIdx(r.idx);
-          } else {
-            ch.msg = r.msg || '적용하지 못했습니다.';
-            Y.toast(ch.msg, 'error');
-            if (r.jump) { jumpBtn.classList.add('ys-ai-strong'); try { jumpBtn.focus(); } catch (e) {} }
-          }
-          refreshItem(ch, i);
+        acts.appendChild(btn('승인', 'ys-ai-btn', function (ev) {
+          var okBtn = ev && ev.currentTarget;
+          if (okBtn) { okBtn.disabled = true; okBtn.textContent = '반영 중…'; }
+          applyChangeAsync(ch).then(function (r) {
+            if (okBtn) { okBtn.disabled = false; okBtn.textContent = '승인'; }
+            if (r.ok) {
+              ch.state = 'approved';
+              ch.stale = false;
+              ch.msg = r.msg || '';
+              var n = r.structural ? markStale(ch.id) : 0;
+              savePlan();
+              Y.toast(r.msg ? r.msg : '변경안을 초안에 반영했습니다.');
+              if (r.structural && n) Y.toast('구조가 바뀌어 남은 ' + n + '건은 승인 전에 대상을 확인하세요.', 'warn');
+              /* 일괄 치환은 data-i18n 요소를 화면에 되밀 수 없다 — 새로고침 배너를 띄운다 */
+              if (r.reload) Y.bus.emit('live:stale', { path: U.pagePath() });
+              if (isHere(ch) && r.idx != null && Y.hud && Y.hud.revealIdx) Y.hud.revealIdx(r.idx);
+            } else {
+              ch.msg = r.msg || '적용하지 못했습니다.';
+              Y.toast(ch.msg, 'error');
+              if (r.jump) { jumpBtn.classList.add('ys-ai-strong'); try { jumpBtn.focus(); } catch (e) {} }
+            }
+            refreshItem(ch, i);
+          });
         }));
         acts.appendChild(btn('거절', 'ys-ai-btn2', function () {
           ch.state = 'rejected'; ch.msg = '';

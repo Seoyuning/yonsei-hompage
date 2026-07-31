@@ -706,8 +706,20 @@
     /* 숨은 탭(자동화·백그라운드)에서는 IntersectionObserver 가 안 돈다 →
        아예 시작하지 않는다. 클래스가 안 붙으니 처음부터 다 보이는 상태 그대로다. */
     if (!('IntersectionObserver' in window)) return;
-    if (document.visibilityState && document.visibilityState !== 'visible') return;
     try { if (matchMedia('(prefers-reduced-motion: reduce)').matches) return; } catch (e) {}
+    /* 뒤에서 열린 탭(새 창·새 탭으로 연 링크)은 처음에 hidden 이다.
+       예전에는 여기서 그냥 돌아가 버려, 나중에 그 탭을 앞으로 꺼내도 글이
+       한 번도 움직이지 않았다 — 「애니메이션이 안 들어갔다」의 진짜 원인.
+       이제는 보일 때까지 기다렸다가 그때 시작한다. */
+    if (document.visibilityState && document.visibilityState !== 'visible') {
+      document.addEventListener('visibilitychange', function once() {
+        if (document.visibilityState !== 'visible') return;
+        document.removeEventListener('visibilitychange', once);
+        setupReveal();
+      });
+      return;
+    }
+    if (root.classList.contains('ys-rv')) return;   /* 두 번 걸리지 않게 */
 
     var STICKY = '.ysub, .yjump, .filterbar, .crs-block-head, .cl-head';
     var main = document.querySelector('main');

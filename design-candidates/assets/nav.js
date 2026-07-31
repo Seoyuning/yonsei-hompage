@@ -78,8 +78,8 @@
        일곱 칸을 고르게 세운다 — 페이지의 모든 줄과 같은 축이다.
        칸 사이는 헤어라인, 칸 머리 아래 먹줄, 올려 둔 칸만 진해진다. */
     '.ynv-mega{position:absolute;left:0;right:0;top:100%;' +
-      'background:rgba(255,255,255,.88);-webkit-backdrop-filter:blur(16px) saturate(1.4);' +
-      'backdrop-filter:blur(16px) saturate(1.4);' +
+      'background:rgba(255,255,255,.76);-webkit-backdrop-filter:blur(20px) saturate(1.5);' +
+      'backdrop-filter:blur(20px) saturate(1.5);' +
       'border-top:2px solid ' + NAVY + ';border-bottom:1px solid ' + LINE + ';' +
       'box-shadow:0 18px 34px rgba(15,27,48,.10);z-index:59;' +
       'opacity:0;visibility:hidden;transform:translateY(-6px);' +
@@ -91,23 +91,24 @@
        대신 칸 머리의 밑줄이 하나씩 그어져 구분을 만든다. */
     '.ynv-mega-in{max-width:none;padding:clamp(1.6rem,3vh,2.4rem) clamp(1.2rem,2.6vw,3rem) clamp(1.8rem,3.4vh,2.6rem) 0;' +
       'display:grid;gap:0}',
-    '.ynv-mc{padding:0 clamp(.55rem,1.1vw,1rem) 0 .7rem;min-width:0}',
+    '.ynv-mc{padding:0 .45rem;min-width:0;text-align:center}',
     '.ynv-mc + .ynv-mc{border-left:1px solid ' + LINE + '}',
     '.ynv-mc > b{display:block;font-family:' + KR + ';font-size:.92rem;font-weight:800;' +
-      'letter-spacing:-.02em;color:' + INK + ';padding-bottom:.7rem;' +
-      'border-bottom:1px solid #111318;margin-bottom:.75rem;' +
+      'letter-spacing:-.02em;color:' + INK + ';padding-bottom:.85rem;' +
+      'border-bottom:1px solid #111318;margin-bottom:1.15rem;' +
       'transition:color .2s}',
     '.ynv-mc a{position:relative;display:block;font-family:' + KR + ';font-size:.83rem;font-weight:600;' +
-      'white-space:normal;word-break:keep-all;' +
-      'letter-spacing:-.01em;color:' + MUTED + ';text-decoration:none;padding:.42rem 0 .42rem .55rem;' +
+      'white-space:normal;word-break:keep-all;line-height:1.45;' +
+      'letter-spacing:-.01em;color:' + MUTED + ';text-decoration:none;padding:.62rem 0;' +
       'opacity:0;transform:translateY(6px);' +
       'transition:opacity .5s ease,transform .55s ' + E + ',color .16s}',
+    '.ynv-mc a + a{margin-top:.22rem}',
     '.ynv.mega-on .ynv-mc a{opacity:1;transform:none;transition-delay:var(--md,0s)}',
     /* 올려 둔 항목의 왼쪽 기둥 — 지면 곳곳에서 쓰는 표시와 같다 */
     '.ynv-mc a::before{content:"";position:absolute;left:0;top:.34rem;bottom:.34rem;width:2px;' +
       'background:' + NAVY + ';transform:scaleY(0);transform-origin:50% 0;transition:transform .2s ' + E + '}',
     '.ynv-mc a:hover{color:' + NAVY + '}',
-    '.ynv-mc a:hover::before{transform:scaleY(1)}',
+    '.ynv-mc a:hover::before{transform:translateX(-50%) scaleX(1)}',
     '.ynv-mc a.cur{color:' + NAVY + '}',
     /* 커서가 얹힌 칸만 또렷하게 — 나머지는 한 단계 물러난다 */
     '.ynv-mega.has-hi .ynv-mc:not(.hi) > b{color:' + DIM + '}',
@@ -880,19 +881,26 @@
         if (!its.length || !inn) return;
         var m = mega.getBoundingClientRect();
         if (m.width < 10) return;
-        var xs = its.map(function (it) { return it.getBoundingClientRect().left - m.left; });
-        var pad = parseFloat(getComputedStyle(inn).paddingRight) || 24;
-        var ws = xs.map(function (x, i) {
-          if (i + 1 < xs.length) return xs[i + 1] - x;
-          /* 마지막 칸은 남은 자리를 다 먹으면 혼자 넓어진다 — 이웃 폭에 맞춘다 */
-          var prev = xs.length > 1 ? xs[xs.length - 1] - xs[xs.length - 2] : 160;
-          return Math.max(140, Math.min(m.width - pad - x, prev * 1.15));
+        /* 항목의 「가운데」를 잰다 — 칸 안 글이 가운데 정렬이라, 칸도 항목 가운데에 서야
+           「연구」 글자 밑에 「연구」 칸이 온다.
+           칸 폭을 항목 평균 간격으로 고르게 두고 판 한가운데에 놓으면,
+           메뉴 자체가 화면 정중앙이므로 칸 하나하나가 제 항목 밑에 정확히 선다. */
+        var cs = its.map(function (it) {
+          var r = it.getBoundingClientRect();
+          return (r.left + r.right) / 2 - m.left;
         });
-        /* 칸마다 왼쪽 여백 .7rem 이 있으니 격자를 그만큼 앞당긴다 —
-           그래야 실선은 항목보다 조금 앞에 서고 글자는 항목에 정확히 맞는다. */
-        var GUT = 11;
-        inn.style.paddingLeft = Math.max(0, xs[0] - GUT) + 'px';
-        inn.style.gridTemplateColumns = ws.map(function (w) { return w + 'px'; }).join(' ');
+        /* 항목 이름의 글자 수가 달라(「학부소개」4자 · 「연구」2자) 가운데끼리의
+           간격이 균일하지 않다. 칸을 모두 같은 폭으로 두면 그만큼씩 어긋난다.
+           그래서 칸 경계를 하나씩 풀어 나간다 — 칸 i 의 가운데가 항목 i 의 가운데가
+           되도록 b(i+1) = 2·c(i) − b(i). 첫 경계만 정하면 나머지는 따라온다. */
+        var first = cs.length > 1 ? (cs[1] - cs[0]) : 160;
+        var b = [cs[0] - first / 2];
+        for (var i = 0; i < cs.length; i++) b.push(2 * cs[i] - b[i]);
+        var ws = [];
+        for (var k = 0; k < cs.length; k++) ws.push(Math.max(56, b[k + 1] - b[k]));
+        inn.style.paddingLeft = Math.max(0, Math.round(b[0])) + 'px';
+        inn.style.paddingRight = '0px';
+        inn.style.gridTemplateColumns = ws.map(function (w) { return w.toFixed(2) + 'px'; }).join(' ');
       }
       fitMega();
       addEventListener('resize', fitMega, { passive: true });

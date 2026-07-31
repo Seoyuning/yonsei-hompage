@@ -287,69 +287,102 @@ img{display:block;max-width:100%}
   .tw-pin{position:relative;height:auto;overflow:visible;padding:7rem 0}
   .tw-say{color:var(--navy,#1a3d75)}
 }
-/* ── 여섯 연구 분야 — 스크롤을 내리면 옆으로 흐른다 (참고: tinywins.com) ──
-   오른쪽으로 갈수록 카드가 0.66 배씩 작아져 멀어지는 것처럼 보이고, 모두 같은
-   세로 중심선에 놓인다. 스크롤이 이 구간을 지나는 동안 카드가 오른쪽 작은 자리에서
-   왼쪽 큰 자리로 올라온다 — 자리의 크기는 고정이고 카드가 그 자리를 통과한다.
-   크기·자리는 JS 가 프레임마다 정한다(요소가 여섯뿐이라 감당할 만하다). */
-.tw-scene{position:relative;background:var(--paper)}
-.tw-pin2{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;
-  display:flex;flex-direction:column}
-.tw-title{margin:0;padding:clamp(3.4rem,7vh,5rem) clamp(1.2rem,.6rem + 2vw,2.6rem) 0;
-  text-align:center;font-family:var(--kr);font-weight:500;letter-spacing:-.03em;
-  font-size:clamp(1.4rem,1rem + 1.6vw,2.2rem);color:var(--muted)}
-.tw-title b{font-weight:800;color:var(--ink)}
-/* 카드가 흐르는 자리 — 세로 중심선 하나에 모두 걸린다 */
-.tw-rail{position:relative;flex:1 1 auto;min-height:0}
-.tw-item{position:absolute;top:50%;left:0;display:block;text-decoration:none;
-  will-change:transform,width}
-.tw-fig{display:block;width:100%;aspect-ratio:3/4;overflow:hidden;
-  border-radius:8px;background:var(--soft)}
-.tw-fig img{width:100%;height:100%;object-fit:cover}
-/* 이름표는 가장 큰 카드에만 — 작은 카드까지 글이 붙으면 어수선해진다 */
-.tw-cap{display:block;margin-top:.85rem;opacity:0;transition:opacity .4s ease;
-  font-family:var(--kr);white-space:nowrap}
-.tw-item.lead .tw-cap{opacity:1}
-.tw-cap b{font-size:1.02rem;font-weight:800;letter-spacing:-.02em;color:var(--ink)}
-.tw-cap-en{margin-left:.5rem;font-family:var(--mono);font-size:.72rem;font-weight:500;
-  letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
-.tw-cap-c{margin-left:.5rem;font-family:var(--mono);font-size:.74rem;font-weight:600;
-  color:var(--navy)}
-/* 아래 눈금 — 1px 세로줄이 늘어서고, 지금 자리 쪽이 높다.
-   스크롤을 내리면 높은 자리가 오른쪽으로 옮겨 간다. */
-.tw-ruler{display:flex;align-items:flex-end;justify-content:center;gap:9px;
-  height:56px;padding-bottom:clamp(1.4rem,3vh,2.4rem)}
-.tw-ruler i{display:block;width:1px;background:var(--ink);
-  height:var(--h,6px);transition:height .18s linear}
-.tw-cred{margin:0 0 clamp(1.2rem,2.4vh,1.8rem);text-align:center;
-  font-family:var(--kr);font-size:.72rem;font-weight:500;color:var(--dim)}
-/* 등장 — 제목의 가림막이 걷히고 카드가 오른다 */
-.tw-title{clip-path:inset(0 0 110% 0);
-  transition:clip-path .8s cubic-bezier(.16,1,.3,1)}
-.tw-scene.rv-seen .tw-title{clip-path:inset(0 0 -10% 0)}
-.tw-item{opacity:0}
-.tw-scene.rv-seen .tw-item{opacity:1;transition:opacity .6s ease}
+/* ── 여섯 연구 분야 — 화면은 고정, 분야만 바뀐다 (참고: flim.ai) ──
+   왼쪽에 분야 이름을 크게, 오른쪽에 그 분야 사진을 화면 밖까지 흘린다.
+   스크롤이 이 구간을 지나는 동안 좌우가 같이 다음 분야로 넘어간다.
+   여섯을 겹쳐 두고 켜진 것만 보이므로, 넘어갈 때 자리가 흔들리지 않는다. */
+.fx-scene{position:relative;background:var(--paper)}
+.fx-pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;display:flex;align-items:center}
+/* 왼쪽 끝은 본문(1232px)과 같은 선에 두고, 오른쪽은 화면 끝까지 내보낸다 —
+   사진이 화면 밖으로 잘려 나가야 「더 있다」는 느낌이 난다.
+   margin:0 auto 로 가운데 두면 오른쪽에도 여백이 생겨 잘리지 않는다. */
+.fx-grid{width:100%;max-width:none;margin:0;
+  padding:clamp(4.5rem,9vh,6.5rem) 0 clamp(2rem,4vh,3rem)
+    max(clamp(1.2rem,.6rem + 2vw,2.6rem), calc((100vw - 1232px) / 2 + clamp(1.2rem,.6rem + 2vw,2.6rem)));
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,40vw);
+  gap:clamp(1.6rem,4vw,4rem);align-items:center}
+.fx-left{min-width:0}
+.fx-left .kick{display:inline-block;width:auto;margin-bottom:clamp(1.4rem,3vh,2.2rem)}
+/* 글 여섯 벌을 겹쳐 두고 켜진 것만 보인다 */
+.fx-stack{position:relative;min-height:clamp(17rem,42vh,23rem)}
+.fx-t{position:absolute;inset:0;opacity:0;visibility:hidden;transform:translateY(16px);
+  transition:opacity .5s ease,transform .62s cubic-bezier(.16,1,.3,1),visibility .5s}
+.fx-t.is-on{position:relative;opacity:1;visibility:visible;transform:none}
+.fx-n{margin:0;font-family:var(--mono);font-size:.76rem;font-weight:700;letter-spacing:.18em;
+  color:var(--dim)}
+.fx-n b{color:var(--navy);font-weight:700}
+.fx-n span{margin-left:.4rem;font-weight:500}
+/* flim 처럼 「크되 얇게」 — 굵기로 누르지 않고 크기로 민다 */
+.fx-ko{margin:.7rem 0 0;font-family:var(--kr);font-weight:600;letter-spacing:-.045em;
+  line-height:.98;font-size:clamp(2.6rem,1.3rem + 5.6vw,5.4rem);color:var(--ink)}
+.fx-en{margin:.85rem 0 0;font-family:var(--mono);font-size:.8rem;font-weight:500;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.fx-d{margin:1.1rem 0 0;max-width:32rem;font-family:var(--kr);
+  font-size:clamp(.9rem,.86rem + .2vw,1rem);font-weight:500;line-height:1.75;
+  color:var(--muted);letter-spacing:-.01em}
+.fx-go{display:inline-block;margin-top:clamp(1.1rem,2.4vh,1.7rem);
+  font-family:var(--mono);font-size:.8rem;font-weight:600;letter-spacing:.05em;
+  color:var(--navy);border-bottom:1px solid var(--line);padding-bottom:.26rem;
+  transition:border-color .2s}
+.fx-go i{font-style:normal;margin-left:.25rem;color:var(--accent);
+  display:inline-block;transition:transform .3s cubic-bezier(.16,1,.3,1)}
+.fx-go:hover{border-bottom-color:var(--navy)}
+.fx-go:hover i{transform:translateX(4px)}
+/* 여섯 칸 — 지금 어디쯤인지, 그리고 눌러서 건너뛰기 */
+.fx-dots{display:flex;gap:.5rem;margin-top:clamp(1.6rem,3.4vh,2.6rem)}
+.fx-dot{width:2.6rem;height:22px;padding:0;border:0;background:none;cursor:pointer;
+  display:flex;align-items:center}
+.fx-dot i{display:block;width:100%;height:2px;background:var(--line);
+  transition:background .3s ease,height .3s ease}
+.fx-dot:hover i{background:var(--dim)}
+.fx-dot.is-on i{background:var(--navy);height:3px}
+.fx-dot:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+/* 오른쪽 사진 — 겹쳐 두고 켜진 것만 */
+/* 가로세로비를 주면 max-height 가 폭까지 잡아 사진이 화면 끝에 못 닿는다 —
+   폭은 칸을 다 쓰게 두고 높이만 정한다. */
+.fx-right{position:relative;width:100%;height:min(74vh,40rem);overflow:hidden;
+  border-radius:10px 0 0 10px;background:var(--soft)}
+.fx-s{position:absolute;inset:0;margin:0;opacity:0;visibility:hidden;
+  transition:opacity .7s ease,visibility .7s}
+.fx-s.is-on{opacity:1;visibility:visible}
+.fx-s img{width:100%;height:100%;object-fit:cover;transform:scale(1.06);
+  transition:transform 1.2s cubic-bezier(.16,1,.3,1)}
+.fx-s.is-on img{transform:none}
+.fx-s figcaption{position:absolute;left:0;right:0;bottom:0;padding:.6rem .8rem;
+  background:linear-gradient(180deg,rgba(8,17,34,0),rgba(8,17,34,.76));
+  font-family:var(--kr);font-size:.72rem;font-weight:500;color:rgba(255,255,255,.76);
+  letter-spacing:0;line-height:1.5}
+/* 등장 — 구간에 들어서면 라벨의 실선이 그어지고 글이 오른다 */
+.fx-left .kick{position:relative;border-bottom-color:transparent}
+.fx-left .kick::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
+  background:#111318;transform:scaleX(0);transform-origin:0 50%;
+  transition:transform .85s cubic-bezier(.16,1,.3,1)}
+.fx-scene.rv-seen .kick::after{transform:scaleX(1)}
+.fx-right{clip-path:inset(0 0 100% 0);transition:clip-path .9s cubic-bezier(.16,1,.3,1) .18s}
+.fx-scene.rv-seen .fx-right{clip-path:inset(0 0 0 0)}
 @media (max-width:860px){
-  /* 휴대폰에서는 손가락 스크롤을 가로채지 않는다 — 평범한 가로 레일로 둔다 */
-  .tw-scene{height:auto!important}
-  .tw-pin2{position:relative;height:auto;overflow:visible;padding-bottom:1rem}
-  .tw-rail{display:flex;gap:.9rem;overflow-x:auto;padding:1.4rem clamp(1.2rem,4vw,2rem);
-    -webkit-overflow-scrolling:touch;scrollbar-width:none;min-height:0}
-  .tw-rail::-webkit-scrollbar{display:none}
-  .tw-item{position:relative!important;top:auto!important;left:auto!important;
-    flex:0 0 62vw;width:auto!important;transform:none!important;opacity:1!important}
-  .tw-cap{opacity:1;white-space:normal}
-  .tw-ruler{display:none}
+  /* 휴대폰에서는 고정 구간을 쓰지 않는다 — 여섯을 위에서 아래로 그냥 싣는다 */
+  .fx-scene{height:auto!important}
+  .fx-pin{position:relative;height:auto;overflow:visible;padding:clamp(3rem,7vh,4.5rem) 0}
+  .fx-grid{grid-template-columns:1fr;gap:1.2rem;
+    padding:0 clamp(1.2rem,.6rem + 2vw,2.6rem)}
+  .fx-stack{min-height:0}
+  .fx-t{position:relative!important;opacity:1!important;visibility:visible!important;
+    transform:none!important;padding-bottom:1.6rem}
+  .fx-t + .fx-t{border-top:1px solid var(--line);padding-top:1.6rem}
+  .fx-ko{font-size:clamp(2rem,1.2rem + 4.4vw,3rem)}
+  .fx-dots{display:none}
+  .fx-right{order:-1;height:auto;aspect-ratio:16/10;border-radius:8px;clip-path:none}
+  .fx-s{position:relative;opacity:1;visibility:visible}
+  .fx-s + .fx-s{display:none}
 }
 @media (prefers-reduced-motion:reduce){
-  .tw-scene{height:auto!important}
-  .tw-pin2{position:relative;height:auto;overflow:visible}
-  .tw-rail{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;padding:1.5rem}
-  .tw-item{position:relative!important;top:auto!important;left:auto!important;
-    flex:0 0 15rem;width:auto!important;transform:none!important;opacity:1!important}
-  .tw-title{clip-path:none}
-  .tw-cap{opacity:1}
-  .tw-ruler{display:none}
+  .fx-scene{height:auto!important}
+  .fx-pin{position:relative;height:auto;overflow:visible}
+  .fx-t{position:relative!important;opacity:1!important;visibility:visible!important;transform:none!important}
+  .fx-right{clip-path:none}
+  .fx-s img{transform:none}
+  .fx-left .kick::after{transform:scaleX(1);transition:none}
 }
 /* ── 교수진 — 드래그 가로 레일 ── */
 /* 교수진 레일 좌우 이동 버튼 — 한 칸(카드 폭 + 간격)씩 옮긴다.
@@ -565,40 +598,76 @@ img{display:block;max-width:100%}
      시간이 지나면 다음으로 넘어간다. 아래 여섯 칸으로 전체를 함께 보여 주고,
      눌러서 바로 건너뛸 수도 있다. -->
 <main>
-<!-- 여섯 연구 분야 — 스크롤을 내리면 옆으로 흐른다 (참고: tinywins.com).
-     오른쪽으로 갈수록 카드가 작아져 멀어지는 것처럼 보이고, 모두 같은 세로
-     중심선에 놓인다. 아래 눈금이 지금 어디쯤인지 알린다. -->
-<section class="tw-scene" id="twAreas" data-no-rv aria-labelledby="h-research">
-  <div class="tw-pin2">
-    <p class="tw-title"><span data-i18n="areasTitle">연구 분야</span> <b>여섯</b></p>
-    <div class="tw-rail" id="twRail">
-      <a class="tw-item" href="G-research.html#solid" data-i="0">
-        <span class="tw-fig"><img src="assets/fields/solid.jpg" alt="" fetchpriority="low" decoding="async"></span>
-        <span class="tw-cap"><b>역학·소재</b> <span class="tw-cap-en">Mechanics & Materials</span> <span class="tw-cap-c">연구실 6곳</span></span>
-      </a>
-      <a class="tw-item" href="G-research.html#thermal" data-i="1">
-        <span class="tw-fig"><img src="assets/fields/thermal.jpg" alt="" loading="lazy" decoding="async"></span>
-        <span class="tw-cap"><b>에너지·열유체</b> <span class="tw-cap-en">Energy / Thermal-Fluid</span> <span class="tw-cap-c">연구실 7곳</span></span>
-      </a>
-      <a class="tw-item" href="G-research.html#dynamics" data-i="2">
-        <span class="tw-fig"><img src="assets/fields/dynamics.jpg" alt="" loading="lazy" decoding="async"></span>
-        <span class="tw-cap"><b>로보틱스·제어</b> <span class="tw-cap-en">Robotics & Control</span> <span class="tw-cap-c">연구실 4곳</span></span>
-      </a>
-      <a class="tw-item" href="G-research.html#manufacturing" data-i="3">
-        <span class="tw-fig"><img src="assets/fields/manufacturing.jpg" alt="" loading="lazy" decoding="async"></span>
-        <span class="tw-cap"><b>설계·제조</b> <span class="tw-cap-en">Design & Manufacturing</span> <span class="tw-cap-c">연구실 6곳</span></span>
-      </a>
-      <a class="tw-item" href="G-research.html#micro" data-i="4">
-        <span class="tw-fig"><img src="assets/fields/micro.jpg" alt="" loading="lazy" decoding="async"></span>
-        <span class="tw-cap"><b>마이크로·나노</b> <span class="tw-cap-en">Micro / Nano Systems</span> <span class="tw-cap-c">연구실 5곳</span></span>
-      </a>
-      <a class="tw-item" href="G-research.html#optics" data-i="5">
-        <span class="tw-fig"><img src="assets/fields/optics.jpg" alt="" loading="lazy" decoding="async"></span>
-        <span class="tw-cap"><b>바이오·포토닉스</b> <span class="tw-cap-en">Bio & Photonics</span> <span class="tw-cap-c">연구실 5곳</span></span>
-      </a>
+<!-- 여섯 연구 분야 — 화면은 고정된 채 분야만 바뀐다(참고: flim.ai).
+     왼쪽에 분야 이름을 크게, 오른쪽에 그 분야 사진을 화면 밖까지 흘린다.
+     스크롤을 내리면 좌우가 같이 다음 분야로 넘어간다. -->
+<section class="fx-scene" id="twAreas" data-no-rv aria-labelledby="h-research">
+  <div class="fx-pin">
+    <div class="fx-grid">
+      <div class="fx-left">
+        <p class="kick" id="h-research">Research Area</p>
+        <div class="fx-stack">
+        <div class="fx-t is-on" data-i="0">
+          <p class="fx-n"><b>01</b><span>/ 06</span></p>
+          <h3 class="fx-ko">역학·소재</h3>
+          <p class="fx-en">Mechanics & Materials</p>
+          <p class="fx-d">금속·복합재·연성재료가 힘을 받아 어떻게 변형하고 파손되는지 실험과 시뮬레이션으로 규명합니다.</p>
+          <a class="fx-go" href="G-research.html#solid">연구실 6곳 <i aria-hidden="true">→</i></a>
+        </div>
+        <div class="fx-t" data-i="1">
+          <p class="fx-n"><b>02</b><span>/ 06</span></p>
+          <h3 class="fx-ko">에너지·열유체</h3>
+          <p class="fx-en">Energy / Thermal-Fluid</p>
+          <p class="fx-d">난류·미세유동과 연소·열전달을 해석해 연료전지·수소·배터리처럼 에너지를 다루는 기술을 연구합니다.</p>
+          <a class="fx-go" href="G-research.html#thermal">연구실 7곳 <i aria-hidden="true">→</i></a>
+        </div>
+        <div class="fx-t" data-i="2">
+          <p class="fx-n"><b>03</b><span>/ 06</span></p>
+          <h3 class="fx-ko">로보틱스·제어</h3>
+          <p class="fx-en">Robotics & Control</p>
+          <p class="fx-d">로봇과 자율 시스템이 스스로 감지하고 정밀하게 움직이도록 제어와 메카트로닉스를 연구합니다.</p>
+          <a class="fx-go" href="G-research.html#dynamics">연구실 4곳 <i aria-hidden="true">→</i></a>
+        </div>
+        <div class="fx-t" data-i="3">
+          <p class="fx-n"><b>04</b><span>/ 06</span></p>
+          <h3 class="fx-ko">설계·제조</h3>
+          <p class="fx-en">Design & Manufacturing</p>
+          <p class="fx-d">전산 최적설계로 형상을 찾고 정밀·극한 가공으로 구현합니다. 반도체 장비·전기차 같은 첨단 제조를 다룹니다.</p>
+          <a class="fx-go" href="G-research.html#manufacturing">연구실 6곳 <i aria-hidden="true">→</i></a>
+        </div>
+        <div class="fx-t" data-i="4">
+          <p class="fx-n"><b>05</b><span>/ 06</span></p>
+          <h3 class="fx-ko">마이크로·나노</h3>
+          <p class="fx-en">Micro / Nano Systems</p>
+          <p class="fx-d">MEMS와 박막·미세가공, 나노 소자·센서로 눈에 보이지 않는 스케일의 구조와 현상을 다룹니다.</p>
+          <a class="fx-go" href="G-research.html#micro">연구실 5곳 <i aria-hidden="true">→</i></a>
+        </div>
+        <div class="fx-t" data-i="5">
+          <p class="fx-n"><b>06</b><span>/ 06</span></p>
+          <h3 class="fx-ko">바이오·포토닉스</h3>
+          <p class="fx-en">Bio & Photonics</p>
+          <p class="fx-d">광학·이미징과 바이오칩, 생체역학을 결합해 질병 진단과 의료 광학·바이오 센싱을 연구합니다.</p>
+          <a class="fx-go" href="G-research.html#optics">연구실 5곳 <i aria-hidden="true">→</i></a>
+        </div>
+        </div>
+        <div class="fx-dots" id="fxDots" role="tablist" aria-label="연구 분야 고르기">
+        <button type="button" class="fx-dot is-on" data-i="0" aria-label="역학·소재"><i></i></button>
+        <button type="button" class="fx-dot" data-i="1" aria-label="에너지·열유체"><i></i></button>
+        <button type="button" class="fx-dot" data-i="2" aria-label="로보틱스·제어"><i></i></button>
+        <button type="button" class="fx-dot" data-i="3" aria-label="설계·제조"><i></i></button>
+        <button type="button" class="fx-dot" data-i="4" aria-label="마이크로·나노"><i></i></button>
+        <button type="button" class="fx-dot" data-i="5" aria-label="바이오·포토닉스"><i></i></button>
+        </div>
+      </div>
+      <div class="fx-right" aria-hidden="true">
+        <figure class="fx-s is-on" data-i="0"><img src="assets/fields/solid.jpg" alt="" fetchpriority="low" decoding="async"><figcaption>사진 Kerina yin · CC0 · Wikimedia Commons</figcaption></figure>
+        <figure class="fx-s" data-i="1"><img src="assets/fields/thermal.jpg" alt="" loading="lazy" decoding="async"><figcaption>사진 Tommi Nummelin · CC BY-SA 3.0 · Wikimedia Commons</figcaption></figure>
+        <figure class="fx-s" data-i="2"><img src="assets/fields/dynamics.jpg" alt="" loading="lazy" decoding="async"><figcaption>사진 Auledas · CC BY-SA 4.0 · Wikimedia Commons</figcaption></figure>
+        <figure class="fx-s" data-i="3"><img src="assets/fields/manufacturing.jpg" alt="" loading="lazy" decoding="async"><figcaption>사진 Adoscam · CC BY-SA 4.0 · Wikimedia Commons</figcaption></figure>
+        <figure class="fx-s" data-i="4"><img src="assets/fields/micro.jpg" alt="" loading="lazy" decoding="async"><figcaption>사진 작자 미상 · CC BY 2.5 · Wikimedia Commons</figcaption></figure>
+        <figure class="fx-s" data-i="5"><img src="assets/fields/optics.jpg" alt="" loading="lazy" decoding="async"><figcaption>사진 Steve Jurvetson · CC BY 2.0 · Wikimedia Commons</figcaption></figure>
+      </div>
     </div>
-    <div class="tw-ruler" id="twRuler" aria-hidden="true"></div>
-    <p class="tw-cred" id="twCred"></p>
   </div>
 </section>
 
@@ -1407,44 +1476,40 @@ img{display:block;max-width:100%}
   } else start();
 })();
 
-/* ── 여섯 연구 분야 — 스크롤을 옆으로 (참고: tinywins.com) ──
-   자리의 크기는 고정이고 카드가 그 자리를 통과한다. 초점(왼쪽 큰 자리)에서
-   오른쪽으로 갈수록 0.66 배씩 작아지고, 모두 같은 세로 중심선에 걸린다.
-   f = 지금 초점에 있는 카드 번호(실수). 스크롤이 구간을 지나며 0 → n-1 로 간다.
-   요소가 여섯뿐이라 프레임마다 크기를 다시 잡아도 감당할 만하다. */
+/* ── 여섯 연구 분야 — 화면은 고정, 분야만 바뀐다 (참고: flim.ai) ──
+   구간 높이 = 화면 하나(고정된 채 머무는 자리) + 분야 하나당 PACE 화면.
+   스크롤이 그 구간을 지나며 0 → 5 번 분야로 넘어간다. 겹쳐 둔 글·사진 중
+   켜진 것만 보이므로 넘어갈 때 자리가 흔들리지 않는다.
+   프레임마다 하는 일은 번호 하나 고르는 것뿐이고, 나머지는 CSS 전환이 맡는다. */
 (function () {
   'use strict';
   var sec = document.getElementById('twAreas');
-  var rail = document.getElementById('twRail');
-  var ruler = document.getElementById('twRuler');
-  var cred = document.getElementById('twCred');
-  if (!sec || !rail) return;
-  var items = [].slice.call(rail.querySelectorAll('.tw-item'));
-  if (!items.length) return;
+  if (!sec) return;
+  var texts = [].slice.call(sec.querySelectorAll('.fx-t'));
+  var shots = [].slice.call(sec.querySelectorAll('.fx-s'));
+  var dots = [].slice.call(sec.querySelectorAll('.fx-dot'));
+  if (texts.length < 2) return;
 
-  var CRED = ['Kerina yin · CC0','Tommi Nummelin · CC BY-SA 3.0','Auledas · CC BY-SA 4.0',
-              'Adoscam · CC BY-SA 4.0','작자 미상 · CC BY 2.5','Steve Jurvetson · CC BY 2.0'];
-  var R = 0.66;        /* 한 자리 건널 때마다 이만큼 작아진다(tinywins 실측 351→239→148) */
-  var GAP = 26;
-  var TICKS = 26;
-
-  /* 눈금 만들기 — 1px 세로줄 */
-  if (ruler && !ruler.children.length) {
-    for (var t = 0; t < TICKS; t++) ruler.appendChild(document.createElement('i'));
-  }
-  var ticks = ruler ? [].slice.call(ruler.children) : [];
-
-  var narrow = false, reduce = false, big = 0, railW = 0, railH = 0, raf = 0, lastF = -1;
+  var PACE = 0.95;      /* 분야 하나를 넘기는 데 드는 스크롤(화면 높이의 배수) */
+  var narrow = false, reduce = false, cur = 0, raf = 0;
   try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
 
   function measure() {
     narrow = innerWidth <= 860;
-    if (narrow || reduce) { sec.style.height = ''; items.forEach(function (el) { el.style.cssText = ''; }); return; }
-    railW = rail.clientWidth; railH = rail.clientHeight;
-    /* 가장 큰 카드 — 세로가 먼저 차면 그쪽에 맞춘다(3:4 비율 + 이름표 자리) */
-    big = Math.min(railW * 0.30, (railH - 64) * 0.75);
-    /* 구간 높이 = 화면 하나 + 카드 하나당 한 화면의 0.85 배 */
-    sec.style.height = Math.round(innerHeight + innerHeight * 0.85 * (items.length - 1)) + 'px';
+    if (narrow || reduce) { sec.style.height = ''; return; }
+    sec.style.height = Math.round(innerHeight * (1 + PACE * (texts.length - 1))) + 'px';
+  }
+
+  function show(i) {
+    i = Math.max(0, Math.min(texts.length - 1, i));
+    if (i === cur) return;
+    cur = i;
+    texts.forEach(function (el, k) { el.classList.toggle('is-on', k === i); });
+    shots.forEach(function (el, k) { el.classList.toggle('is-on', k === i); });
+    dots.forEach(function (el, k) {
+      el.classList.toggle('is-on', k === i);
+      el.setAttribute('aria-selected', k === i ? 'true' : 'false');
+    });
   }
 
   function draw() {
@@ -1452,39 +1517,26 @@ img{display:block;max-width:100%}
     if (narrow || reduce) return;
     var span = Math.max(1, sec.offsetHeight - innerHeight);
     var p = Math.min(1, Math.max(0, -sec.getBoundingClientRect().top / span));
-    var f = p * (items.length - 1);
-    if (Math.abs(f - lastF) < 0.0015) return;
-    lastF = f;
-
-    /* 카드마다 크기를 먼저 정하고, 그 폭을 왼쪽부터 쌓아 자리를 잡는다 */
-    var w = items.map(function (el, i) { return big * Math.pow(R, i - f); });
-    var x = [], acc = 0;
-    for (var i = 0; i < items.length; i++) { x.push(acc); acc += w[i] + GAP; }
-    /* 초점 카드가 왼쪽 여백에 서도록 통째로 민다 */
-    var fi = Math.floor(f), fr = f - fi;
-    var focusX = x[fi] + (fi + 1 < x.length ? (x[fi + 1] - x[fi]) * fr : 0);
-    var LEFT = railW * 0.06;
-
-    items.forEach(function (el, i) {
-      var ww = w[i];
-      el.style.width = ww.toFixed(1) + 'px';
-      /* 세로 중심선 하나에 건다 — 카드 높이(3:4)의 절반만큼 올린다 */
-      el.style.transform = 'translate3d(' + (x[i] - focusX + LEFT).toFixed(1) + 'px,' +
-        (-ww * 4 / 3 / 2).toFixed(1) + 'px,0)';
-      el.classList.toggle('lead', i === Math.round(f));
-    });
-
-    /* 눈금 — 지금 자리 쪽이 높고 멀수록 낮아진다 */
-    var hot = (f / (items.length - 1)) * (TICKS - 1);
-    ticks.forEach(function (el, k) {
-      var d = Math.abs(k - hot);
-      el.style.setProperty('--h', Math.max(5, 52 * Math.exp(-d * 0.42)).toFixed(1) + 'px');
-    });
-    if (cred) cred.textContent = '사진 ' + CRED[Math.round(f)] + ' · Wikimedia Commons';
+    show(Math.round(p * (texts.length - 1)));
   }
-  function tick() { if (!raf) { raf = 1; requestAnimationFrame(draw); } }
+  /* 「대기 중」을 참/거짓으로 들면, 화면이 숨은 동안 스크롤이 일어났을 때 그 프레임이
+     오지 않아 깃발이 켜진 채 남고 그 뒤 스크롤이 전부 무시된다. 번호로 들고 취소한다. */
+  function tick() { if (raf) cancelAnimationFrame(raf); raf = requestAnimationFrame(draw); }
 
-  function boot() { measure(); lastF = -1; draw(); }
+  dots.forEach(function (b, i) {
+    b.setAttribute('role', 'tab');
+    b.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+    b.addEventListener('click', function () {
+      /* 누르면 그 분야가 화면 한가운데 오도록 스크롤을 옮긴다 */
+      var span = sec.offsetHeight - innerHeight;
+      var top = sec.getBoundingClientRect().top + pageYOffset;
+      var y = top + span * (i / (texts.length - 1));
+      if (window.__lenis) window.__lenis.scrollTo(y);
+      else scrollTo({ top: y, behavior: 'smooth' });
+    });
+  });
+
+  function boot() { measure(); cur = -1; draw(); }
   boot();
   addEventListener('scroll', tick, { passive: true });
   addEventListener('resize', boot, { passive: true });

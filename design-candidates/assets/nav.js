@@ -265,8 +265,10 @@
       '.ynv-brand .ben{font-size:.72rem;letter-spacing:.1em}' +
       '.ytop{right:.9rem;bottom:calc(.9rem + env(safe-area-inset-bottom));width:2.7rem;height:2.7rem}' +
     '}',
-    /* 아주 좁은 화면(360 이하) — 영문 병기를 접어 브랜드 한 줄 유지 */
-    '@media(max-width:360px){.ynv-brand .ben{display:none}}',
+    /* 좁은 화면 — 영문 병기를 접어 브랜드를 한 줄로 지킨다.
+       360px 에서만 접었더니 390~480px 에서 「SCHOOL OF MECHANICAL ENGINEERING」이
+       세 줄로 접혀 상단 바가 두 배로 높아지고 글자가 뭉쳐 보였다. */
+    '@media(max-width:480px){.ynv-brand .ben{display:none}}',
     /* 서브페이지 히어로 윗여백은 이 고정 헤더를 비키려고 둔 값이라 여기서 맞춘다.
        (페이지 인라인 CSS 뒤에 주입되므로 이 규칙이 이긴다)
        휴대폰 헤더는 ~94px인데 데스크톱 기준 152px이 그대로 걸려 제목 위가 텅 비었다 */

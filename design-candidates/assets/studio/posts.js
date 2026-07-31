@@ -12,13 +12,18 @@
   var Y = window.YStudio;
   if (!Y || Y.posts) return;
 
-  /* ── 등록 가능한 글 종류 ── */
+  /* ── 등록 가능한 글 종류 ──
+     소식 화면에 실제로 있는 게시판 전부를 여기 둔다. 예전에는 다섯뿐이라
+     자료실·취업 정보·학위논문심사는 편집기로 글을 올릴 수가 없었다. */
   var KINDS = [
-    { coll: 'noticesUG', label: '학부 공지', where: '홈 공지사항 · 소식 페이지', pin: true },
-    { coll: 'noticesGrad', label: '대학원 공지', where: '홈 공지사항(대학원 탭) · 소식 페이지', pin: true },
-    { coll: 'newsList', label: '연구 소식 · 뉴스', where: '홈 연구 소식 · 소식 페이지', pin: false },
-    { coll: 'seminars', label: '세미나', where: '홈 세미나 · 소식 페이지', pin: false },
-    { coll: 'events', label: '행사', where: '소식 페이지 행사 목록', pin: false }
+    { coll: 'noticesUG', label: '학부 공지', where: '홈 공지사항 · 소식 › 공지사항(학부)', pin: true },
+    { coll: 'noticesGrad', label: '대학원 공지', where: '홈 공지사항(대학원) · 소식 › 공지사항(대학원)', pin: true },
+    { coll: 'newsList', label: '연구 소식 · 뉴스', where: '홈 연구 소식 · 소식 › 뉴스·연구성과', pin: false },
+    { coll: 'seminars', label: '세미나', where: '홈 세미나 · 소식 › 세미나·행사 · 학사 일정', pin: false },
+    { coll: 'events', label: '행사', where: '소식 › 세미나·행사 · 학사 일정', pin: false },
+    { coll: 'thesisReview', label: '학위논문심사', where: '소식 › 학위논문심사', pin: false },
+    { coll: 'archive', label: '자료실', where: '소식 › 자료실', pin: false },
+    { coll: 'jobs', label: '취업 정보', where: '소식 › 취업 정보 · 연구 › 대외협력', pin: false }
   ];
 
   var FIELD = {
@@ -26,8 +31,14 @@
     title: { label: '제목', long: true, required: true },
     date: { label: '날짜', hint: 'YYYY.MM.DD' },
     url: { label: '링크', hint: '원문 주소(비우면 목록 페이지로 연결됩니다).' },
-    att: { label: '첨부파일 있음' },
+    /* 파일을 올리는 칸이 아니다 — 목록에 클립 표시를 붙일지 정하는 표시일 뿐이다.
+       파일 자체는 원문 게시판(url)에 있다. 오해가 잦아 이름에 못 박았다. */
+    att: { label: '첨부 표시', hint: '켜면 목록에 클립 표시가 붙습니다. 파일을 올리는 칸이 아닙니다 — 파일은 위 「링크」의 원문에 둡니다.' },
+    attName: { label: '첨부 파일명', hint: '본문 아래에 그대로 보여 줍니다. 여러 개면 쉼표로 구분.' },
     thumb: { label: '썸네일 주소', hint: '이미지 URL. 비우면 글자만 나옵니다.' },
+    body: { label: '본문', long: true, hint: '우리 사이트 안에서 펴 보일 글. 빈 줄 하나로 문단을 나눕니다. 비우면 「원문에서 보라」고 안내합니다.' },
+    bodyKind: { label: '본문 형태', hint: 'text = 위 본문을 그대로 보여 줌 · file = 원문이 사진·PDF뿐이라 안내만 함' },
+    meta: { label: '머리 정보', long: true, hint: '세미나·행사에서 연사·일시·장소처럼 본문 위에 따로 세울 줄.' },
     place: { label: '장소' },
     time: { label: '시간' },
     speaker: { label: '연사' }

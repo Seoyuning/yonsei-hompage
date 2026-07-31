@@ -632,15 +632,24 @@
     },
 
     /** 첫 항목에서 필드 모양을 읽어 낸다 — [{key, kind}] */
+    /* 첫 항목 하나만 보면 그 글에 없는 칸은 등록 폼에 아예 안 나온다 —
+       예를 들어 학부 공지 1번 글에 attName 이 없으면 첨부 파일명을 적을 칸이 사라진다.
+       앞쪽 여러 항목의 키를 합쳐, 이 목록이 실제로 쓰는 칸을 모두 보여 준다.
+       차례는 먼저 나온 키를 앞에 둔다(첫 글의 순서가 곧 사람들이 아는 순서다). */
     shapeOf: function (coll) {
       var arr = state && state.root && state.root.props[coll];
       if (!arr || arr.type !== 'array' || !arr.items.length) return [];
-      var first = plain(arr.items[0]), keys = Object.keys(first || {}), out = [];
-      for (var i = 0; i < keys.length; i++) {
-        var v = first[keys[i]];
-        var kind = typeof v === 'boolean' ? 'bool' : (typeof v === 'number' ? 'number' : 'string');
-        if (v && typeof v === 'object') continue;             // 중첩은 등록 폼에서 다루지 않는다
-        out.push({ key: keys[i], kind: kind });
+      var out = [], seen = {};
+      var n = Math.min(arr.items.length, 24);
+      for (var j = 0; j < n; j++) {
+        var o = plain(arr.items[j]) || {}, keys = Object.keys(o);
+        for (var i = 0; i < keys.length; i++) {
+          var k = keys[i], v = o[k];
+          if (seen[k]) continue;
+          if (v && typeof v === 'object') continue;           // 중첩은 등록 폼에서 다루지 않는다
+          seen[k] = 1;
+          out.push({ key: k, kind: typeof v === 'boolean' ? 'bool' : (typeof v === 'number' ? 'number' : 'string') });
+        }
       }
       return out;
     },

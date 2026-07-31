@@ -254,107 +254,113 @@ img{display:block;max-width:100%}
 .tw-scene.is-say{height:230vh;height:230svh;background:#fff}
 .tw-pin{position:sticky;top:0;height:100vh;height:100svh;
   display:flex;flex-direction:column;justify-content:center;overflow:hidden}
-/* ── 여섯 연구 분야 ── 히어로·지표 바로 뒤.
-   교수님이 가장 앞세우고 싶어 하시는 것이 여섯 분야라, 스크롤을 내리자마자
-   이것부터 만나게 한다. 예전에는 한 분야씩 넘어가는 캐러셀이었는데, 화면을
-   어디서 찍어도 다섯은 작은 탭으로만 남아 「분야가 여섯」이 읽히지 않았다.
-   여섯을 한 목록으로 세우고, 줄에 올리면 오른쪽 사진만 바뀐다.
-   짜임은 flim.ai 를 참고했다 — 큰 글씨는 크되 얇게, 사진은 화면 밖으로 흘린다. */
-.areas{background:var(--paper);position:relative;overflow:hidden;
-  padding:clamp(4rem,8vh,6.5rem) 0 clamp(3.4rem,7vh,5.5rem)}
-/* 모눈 배경은 걷었다 — flim 이 쓰긴 하지만 검사 도구가 「흔한 AI 랜딩 클리셰」로
-   짚는 무늬다(codex-grid-background). 우리가 피하려던 바로 그것이라 넣지 않는다.
-   여백은 사진이 화면 밖으로 흘러나가는 것으로 이미 메워진다. */
-.ar-wrap{position:relative;z-index:1;width:100%;max-width:1232px;margin:0 auto;
+/* 문장 구간 — 스크롤을 따라 단어가 하나씩 진해진다. 다 켜지면 우리 네이비가 된다.
+   (연구 분야 CSS 를 갈아 끼울 때 이 규칙이 같이 지워져 문장이 회색으로 굳어 있었다) */
+.is-say .tw-pin{background:#fff}
+.tw-say{width:100%;max-width:1180px;margin:0 auto;padding:0 clamp(1.2rem,.6rem + 2vw,2.6rem);
+  font-family:var(--kr);font-weight:800;letter-spacing:-.03em;line-height:1.32;
+  font-size:clamp(1.5rem,.9rem + 3.2vw,3.4rem);color:rgba(26,61,117,.16)}
+.tw-say .sw{transition:color .3s ease}
+.tw-say .sw.on{color:var(--navy,#1a3d75)}
+@media (max-width:640px){.tw-scene.is-say{display:none}}
+@media (prefers-reduced-motion:reduce){
+  .tw-scene{height:auto}
+  .tw-pin{position:relative;height:auto;overflow:visible;padding:7rem 0}
+  .tw-say{color:var(--navy,#1a3d75)}
+}
+/* ── 여섯 연구 분야 — 스크롤하면 옆으로 넘어간다 (참고: flim.ai) ──
+   교수님이 가장 앞세우고 싶어 하시는 것이 여섯 분야다. 세로로 쌓으면 한 화면에
+   다 안 들어가고, 캐러셀은 한 번에 하나만 보인다. 세로 스크롤을 가로 이동으로
+   바꾸면 여섯 장이 차례로, 그러나 끊기지 않고 지나간다.
+   움직이는 것은 translate3d 하나뿐이라 합성기만 쓴다 — 프레임마다 다시 칠하지 않는다. */
+.ax-scene{position:relative;background:var(--paper)}
+.ax-pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:clamp(4.5rem,9vh,6.5rem) 0 clamp(2rem,4vh,3rem)}
+.ax-head{width:100%;max-width:1232px;margin:0 auto clamp(1.6rem,3.4vh,2.6rem);
   padding:0 clamp(1.2rem,.6rem + 2vw,2.6rem)}
-/* 사진이 오른쪽 화면 밖으로 빠져나간다 — 안 보이는 부분이 더 있다는 느낌을 준다 */
-.af-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,clamp(17rem,30vw,26rem));
-  gap:clamp(1.6rem,4vw,4rem);align-items:start;
-  margin-right:calc(50% - 50vw + clamp(1.2rem,.6rem + 2vw,2.6rem) - clamp(3rem,7vw,8rem))}
-.af-list{border-top:1px solid #111318}
-/* 한 줄 = 한 분야. 칠도 상자도 없이 헤어라인으로만 나눈다 */
-.af-row{position:relative;display:grid;
-  grid-template-columns:2.6rem minmax(0,auto) minmax(0,1fr) auto;
-  align-items:baseline;gap:0 clamp(.7rem,1.6vw,1.4rem);
-  padding:clamp(1rem,2.2vh,1.5rem) 0;border-bottom:1px solid var(--line);
-  text-decoration:none;transition:padding-left .45s cubic-bezier(.16,1,.3,1)}
-.af-n{font-family:var(--mono);font-size:.72rem;font-weight:700;letter-spacing:.16em;
-  color:var(--dim);transition:color .25s}
+/* 줄이 흐르는 자리 — 왼쪽 여백은 본문과 같은 축에서 시작한다 */
+/* 화면 높이가 얼마든 카드 한 장이 통째로 들어와야 한다 — 글은 제 높이를 갖고
+   사진이 남는 높이를 흡수한다(작은 노트북에서 아래가 잘리던 원인). */
+.ax-rail{flex:1 1 auto;min-height:0;overflow:hidden}
+.ax-track{display:flex;gap:clamp(1rem,2vw,1.8rem);height:100%;
+  padding:0 clamp(1.2rem,.6rem + 2vw,2.6rem);
+  will-change:transform}
+.ax-card{flex:0 0 clamp(15rem,25vw,21rem);position:relative;height:100%;
+  display:flex;flex-direction:column;text-decoration:none;
+  border-top:1px solid #111318;padding-top:clamp(.9rem,1.8vh,1.3rem)}
+.ax-shot{position:relative;margin:0 0 clamp(.9rem,1.8vh,1.3rem);
+  flex:1 1 auto;min-height:6rem;overflow:hidden;background:var(--soft);order:-1}
+.ax-shot img{width:100%;height:100%;object-fit:cover;
+  transform:scale(1.04);transition:transform .9s cubic-bezier(.16,1,.3,1)}
+.ax-card:hover .ax-shot img{transform:scale(1)}
+.ax-shot figcaption{position:absolute;left:0;right:0;bottom:0;padding:.5rem .6rem;
+  background:linear-gradient(180deg,rgba(8,17,34,0),rgba(8,17,34,.76));
+  font-family:var(--kr);font-size:.72rem;font-weight:500;color:rgba(255,255,255,.74);
+  letter-spacing:0;line-height:1.45}
+.ax-n{font-family:var(--mono);font-size:.72rem;font-weight:700;letter-spacing:.16em;
+  color:var(--dim)}
 /* flim 처럼 「크되 얇게」 — 굵기로 누르지 않고 크기로 민다 */
-.af-ko{font-family:var(--kr);font-weight:600;letter-spacing:-.035em;line-height:1;
-  font-size:clamp(1.5rem,.9rem + 2.6vw,2.9rem);color:var(--ink);
-  transition:color .25s}
-.af-en{font-family:var(--mono);font-size:.74rem;font-weight:500;letter-spacing:.06em;
-  text-transform:uppercase;color:var(--dim);transition:color .25s}
-.af-c{font-family:var(--mono);font-size:.76rem;font-weight:600;letter-spacing:.04em;
-  color:var(--dim);white-space:nowrap;transition:color .25s}
-.af-c::before{content:"연구실 ";font-size:.86em;letter-spacing:0}
-html[lang="en"] .af-c::before{content:""}
-/* 설명은 켜진 줄에서만 — 여섯 줄이 모두 설명을 달면 목록이 아니라 문단이 된다 */
-.af-d{grid-column:2 / -1;max-height:0;opacity:0;overflow:hidden;
-  font-family:var(--kr);font-size:.88rem;font-weight:500;line-height:1.7;
-  color:var(--muted);letter-spacing:-.01em;
-  transition:max-height .5s cubic-bezier(.16,1,.3,1),opacity .38s ease,margin-top .5s}
-.af-row.is-on{padding-left:clamp(.5rem,1.2vw,1.1rem)}
-.af-row.is-on .af-n{color:var(--accent)}
-.af-row.is-on .af-ko{color:var(--navy)}
-.af-row.is-on .af-en,.af-row.is-on .af-c{color:var(--sub)}
-.af-row.is-on .af-d{max-height:6rem;opacity:1;margin-top:.7rem}
-/* 켜진 줄 왼쪽의 네이비 기둥 — 지면 곳곳에서 쓰는 표시 */
-.af-row::before{content:"";position:absolute;left:0;top:.55rem;bottom:.55rem;width:2px;
-  background:var(--navy);transform:scaleY(0);transform-origin:50% 0;
-  transition:transform .32s cubic-bezier(.16,1,.3,1)}
-.af-row.is-on::before{transform:scaleY(1)}
-.af-row:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-/* 사진 — 겹쳐 두고 켜진 것만 보인다 */
-.af-media{position:relative;aspect-ratio:3/4;overflow:hidden;background:var(--soft);
-  border-radius:.28rem}
-.af-shot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
-  opacity:0;transform:scale(1.06);
-  transition:opacity .7s ease,transform 1.1s cubic-bezier(.16,1,.3,1)}
-.af-shot.is-on{opacity:1;transform:none}
-.af-cred{position:absolute;left:0;right:0;bottom:0;z-index:1;margin:0;padding:.6rem .8rem;
-  background:linear-gradient(180deg,rgba(8,17,34,0),rgba(8,17,34,.78));
-  font-family:var(--kr);font-size:.72rem;font-weight:500;color:rgba(255,255,255,.78);
-  letter-spacing:0;line-height:1.5}
-.ar-cred{margin-top:clamp(1.6rem,3vh,2.4rem);
-  font-family:var(--kr);font-size:.75rem;font-weight:500;line-height:1.6;
-  color:var(--dim);letter-spacing:0}
+.ax-ko{margin-top:.5rem;font-family:var(--kr);font-weight:600;letter-spacing:-.035em;
+  line-height:1.08;font-size:clamp(1.35rem,.95rem + 1.5vw,2rem);color:var(--ink);
+  transition:color .2s}
+.ax-card:hover .ax-ko{color:var(--navy)}
+.ax-en{margin-top:.4rem;font-family:var(--mono);font-size:.74rem;font-weight:500;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--dim)}
+.ax-d{margin-top:.75rem;font-family:var(--kr);font-size:.86rem;font-weight:500;
+  line-height:1.7;color:var(--muted);letter-spacing:-.01em;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.ax-c{margin-top:.85rem;font-family:var(--mono);font-size:.76rem;
+  font-weight:600;letter-spacing:.04em;color:var(--navy)}
+.ax-c i{font-style:normal;margin-left:.2rem;color:var(--accent);
+  display:inline-block;transition:transform .3s cubic-bezier(.16,1,.3,1)}
+.ax-card:hover .ax-c i{transform:translateX(5px)}
+.ax-card:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+/* 얼마나 지나왔는지 — 아래 가는 줄 하나 */
+.ax-prog{width:100%;max-width:1232px;margin:clamp(1.4rem,3vh,2.2rem) auto 0;
+  padding:0 clamp(1.2rem,.6rem + 2vw,2.6rem)}
+.ax-prog span{display:block;height:2px;background:var(--navy);
+  transform:scaleX(0);transform-origin:0 50%;transform:scaleX(var(--q,0))}
+.ax-prog::before{content:"";display:block;height:1px;background:var(--line);
+  margin-bottom:-1.5px}
 
 /* ── 등장 (참고: flim.ai — 짧고 탄력 있게, 가림막을 걷는다) ── */
-.areas .kick{position:relative;border-bottom-color:transparent}
-.areas .kick::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
+.ax-scene .kick{position:relative;border-bottom-color:transparent}
+.ax-scene .kick::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
   background:#111318;transform:scaleX(0);transform-origin:0 50%;
   transition:transform .85s cubic-bezier(.16,1,.3,1)}
-.areas.rv-seen .kick::after{transform:scaleX(1)}
-.areas .sec-title{clip-path:inset(0 0 110% 0);transform:translateY(.18em);
-  transition:clip-path .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1);
-  transition-delay:.12s}
-.areas.rv-seen .sec-title{clip-path:inset(0 0 -10% 0);transform:none}
-.areas .sec-head .more{opacity:0;transform:translateY(8px);
+.ax-scene.rv-seen .kick::after{transform:scaleX(1)}
+.ax-scene .sec-title{clip-path:inset(0 0 110% 0);transform:translateY(.18em);
+  transition:clip-path .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1) .12s}
+.ax-scene.rv-seen .sec-title{clip-path:inset(0 0 -10% 0);transform:none}
+.ax-scene .more{opacity:0;transform:translateY(8px);
   transition:opacity .5s ease .3s,transform .6s cubic-bezier(.16,1,.3,1) .3s}
-.areas.rv-seen .sec-head .more{opacity:1;transform:none}
-/* 여섯 줄이 위에서부터 하나씩 */
-.af-row{opacity:0;transform:translateY(12px)}
-.areas.rv-seen .af-row{opacity:1;transform:none;
-  transition:opacity .5s ease,transform .6s cubic-bezier(.16,1,.3,1),
-             padding-left .45s cubic-bezier(.16,1,.3,1);
-  transition-delay:calc(.18s + var(--i,0) * .07s)}
-.af-media{clip-path:inset(0 0 100% 0);
-  transition:clip-path .85s cubic-bezier(.16,1,.3,1) .24s}
-.areas.rv-seen .af-media{clip-path:inset(0 0 0 0)}
+.ax-scene.rv-seen .more{opacity:1;transform:none}
+.ax-card{opacity:0;transform:translateY(16px)}
+.ax-scene.rv-seen .ax-card{opacity:1;transform:none;
+  transition:opacity .55s ease,transform .65s cubic-bezier(.16,1,.3,1);
+  transition-delay:calc(.2s + var(--i,0) * .06s)}
 
 @media (max-width:860px){
-  .af-grid{grid-template-columns:1fr;gap:1.4rem;margin-right:0}
-  .af-media{order:-1;aspect-ratio:16/9}
-  .af-row{grid-template-columns:2.2rem minmax(0,1fr);gap:0 .8rem}
-  .af-en{grid-column:2;margin-top:.2rem}
-  .af-c{grid-column:2;margin-top:.15rem}
+  /* 휴대폰에서는 가로 구간을 쓰지 않는다 — 손가락 스크롤을 가로채면 답답하다.
+     대신 옆으로 밀어 보는 평범한 레일로 둔다. */
+  .ax-scene{height:auto!important}
+  .ax-pin{position:relative;height:auto;overflow:visible;
+    padding:clamp(3rem,7vh,4.5rem) 0}
+  .ax-rail{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .ax-rail::-webkit-scrollbar{display:none}
+  .ax-track{transform:none!important;will-change:auto;height:auto}
+  .ax-card{flex-basis:76vw;height:auto;scroll-snap-align:start}
+  .ax-shot{flex:0 0 auto;aspect-ratio:4/5}
+  .ax-prog{display:none}
 }
 @media (prefers-reduced-motion:reduce){
-  .areas .kick::after,.areas .sec-title,.areas .sec-head .more,
-  .af-row,.af-media,.af-shot{transition:none;opacity:1;transform:none;clip-path:none}
-  .af-d{max-height:none;opacity:1;margin-top:.7rem}
+  .ax-scene{height:auto!important}
+  .ax-pin{position:relative;height:auto;overflow:visible;padding:5rem 0}
+  .ax-rail{overflow-x:auto}
+  .ax-track{transform:none!important}
+  .ax-scene .kick::after,.ax-scene .sec-title,.ax-scene .more,.ax-card{
+    transition:none;opacity:1;transform:none;clip-path:none}
 }
 /* ── 교수진 — 드래그 가로 레일 ── */
 /* 교수진 레일 좌우 이동 버튼 — 한 칸(카드 폭 + 간격)씩 옮긴다.
@@ -570,73 +576,78 @@ html[lang="en"] .af-c::before{content:""}
      시간이 지나면 다음으로 넘어간다. 아래 여섯 칸으로 전체를 함께 보여 주고,
      눌러서 바로 건너뛸 수도 있다. -->
 <main>
-<section class="areas" id="twAreas" data-no-rv aria-labelledby="h-research">
-  <div class="ar-wrap">
-    <div class="sec-head">
+<!-- 여섯 연구 분야 — 스크롤을 내리면 옆으로 넘어간다(참고: flim.ai).
+     바깥 통(.ax-scene)이 몇 화면 높이의 빈 자리를 만들고, 그 안에서 .ax-pin 이
+     화면에 고정된 채 줄(.ax-track)만 왼쪽으로 밀린다. 세로로 내려간 만큼
+     가로로 옮기는 것이라, 스크롤을 멈추면 그 자리에 그대로 선다. -->
+<section class="ax-scene" id="twAreas" data-no-rv aria-labelledby="h-research">
+  <div class="ax-pin">
+    <div class="ax-head">
       <p class="kick">Research Area</p>
       <div class="sec-head-row">
         <h2 class="sec-title" id="h-research" data-i18n="areasTitle">연구 분야</h2>
         <a class="more" href="G-research.html" data-i18n="moreLabs">연구실 목록 →</a>
       </div>
     </div>
-    <!-- 여섯을 한꺼번에 세운다. 캐러셀은 한 번에 하나만 보여 주어, 화면을 어디서
-         찍어도 「분야가 여섯」이 읽히지 않았다. 줄에 올리면 오른쪽 사진만 바뀐다. -->
-    <div class="af-grid">
-      <div class="af-list" id="afList">
-        <a class="af-row is-on" href="G-research.html#solid" data-b="solid" style="--i:0">
-          <span class="af-n">01</span>
-          <span class="af-ko">역학·소재</span>
-          <span class="af-en">Mechanics & Materials</span>
-          <span class="af-c">6곳</span>
-          <span class="af-d">금속·복합재·연성재료가 힘을 받아 어떻게 변형하고 파손되는지 실험과 시뮬레이션으로 규명합니다.</span>
+    <div class="ax-rail">
+      <div class="ax-track" id="axTrack">
+        <a class="ax-card" href="G-research.html#solid" data-b="solid" style="--i:0">
+          <figure class="ax-shot"><img src="assets/fields/solid.jpg" alt="" fetchpriority="low" decoding="async">
+            <figcaption>사진 Kerina yin · CC0 · Wikimedia Commons</figcaption></figure>
+          <span class="ax-n">01</span>
+          <span class="ax-ko">역학·소재</span>
+          <span class="ax-en">Mechanics & Materials</span>
+          <span class="ax-d">금속·복합재·연성재료가 힘을 받아 어떻게 변형하고 파손되는지 실험과 시뮬레이션으로 규명합니다.</span>
+          <span class="ax-c">연구실 6곳 <i aria-hidden="true">→</i></span>
         </a>
-        <a class="af-row" href="G-research.html#thermal" data-b="thermal" style="--i:1">
-          <span class="af-n">02</span>
-          <span class="af-ko">에너지·열유체</span>
-          <span class="af-en">Energy / Thermal-Fluid</span>
-          <span class="af-c">7곳</span>
-          <span class="af-d">난류·미세유동과 연소·열전달을 해석해 연료전지·수소·배터리처럼 에너지를 다루는 기술을 연구합니다.</span>
+        <a class="ax-card" href="G-research.html#thermal" data-b="thermal" style="--i:1">
+          <figure class="ax-shot"><img src="assets/fields/thermal.jpg" alt="" loading="lazy" decoding="async">
+            <figcaption>사진 Tommi Nummelin · CC BY-SA 3.0 · Wikimedia Commons</figcaption></figure>
+          <span class="ax-n">02</span>
+          <span class="ax-ko">에너지·열유체</span>
+          <span class="ax-en">Energy / Thermal-Fluid</span>
+          <span class="ax-d">난류·미세유동과 연소·열전달을 해석해 연료전지·수소·배터리처럼 에너지를 다루는 기술을 연구합니다.</span>
+          <span class="ax-c">연구실 7곳 <i aria-hidden="true">→</i></span>
         </a>
-        <a class="af-row" href="G-research.html#dynamics" data-b="dynamics" style="--i:2">
-          <span class="af-n">03</span>
-          <span class="af-ko">로보틱스·제어</span>
-          <span class="af-en">Robotics & Control</span>
-          <span class="af-c">4곳</span>
-          <span class="af-d">로봇과 자율 시스템이 스스로 감지하고 정밀하게 움직이도록 제어와 메카트로닉스를 연구합니다.</span>
+        <a class="ax-card" href="G-research.html#dynamics" data-b="dynamics" style="--i:2">
+          <figure class="ax-shot"><img src="assets/fields/dynamics.jpg" alt="" loading="lazy" decoding="async">
+            <figcaption>사진 Auledas · CC BY-SA 4.0 · Wikimedia Commons</figcaption></figure>
+          <span class="ax-n">03</span>
+          <span class="ax-ko">로보틱스·제어</span>
+          <span class="ax-en">Robotics & Control</span>
+          <span class="ax-d">로봇과 자율 시스템이 스스로 감지하고 정밀하게 움직이도록 제어와 메카트로닉스를 연구합니다.</span>
+          <span class="ax-c">연구실 4곳 <i aria-hidden="true">→</i></span>
         </a>
-        <a class="af-row" href="G-research.html#manufacturing" data-b="manufacturing" style="--i:3">
-          <span class="af-n">04</span>
-          <span class="af-ko">설계·제조</span>
-          <span class="af-en">Design & Manufacturing</span>
-          <span class="af-c">6곳</span>
-          <span class="af-d">전산 최적설계로 형상을 찾고 정밀·극한 가공으로 구현합니다. 반도체 장비·전기차 같은 첨단 제조를 다룹니다.</span>
+        <a class="ax-card" href="G-research.html#manufacturing" data-b="manufacturing" style="--i:3">
+          <figure class="ax-shot"><img src="assets/fields/manufacturing.jpg" alt="" loading="lazy" decoding="async">
+            <figcaption>사진 Adoscam · CC BY-SA 4.0 · Wikimedia Commons</figcaption></figure>
+          <span class="ax-n">04</span>
+          <span class="ax-ko">설계·제조</span>
+          <span class="ax-en">Design & Manufacturing</span>
+          <span class="ax-d">전산 최적설계로 형상을 찾고 정밀·극한 가공으로 구현합니다. 반도체 장비·전기차 같은 첨단 제조를 다룹니다.</span>
+          <span class="ax-c">연구실 6곳 <i aria-hidden="true">→</i></span>
         </a>
-        <a class="af-row" href="G-research.html#micro" data-b="micro" style="--i:4">
-          <span class="af-n">05</span>
-          <span class="af-ko">마이크로·나노</span>
-          <span class="af-en">Micro / Nano Systems</span>
-          <span class="af-c">5곳</span>
-          <span class="af-d">MEMS와 박막·미세가공, 나노 소자·센서로 눈에 보이지 않는 스케일의 구조와 현상을 다룹니다.</span>
+        <a class="ax-card" href="G-research.html#micro" data-b="micro" style="--i:4">
+          <figure class="ax-shot"><img src="assets/fields/micro.jpg" alt="" loading="lazy" decoding="async">
+            <figcaption>사진 작자 미상 · CC BY 2.5 · Wikimedia Commons</figcaption></figure>
+          <span class="ax-n">05</span>
+          <span class="ax-ko">마이크로·나노</span>
+          <span class="ax-en">Micro / Nano Systems</span>
+          <span class="ax-d">MEMS와 박막·미세가공, 나노 소자·센서로 눈에 보이지 않는 스케일의 구조와 현상을 다룹니다.</span>
+          <span class="ax-c">연구실 5곳 <i aria-hidden="true">→</i></span>
         </a>
-        <a class="af-row" href="G-research.html#optics" data-b="optics" style="--i:5">
-          <span class="af-n">06</span>
-          <span class="af-ko">바이오·포토닉스</span>
-          <span class="af-en">Bio & Photonics</span>
-          <span class="af-c">5곳</span>
-          <span class="af-d">광학·이미징과 바이오칩, 생체역학을 결합해 질병 진단과 의료 광학·바이오 센싱을 연구합니다.</span>
+        <a class="ax-card" href="G-research.html#optics" data-b="optics" style="--i:5">
+          <figure class="ax-shot"><img src="assets/fields/optics.jpg" alt="" loading="lazy" decoding="async">
+            <figcaption>사진 Steve Jurvetson · CC BY 2.0 · Wikimedia Commons</figcaption></figure>
+          <span class="ax-n">06</span>
+          <span class="ax-ko">바이오·포토닉스</span>
+          <span class="ax-en">Bio & Photonics</span>
+          <span class="ax-d">광학·이미징과 바이오칩, 생체역학을 결합해 질병 진단과 의료 광학·바이오 센싱을 연구합니다.</span>
+          <span class="ax-c">연구실 5곳 <i aria-hidden="true">→</i></span>
         </a>
-      </div>
-      <div class="af-media" aria-hidden="true">
-        <img class="af-shot is-on" src="assets/fields/solid.jpg" alt="" data-b="solid" fetchpriority="low" decoding="async">
-        <img class="af-shot" src="assets/fields/thermal.jpg" alt="" data-b="thermal" loading="lazy" decoding="async">
-        <img class="af-shot" src="assets/fields/dynamics.jpg" alt="" data-b="dynamics" loading="lazy" decoding="async">
-        <img class="af-shot" src="assets/fields/manufacturing.jpg" alt="" data-b="manufacturing" loading="lazy" decoding="async">
-        <img class="af-shot" src="assets/fields/micro.jpg" alt="" data-b="micro" loading="lazy" decoding="async">
-        <img class="af-shot" src="assets/fields/optics.jpg" alt="" data-b="optics" loading="lazy" decoding="async">
-        <p class="af-cred" id="afCred"></p>
       </div>
     </div>
-    <p class="ar-cred">사진 Wikimedia Commons · Kerina yin(CC0) · Tommi Nummelin(CC BY-SA 3.0) · Auledas(CC BY-SA 4.0) · Adoscam(CC BY-SA 4.0) · 작자 미상(CC BY 2.5) · Steve Jurvetson(CC BY 2.0)</p>
+    <div class="ax-prog" aria-hidden="true"><span id="axBar"></span></div>
   </div>
 </section>
 
@@ -1419,73 +1430,66 @@ html[lang="en"] .af-c::before{content:""}
   run();
 })();
 
-/* ── 여섯 연구 분야 ──
-   목록의 한 줄에 커서를 올리면 오른쪽 사진이 그 분야로 바뀐다. 아무 데도 올려
-   두지 않으면 시간이 지나며 한 줄씩 스스로 옮겨 간다(멈춰 있으면 사진 한 장만
-   보이는 화면이 된다). 커서를 올리는 순간 자동 이동은 멈춘다 — 읽는 중이므로.
-   줄 자체는 링크라, 누르면 그 분야 연구실로 간다. */
+/* ── 여섯 연구 분야 — 세로 스크롤을 가로 이동으로 (참고: flim.ai) ──
+   바깥 통의 높이를 「줄이 밀려야 할 거리 + 화면 하나」로 잡고, 스크롤이 그 통을
+   지나는 동안 줄을 그만큼 왼쪽으로 옮긴다. 통 높이를 JS 가 재어 넣으므로
+   카드 수나 화면 폭이 바뀌어도 끝에서 딱 맞게 멈춘다.
+   움직이는 것은 translate3d 하나 — 합성기만 쓰고 프레임마다 다시 칠하지 않는다. */
 (function () {
   'use strict';
   var sec = document.getElementById('twAreas');
   if (!sec) return;
-  var rows = [].slice.call(sec.querySelectorAll('.af-row'));
-  var shots = [].slice.call(sec.querySelectorAll('.af-shot'));
-  var cred = document.getElementById('afCred');
-  if (rows.length < 2) return;
+  var pin = sec.querySelector('.ax-pin');
+  var rail = sec.querySelector('.ax-rail');
+  var track = document.getElementById('axTrack');
+  var bar = document.getElementById('axBar');
+  if (!pin || !rail || !track) return;
 
-  /* 분야 사진은 우리 연구실 사진이 아니라 그 분야를 보여 주는 자유 이용 사진이다.
-     CC BY 계열은 저작자 표시가 조건이라 사진 위에 그대로 띄운다. */
-  var CRED = {
-    solid: 'Kerina yin · Wikimedia Commons · CC0',
-    thermal: 'Tommi Nummelin · Wikimedia Commons · CC BY-SA 3.0',
-    dynamics: 'Auledas · Wikimedia Commons · CC BY-SA 4.0',
-    manufacturing: 'Adoscam · Wikimedia Commons · CC BY-SA 4.0',
-    micro: '작자 미상 · Wikimedia Commons · CC BY 2.5',
-    optics: 'Steve Jurvetson · Wikimedia Commons · CC BY 2.0'
-  };
-  var DUR = 3200;
-  var cur = 0, timer = 0, held = false, seen = false, reduce = false;
+  var narrow = false, reduce = false;
   try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
 
-  function show(i) {
-    i = (i % rows.length + rows.length) % rows.length;
-    if (i === cur) return;
-    rows[cur].classList.remove('is-on');
-    cur = i;
-    rows[cur].classList.add('is-on');
-    var b = rows[cur].getAttribute('data-b');
-    shots.forEach(function (im) { im.classList.toggle('is-on', im.getAttribute('data-b') === b); });
-    if (cred) cred.textContent = '사진 ' + (CRED[b] || '');
-  }
-  function stop() { if (timer) { clearTimeout(timer); timer = 0; } }
-  function plan() {
-    stop();
-    if (reduce || held || !seen) return;
-    timer = setTimeout(function () { show(cur + 1); plan(); }, DUR);
+  var dist = 0, span = 1, t = 0, last = -1;
+
+  function measure() {
+    narrow = innerWidth <= 860;
+    if (narrow || reduce) {
+      sec.style.height = '';
+      track.style.transform = '';
+      return;
+    }
+    /* 줄이 왼쪽으로 밀려야 하는 거리 = 줄 전체 폭 − 보이는 폭 */
+    dist = Math.max(0, track.scrollWidth - rail.clientWidth);
+    /* 통 높이 = 화면 하나(고정된 채 머무는 구간) + 밀 거리.
+       가로로 1px 갈 때 세로로도 1px 내려가면 손끝 느낌이 자연스럽다. */
+    sec.style.height = (innerHeight + dist) + 'px';
+    span = Math.max(1, sec.offsetHeight - innerHeight);
   }
 
-  rows.forEach(function (r, i) {
-    r.addEventListener('mouseenter', function () { held = true; stop(); show(i); });
-    r.addEventListener('focus', function () { held = true; stop(); show(i); });
-  });
-  sec.addEventListener('mouseleave', function () { held = false; plan(); });
-  sec.addEventListener('focusout', function () {
-    if (!sec.contains(document.activeElement)) { held = false; plan(); }
-  });
+  function run() {
+    t = 0;
+    if (narrow || reduce) return;
+    var top = sec.getBoundingClientRect().top;
+    var p = Math.min(1, Math.max(0, -top / span));
+    var x = Math.round(p * dist);
+    if (x === last) return;
+    last = x;
+    track.style.transform = 'translate3d(' + (-x) + 'px,0,0)';
+    if (bar) bar.style.setProperty('--q', p.toFixed(4));
+  }
+  function tick() { if (!t) { t = 1; requestAnimationFrame(run); } }
+
+  measure(); run();
+  addEventListener('scroll', tick, { passive: true });
+  addEventListener('resize', function () { measure(); last = -1; run(); }, { passive: true });
+  /* 사진이 늦게 오면 줄 폭이 바뀐다 — 다 온 뒤 한 번 더 잰다 */
+  addEventListener('load', function () { measure(); last = -1; run(); });
 
   try {
     new IntersectionObserver(function (es) {
-      seen = es[0].isIntersecting;
-      /* 한 번 들어서면 실선·줄이 그어진다. 다시 나가도 되돌리지 않는다 */
-      if (seen) { sec.classList.add('rv-seen'); plan(); } else stop();
-    }, { threshold: .18 }).observe(sec);
-  } catch (e) { seen = true; sec.classList.add('rv-seen'); plan(); }
-  document.addEventListener('visibilitychange', function () {
-    if (document.hidden) stop(); else plan();
-  });
-
-  /* 첫 줄의 출처를 처음부터 적어 둔다 */
-  if (cred) cred.textContent = '사진 ' + (CRED[rows[0].getAttribute('data-b')] || '');
+      /* 한 번 들어서면 실선이 그어지고 카드가 오른다. 되돌리지 않는다 */
+      if (es[0].isIntersecting) sec.classList.add('rv-seen');
+    }, { threshold: .12 }).observe(sec);
+  } catch (e) { sec.classList.add('rv-seen'); }
 })();
 
 </script>

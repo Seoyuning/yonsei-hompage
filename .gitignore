@@ -33,3 +33,7 @@ prototype-v3/
 HANDOFF.md
 참가신청서_*
 스크린샷 *.png
+
+# 디자인 검사 도구 (개발용 — 제출물과 무관)
+.claude/
+skills-lock.json

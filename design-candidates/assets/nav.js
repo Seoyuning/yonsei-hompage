@@ -62,6 +62,10 @@
     '.ynv-brand{flex:1 1 0;display:flex;align-items:center;gap:.7rem;min-width:0;text-decoration:none}',
     '.ynv-brand img{height:2.75rem;width:auto;display:block}',
     '.ynv-brand .bko{font-weight:800;font-size:1.24rem;letter-spacing:-.01em;color:' + NAVY + ';line-height:1.25}',
+    /* 영문 학부명(School of Mechanical Engineering, Yonsei University)은 길어서
+       세 줄로 늘어나 상단 바를 밀어냈다. 영문에서는 아래 영문 부제가 같은 말을
+       되풀이하므로 감추고, 이름은 두 줄 안에 들어오게 줄인다. */
+    '.ynv-brand .bkt{display:block;white-space:nowrap}',
     '.ynv-brand .ben{display:block;font-size:.72rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:' + DIM + '}',
     /* 메뉴를 가운데로 — 그래야 아래 메가 칸을 항목 바로 밑에 세울 자리가 나온다 */
     '.ynv-menu{flex:0 0 auto;display:flex;justify-content:center;gap:clamp(1.6rem,4.4vw,4.4rem);' +
@@ -78,8 +82,8 @@
        일곱 칸을 고르게 세운다 — 페이지의 모든 줄과 같은 축이다.
        칸 사이는 헤어라인, 칸 머리 아래 먹줄, 올려 둔 칸만 진해진다. */
     '.ynv-mega{position:absolute;left:0;right:0;top:100%;' +
-      'background:rgba(255,255,255,.76);-webkit-backdrop-filter:blur(20px) saturate(1.5);' +
-      'backdrop-filter:blur(20px) saturate(1.5);' +
+      'background:rgba(255,255,255,.94);-webkit-backdrop-filter:blur(22px) saturate(1.4);' +
+      'backdrop-filter:blur(22px) saturate(1.4);' +
       'border-top:2px solid ' + NAVY + ';border-bottom:1px solid ' + LINE + ';' +
       'box-shadow:0 18px 34px rgba(15,27,48,.10);z-index:59;' +
       'opacity:0;visibility:hidden;transform:translateY(-6px);' +
@@ -353,7 +357,8 @@
   var brand =
     '<a class="ynv-brand" href="H-academic.html" aria-label="연세대학교 기계공학부 홈">' +
       '<img src="assets/yonsei-seal-t.png" alt="" />' +
-      '<span class="bko">연세대학교 기계공학부<span class="ben">School of Mechanical Engineering</span></span></a>';
+      '<span class="bko"><span class="bkt" data-no-i18n>연세대학교 기계공학부</span>' +
+        '<span class="ben">School of Mechanical Engineering</span></span></a>';
 
   var nav = document.createElement('div');
   nav.className = 'ynv' + (document.querySelector('.hero') ? ' over' : '');
@@ -981,6 +986,11 @@
     var ko = nav.querySelector('#ynvKo'), en = nav.querySelector('#ynvEn');
     function setLang(l) {
       try { localStorage.setItem('ysme-lang', l); } catch (e) {}
+      /* 학부 이름은 사전에 맡기지 않는다 — 영문 전체 이름(School of Mechanical
+         Engineering, Yonsei University)이 상단 바에서 세 줄로 늘어났다.
+         한국어와 같은 짜임(큰 이름 + 작은 영문 부제)이 되도록 직접 바꾼다. */
+      var bkt = nav.querySelector('.ynv-brand .bkt');
+      if (bkt) bkt.textContent = (l === 'en') ? 'Yonsei University' : '연세대학교 기계공학부';
       if (ko) ko.classList.toggle('on', l === 'ko');
       if (en) en.classList.toggle('on', l === 'en');
     }

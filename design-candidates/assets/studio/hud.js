@@ -852,10 +852,17 @@
    * 오른쪽 패널이 화면의 한 자락을 덮으므로, 화면 한가운데가 아니라 **패널을 뺀
    * 나머지 폭의 가운데**로 올린다. 그러지 않으면 "이동했는데 안 보인다"가 된다.
    */
-  /* 다른 패널에서 건너왔을 때 돌아갈 길 */
+  /* 다른 패널에서 「이동」으로 건너왔을 때 돌아갈 길.
+     idx 를 함께 기억해, **그 요소를 골랐을 때만** 돌아가기 줄을 보여 준다
+     (다른 요소를 클릭했는데 엉뚱한 목록으로 돌아가는 버튼이 남아 있으면 안 된다). */
   var backLink = null;
   function setReturn(rec) {
     backLink = (rec && rec.label && typeof rec.fn === 'function') ? rec : null;
+  }
+  function backLinkFor(idx) {
+    if (!backLink) return null;
+    if (backLink.idx != null && backLink.idx !== idx) return null;
+    return backLink;
   }
 
   function revealIdx(idx, opts) {
@@ -865,14 +872,13 @@
     if (!lv || !inDoc(lv)) { Y.toast('화면에서 그 요소를 찾을 수 없습니다.', 'warn'); return false; }
 
     scrollTo(lv);
-    /* opts.edit — 고칠 수 있는 상태까지 만들어 준다.
-       편집 모드를 켜고 인스펙터를 열어야 **텍스트를 바꾸는 칸**이 나온다.
-       선택만 해 두면 테두리만 보이고 정작 고칠 곳이 없다. */
-    if (opts.edit) {
-      setReturn(opts.back || null);
+    /* opts.arm — **위치만** 보여 준다. 편집 모드는 켜 두어, 사람이 그 자리를
+       클릭하면 그때 편집 패널이 열리게 한다. 보고 있던 목록은 지킨다.
+       (패널을 곧바로 갈아 끼우면 무엇을 고르러 왔는지 맥락이 끊긴다) */
+    if (opts.arm) {
+      setReturn(opts.back ? { idx: idx, label: opts.back.label, fn: opts.back.fn } : null);
       if (!editing) setEditing(true);
-      applySelection(idx, null, true, false);          // 인스펙터를 연다
-      openPanel('inspect');
+      applySelection(idx, null, true, true);           // 패널은 그대로
     } else if (opts.select) {
       applySelection(idx, null, true, true);
     }
@@ -963,12 +969,13 @@
       return;
     }
 
-    /* 다른 패널에서 「이동」으로 건너온 경우 — 돌아갈 길을 맨 위에 둔다.
+    /* 「이동」으로 찍어 둔 그 요소를 열었을 때만 — 돌아갈 길을 맨 위에 둔다.
        고치고 나서 목록을 다시 찾아 헤매게 하면 안 된다. */
-    if (backLink) {
+    var bl = backLinkFor(idx);
+    if (bl) {
       var back = mk('div', 'ys-insp-back');
-      back.appendChild(act('← ' + backLink.label, '', function () {
-        var fn = backLink.fn;
+      back.appendChild(act('← ' + bl.label, '', function () {
+        var fn = bl.fn;
         setReturn(null);
         if (typeof fn === 'function') fn();
       }));

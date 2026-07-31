@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="assets/fonts.css?v=1" />
 <title>소식 — 연세대학교 기계공학부</title>
 <meta name="description" content="학부·대학원 공지와 뉴스·연구성과, 세미나·행사, 학위논문심사, 취업 정보." />
 <!-- 공유 미리보기(카카오톡·메신저·검색) — 이름과 사진이 여기서 정해진다 -->
@@ -22,7 +23,7 @@
 <meta name="twitter:image" content="https://yonsei-me-homepage.vercel.app/assets/og-cover.jpg" />
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d17" />
-<link rel="preload" as="script" href="assets/nav.js?v=93" />
+<link rel="preload" as="script" href="assets/nav.js?v=95" />
 <style>
 /* 소식 — 흰 배경 · 네이비 제목 · 실제 학과식 풀폭 게시판(표) 목록.
    히어로: 이미지 배너 + 중앙 정렬 타이틀 + 브레드크럼.
@@ -42,8 +43,8 @@
   --line:#e2ddd2;
   --line-soft:#efeae0;
   --row:#f5f8fc;
-  --mono:"Apple SD Gothic Neo","Pretendard Variable","Pretendard",system-ui,sans-serif;
-  --kr:"Apple SD Gothic Neo","Pretendard Variable","Pretendard",system-ui,sans-serif;
+  --mono:"JetBrains Mono","Pretendard Variable","Pretendard","Apple SD Gothic Neo",ui-monospace,monospace;
+  --kr:"Pretendard Variable","Pretendard","Apple SD Gothic Neo",system-ui,sans-serif;
   /* 분류 배지 색 */
   --cat-acad:#2b4a7a;
   --cat-sch:#b0742c;
@@ -260,7 +261,7 @@ a{color:inherit;text-decoration:none}
 }
 </style>
 <style>.ynav-ph{position:fixed;top:0;left:0;right:0;height:3.7rem;background:rgba(255,255,255,.96);border-bottom:1px solid rgba(0,0,0,.08);z-index:39}</style>
-<style>h1,h2,.sec-title,.phero h1{font-family:"Apple SD Gothic Neo",system-ui,sans-serif;letter-spacing:-.01em}</style>
+<style>h1,h2,.sec-title,.phero h1{font-family:"Pretendard Variable","Pretendard","Apple SD Gothic Neo",system-ui,sans-serif;letter-spacing:-.01em}</style>
 <link rel="stylesheet" href="assets/transition.css?v=3">
 <script>/* 탭 해시 진입은 히어로부터 — 파싱 전에 해시를 떼어 앵커 점프·상단바 접힘 왕복을 원천 차단(nav.js가 탭 복원).
    scrollRestoration=manual: 뒤로가기·같은 주소 재방문 때 브라우저가 이전 스크롤을 되살려
@@ -652,7 +653,7 @@ a{color:inherit;text-decoration:none}
   boardRows('jobsRows', D.jobs, 'job');
 })();
 </script>
-<script src="assets/nav.js?v=93"></script>
+<script src="assets/nav.js?v=95"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;color:var(--dimmer)">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

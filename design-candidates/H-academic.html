@@ -28,9 +28,10 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
   media="print" onload="this.media='all'" />
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
+<link rel="stylesheet" href="assets/fonts.css?v=1" />
 <!-- 스크립트를 미리 받아 둔다 — 파서가 해당 줄에 닿았을 때 이미 캐시에 있어 멈춤이 짧아진다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d17" />
-<link rel="preload" as="script" href="assets/nav.js?v=93" />
+<link rel="preload" as="script" href="assets/nav.js?v=95" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    시안 H · 아카데믹 (Reference: me.kaist.ac.kr / me.snu.ac.kr)
@@ -44,9 +45,9 @@
   --coral:#8E5A4F; --accent-d:#8aa6d4;
   --ink:#0f1b30; --muted:#5e6b82; --dim:#6b7688;
   --paper:#ffffff; --line:#e2ddd2; --soft:#f4f1ea; --bg:#ffffff;
-  --kr:"Apple SD Gothic Neo","Pretendard Variable","Pretendard",system-ui,sans-serif;
+  --kr:"Pretendard Variable","Pretendard","Apple SD Gothic Neo",system-ui,sans-serif;
   /* 라벨·숫자도 본문과 같은 Pretendard — 모노스페이스는 AI 티가 나서 배제 */
-  --mono:"Apple SD Gothic Neo","Pretendard Variable","Pretendard",system-ui,sans-serif;
+  --mono:"JetBrains Mono","Pretendard Variable","Pretendard","Apple SD Gothic Neo",ui-monospace,monospace;
   --e:cubic-bezier(.16,1,.3,1);   /* expo-out — 모든 모션의 기준 이징 */
 }
 *,*::before,*::after{box-sizing:border-box;margin:0}
@@ -72,6 +73,7 @@ img{display:block;max-width:100%}
    이 사진은 위쪽이 우리 네이비로 떨어지고 아래 두 겹이 거의 검정이라,
    가운데 흰 제목이 또렷하고 독수리는 구름 위를 나는 그림이 된다.
    (독수리 자리의 번잡도 6.3 → 2.7, 제목 자리 밝기 54 → 27 로 실측) */
+.hero-par{position:absolute;inset:0;will-change:transform}
 .hero-bg{position:absolute;inset:0;background:url("assets/hero-orbital.jpg") center 38%/cover no-repeat}
 /* 사진이 이미 어두워 예전만큼 덮을 필요가 없다 — 지평선의 빛을 살리려 위쪽 장막을 걷는다 */
 .hero-veil{position:absolute;inset:0;background:
@@ -118,15 +120,28 @@ img{display:block;max-width:100%}
 .hero-scroll::after{content:"";display:block;width:1px;height:2rem;margin:.45rem auto 0;
   background:linear-gradient(rgba(255,255,255,.8),transparent)}
 /* 히어로 하단 지표 스트립 — 잉크 텔레메트리 밴드, 거대 숫자 */
-.stats{background:var(--navy-d);border-top:2px solid rgba(138,166,212,.5);color:#fff}
-.stats .wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;
-  padding-top:clamp(3.4rem,7vh,5rem);padding-bottom:clamp(3.4rem,7vh,5rem)}
-.st{display:flex;flex-direction:column;gap:.35rem;border-left:1px solid rgba(255,255,255,.16);padding-left:1.2rem}
-.st b{font-family:var(--mono);font-weight:700;letter-spacing:.02em;line-height:1;
-  font-size:clamp(2.1rem,1.4rem + 2.6vw,3.4rem);color:#fff;font-variant-numeric:tabular-nums}
-.st:last-child b{color:var(--accent-d)}
-.st span{font-family:var(--mono);font-size:.72rem;letter-spacing:.24em;text-transform:uppercase;color:#8fa2c2}
-@media(max-width:640px){.stats .wrap{grid-template-columns:repeat(3,1fr);gap:.7rem;row-gap:1.4rem}}
+/* ── 지표 ── 네이비 판 하나로 칠하던 것을 지면의 짜임으로 바꿨다:
+   흰 바탕에 위아래 먹줄, 칸 사이는 헤어라인, 숫자 위에 작은 영문 라벨.
+   섹션 머리(영문 → 실선 → 큰 글자)와 같은 차례라 아래 구간과 이어져 읽힌다. */
+.stats{background:var(--paper);border-top:1px solid #111318;border-bottom:1px solid #111318}
+.stats .wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:0;
+  padding-top:clamp(2.4rem,5vh,3.6rem);padding-bottom:clamp(2.4rem,5vh,3.6rem)}
+.st{display:flex;flex-direction:column;gap:.4rem;padding:0 clamp(1rem,2.4vw,2.2rem)}
+.st + .st{border-left:1px solid var(--line)}
+.st:first-child{padding-left:0}
+.st .sk{font-family:var(--mono);font-size:.72rem;font-weight:500;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--dim)}
+.st b{font-family:var(--mono);font-weight:700;letter-spacing:-.02em;line-height:1;
+  font-size:clamp(2.4rem,1.5rem + 3.2vw,4.2rem);color:var(--navy);font-variant-numeric:tabular-nums}
+.st:last-child b{color:var(--accent-ink,#8E5A4F)}
+.st > span:last-child{font-family:var(--kr);font-size:clamp(.82rem,.78rem + .2vw,.95rem);
+  font-weight:700;letter-spacing:-.02em;color:var(--ink)}
+@media(max-width:640px){
+  .stats .wrap{grid-template-columns:1fr;gap:0;row-gap:0}
+  .st{padding:1.1rem 0}
+  .st + .st{border-left:0;border-top:1px solid var(--line)}
+  .st .sk{font-size:.72rem;letter-spacing:.16em}
+}
 
 /* ── 공통 섹션 — 에디토리얼: 아웃라인 인덱스 + 거대 타이틀 ── */
 .sec{padding-top:clamp(7rem,15vh,12rem);padding-bottom:clamp(7rem,15vh,12rem)}
@@ -251,10 +266,10 @@ img{display:block;max-width:100%}
    작은 영문 라벨 · 먹색 실선 · 대제목. 참고 사이트의 네이비 이름표는 걷었다. */
 /* 여섯 편을 겹쳐 두고 켜진 것만 보인다 — 글이 서로 밀지 않아 넘김이 흔들리지 않는다 */
 .ar-stage{position:relative}
-.ar-slide{position:absolute;inset:0;opacity:0;visibility:hidden;transform:translateY(14px);
+.ar-slide{position:absolute;inset:0;opacity:0;visibility:hidden;transform:translateY(8px);
   display:grid;grid-template-columns:minmax(0,1fr) minmax(0,clamp(14rem,22vw,19rem));
   gap:clamp(1.8rem,4vw,4rem);align-items:center;
-  transition:opacity .5s ease,transform .62s cubic-bezier(.22,1,.36,1),visibility .5s}
+  transition:opacity .9s ease,transform .9s cubic-bezier(.22,1,.36,1),visibility .9s}
 .ar-slide.is-on{position:relative;opacity:1;visibility:visible;transform:none}
 .as-n{font-family:var(--mono);font-size:.72rem;font-weight:700;letter-spacing:.2em;
   color:var(--dim)}
@@ -291,7 +306,7 @@ img{display:block;max-width:100%}
 /* 차오르는 줄 — 폭 대신 가로 배율을 쓴다. 합성기만 쓰므로 매 프레임 다시 칠하지 않는다 */
 .ar-tab::after{content:"";position:absolute;left:0;right:0;top:-1px;height:2px;
   background:var(--navy);transform:scaleX(0);transform-origin:0 50%}
-.ar-tab.is-on::after{animation:ar-fill var(--ar-dur,5.5s) linear forwards}
+.ar-tab.is-on::after{animation:ar-fill var(--ar-dur,6.5s) linear forwards}
 @keyframes ar-fill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 /* 커서를 올려 읽는 동안에는 넘어가지 않는다 — 줄도 그 자리에 멈춘다 */
 .areas.is-hold .ar-tab.is-on::after{animation-play-state:paused}
@@ -507,7 +522,7 @@ html[lang="en"] .as-ko{display:none}
 }
 
 </style>
-<style>h1,h2,.sec-title,.phero h1,.hero h1,.hero-title,.club-name,.vt,.staff-head h2,.brand .bko,.ynv-brand .bko{font-family:"Apple SD Gothic Neo",system-ui,sans-serif;letter-spacing:-.01em}</style>
+<style>h1,h2,.sec-title,.phero h1,.hero h1,.hero-title,.club-name,.vt,.staff-head h2,.brand .bko,.ynv-brand .bko{font-family:"Pretendard Variable","Pretendard","Apple SD Gothic Neo",system-ui,sans-serif;letter-spacing:-.01em}</style>
 <link rel="stylesheet" href="assets/transition.css?v=3">
 </head>
 <body>
@@ -517,7 +532,9 @@ html[lang="en"] .as-ko{display:none}
 
 <!-- ═══ 히어로 — 풀블리드 터보팬 이미지 + 중앙 학부명 (SNU ME 참고) ═══ -->
 <section class="hero" aria-label="연세대학교 기계공학부">
-  <div class="hero-bg" aria-hidden="true"></div>
+  <!-- 패럴랙스 — 스크롤해도 사진이 제자리에 머문 것처럼 보인다(참고: parallax.js).
+       확대 애니메이션이 .hero-bg 의 transform 을 쓰므로 옮기는 일은 바깥 칸이 맡는다. -->
+  <div class="hero-par" aria-hidden="true"><div class="hero-bg"></div></div>
   <div class="hero-veil" aria-hidden="true"></div>
   <!-- 느리게 흐르는 층 — 마스코트 독수리 하나(46초). 격자와 한자를 함께 두니
        화면이 어수선해져 층을 하나로 줄였다. -->
@@ -533,9 +550,9 @@ html[lang="en"] .as-ko{display:none}
 </section>
 <div class="stats">
   <div class="wrap">
-    <div class="st"><b data-count="33">0</b><span data-i18n="stFaculty">전임 교수</span></div>
-    <div class="st"><b data-count="6">0</b><span data-i18n="stAreas">연구 분야</span></div>
-    <div class="st"><b>1958</b><span data-i18n="stFounded">설립</span></div>
+    <div class="st"><span class="sk">Faculty</span><b data-count="33">0</b><span data-i18n="stFaculty">전임 교수</span></div>
+    <div class="st"><span class="sk">Research Areas</span><b data-count="6">0</b><span data-i18n="stAreas">연구 분야</span></div>
+    <div class="st"><span class="sk">Founded</span><b>1958</b><span data-i18n="stFounded">설립</span></div>
   </div>
 </div>
 
@@ -684,26 +701,8 @@ html[lang="en"] .as-ko{display:none}
   <!-- 연구 분야는 히어로 바로 뒤(#twAreas)로 올렸다 — 여섯 분야를 가장 먼저 만나게 한다. -->
 
 
-  <section class="wrap sec sec-navy" aria-labelledby="h-people">
-    <div class="sec-head">
-      <p class="kick">People</p>
-      <div class="sec-head-row">
-        <h2 class="sec-title" id="h-people" data-i18n="peopleTitle">교수진</h2>
-        <a class="more" href="G-people.html" data-i18n="morePeople">교수진 전체 →</a>
-      </div>
-    </div>
-    <div class="prail-wrap">
-      <button type="button" class="prail-nav is-prev" aria-label="이전 교수 보기" aria-controls="pGrid">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
-      </button>
-      <div class="prail" id="pGrid"></div>
-      <button type="button" class="prail-nav is-next" aria-label="다음 교수 보기" aria-controls="pGrid">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
-      </button>
-    </div>
-  </section>
-
-  <!-- ═══ 교수진 ═══ -->
+  <!-- 교수진 레일은 메인에서 뺐다 — 구성원 페이지에 그대로 있고,
+       메인은 소식을 앞세운다. -->
   <!-- ═══ 인스타그램 릴스 ═══ -->
   <section class="wrap sec" aria-labelledby="h-ig">
     <div class="sec-head">
@@ -876,7 +875,8 @@ html[lang="en"] .as-ko{display:none}
   function renderNews() {
     var ng = document.getElementById('newsGrid');
     if (!ng || !D.newsList || !D.newsList.length) return;
-    ng.innerHTML = D.newsList.slice().sort(byDate).slice(0, 4).map(function (n) {
+    /* 교수진 레일을 뺀 자리를 소식이 받는다 — 4건에서 7건으로 */
+    ng.innerHTML = D.newsList.slice().sort(byDate).slice(0, 7).map(function (n) {
       return '<a class="nrow" href="' + esc(n.url || 'G-news.html') + '" target="_blank" rel="noopener"' +
         (n.thumb ? ' data-thumb="' + esc(n.thumb) + '"' : '') + '>' +
         '<time>' + esc(n.date) + '</time>' +
@@ -897,7 +897,7 @@ html[lang="en"] .as-ko{display:none}
   var ntKey = 'all';
   function drawNt() {
     if (!ntList) return;
-    var rows = (ntKey === 'all' ? notices : notices.filter(function (n) { return n.k === ntKey; })).slice(0, 6);
+    var rows = (ntKey === 'all' ? notices : notices.filter(function (n) { return n.k === ntKey; })).slice(0, 8);
     ntList.innerHTML = rows.map(function (n) {
       return '<a class="brow" href="' + esc(n.u || 'G-news.html') + '" target="_blank" rel="noopener">' +
         '<span class="bcat">' + T(n.k === 'ug' ? 'catUG' : 'catGrad') + '</span><span class="bt">' + esc(n.t) + '</span>' +
@@ -918,7 +918,7 @@ html[lang="en"] .as-ko{display:none}
   function renderSm() {
     var sm = document.getElementById('smList');
     if (!sm || !D.seminars || !D.seminars.length) return;
-    sm.innerHTML = D.seminars.slice().sort(byDate).slice(0, 6).map(function (n) {
+    sm.innerHTML = D.seminars.slice().sort(byDate).slice(0, 8).map(function (n) {
       var t = String(n.title).replace(/^\[[^\]]*\]\s*/, '');
       return '<a class="brow" href="' + esc(n.url || 'G-news.html') + '" target="_blank" rel="noopener">' +
         '<span class="bt">' + esc(t) + '</span>' +
@@ -1299,7 +1299,7 @@ html[lang="en"] .as-ko{display:none}
 })();
 </script>
 <!-- 공용 헤더·사이트맵 푸터(서브페이지와 동일) 주입 -->
-<script src="assets/nav.js?v=93"></script>
+<script src="assets/nav.js?v=95"></script>
 <script>
 /* 인트로 두 구간 — 스크롤 진행률(0~1)을 --p 로 넣고, 문장 구간은 단어를 하나씩 켠다.
    바깥 통의 높이에서 화면 한 칸을 뺀 만큼이 「진행 구간」이다. */
@@ -1390,6 +1390,41 @@ html[lang="en"] .as-ko{display:none}
   }
 })();
 
+/* ── 히어로 패럴랙스 ──
+   스크롤을 내려도 사진이 제자리에 머문 것처럼 보이게 한다(참고: parallax.js).
+   background-attachment:fixed 는 iOS 가 무시하고 안드로이드에서 심하게 튄다 —
+   대신 사진 칸을 스크롤량만큼 아래로 옮겨 화면에 붙들어 둔다. 움직이는 것은
+   transform 하나뿐이라 합성기만 쓰고 프레임마다 다시 칠하지 않는다.
+   히어로를 다 지나면 계산을 멈춘다. */
+(function () {
+  'use strict';
+  var reduce = false;
+  try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+  var par = document.querySelector('.hero-par');
+  var hero = document.querySelector('.hero');
+  if (!par || !hero || reduce) return;
+
+  var RATE = 0.55;          /* 1 이면 완전히 붙박이. 0.55 가 「따라오지만 느린」 느낌 */
+  var h = 0, t = 0, last = -1;
+  function measure() { h = hero.offsetHeight || 1; }
+  measure();
+  addEventListener('resize', function () { measure(); run(); }, { passive: true });
+
+  function run() {
+    t = 0;
+    var y = pageYOffset || 0;
+    /* 히어로를 지나면 더 계산하지 않는다 — 마지막 값에 그대로 둔다 */
+    if (y > h) { if (last !== -2) { last = -2; } return; }
+    var v = Math.round(y * RATE);
+    if (v === last) return;
+    last = v;
+    par.style.transform = 'translate3d(0,' + v + 'px,0)';
+  }
+  function tick() { if (!t) { t = 1; requestAnimationFrame(run); } }
+  addEventListener('scroll', tick, { passive: true });
+  run();
+})();
+
 /* ── 여섯 연구 분야 넘김 ──
    스크롤과 무관하게 시간이 지나면 다음 분야로 넘어간다. 아래 여섯 칸을 누르면
    그리로 건너뛰고, 그때부터 다시 시간을 잰다. 커서를 올리거나 키보드 초점이
@@ -1402,7 +1437,7 @@ html[lang="en"] .as-ko{display:none}
   var tabs = [].slice.call(sec.querySelectorAll('.ar-tab'));
   if (slides.length < 2) return;
 
-  var DUR = 5500;                       /* CSS 의 --ar-dur 과 같은 값이어야 줄이 딱 맞게 찬다 */
+  var DUR = 6500;                       /* CSS 의 --ar-dur 과 같은 값이어야 줄이 딱 맞게 찬다 */
   sec.style.setProperty('--ar-dur', (DUR / 1000) + 's');
   var reduce = false;
   try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}

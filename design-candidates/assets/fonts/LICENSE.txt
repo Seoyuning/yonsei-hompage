@@ -1,0 +1,25 @@
+JetBrains Mono
+──────────────────────────────────────────────────────────────
+저작자   JetBrains s.r.o.
+라이선스 SIL Open Font License 1.1 (OFL-1.1)
+출처     https://github.com/JetBrains/JetBrainsMono
+받은 곳  https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5
+받은 날  2026-07-31
+
+이 폴더의 파일
+  jetbrains-mono-400.woff2   Regular  (latin subset)
+  jetbrains-mono-500.woff2   Medium   (latin subset)
+  jetbrains-mono-700.woff2   Bold     (latin subset)
+
+OFL-1.1 은 상업적 이용·수정·재배포를 허용한다. 조건은
+(1) 폰트 자체를 단독 판매하지 않을 것,
+(2) 이 라이선스 고지를 함께 둘 것,
+(3) 예약된 폰트 이름(Reserved Font Name)을 바꾸지 않는 한 이름을 유지할 것.
+이 저장소는 원본을 고치지 않고 latin 부분만 받아 그대로 싣는다.
+
+전문: https://github.com/JetBrains/JetBrainsMono/blob/master/OFL.txt
+
+쓰는 곳
+  --mono 로 지정된 작은 영문 라벨·번호·수치.
+  (RESEARCH AREA / 01 / 33 / 02)2123-2825 등)
+  한글은 이 글꼴에 없다 — Pretendard 로 넘어간다.

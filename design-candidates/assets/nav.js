@@ -8,7 +8,10 @@
 
   var NAVY = '#1a3d75', NAVYD = '#12294f', INK = '#0f1b30',
       PAPER = '#f1f2f5', LINE = '#e2ddd2', DIM = '#6b7688', MUTED = '#5e6b82';
-  var KR = '"Apple SD Gothic Neo","Pretendard Variable","Pretendard",system-ui,sans-serif';
+  /* 지면과 같은 차례 — Pretendard 를 먼저 부른다. 애플 글꼴을 앞에 두면
+     맥에서만 다른 글꼴이 나와 심사하는 화면마다 인상이 달라진다. */
+  var KR = '"Pretendard Variable","Pretendard","Apple SD Gothic Neo",system-ui,sans-serif';
+  var MONO = '"JetBrains Mono","Pretendard Variable","Pretendard",ui-monospace,monospace';
   var E = 'cubic-bezier(.16,1,.3,1)';
 
   /* ── 1. 스타일 주입 ── */
@@ -26,7 +29,7 @@
     '.ynv-top a:hover{color:#fff}',
     '.ynv.min .ynv-top{max-height:0;opacity:0}',
     '.ynv-lang{display:flex;gap:.1rem;margin-left:.5rem;border:1px solid rgba(255,255,255,.28);border-radius:99px;padding:.12rem}',
-    '.ynv-lang button{font-family:inherit;font-size:.72rem;font-weight:700;letter-spacing:.08em;color:#c6d2e6;' +
+    '.ynv-lang button{font-family:' + MONO + ';font-size:.72rem;font-weight:700;letter-spacing:.08em;color:#c6d2e6;' +
       'background:none;border:0;border-radius:99px;padding:.16rem .62rem;cursor:pointer;transition:background .12s,color .12s}',
     '.ynv-lang button.on{background:#fff;color:' + NAVYD + '}',
     /* 흰 헤더 */
@@ -59,39 +62,42 @@
       'transform:scaleX(0);transform-origin:right;transition:transform .45s ' + E + '}',
     '.ynv-i:hover>a,.ynv-i>a.cur{color:' + NAVY + '}',
     '.ynv-i:hover>a::after,.ynv-i>a.cur::after{transform:scaleX(1);transform-origin:left}',
-    /* 드롭다운 — 지면의 짜임을 그대로 쓴다: 각진 모서리, 머리에 네이비 두 줄,
-       항목 사이는 헤어라인, 올려 둔 항목에는 왼쪽에 네이비 기둥.
-       예전에는 항목 가운데(left:50%)에 맞춰 띄웠는데, 상단 바가 화면 끝까지
-       넓어지면서 오른쪽 메뉴(소식·입학)의 창 절반이 화면 밖으로 잘렸다.
-       이제 왼쪽 끝을 항목에 맞추고, 오른쪽 세 개만 오른쪽 끝을 맞춘다. */
-    '.ynv-d{position:absolute;top:calc(100% + .5rem);left:0;min-width:13.5rem;background:#fff;' +
-      'border:1px solid ' + LINE + ';border-top:2px solid ' + NAVY + ';border-radius:0;' +
-      'box-shadow:0 14px 30px rgba(15,27,48,.10);' +
-      'padding:0;display:flex;flex-direction:column;opacity:0;visibility:hidden;transform:translateY(12px);z-index:60;' +
-      'transition:opacity .3s ' + E + ',transform .42s ' + E + ',visibility .3s}',
-    /* 오른쪽 끝 메뉴는 창을 왼쪽으로 편다 — 화면 밖으로 나가지 않게 */
-    '.ynv-menu .ynv-i:nth-last-child(-n+3) .ynv-d{left:auto;right:0}',
-    '.ynv-d::before{content:"";position:absolute;top:-1rem;left:0;right:0;height:1rem}',
-    '.ynv-i:hover .ynv-d,.ynv-i:focus-within .ynv-d{opacity:1;visibility:visible;transform:translateY(2px)}',
-    '.ynv-d a{position:relative;padding:.66rem 1.15rem;font-size:.87rem;font-weight:600;' +
-      'letter-spacing:-.01em;color:' + MUTED + ';text-decoration:none;' +
-      'opacity:0;transform:translateY(7px);transition:opacity .4s ease,transform .5s ' + E + ',color .15s,background .15s}',
-    '.ynv-d a + a{border-top:1px solid ' + LINE + '}',
-    /* 올려 둔 항목의 왼쪽 기둥 — 지면 곳곳에서 쓰는 표시와 같은 형태 */
-    '.ynv-d a::after{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:' + NAVY + ';' +
-      'transform:scaleY(0);transform-origin:50% 0;transition:transform .22s ' + E + '}',
-    '.ynv-i:hover .ynv-d a,.ynv-i:focus-within .ynv-d a{opacity:1;transform:none}',
-    /* 등장 계단 — 예전엔 5번까지만 지연이 적혀 있었다. 소식은 하위가 7개라
-       6·7번(자료실·취업 정보)만 지연 0이 되어 위 항목들보다 먼저 떠올랐다.
-       n+8 로 나머지를 한 번에 받고, 지연은 '열릴 때'만 준다 —
-       닫힐 때까지 지연이 남으면 아래 항목이 늦게까지 남아 어색하다. */
-    '.ynv-i:hover .ynv-d a,.ynv-i:focus-within .ynv-d a{transition-delay:var(--dd,0s)}',
-    '.ynv-d a:nth-child(2){--dd:.04s}.ynv-d a:nth-child(3){--dd:.08s}',
-    '.ynv-d a:nth-child(4){--dd:.12s}.ynv-d a:nth-child(5){--dd:.16s}',
-    '.ynv-d a:nth-child(6){--dd:.2s}.ynv-d a:nth-child(7){--dd:.24s}',
-    '.ynv-d a:nth-child(n+8){--dd:.28s}',
-    '.ynv-d a:hover{color:' + NAVY + ';background:' + PAPER + '}',
-    '.ynv-d a:hover::after{transform:scaleY(1)}',
+    /* ── 메가 메뉴 ──
+       메뉴 하나에 올리면 일곱 칸이 한꺼번에 내려온다(참고: yonsei-me).
+       다만 그쪽은 칸이 위 항목과 어긋나 있어, 우리는 본문과 같은 1232px 격자에
+       일곱 칸을 고르게 세운다 — 페이지의 모든 줄과 같은 축이다.
+       칸 사이는 헤어라인, 칸 머리 아래 먹줄, 올려 둔 칸만 진해진다. */
+    '.ynv-mega{position:absolute;left:0;right:0;top:100%;background:#fff;' +
+      'border-top:2px solid ' + NAVY + ';border-bottom:1px solid ' + LINE + ';' +
+      'box-shadow:0 18px 34px rgba(15,27,48,.10);z-index:59;' +
+      'opacity:0;visibility:hidden;transform:translateY(-6px);' +
+      'transition:opacity .34s ' + E + ',transform .44s ' + E + ',visibility .34s}',
+    '.ynv.mega-on .ynv-mega{opacity:1;visibility:visible;transform:none}',
+    '.ynv-mega-in{max-width:1232px;margin:0 auto;padding:clamp(1.6rem,3vh,2.4rem) clamp(1.2rem,.6rem + 2vw,2.6rem) clamp(1.8rem,3.4vh,2.6rem);' +
+      'display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:0}',
+    '.ynv-mc{padding:0 clamp(.5rem,1vw,1rem);min-width:0}',
+    '.ynv-mc + .ynv-mc{border-left:1px solid ' + LINE + '}',
+    '.ynv-mc:first-child{padding-left:0}.ynv-mc:last-child{padding-right:0}',
+    '.ynv-mc > b{display:block;font-family:' + KR + ';font-size:.92rem;font-weight:800;' +
+      'letter-spacing:-.02em;color:' + INK + ';padding-bottom:.7rem;' +
+      'border-bottom:1px solid #111318;margin-bottom:.75rem;' +
+      'transition:color .2s}',
+    '.ynv-mc a{position:relative;display:block;font-family:' + KR + ';font-size:.83rem;font-weight:600;' +
+      'letter-spacing:-.01em;color:' + MUTED + ';text-decoration:none;padding:.42rem 0 .42rem .55rem;' +
+      'opacity:0;transform:translateY(6px);' +
+      'transition:opacity .5s ease,transform .55s ' + E + ',color .16s}',
+    '.ynv.mega-on .ynv-mc a{opacity:1;transform:none;transition-delay:var(--md,0s)}',
+    /* 올려 둔 항목의 왼쪽 기둥 — 지면 곳곳에서 쓰는 표시와 같다 */
+    '.ynv-mc a::before{content:"";position:absolute;left:0;top:.34rem;bottom:.34rem;width:2px;' +
+      'background:' + NAVY + ';transform:scaleY(0);transform-origin:50% 0;transition:transform .2s ' + E + '}',
+    '.ynv-mc a:hover{color:' + NAVY + '}',
+    '.ynv-mc a:hover::before{transform:scaleY(1)}',
+    '.ynv-mc a.cur{color:' + NAVY + '}',
+    /* 커서가 얹힌 칸만 또렷하게 — 나머지는 한 단계 물러난다 */
+    '.ynv-mega.has-hi .ynv-mc:not(.hi) > b{color:' + DIM + '}',
+    '.ynv-mega.has-hi .ynv-mc:not(.hi) a{color:' + DIM + '}',
+    '.ynv-mc.hi > b{color:' + NAVY + '}',
+    '@media(max-width:920px){.ynv-mega{display:none}}',
     '[id]{scroll-margin-top:5rem}',
     'body.has-ysub [id]{scroll-margin-top:var(--ys-stick,7.6rem)}',
     /* breadcrumb 링크 */
@@ -153,13 +159,13 @@
        구현은 IntersectionObserver + CSS transition 뿐이다.
        숨김 상태는 반드시 html.ys-rv 아래에서만 걸린다 — JS 가 죽거나 모션 축소·
        숨은 탭이면 클래스가 안 붙고, 그러면 처음부터 그냥 다 보인다(내용 유실 없음). */
-    'html.ys-rv [data-rv]{opacity:0;transform:translateY(2.6rem);' +
+    'html.ys-rv [data-rv]{opacity:0;transform:translateY(1.1rem);' +
       'transition:opacity .95s cubic-bezier(.22,1,.36,1),transform .95s cubic-bezier(.22,1,.36,1);' +
       'transition-delay:var(--rv-d,0s)}',
     'html.ys-rv [data-rv].rv-in{opacity:1;transform:none}',
     /* 제목을 품은 블록은 덜 움직인다 — 제목이 아래의 제 몫 움직임을 갖기 때문에
        둘이 겹치면 과해진다. 블록은 살짝만 뜨고, 시선은 제목이 끈다. */
-    'html.ys-rv [data-rv="s"]{transform:translateY(1rem)}',
+    'html.ys-rv [data-rv="s"]{transform:translateY(.5rem)}',
     /* ── 대제목 ──
        예전엔 제목이 머리 블록에 실려 다 같이 2.6rem 올라올 뿐, 제 몫의 움직임이 없었다.
        위에서 아래로 걷히는 가림막(clip-path) + 살짝 밀려 올라오기로 제목만 따로 세운다.
@@ -251,7 +257,7 @@
       '.phero{min-height:0}' +
       '.phero .phero-lead{font-size:.92rem;line-height:1.68}' +
     '}',
-    '@media(prefers-reduced-motion:reduce){.ynv-top,.ynv-d,.ynv-d a,.ynv-i>a::after{transition:none}}',
+    '@media(prefers-reduced-motion:reduce){.ynv-top,.ynv-mega,.ynv-mc a,.ynv-i>a::after{transition:none}}',
     /* ── 사이트맵 정보 푸터 (파란 CTA·간이 푸터 대체) ── */
     '.yft{background:' + INK + ';color:#c6d2e6;font-family:' + KR + '}',
     '.yft-w{max-width:80rem;margin:0 auto;padding:clamp(2.6rem,1.8rem + 2.5vw,4rem) clamp(1.2rem,4vw,2.4rem) 2.2rem;' +
@@ -313,12 +319,22 @@
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
   /* ── 3. 마크업 ── */
-  var menuHtml = MENU.map(function (m) {
-    var subs = m.sub.map(function (s) { return '<a href="' + s[1] + '">' + esc(s[0]) + '</a>'; }).join('');
+  var menuHtml = MENU.map(function (m, i) {
     var cur = (m.key === curKey) ? ' class="cur"' : '';
-    return '<div class="ynv-i"><a' + cur + ' href="' + m.h + '">' + esc(m.t) + '</a>' +
-      '<div class="ynv-d">' + subs + '</div></div>';
+    return '<div class="ynv-i" data-mi="' + i + '"><a' + cur + ' href="' + m.h + '">' + esc(m.t) + '</a></div>';
   }).join('');
+  /* 메가 판 — 일곱 칸을 본문과 같은 1232px 격자에 고르게 세운다.
+     항목마다 창을 따로 띄우지 않으므로 칸끼리 겹칠 일이 없고, 줄이 페이지의
+     다른 모든 줄과 같은 축에 선다. */
+  var megaHtml = '<div class="ynv-mega"><div class="ynv-mega-in">' +
+    MENU.map(function (m, i) {
+      var subs = m.sub.map(function (x, k) {
+        return '<a href="' + x[1] + '" style="--md:' + (0.03 + k * 0.035).toFixed(3) + 's">' + esc(x[0]) + '</a>';
+      }).join('');
+      var cur = (m.key === curKey) ? ' cur' : '';
+      return '<div class="ynv-mc' + cur + '" data-mi="' + i + '">' +
+        '<b>' + esc(m.t) + '</b>' + subs + '</div>';
+    }).join('') + '</div></div>';
 
   var brand =
     '<a class="ynv-brand" href="H-academic.html" aria-label="연세대학교 기계공학부 홈">' +
@@ -339,7 +355,7 @@
     '<header class="ynv-hdr"><div class="ynv-w">' + brand +
       '<nav class="ynv-menu" aria-label="주메뉴">' + menuHtml + '</nav>' +
       '<button class="ynv-burger" type="button" aria-label="메뉴 열기" aria-expanded="false" aria-controls="ynvOvl"><span></span><span></span><span></span></button>' +
-    '</div></header>';
+    '</div>' + megaHtml + '</header>';
 
   /* ── 하위페이지 서브내비 + breadcrumb 링크화 (섹션 페이지 공용) ── */
   function buildSubnav() {
@@ -837,6 +853,53 @@
     buildSubnav();
     buildFooter();
     setupReveal();
+
+
+    /* ── 메가 메뉴 여닫기 ──
+       메뉴 줄이나 판 위에 커서가 있는 동안만 열려 있다. 사이를 지나갈 때
+       한 번 닫혔다 열리지 않도록 닫을 때만 짧게 늦춘다.
+       올려 둔 항목의 칸은 또렷하게, 나머지는 한 단계 물러난다. */
+    var mega = nav.querySelector('.ynv-mega');
+    var menuEl = nav.querySelector('.ynv-menu');
+    if (mega && menuEl) {
+      var mt = 0;
+      function megaOpen(on) {
+        clearTimeout(mt);
+        if (on) { nav.classList.add('mega-on'); return; }
+        mt = setTimeout(function () {
+          nav.classList.remove('mega-on');
+          mega.classList.remove('has-hi');
+          [].forEach.call(mega.querySelectorAll('.ynv-mc.hi'), function (c) { c.classList.remove('hi'); });
+        }, 130);
+      }
+      function highlight(i) {
+        var any = false;
+        [].forEach.call(mega.querySelectorAll('.ynv-mc'), function (c) {
+          var on = c.getAttribute('data-mi') === String(i);
+          c.classList.toggle('hi', on); if (on) any = true;
+        });
+        mega.classList.toggle('has-hi', any);
+      }
+      [].forEach.call(menuEl.querySelectorAll('.ynv-i'), function (it) {
+        it.addEventListener('mouseenter', function () {
+          megaOpen(true); highlight(it.getAttribute('data-mi'));
+        });
+        /* 키보드로 훑을 때도 같은 칸이 열린다 */
+        it.addEventListener('focusin', function () {
+          megaOpen(true); highlight(it.getAttribute('data-mi'));
+        });
+      });
+      menuEl.addEventListener('mouseleave', function () { megaOpen(false); });
+      mega.addEventListener('mouseenter', function () { megaOpen(true); });
+      mega.addEventListener('mouseleave', function () { megaOpen(false); });
+      mega.addEventListener('focusin', function () { megaOpen(true); });
+      nav.addEventListener('focusout', function () {
+        if (!nav.contains(document.activeElement)) megaOpen(false);
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') { clearTimeout(mt); nav.classList.remove('mega-on'); }
+      });
+    }
 
     /* 스크롤 시 유틸바 접힘 + 히어로 위에서는 투명 헤더 */
     var min = false;

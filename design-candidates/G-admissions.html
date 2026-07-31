@@ -29,7 +29,7 @@
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d17" />
-<link rel="preload" as="script" href="assets/nav.js?v=89" />
+<link rel="preload" as="script" href="assets/nav.js?v=90" />
 <style>
 /* ───────────────────────────────────────────────
    입학 · 진로 (라이트 테마)
@@ -48,7 +48,7 @@
   --body:#1e2b42;
   --sub:#41506b;
   --muted:#5e6b82;
-  --faint:#8b96a9;
+  --faint:#6b7688;
   --dimmer:#5e6b82;
   --line:#e2ddd2;
   --line-soft:#efeae0;
@@ -111,7 +111,7 @@ a{color:inherit;text-decoration:none}
 /* 섹션 머리 — 따로 선언돼 있던 position 을 이 규칙에 합쳤다 */
 .sec-head{position:relative;display:flex;justify-content:space-between;align-items:baseline;
   gap:1.5rem;flex-wrap:wrap;margin-bottom:clamp(1.6rem,1rem + 2vw,2.4rem)}
-.sec-kick{font-family:var(--mono);font-size:.66rem;letter-spacing:.24em;
+.sec-kick{font-family:var(--mono);font-size:.72rem;letter-spacing:.24em;
   text-transform:uppercase;color:var(--coral)}
 .sec-title{font-weight:700;color:#111318;letter-spacing:-.01em;
   font-size:clamp(1.85rem,1.2rem + 2.8vw,2.85rem);line-height:1.24;margin-top:.5rem}
@@ -121,7 +121,7 @@ a{color:inherit;text-decoration:none}
 .card{border:1px solid var(--line-soft);background:var(--card);padding:1.6rem 1.6rem 1.7rem}
 .card--soft{background:var(--card)}
 /* 오버라인 — 카드 안과 §03 장학 블록이 같은 선언이라 묶었다(.cnt 만 장학 쪽에 더 붙는다) */
-.card .overline,.sch-block > .overline{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;
+.card .overline,.sch-block > .overline{font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;
   text-transform:uppercase;color:var(--coral);display:block;margin-bottom:.9rem}
 .card h3{font-weight:700;font-size:1.1rem;color:var(--navy);line-height:1.3;margin-bottom:.7rem}
 .card p{font-size:.9rem;color:var(--body);line-height:1.75}
@@ -268,7 +268,7 @@ a{color:inherit;text-decoration:none}
 .step .go .arr{color:var(--coral)}
 
 /* 대학원 공지 리스트 */
-.list-lab{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;
+.list-lab{font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;
   color:var(--coral);display:block;margin-bottom:.9rem}
 .post-list{border-top:1px solid var(--line)}
 .post-row{display:grid;grid-template-columns:auto 1fr auto;gap:1rem;align-items:baseline;
@@ -297,7 +297,7 @@ a{color:inherit;text-decoration:none}
   gap:.9rem;align-items:baseline;padding:1.05rem .2rem;transition:background .12s}
 .faq summary::-webkit-details-marker{display:none}
 .faq summary:hover{background:var(--card)}
-.faq summary .qm{font-family:var(--mono);font-size:.68rem;color:var(--coral);align-self:start;margin-top:.2rem}
+.faq summary .qm{font-family:var(--mono);font-size:.72rem;color:var(--coral);align-self:start;margin-top:.2rem}
 .faq summary .qt{font-size:.96rem;color:var(--ink);font-weight:600;line-height:1.45}
 .faq summary .mk{position:relative;width:12px;height:12px;flex:none;align-self:start;margin-top:.35rem}
 /* ＋/－ 마커 — FAQ 와 §03 교내 장학 목록(.sch-list)이 같은 모양을 쓴다.
@@ -316,7 +316,7 @@ a{color:inherit;text-decoration:none}
 /* ── 문의 CTA 밴드 (네이비) ── */
 .cta{background:var(--navy);color:#fff;
   padding:clamp(2.6rem,1.6rem + 3.5vw,4.2rem) clamp(1.4rem,.6rem + 2vw,3rem)}
-.cta .eyebrow{font-family:var(--mono);font-size:.66rem;letter-spacing:.24em;
+.cta .eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.24em;
   text-transform:uppercase;color:var(--sky);margin-bottom:.8rem}
 .cta h2{font-weight:700;font-size:clamp(1.4rem,1rem + 2vw,2.1rem);color:#fff;
   line-height:1.3;letter-spacing:-.01em;margin-bottom:.9rem}
@@ -342,7 +342,7 @@ a{color:inherit;text-decoration:none}
   gap:.9rem;align-items:baseline;padding:.9rem .2rem;transition:background .12s}
 .sch-list summary::-webkit-details-marker{display:none}
 .sch-list summary:hover{background:var(--card)}
-.sch-list summary .idx{font-family:var(--mono);font-size:.64rem;color:var(--coral);
+.sch-list summary .idx{font-family:var(--mono);font-size:.72rem;color:var(--coral);
   border:1px solid var(--line);padding:.12rem .4rem;line-height:1.3;align-self:start;margin-top:.1rem;
   font-variant-numeric:tabular-nums}
 .sch-list summary .nm{font-size:.94rem;color:var(--ink);font-weight:600;line-height:1.45}
@@ -751,8 +751,8 @@ a{color:inherit;text-decoration:none}
 
 })();
 </script>
-<script src="assets/nav.js?v=89"></script>
-<footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--dimmer)">
+<script src="assets/nav.js?v=90"></script>
+<footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;color:var(--dimmer)">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>
 </body>

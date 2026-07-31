@@ -7,7 +7,7 @@
   'use strict';
 
   var NAVY = '#1a3d75', NAVYD = '#12294f', INK = '#0f1b30',
-      PAPER = '#f1f2f5', LINE = '#e2ddd2', DIM = '#8b96a9', MUTED = '#5e6b82';
+      PAPER = '#f1f2f5', LINE = '#e2ddd2', DIM = '#6b7688', MUTED = '#5e6b82';
   var KR = '"Apple SD Gothic Neo","Pretendard Variable","Pretendard",system-ui,sans-serif';
   var E = 'cubic-bezier(.16,1,.3,1)';
 
@@ -26,7 +26,7 @@
     '.ynv-top a:hover{color:#fff}',
     '.ynv.min .ynv-top{max-height:0;opacity:0}',
     '.ynv-lang{display:flex;gap:.1rem;margin-left:.5rem;border:1px solid rgba(255,255,255,.28);border-radius:99px;padding:.12rem}',
-    '.ynv-lang button{font-family:inherit;font-size:.66rem;font-weight:700;letter-spacing:.08em;color:#c6d2e6;' +
+    '.ynv-lang button{font-family:inherit;font-size:.72rem;font-weight:700;letter-spacing:.08em;color:#c6d2e6;' +
       'background:none;border:0;border-radius:99px;padding:.16rem .62rem;cursor:pointer;transition:background .12s,color .12s}',
     '.ynv-lang button.on{background:#fff;color:' + NAVYD + '}',
     /* 흰 헤더 */
@@ -49,7 +49,7 @@
     '.ynv-brand{display:flex;align-items:center;gap:.7rem;min-width:0;text-decoration:none}',
     '.ynv-brand img{height:2.75rem;width:auto;display:block}',
     '.ynv-brand .bko{font-weight:800;font-size:1.24rem;letter-spacing:-.01em;color:' + NAVY + ';line-height:1.25}',
-    '.ynv-brand .ben{display:block;font-size:.66rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:' + DIM + '}',
+    '.ynv-brand .ben{display:block;font-size:.72rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:' + DIM + '}',
     '.ynv-menu{display:flex;gap:clamp(2rem,3.8vw,3.6rem);font-weight:600;font-size:.98rem;white-space:nowrap}',
     '.ynv-i{position:relative}',
     '.ynv-i>a{position:relative;display:inline-block;padding:.55rem 0;color:' + INK + ';text-decoration:none;transition:color .2s}',
@@ -177,14 +177,14 @@
     'html.ys-sub .sec-head > div,html.ys-sub .sec-top{display:block;width:100%}',
     'html.ys-sub .sec-kick{display:block;width:100%;' +
       'font-family:var(--mono,ui-monospace,SFMono-Regular,Menlo,monospace);' +
-      'font-size:.68rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;' +
+      'font-size:.72rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;' +
       'color:#111318;padding-bottom:.82rem;border-bottom:1px solid #111318;' +
       'margin:0 0 clamp(.95rem,.75rem + .8vw,1.6rem)}',
     /* 제목 — 메인과 같은 굵기·자간. 크기는 각 페이지 값을 살린다(본문 폭이 다르다) */
     'html.ys-sub .sec-title,html.ys-sub .staff-head > h2,html.ys-sub .al-head > h2' +
       '{margin-top:0;font-weight:800;letter-spacing:-.02em;line-height:1.14}',
     /* 휴대폰 — 줄 아래 여백을 조금 줄여 머리가 화면을 덜 잡아먹게 한다 */
-    '@media(max-width:640px){html.ys-sub .sec-kick{font-size:.64rem;letter-spacing:.18em;' +
+    '@media(max-width:640px){html.ys-sub .sec-kick{font-size:.72rem;letter-spacing:.18em;' +
       'padding-bottom:.6rem;margin-bottom:.8rem}}',
     /* 맨 위로 버튼 */
     '.ytop{position:fixed;right:1.4rem;bottom:1.4rem;z-index:45;width:2.9rem;height:2.9rem;border-radius:50%;' +
@@ -223,7 +223,7 @@
       '.ynv-hdr .ynv-w{gap:.8rem;padding:.6rem .9rem}' +
       '.ynv-brand img{height:2rem}' +
       '.ynv-brand .bko{font-size:.95rem}' +
-      '.ynv-brand .ben{font-size:.55rem;letter-spacing:.1em}' +
+      '.ynv-brand .ben{font-size:.72rem;letter-spacing:.1em}' +
       '.ytop{right:.9rem;bottom:calc(.9rem + env(safe-area-inset-bottom));width:2.7rem;height:2.7rem}' +
     '}',
     /* 아주 좁은 화면(360 이하) — 영문 병기를 접어 브랜드 한 줄 유지 */
@@ -242,7 +242,7 @@
     '.yft-w{max-width:80rem;margin:0 auto;padding:clamp(2.6rem,1.8rem + 2.5vw,4rem) clamp(1.2rem,4vw,2.4rem) 2.2rem;' +
       'display:grid;grid-template-columns:minmax(0,16.5rem) 1fr;gap:clamp(2rem,1rem + 3vw,4.5rem)}',
     '.yft-logo{display:block;font-weight:800;font-size:1.08rem;color:#fff;letter-spacing:-.01em;line-height:1.3;text-decoration:none}',
-    '.yft-logo span{display:block;font-size:.6rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:#7f90ad;margin-top:.3rem}',
+    '.yft-logo span{display:block;font-size:.72rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:#7f90ad;margin-top:.3rem}',
     '.yft-addr{font-size:.82rem;line-height:1.75;color:#a9b6cd;margin-top:1.25rem}',
     '.yft-tel{font-size:.82rem;line-height:1.7;color:#a9b6cd;margin-top:.55rem}',
     '.yft-ext{display:flex;flex-wrap:wrap;gap:.45rem .55rem;margin-top:1.3rem}',

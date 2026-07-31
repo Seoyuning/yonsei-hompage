@@ -28,7 +28,7 @@
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d17" />
-<link rel="preload" as="script" href="assets/nav.js?v=89" />
+<link rel="preload" as="script" href="assets/nav.js?v=90" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    시안 G — 교육 (라이트)
@@ -48,7 +48,7 @@
   --body:#1e2b42;
   --sub:#41506b;
   --muted:#5e6b82;
-  --label:#9aa3b0;
+  --label:#6a7486;
   --line:#e2ddd2;
   --line-soft:#efeae0;
   --card:#ffffff;   /* 판 색 없음 — 칸은 헤어라인으로만 나눈다 */
@@ -119,7 +119,7 @@ a{color:inherit;text-decoration:none}
 /* 표준 헤더 — [킥커 ↔ 사이드 링크(baseline)] 아래 제목·부제, 왼쪽 div 세로 스택 (G-console 계승) */
 .sec-head{display:flex;justify-content:space-between;align-items:baseline;
   gap:1.5rem;flex-wrap:wrap;margin-bottom:clamp(1.6rem,1rem + 2vw,2.4rem)}
-.sec-kick{font-family:var(--mono);font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--coral)}
+.sec-kick{font-family:var(--mono);font-size:.72rem;letter-spacing:.24em;text-transform:uppercase;color:var(--coral)}
 /* ── 섹션 머리 (대학원 페이지에서 시작해 전 페이지 공통) ──
    제목 아래에 슬래시로 이어붙인 요약 줄을 둔다.
    요약은 그 화면이 이미 담고 있는 사실만 적는다 — 새 주장을 만들지 않는다. */
@@ -243,7 +243,8 @@ a{color:inherit;text-decoration:none}
 /* .edu-nv.acc 삭제 — 세 숫자 중 하나만 색을 달리 주려던 규칙인데, 그 색(--navy)이
    기본색(--ink)과 같은 값이라 화면에서는 원래부터 셋이 똑같이 보였다.
    이제 셋 다 #requirements 의 .req-val 과 같은 먹색으로 세운다(마크업의 acc 도 함께 뗐다). */
-.edu-nv .u{font-family:var(--kr);font-weight:500;font-size:.24em;letter-spacing:0;
+/* em 기준이면 부모(숫자)가 줄 때 4px 까지 내려간다 — 절대값으로 고정한다 */
+.edu-nv .u{font-family:var(--kr);font-weight:500;font-size:.72rem;letter-spacing:0;
   color:var(--muted);margin-left:.28em}
 
 @media (max-width:860px){
@@ -309,7 +310,7 @@ a{color:inherit;text-decoration:none}
   font-size:clamp(2.3rem,1.7rem + 2.4vw,3.4rem);color:#111318;
   font-variant-numeric:tabular-nums;margin-top:clamp(.6rem,.5rem + .4vw,.95rem)}
 /* 단위는 숫자에 딸린 꼬리표다 — 숫자 크기에 비례(em)하되 회색으로 한 단 낮춘다 */
-.req-val .u{font-family:var(--kr);font-weight:500;font-size:.24em;letter-spacing:0;
+.req-val .u{font-family:var(--kr);font-weight:500;font-size:.72rem;letter-spacing:0;
   color:var(--muted);margin-left:.28em}
 .req-desc{font-family:var(--kr);font-size:.9rem;color:var(--sub);line-height:1.75;
   margin:0;max-width:52rem}
@@ -505,7 +506,7 @@ a{color:inherit;text-decoration:none}
 /* 필수 표시 뱃지 — 네이비 칩 위(.is-req)에서는 흰 글자로 뒤집는다.
    구 이수체계도의 .t-req/.t-sel/.t-gen 세 변형은 이를 그리던 마크업·JS와 함께 제거했다
    (참조처가 §03 하나뿐이었고, 새 트리는 원본 이미지대로 '필수' 한 종류만 구분한다). */
-.cur-badge.tree-req{background:rgba(26,61,117,.1);color:var(--navy);font-size:.62rem;padding:.12rem .34rem;border-radius:2px}
+.cur-badge.tree-req{background:rgba(26,61,117,.1);color:var(--navy);font-size:.72rem;padding:.12rem .34rem;border-radius:2px}
 
 /* ── §03 이수 체계도 — 공식 「기계공학부 교과목 트리」 재현 ──
    원본(기계공학-교과목이수체계 국문)의 3행 구조를 그대로 옮긴다.
@@ -546,7 +547,7 @@ a{color:inherit;text-decoration:none}
   padding:.5rem .5rem .55rem;display:flex;flex-direction:column;gap:.35rem}
 .tree-cell-h{font-family:var(--kr);font-size:.8rem;font-weight:700;color:var(--ink);line-height:1.35}
 .tree-h-band{display:inline-block;background:var(--navy);color:#fff;font-weight:700;
-  font-size:.66rem;letter-spacing:.02em;padding:.12rem .38rem;margin-right:.35rem;vertical-align:.06em}
+  font-size:.72rem;letter-spacing:.02em;padding:.12rem .38rem;margin-right:.35rem;vertical-align:.06em}
 .tree-courses{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.28rem}
 .tree-course{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.15rem .35rem;
   font-family:var(--kr);font-size:.77rem;line-height:1.35;color:#2a3a56;background:#fff;
@@ -637,7 +638,7 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
 /* 이수체계도에서 이동해 온 카드 — 네이비 테두리로 위치 표시 */
 .ug-card:target{box-shadow:inset 0 0 0 2px var(--navy)}
 .ug-card-top{display:flex;justify-content:space-between;align-items:center;gap:.6rem}
-.ug-card-code{font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;color:var(--label);font-variant-numeric:tabular-nums}
+.ug-card-code{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;color:var(--label);font-variant-numeric:tabular-nums}
 .ug-card-name{font-family:var(--kr);font-weight:700;font-size:1.02rem;color:var(--ink);margin-top:.6rem;line-height:1.3}
 .ug-card-en{font-family:var(--kr);font-size:.72rem;color:var(--label);margin-top:.3rem;line-height:1.45}
 .ug-card-desc{font-family:var(--kr);font-size:.82rem;color:var(--sub);line-height:1.65;margin-top:.7rem;
@@ -659,7 +660,7 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
   margin-inline:clamp(1.2rem,.6rem + 2vw,2.6rem)}
 @media(min-width:1180px){.cta{margin-inline:auto}}
 .cta .cta-txt{max-width:34rem}
-.cta .cta-kick{font-family:var(--mono);font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:#9db4d8}
+.cta .cta-kick{font-family:var(--mono);font-size:.72rem;letter-spacing:.24em;text-transform:uppercase;color:#9db4d8}
 .cta h2{font-family:var(--kr);font-weight:700;color:#fff;
   font-size:clamp(1.4rem,1rem + 2vw,2.1rem);line-height:1.25;letter-spacing:-.01em;margin-top:.6rem}
 .cta p{font-family:var(--kr);color:#c6d2e4;margin-top:.8rem;line-height:1.6;font-size:.98rem}
@@ -721,7 +722,7 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
 .gr-table--yr thead th:first-child{width:10rem}
 /* 종별(원본 rowspan · sameCat) 묶음 — 굵은 띠로 계층을 보인다 */
 .gr-grp-r th{background:#fff;padding:.55rem .7rem}
-.gr-grp-lab{font-family:var(--kr);font-size:.68rem;letter-spacing:.06em;color:var(--muted);margin-right:.5rem}
+.gr-grp-lab{font-family:var(--kr);font-size:.72rem;letter-spacing:.06em;color:var(--muted);margin-right:.5rem}
 .gr-grp-n{font-family:var(--kr);font-weight:700;font-size:.95rem;color:var(--navy)}
 .gr-grp-c{font-family:var(--kr);font-size:.82rem;color:var(--sub);margin-left:.45rem}
 .gr-k{background:#fff;white-space:normal}
@@ -874,7 +875,7 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
 .crs-row.is-hidden{display:none}
 /* 4대 역학 4과목 — 왼쪽에 포인트색 기둥 자국. 위 밴드와 같은 색이라 이어져 보인다 */
 .crs-row.is-pil{box-shadow:inset 3px 0 0 var(--accent)}
-.crs-pil{display:inline-block;margin-left:.55rem;font-family:var(--kr);font-size:.66rem;
+.crs-pil{display:inline-block;margin-left:.55rem;font-family:var(--kr);font-size:.72rem;
   font-weight:700;color:var(--coral);background:var(--accent-soft);
   padding:.12rem .4rem;border-radius:2px;vertical-align:2px;white-space:nowrap}
 .crs-main{min-width:0;display:block}
@@ -2088,7 +2089,7 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
   });
 })();
 </script>
-<script src="assets/nav.js?v=89"></script>
+<script src="assets/nav.js?v=90"></script>
 <script>
 /* ── 교육과정 배너 확대 — 스크롤 진행률 ──
    바깥 통(.tw-scene)의 높이에서 화면 한 칸을 뺀 만큼이 「진행 구간」이다.
@@ -2170,7 +2171,7 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
   run();
 })();
 </script>
-<footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--kr);font-size:.74rem;color:#7b8595">
+<footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--kr);font-size:.74rem;color:#68727f">
   © 2026 연세대학교 기계공학부 &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>
 </body>

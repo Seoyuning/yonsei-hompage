@@ -30,7 +30,7 @@
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트를 미리 받아 둔다 — 파서가 해당 줄에 닿았을 때 이미 캐시에 있어 멈춤이 짧아진다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d17" />
-<link rel="preload" as="script" href="assets/nav.js?v=89" />
+<link rel="preload" as="script" href="assets/nav.js?v=90" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    시안 H · 아카데믹 (Reference: me.kaist.ac.kr / me.snu.ac.kr)
@@ -42,7 +42,7 @@
   --navy:#1a3d75; --navy-d:#12294f; --accent:#A56F63;      /* 포인트 색 — 테두리·칠·점 등 장식 */
   --accent-soft:rgba(165,111,99,.14);
   --coral:#8E5A4F; --accent-d:#8aa6d4;
-  --ink:#0f1b30; --muted:#5e6b82; --dim:#8b96a9;
+  --ink:#0f1b30; --muted:#5e6b82; --dim:#6b7688;
   --paper:#ffffff; --line:#e2ddd2; --soft:#f4f1ea; --bg:#ffffff;
   --kr:"Apple SD Gothic Neo","Pretendard Variable","Pretendard",system-ui,sans-serif;
   /* 라벨·숫자도 본문과 같은 Pretendard — 모노스페이스는 AI 티가 나서 배제 */
@@ -114,7 +114,7 @@ img{display:block;max-width:100%}
   font-size:clamp(2.2rem,1.1rem + 5.2vw,4.9rem);color:#fff}
 .hero .sub{margin:1.5rem auto 0;max-width:37rem;font-size:clamp(.94rem,.86rem + .3vw,1.08rem);color:#ccd8ea}
 .hero-scroll{position:absolute;z-index:2;left:50%;bottom:calc(3.6rem + env(safe-area-inset-bottom));transform:translateX(-50%);
-  font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.72)}
+  font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.72)}
 .hero-scroll::after{content:"";display:block;width:1px;height:2rem;margin:.45rem auto 0;
   background:linear-gradient(rgba(255,255,255,.8),transparent)}
 /* 히어로 하단 지표 스트립 — 잉크 텔레메트리 밴드, 거대 숫자 */
@@ -125,7 +125,7 @@ img{display:block;max-width:100%}
 .st b{font-family:var(--mono);font-weight:700;letter-spacing:.02em;line-height:1;
   font-size:clamp(2.1rem,1.4rem + 2.6vw,3.4rem);color:#fff;font-variant-numeric:tabular-nums}
 .st:last-child b{color:var(--accent-d)}
-.st span{font-family:var(--mono);font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;color:#8fa2c2}
+.st span{font-family:var(--mono);font-size:.72rem;letter-spacing:.24em;text-transform:uppercase;color:#8fa2c2}
 @media(max-width:640px){.stats .wrap{grid-template-columns:repeat(3,1fr);gap:.7rem;row-gap:1.4rem}}
 
 /* ── 공통 섹션 — 에디토리얼: 아웃라인 인덱스 + 거대 타이틀 ── */
@@ -143,7 +143,7 @@ img{display:block;max-width:100%}
    같은 사이트인데 화면마다 머리가 다르게 보였다. 번호는 뺐다. */
 .sec-head{display:block;margin-bottom:clamp(2.2rem,4.5vh,3.6rem)}
 .sec-head-row{display:flex;align-items:flex-end;justify-content:space-between;gap:1.2rem;flex-wrap:wrap}
-.kick{display:block;width:100%;font-family:var(--mono);font-size:.68rem;font-weight:600;
+.kick{display:block;width:100%;font-family:var(--mono);font-size:.72rem;font-weight:600;
   letter-spacing:.22em;text-transform:uppercase;color:#111318;
   padding-bottom:.82rem;border-bottom:1px solid #111318;
   margin:0 0 clamp(.95rem,.75rem + .8vw,1.6rem)}
@@ -187,7 +187,7 @@ img{display:block;max-width:100%}
 .board-band .more{color:#9db4d8}
 .board-band .more:hover{color:#fff}
 .tabs{display:flex;gap:.35rem}
-.tab{font-family:var(--mono);font-size:.66rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+.tab{font-family:var(--mono);font-size:.72rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
   color:#9db4d8;padding:.32rem .72rem;border-radius:99px;border:1px solid rgba(255,255,255,.24);
   background:none;cursor:pointer;transition:color .12s,border-color .12s,background .12s}
 .tab:hover{color:#fff}
@@ -196,11 +196,11 @@ img{display:block;max-width:100%}
 .brow{display:flex;align-items:baseline;gap:.75rem;padding:.95rem 0;
   border-bottom:1px solid rgba(255,255,255,.12);transition:color .12s}
 .brow:hover .bt{color:var(--accent-d)}
-.bcat{flex:none;font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+.bcat{flex:none;font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
   color:var(--accent-d);border:1px solid rgba(138,166,212,.5);padding:.16rem .5rem;border-radius:.2rem}
 .bt{flex:1;min-width:0;font-size:.9rem;font-weight:500;color:#e2e6ec;white-space:nowrap;
   overflow:hidden;text-overflow:ellipsis;transition:color .12s}
-.bd{flex:none;font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;color:#7f8fad;font-variant-numeric:tabular-nums}
+.bd{flex:none;font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;color:#7f8fad;font-variant-numeric:tabular-nums}
 @media(max-width:840px){.board-band .wrap{grid-template-columns:1fr}}
 
 /* ── 연구 분야 — XL 행 + 네이비 와이프 ── */
@@ -217,14 +217,14 @@ img{display:block;max-width:100%}
 .cmain{flex:1;min-width:0}
 .cko{font-size:clamp(1.25rem,1rem + 1.6vw,2rem);font-weight:800;color:var(--ink);
   letter-spacing:-.015em;transition:color .25s}
-.cen{margin-left:.8rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;
+.cen{margin-left:.8rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;
   text-transform:uppercase;color:var(--dim);transition:color .25s}
 .cdesc{display:block;margin-top:.25rem;font-size:.86rem;color:var(--muted);transition:color .25s;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .crow:hover .cko{color:#fff}
 .crow:hover .cen{color:rgba(255,255,255,.75)}
 .crow:hover .cdesc{color:rgba(255,255,255,.85)}
-.clabs{flex:none;font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;
+.clabs{flex:none;font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;
   text-transform:uppercase;color:var(--muted);text-align:right;transition:color .25s}
 .clabs b{display:block;font-size:clamp(1.3rem,1rem + 1vw,1.8rem);font-weight:800;color:var(--coral);
   line-height:1.1;transition:color .25s}
@@ -282,7 +282,7 @@ img{display:block;max-width:100%}
   border:0;background:none;cursor:pointer;text-align:left;
   padding:.75rem 0 0;border-top:1px solid var(--line);
   font-family:var(--kr);color:var(--dim);transition:color .25s ease}
-.ar-tab i{font-family:var(--mono);font-style:normal;font-size:.64rem;font-weight:700;
+.ar-tab i{font-family:var(--mono);font-style:normal;font-size:.72rem;font-weight:700;
   letter-spacing:.16em}
 .ar-tab b{font-size:clamp(.76rem,.7rem + .22vw,.92rem);font-weight:700;letter-spacing:-.02em;
   line-height:1.32}
@@ -298,7 +298,7 @@ img{display:block;max-width:100%}
 /* 영문으로 바꾸면 큰 제목이 곧 영문명이라 아래 한글 이름 줄과 겹친다 — 그때는 감춘다 */
 html[lang="en"] .as-ko{display:none}
 .ar-cred{margin-top:clamp(1.6rem,3vh,2.4rem);
-  font-family:var(--kr);font-size:.62rem;font-weight:500;line-height:1.6;
+  font-family:var(--kr);font-size:.72rem;font-weight:500;line-height:1.6;
   color:var(--dim);letter-spacing:0}
 @media (max-width:860px){
   .ar-slide{grid-template-columns:1fr;gap:1.4rem}
@@ -483,7 +483,7 @@ html[lang="en"] .as-ko{display:none}
   /* 섹션 머리 — 「전체 보기」가 제목과 부딪혀 줄이 엉켰다. 아래 줄로 내린다 */
   .sec-head{margin-bottom:1.7rem}
   .sec-head-row{align-items:center;gap:.6rem}
-  .kick{font-size:.64rem;letter-spacing:.18em;padding-bottom:.6rem;margin-bottom:.8rem}
+  .kick{font-size:.72rem;letter-spacing:.18em;padding-bottom:.6rem;margin-bottom:.8rem}
   .sec-head .more{order:3;flex:0 0 100%;text-align:right;padding:.3rem 0}
   /* 목록 — 말줄임 대신 두 줄까지 */
   .nrow{padding-top:1.3rem;padding-bottom:1.3rem}
@@ -651,7 +651,10 @@ html[lang="en"] .as-ko{display:none}
     <div class="nlist" id="newsGrid">
       <a class="nrow" href="G-news.html"><span class="nt2">학부 뉴스 보기</span><i>→</i></a>
     </div>
-    <img id="newsPrev" src="" alt="" aria-hidden="true" />
+    <!-- 줄에 커서를 올리면 그 기사 사진이 뜬다. 처음에는 보여 줄 사진이 없으므로
+         빈 src 대신 투명 1px 을 둔다 — src="" 는 브라우저가 현재 주소를 다시 받는다. -->
+    <img id="newsPrev" alt="" aria-hidden="true"
+      src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
   </section>
 
   <section class="board-band" aria-label="공지 및 세미나">
@@ -1296,7 +1299,7 @@ html[lang="en"] .as-ko{display:none}
 })();
 </script>
 <!-- 공용 헤더·사이트맵 푸터(서브페이지와 동일) 주입 -->
-<script src="assets/nav.js?v=89"></script>
+<script src="assets/nav.js?v=90"></script>
 <script>
 /* 인트로 두 구간 — 스크롤 진행률(0~1)을 --p 로 넣고, 문장 구간은 단어를 하나씩 켠다.
    바깥 통의 높이에서 화면 한 칸을 뺀 만큼이 「진행 구간」이다. */

@@ -28,7 +28,7 @@
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d17" />
-<link rel="preload" as="script" href="assets/nav.js?v=89" />
+<link rel="preload" as="script" href="assets/nav.js?v=90" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    연구 — 연세대학교 기계공학부 (기관형 · 아이보리)
@@ -49,7 +49,7 @@
   --body:#1e2b42;
   --sub:#41506b;
   --muted:#5e6b82;
-  --label:#9aa3b0;
+  --label:#6a7486;
   --line:#e2ddd2;
   --line-soft:#efeae0;
   --card:#ffffff;   /* 판 색 없음 — 칸은 헤어라인으로만 나눈다 */
@@ -113,7 +113,7 @@ a{color:inherit;text-decoration:none}
 /* 표준 헤더 — [킥커 ↔ 사이드 링크(baseline)] 아래 제목·부제, 왼쪽 div 세로 스택 (G-console 계승) */
 .sec-head{display:flex;justify-content:space-between;align-items:baseline;
   gap:1.5rem;flex-wrap:wrap;margin-bottom:clamp(1.6rem,1rem + 2vw,2.4rem)}
-.sec-kick{font-family:var(--mono);font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--coral)}
+.sec-kick{font-family:var(--mono);font-size:.72rem;letter-spacing:.24em;text-transform:uppercase;color:var(--coral)}
 /* ── 섹션 머리 (대학원 페이지에서 시작해 전 페이지 공통) ──
    제목 아래에 슬래시로 이어붙인 요약 줄을 둔다.
    요약은 그 화면이 이미 담고 있는 사실만 적는다 — 새 주장을 만들지 않는다. */
@@ -177,8 +177,8 @@ a{color:inherit;text-decoration:none}
 .vis-tier-label{font-family:var(--kr);font-weight:700;color:var(--muted);
   font-size:.74rem;line-height:1.5;letter-spacing:.16em}
 /* 번호(VISION 01. · Objective 01.)는 CSS 카운터가 아니라 읽히는 텍스트다 */
-.vis-no{display:block;font-family:var(--kr);font-weight:700;font-size:.66rem;
-  letter-spacing:.16em;color:var(--label,#8b96a9);font-variant-numeric:tabular-nums}
+.vis-no{display:block;font-family:var(--kr);font-weight:700;font-size:.72rem;
+  letter-spacing:.16em;color:var(--label,#6b7688);font-variant-numeric:tabular-nums}
 /* 층 1 — 비전 3축 */
 .vis-axes{list-style:none;padding:0;margin:0;display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
@@ -205,7 +205,7 @@ a{color:inherit;text-decoration:none}
 .vis-obj-items li{position:relative;padding-left:.78rem;font-family:var(--kr);
   font-size:.93rem;color:var(--sub);line-height:1.72;word-break:keep-all}
 .vis-obj-items li::before{content:"";position:absolute;left:0;top:.82em;width:5px;height:1px;
-  background:var(--label,#8b96a9)}
+  background:var(--label,#6b7688)}
 /* 출처 — 담백한 한 줄 */
 .vis-src{font-family:var(--kr);font-size:.78rem;color:var(--muted);line-height:1.6;
   padding-top:1.1rem;border-top:1px solid var(--line-soft)}
@@ -336,7 +336,7 @@ a{color:inherit;text-decoration:none}
 /* ── 학부연구생(인턴) 모집 — 코랄 배지 + 접이식 상세 ── */
 .intern-sum{font-family:var(--kr);font-size:.88rem;color:var(--sub);margin-top:.85rem;line-height:1.65}
 .intern-sum b{color:var(--coral);font-weight:700}
-.i-badge{display:inline-block;font-family:var(--kr);font-size:.64rem;font-weight:600;letter-spacing:.02em;
+.i-badge{display:inline-block;font-family:var(--kr);font-size:.72rem;font-weight:600;letter-spacing:.02em;
   color:var(--coral);background:rgba(226, 92, 74,.08);padding:.14rem .45rem;margin-left:.5rem;
   vertical-align:2px;white-space:nowrap;border-radius:2px}
 .lab-item{border-bottom:1px solid var(--line-soft)}
@@ -386,7 +386,7 @@ a{color:inherit;text-decoration:none}
   margin-inline:clamp(1.2rem,.6rem + 2vw,2.6rem)}
 @media(min-width:1180px){.cta{margin-inline:auto}}
 .cta .cta-txt{max-width:34rem}
-.cta .cta-kick{font-family:var(--mono);font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:#9db4d8}
+.cta .cta-kick{font-family:var(--mono);font-size:.72rem;letter-spacing:.24em;text-transform:uppercase;color:#9db4d8}
 .cta h2{font-family:var(--kr);font-weight:700;color:#fff;
   font-size:clamp(1.4rem,1rem + 2vw,2.1rem);line-height:1.25;letter-spacing:-.01em;margin-top:.6rem}
 .cta p{font-family:var(--kr);color:#c6d2e4;margin-top:.8rem;line-height:1.6;font-size:.98rem}
@@ -573,7 +573,7 @@ html[lang="en"] .lab-en-only{display:none}
 .elabel:hover,.elabel.on{box-shadow:0 12px 30px rgba(15,27,48,.13);border-color:var(--cl-c,var(--navy))}
 .elabel:hover::before,.elabel.on::before{transform:scaleY(1)}
 .elabel>*{padding-left:.15rem}
-.elabel .en{font-family:var(--kr);font-size:.58rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--label,#8b96a9)}
+.elabel .en{font-family:var(--kr);font-size:.72rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--label,#6b7688)}
 .elabel .ko{font-family:var(--kr);font-weight:800;font-size:1rem;color:var(--cl-c,var(--navy));line-height:1.16;margin-top:.16rem;letter-spacing:-.01em}
 .elabel .ko .n{font-family:var(--kr);font-weight:600;font-size:.7rem;color:var(--muted);margin-left:.35rem;letter-spacing:0}
 /* ── 설명 판독대 ──
@@ -588,10 +588,10 @@ html[lang="en"] .lab-en-only{display:none}
 .eagle-read{max-width:600px;margin:0 auto;min-height:9.4rem;position:relative;
   padding:.2rem 0 .2rem clamp(.9rem,.7rem + .5vw,1.25rem);
   border-left:2px solid var(--cl-c,var(--line));transition:border-color .45s ease}
-.er-empty{font-family:var(--kr);font-size:.88rem;color:var(--label,#8b96a9);line-height:1.75}
+.er-empty{font-family:var(--kr);font-size:.88rem;color:var(--label,#6b7688);line-height:1.75}
 /* 부위 — 어느 자리를 짚었는지. 가장 작은 글자에 넓은 자간 */
-.er-part{font-family:var(--kr);font-size:.66rem;font-weight:700;letter-spacing:.2em;
-  text-transform:uppercase;color:var(--label,#8b96a9)}
+.er-part{font-family:var(--kr);font-size:.72rem;font-weight:700;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--label,#6b7688)}
 /* 분야 이름 — 이 칸에서 가장 먼저 읽혀야 한다. 색이 아니라 크기로 세운다 */
 .er-ko{font-family:var(--kr);font-weight:800;font-size:clamp(1.3rem,1.1rem + .7vw,1.6rem);
   color:#111318;line-height:1.25;letter-spacing:-.02em;margin-top:.42rem;
@@ -687,7 +687,7 @@ html[lang="en"] .lab-en-only{display:none}
 /* 확장 카드는 그리드 전체 폭 차지(더 큰 박스) */
 .fd-card[aria-expanded="true"]{grid-column:1 / -1}
 .fd-c-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem}
-.fd-c-en{font-family:var(--kr);font-size:.66rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;
+.fd-c-en{font-family:var(--kr);font-size:.72rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;
   color:var(--fc,var(--navy));opacity:.85}
 .fd-c-ko{font-family:var(--kr);font-weight:800;color:var(--ink);
   font-size:clamp(1.35rem,1.05rem + 1.1vw,1.75rem);line-height:1.18;letter-spacing:-.01em;margin-top:.5rem}
@@ -786,7 +786,7 @@ html[lang="en"] .lab-en-only{display:none}
 .lv-group-head .gdot{width:8px;height:8px;border-radius:50%;background:var(--lvc,var(--navy));flex:none;align-self:center}
 .lv-group-head .gko{font-family:var(--kr);font-weight:700;font-size:clamp(1.05rem,.9rem + .6vw,1.25rem);
   color:var(--ink);line-height:1.2;letter-spacing:-.01em}
-.lv-group-head .gen{font-family:var(--mono);font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.lv-group-head .gen{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .lv-group-head .gn{font-family:var(--kr);font-size:.76rem;color:var(--label);margin-left:auto}
 /* 반응형 그리드 — 넉넉한 간격, 죽은 균일 그리드 회피 */
 .lv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
@@ -812,7 +812,7 @@ html[lang="en"] .lab-en-only{display:none}
 .lv-card:hover .lv-thumb::before{transform:scale(1.12)}
 /* 분야 태그 오버레이 */
 .lv-tag{position:absolute;left:.7rem;top:.7rem;z-index:2;
-  font-family:var(--kr);font-size:.62rem;font-weight:700;letter-spacing:.02em;
+  font-family:var(--kr);font-size:.72rem;font-weight:700;letter-spacing:.02em;
   color:#fff;background:var(--lvc,var(--navy));padding:.2rem .5rem;border-radius:2px;
   box-shadow:0 1px 4px rgba(15,27,48,.18)}
 /* 중앙 재생 버튼 (원형 + 삼각형 SVG) */
@@ -827,7 +827,7 @@ html[lang="en"] .lab-en-only{display:none}
   background:var(--lvc,var(--navy));color:#fff;box-shadow:0 8px 22px rgba(15,27,48,.24)}
 /* "영상 준비 중" 배지 (우하단) */
 .lv-soon{position:absolute;right:.7rem;bottom:.7rem;z-index:2;
-  font-family:var(--kr);font-size:.6rem;font-weight:600;letter-spacing:.02em;
+  font-family:var(--kr);font-size:.72rem;font-weight:600;letter-spacing:.02em;
   color:var(--sub);background:rgba(255,255,255,.9);padding:.16rem .45rem;border-radius:2px}
 /* 카드 본문 — 연구실명 + PI */
 /* 왼쪽 여백 0 — 썸네일·제목·구간 머리의 왼쪽 끝이 한 줄로 선다 */
@@ -1954,8 +1954,8 @@ html[lang="en"] .lab-en-only{display:none}
   }
 })();
 </script>
-<script src="assets/nav.js?v=89"></script>
-<footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:#7b8595">
+<script src="assets/nav.js?v=90"></script>
+<footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;color:#68727f">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>
 </body>

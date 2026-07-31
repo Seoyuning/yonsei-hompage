@@ -5903,6 +5903,15 @@ window.YSME = {
  "noticesUG": [
   {
    "no": "공지",
+   "title": "기계공학창의설계(MEU2300) 대체과목 선정",
+   "date": "2026.07.29",
+   "url": "https://me.yonsei.ac.kr/me/community/notice.do?mode=view&articleNo=475698&article.offset=0&articleLimit=10",
+   "att": false,
+   "body": "23학번까지 필수이수인 기계공학창의설계(MEU2300)는 메커니즘설계(MEU3002)으로 대체 인정\n\n- 아직 기계공학창의설계(MEU2300)를 미이수한 학생에 한하여 메커니즘설계(MEU3002)로 대체인정\n- 기계공학창의설계(MEU2300)를 이수한 학생은 메커니즘설계(MEU3002)을 재수강으로 인정받을 수 없음",
+   "bodyKind": "text"
+  },
+  {
+   "no": "공지",
    "title": "2026학년도 2학기 재입학 전형 안내문",
    "date": "2026.05.29",
    "url": "https://me.yonsei.ac.kr/me/community/notice.do?mode=view&articleNo=471922&article.offset=0&articleLimit=10",
@@ -5927,6 +5936,65 @@ window.YSME = {
    "att": false,
    "body": "안녕하세요? 기계공학과 사무실입니다.\n학생들로부터 같은 문의가 반복적으로 오고, 학과 사무실에서는 똑같이 답변하고 있으나,\n학생들 사이에서 의견이 분분하여, 주요 문의사항에 대해 명확히 답변하기 위하여 공지를 올립니다.\n\n1. ‘일반선택’은 채워야 하는 학점이 아닙니다.\n졸업을 위해 채워야 하는 총 취득학점에서, 필수 요건들을 제외한 잔여 학점을 ‘일반선택’이라 명명한 것이므로,\n다른 종별(필교, 전필, 전선 등)에서 학점을 채워도 상관없는 학점입니다.\n\n2. 기계공학세미나 (1),(2) 둘 다 수강 시, ‘전공선택’ 인정 관련\n- 원칙 : 둘 다 수강 불가, 한 과목만 전공선택 인정\n- 18학번 포함 이전 학번 : 권장사항은 아니나, 둘 다 전선으로 인정되긴 합니다.\n- 19학번 포함 이후 학번 : 공식적으로 금지하며, 전선으로 하나만 인정되고,\n그럼에도 불구하고 두 과목 모두 들을 경우에는 나머지 하나는 일반선택으로 인정됩니다. (총 학점에는 포함됨)\n\n3. ABEEK 취소에 따라, 공학소양 이수 요건 삭제\n공학소양 이수 요건(필교 영역 중 국가와사회공동체, 지역사회와세계 필수)은 삭제되었으므로,\n필수교양 총 10개 영역 중 8개 영역을 이수하는 것만 관리하시면 됩니다. 해당 영역 삭제로 인해 남는 학점은 일반 선택으로 합산됩니다.\n\n4. 포털에 졸업 불가라고 뜨는 문제\n- 학사포털이 2022년 11월 개편됨에 따라, 시스템이 아직 불안정하고 오류가 많습니다. 본인 졸업요건에 따라 스스로 검토하시면 됩니다.\n- 졸업사정 할 때 학과에서 수기로 대체 처리 하는 과목들이 있습니다. 그런 과목들은 시스템에 반영 되어있지 않습니다.\n(** 기계공학수학1,2→공학수학3,4 대체 인정의 경우, 졸업시점까지 시스템에 반영되지 않으며, 졸업사정 시점에 학과에서 수기로 반영합니다.\n스스로 검토하여 졸업요건 충족 여부를 확인하셔야 합니다. 20학번까지는 전공기초로 인정되는 것이 맞습니다.\n** 대학원 교과목 전공선택 인정도 마찬가지로, 시스템에는 일반선택으로 분류되어 있으나, 졸업 시점에 수기로 전공선택으로 반영합니다.\n참고해주시기 바랍니다.)\n\n5. 졸업 전 학점취득현황 검토 요청 (전공만 검토함)\n4학년 졸업예정자에 한하여, skyice@yonsei.ac.kr 메일로 검토해드리고 있습니다.\n‘학사포탈-학점취득현황-자가진단 버튼 클릭 후-성적표출력 클릭-pdf 다운‘ 하셔서, 메일로 제출해주시면 검토해드리고 있습니다.\n현재 상황에서 스스로 검토하여 어떤 과목을 얼마나 더 들을건지 말씀해주셔야 검토가 가능합니다.\n그러나 메일로 회신 드리는 사항은 공식 사정 결과는 아니므로, 참고용으로만 알고 계시면 되겠습니다.\n\n6. UT세미나, 스페셜토픽, 기계공학세미나는 각각 다른 전공선택 교과목입니다.\nUT세미나와 스페셜토픽은 총 3학점(3회 수강)까지만 전공선택으로 인정됩니다.\n기계공학세미나는 총 3학점(1회 수강)까지만 전공선택으로 인정됩니다. (안내문 2번 참고)\n\n7. 공학수학, 공학정보처리 교과목은 공과대학에서 관리하는 교과목입니다.\n관련 문의 사항은 공과대학(T.5734)로 문의하시기 바랍니다.\n\n8. 기계공학과 학부생이 대학원 과목을 전공선택 과목으로 인정받으려면 학정번호가 MEU로 시작되는 과목을 들으시면 되며,\n수강신청 시 ‘학사포탈-학사행정-수업-대학원교과목수강신청’에서 신청하시면 됩니다. (자세한 사항은 학교 공지사항 참고)\n\n9.\n공학수치해석, 확률통계 교과목 종별\n22학번부터 공학수치해석, 확률통계의 종별이 전공기초 -> 전공선택으로 변경되었습니다.\n21학번까지는 기존과 동일하게 전공기초로 인정되는 점 참고 부탁드립니다. (전공선택으로 인정받을 수 없음)\n학정번호 | 교과목명 | 교과목 종별\n21학번 까지 | 22학번 이후\nMEU3003 | 공학수치해석 | 전공기초 | 전공선택\nMAT2013 | 확률통계 | 전공기초 | 전공선택\n\n10. 학부연구, 연구논문 동일 학기 수강 불가\n2025학년도 1학기부터 학부연구와 연구논문은 동일 학기 수강이 불가합니다.\n한 학기에 두 과목을 동시 수강할 경우 한 과목에 대해서만 성적 부여 가능하며(나머지 과목은 F 혹은 NP 처리됨),\n졸업 심사 시에 이를 감안하게 되는 점 참고하여 주시기 바랍니다.\n\n감사합니다.",
    "bodyKind": "text"
+  },
+  {
+   "no": "730",
+   "title": "2026학년도 2학기 ME Graduate Fellowship(MGF) 장학생 모집",
+   "date": "2026.07.15",
+   "url": "https://me.yonsei.ac.kr/me/community/notice.do?mode=view&articleNo=474974&article.offset=0&articleLimit=10",
+   "att": true,
+   "body": "ME Graduate Fellowship(MGF)은 우수한 대학원생을 선발하여 장학금과 다양한 혜택을 제공함으로써 수상자의 자긍심을 함양하고,\n대학원 진학을 희망하는 우수 인재의 학업 및 연구 의욕을 고취하고자 합니다.\n이에 아래와 같이 장학생을 모집하오니 많은 지원 바랍니다.\n\n1. 지원자격\n- 석·박사 통합과정생에 한함\n- 2026학년도 2학기 기준 대학원 입학 예정자 또는 2학기 등록 예정자\n- 학부 성적 기준 평균평점 3.7/4.3 이상 또는 4.0/4.5 이상\n\n2. 선발인원\n- 예산 범위 내 선발\n\n3. 장학금 및 혜택\n- 장학금: 1년 간 총 1,200만원(학기당 600만원씩 지급)\n- (BK 사업 참여 시) 장기 해외연수 및 국제학술대회 참가 기회 우선 제공\n- 장학증서 수여\n- 학과 홈페이지를 통한 장학생 소개\n※ 장학금 지급 신청 시점 기준으로 재학 중이 아니거나 석·박사 통합과정 이외의 과정으로 전환한 경우 장학금 지급 대상에서 제외됨\n\n4. 제출서류\n- 지원신청서(2페이지 이내 작성) 1부\n- 성적증명서 1부\n\n5. 진행일정\n- 지원서 접수: 2026년 7월 15일 ~ 8월 5일\n- 합격자 발표: 2026년 8월 중\n- 장학금 지급: 2026년 2학기 중(2027년 1~2월 예상)\n※ 상기 일정은 사정에 따라 변경될 수 있음\n\n6. 접수방법\n- 이메일 제출: mech_bk21_ley@yonsei.ac.kr\n\n7. 문의처\n- 전화: 02-2123-7817\n- 이메일: mech_bk21_ley@yonsei.ac.kr",
+   "bodyKind": "text",
+   "attName": "2026-2학기_기계공학부_ME_Graduate_Fellowship_장학생_선발_공고.hwpx"
+  },
+  {
+   "no": "729",
+   "title": "2026-여름계절학기 학부연구(3) 연구참여 신청서 제출 안내 (신청서 제출마감: 7.3.(금) 17:00) (update)",
+   "date": "2026.06.29",
+   "url": "https://me.yonsei.ac.kr/me/community/notice.do?mode=view&articleNo=474118&article.offset=0&articleLimit=10",
+   "att": true,
+   "body": "2026-여름계절학기 학부연구(3) 연구참여 프로그램 안내\n\n기계공학부에서는 2018년부터 1~4학년 학생들이 방학 기간을 이용하여 수업에서 다루지 못한 재미있고 깊이 있는 기계공학 지식을 공부할 수 있는 다양한 연구참여 및 교육 프로그램을 실시하고 있습니다. 이 프로그램이 전공 분야에 대한 자신의 적성을 발견하고, 가치 있는 미래를 꿈꿀 수 있는 기회가 되기를 바랍니다. 특히, 2019학년도 교과과정 개편 이후 학부생이 연구참여를 통해서 방학 또는 정규학기에 1학점을 취득할 수 있는 학부연구(MEU3006 ~ 3009)과목이 신설되었습니다.\n\n[참여 방법]\n\n* 참여대상자: 2026학년도 여름계절학기 개설과목인 MEU3008 학부연구(3)를 수강신청한 기계공학부 학부생 (복수전공자 수강 가능)\n\n* 첨부2의 연구주제를 참고하여 관심 있는 주제의 교수님께 이메일 등으로 연락을 드려 허락을 받은 후, 신청서 양식을 연구 시작과 동시에 2026. 7. 3.(금) 17:00 까지 LearnUs 연구신청서 제출함에 업로드합니다.\n(※ 신청서 제출 및 지도교수님의 승인은 이메일 승인으로 대체가능하며, 신청서 양식을 제출하지 않으면 학부연구 과목의 학점을 인정받을 수 없습니다.)\n\n* 교수님과 상의드려 학기 중 최소 32시간 이상을 학과 실험실 등에서 연구에 참여한 후 소정의 보고서를 제출하면 평가하여 학부연구 교과목의 학점(Pass)이 부여됩니다.\n\n* 구체적인 연구 참여 방법 및 참여 기간은 담당교수님과 상의하여 결정해주시기 바랍니다.\n\n[제출 기한]\n\n1. 학부연구 신청서 제출: 2026. 7. 3.(금) 17:00 까지 LearnUs 연구신청서 제출함으로 제출\n※ 문의: 학과 사무실 (메일: skyice@yonsei.ac.kr/ 전화: 02-2123-4426)\n\n2. 최종보고서 제출: 2026. 7. 17.(금) 23:59 까지\n\n[유의사항]\n\n* 학부연구 신청서 및 보고서 양식: LearnUs에서 다운로드\n\n* 첨부파일에 없는 실험실의 경우에도, 지도교수님의 승인을 받으면 연구참여 가능합니다.\n\n* 학점을 인정받기 위해서는 반드시 2026학년도 여름계절학기 MEU3008 학부연구(3) 과목을 수강신청해야 합니다.\n\n* 한 학기에 한 교수님의 연구실에서 수행한 연구 결과물로 학부연구와 연구논문 두 개 교과목에서 학점을 이수하는 것은 인정하지 않습니다.\n(2025-1학기부터 동일학기에 두 과목 동시 수강 불가/ 동시 수강할 시 한 과목은 F처리 됩니다.)\n\n* 6.29.(월) 첫 수업에는 대면 OT가 진행될 예정입니다.\n- 장소: 제1공학관 A690호\n- 시간: 8, 9교시\n\n* 연구실 참여정보는 7. 1. (수)에 업데이트 될 예정입니다.",
+   "bodyKind": "text",
+   "attName": "2026 여름계절학기 학부연구 신청서.hwp, 2026-여름계절학기 학부연구생 참여 연구실 정보.pdf"
+  },
+  {
+   "no": "728",
+   "title": "VAR 2026 여름학기 모집 안내",
+   "date": "2026.06.24",
+   "url": "https://me.yonsei.ac.kr/me/community/notice.do?mode=view&articleNo=473905&article.offset=0&articleLimit=10",
+   "att": true,
+   "bodyKind": "file",
+   "attName": "VAR 2026 여름학기 모집 포스터.pdf"
+  },
+  {
+   "no": "727",
+   "title": "기계공학부「홈페이지 구축 경진대회」안내",
+   "date": "2026.06.23",
+   "url": "https://me.yonsei.ac.kr/me/community/notice.do?mode=view&articleNo=473812&article.offset=0&articleLimit=10",
+   "att": true,
+   "body": "여러분이 직접 만든 홈페이지가 우리 학부의 공식 홈페이지가 됩니다.\n\n기계공학부가 학생 주도의 「홈페이지 구축 경진대회」를 개최합니다. 단순한 공모전이 아니라, 우수 작품은 실제 학부 공식 홈페이지(리뉴얼)의 기반으로채택·발전됩니다. 직접 만든 웹사이트를 실제 서비스로 구현하고, 포트폴리오로도남길 수 있는 기회입니다.\n\n■ 시상(총 6팀 · 290만원)\n- 1등 100만원/ 2등 각 50만원(2팀)/ 3등 각 30만원(3팀)\n\n■ 참가 대상\n- 기계공학부 학부생·대학원생 누구나 (팀당 1~4명)\n\n■ 주요 일정(상황에 따라 변동될 수 있음)\n- 신청 마감: 2026. 7. 3.(금)\n- 제작 기간: 7. 7.(화) ~ 7. 31.(금)\n- 심사·시상: 8월 첫째~둘째 주\n\n생성형AI 도구 활용이 허용되므로, 코딩이 익숙하지 않더라도 아이디어와 기획력이 있다면충분히 도전할 수 있습니다.\n\n■ 신청 방법\n- 첨부된 참가 신청서를 작성하여 민경민 교수(kmin.min@yonsei.ac.kr)에게 이메일로 제출 (팀명·팀원 정보·기획 의도 기재)\n\n자세한 공모 요건과 심사 기준은 첨부 안내문을 확인해 주세요. 여러분의 많은 도전을 기다립니다.",
+   "bodyKind": "text",
+   "attName": "기계공학부_홈페이지_경진대회_안내문_참가신청서_Final.docx, 기계공학부_홈페이지_경진대회_안내문_참가신청서_Final.pdf"
+  },
+  {
+   "no": "726",
+   "title": "일몰된 교과목(기계공학수학)에 대한 재수강처리 요청서 제출 안내",
+   "date": "2026.06.18",
+   "url": "https://me.yonsei.ac.kr/me/community/notice.do?mode=view&articleNo=473501&article.offset=0&articleLimit=10",
+   "att": true,
+   "body": "일몰된 교과목(기계공학수학)에 대한 재수강처리 요청서 제출 안내\n\n2019년 1학기부터 기계공학부 교과목 개편 시행에 따라 기계공학수학 1,2는 수학과 강의인 공학수학3,4로 대체되었습니다.\n\n* 대체과목\n\n변경 전 | 변경 후\n기계공학수학(1) | 공학수학(3)\n기계공학수학(2) | 공학수학(4)\n\n따라서, 기존에 '기계공학수학'을 수강하셨던 학생 중 이번 여름계절학기에 재수강을 원하시는 학생께서는\n공학수학 3,4 수강신청한 후, 재수강처리 요청서(첨부파일)를 제출해주시기 바랍니다.\n\n신청서를 제출해야 재수강 처리가 가능하므로 반드시 기간 내에 제출을 완료하셔서 졸업 시 불이익이 없도록 해주시기 바랍니다.\n\n- 제출기한: 2026. 6. 22.(월)까지\n- 제출방법: 이메일 제출 skyice@yonsei.ac.kr (서명란 반드시 기재 후 제출)\n- 문의: 기계공학부 사무실 02-2123-4426",
+   "bodyKind": "text",
+   "attName": "일몰된 교과목(기계공학수학)에 대한 재수강처리 요청서(2026_여름계절학기).pdf, 일몰된 교과목(기계공학수학)에 대한 재수강처리 요청서(2026_여름계절학기).hwp"
+  },
+  {
+   "no": "725",
+   "title": "기계공학과 2026 여름학기 해외집중강의 시리즈 수강생 모집 안내",
+   "date": "2026.06.11",
+   "url": "https://me.yonsei.ac.kr/me/community/notice.do?mode=view&articleNo=473051&article.offset=0&articleLimit=10",
+   "att": true,
+   "body": "기계공학부에서 아래와 같이 해외집중강의 시리즈를 진행하오니 많은 관심과 참석 부탁드립니다.\n\n※신청 링크 바로가기: https://forms.gle/K3T7oDmsZggtmkqg7",
+   "bodyKind": "text",
+   "attName": "RLAI_Yonsei_Syllabus.pdf"
   },
   {
    "no": "722",
@@ -6017,33 +6085,6 @@ window.YSME = {
    "body": "[수림재단 신규 장학생 선발 안내]\n\n가. 추천 대상: 이과대학 1명, 공과대학 1명\n\n나. 추천 조건\n1) 2학년 재학생\n2) 소득분위 8분위 이하\n3) 전체 백분위 평균 점수 85점 이상\n4) 2026학년도 1학기 12학점 이상 이수, 1학년 재학 시 총 24학점 이상 이수\n\n다. 장학금액: 생활비성 장학금 480만원\n*해외역사문화탐방 기회 제공(중국, 일본)\n\n라. 제출서류:\n1) 지원신청서(붙임파일 1)\n2) 지원양식 모음(붙임파일 2)\n3) 학자금 지원구간 통지서\n4) 성적증명서, 수강신청 내역서\n5) 고등학교 학교생활기록부(직인 포함)\n6) 대학수학능력시험 성적표(시험 응시자에 한함)\n7) 재학증명서\n8) 주민등록등본\n\n마. 제출기한 및 방법: 2026. 4. 16.(목)\n\n바. 제출 방법: shin.hj@yonsei.ac.kr로 PDF 합본을 제출",
    "bodyKind": "text",
    "attName": "2026년도 신규장학생 선발안내_260304.hwp, 장학생 지원신청서(양식)_260227.hwp, 개인정보 수집 및 활용에 관한 동의서,자기소개서, 추천서(양식)_260227.hwp"
-  },
-  {
-   "no": "공지",
-   "title": "2026학년도 2학기 재입학 전형 안내문",
-   "date": "2026.05.29",
-   "url": "https://me.yonsei.ac.kr/me/community/notice.do?mode=view&articleNo=471922&article.offset=10&articleLimit=10",
-   "att": true,
-   "bodyKind": "file",
-   "attName": "2026학년도 2학기 재입학 전형 안내문pdf.pdf"
-  },
-  {
-   "no": "공지",
-   "title": "2026 공과대학 'ZERO to AI Challenge' 공모 안내",
-   "date": "2026.05.11",
-   "url": "https://me.yonsei.ac.kr/me/community/notice.do?mode=view&articleNo=470673&article.offset=10&articleLimit=10",
-   "att": true,
-   "bodyKind": "file",
-   "attName": "1. 'ZERO to AI Challenge' 안내문 및 양식.zip, 2. ZERO to AI Challenge 포스터.png"
-  },
-  {
-   "no": "공지",
-   "title": "[필독] 교과목 수강 및 졸업 관련 주요 문의 사항에 대한 답변",
-   "date": "2023.02.13",
-   "url": "https://me.yonsei.ac.kr/me/community/notice.do?mode=view&articleNo=159666&article.offset=10&articleLimit=10",
-   "att": false,
-   "body": "안녕하세요? 기계공학과 사무실입니다.\n학생들로부터 같은 문의가 반복적으로 오고, 학과 사무실에서는 똑같이 답변하고 있으나,\n학생들 사이에서 의견이 분분하여, 주요 문의사항에 대해 명확히 답변하기 위하여 공지를 올립니다.\n\n1. ‘일반선택’은 채워야 하는 학점이 아닙니다.\n졸업을 위해 채워야 하는 총 취득학점에서, 필수 요건들을 제외한 잔여 학점을 ‘일반선택’이라 명명한 것이므로,\n다른 종별(필교, 전필, 전선 등)에서 학점을 채워도 상관없는 학점입니다.\n\n2. 기계공학세미나 (1),(2) 둘 다 수강 시, ‘전공선택’ 인정 관련\n- 원칙 : 둘 다 수강 불가, 한 과목만 전공선택 인정\n- 18학번 포함 이전 학번 : 권장사항은 아니나, 둘 다 전선으로 인정되긴 합니다.\n- 19학번 포함 이후 학번 : 공식적으로 금지하며, 전선으로 하나만 인정되고,\n그럼에도 불구하고 두 과목 모두 들을 경우에는 나머지 하나는 일반선택으로 인정됩니다. (총 학점에는 포함됨)\n\n3. ABEEK 취소에 따라, 공학소양 이수 요건 삭제\n공학소양 이수 요건(필교 영역 중 국가와사회공동체, 지역사회와세계 필수)은 삭제되었으므로,\n필수교양 총 10개 영역 중 8개 영역을 이수하는 것만 관리하시면 됩니다. 해당 영역 삭제로 인해 남는 학점은 일반 선택으로 합산됩니다.\n\n4. 포털에 졸업 불가라고 뜨는 문제\n- 학사포털이 2022년 11월 개편됨에 따라, 시스템이 아직 불안정하고 오류가 많습니다. 본인 졸업요건에 따라 스스로 검토하시면 됩니다.\n- 졸업사정 할 때 학과에서 수기로 대체 처리 하는 과목들이 있습니다. 그런 과목들은 시스템에 반영 되어있지 않습니다.\n(** 기계공학수학1,2→공학수학3,4 대체 인정의 경우, 졸업시점까지 시스템에 반영되지 않으며, 졸업사정 시점에 학과에서 수기로 반영합니다.\n스스로 검토하여 졸업요건 충족 여부를 확인하셔야 합니다. 20학번까지는 전공기초로 인정되는 것이 맞습니다.\n** 대학원 교과목 전공선택 인정도 마찬가지로, 시스템에는 일반선택으로 분류되어 있으나, 졸업 시점에 수기로 전공선택으로 반영합니다.\n참고해주시기 바랍니다.)\n\n5. 졸업 전 학점취득현황 검토 요청 (전공만 검토함)\n4학년 졸업예정자에 한하여, skyice@yonsei.ac.kr 메일로 검토해드리고 있습니다.\n‘학사포탈-학점취득현황-자가진단 버튼 클릭 후-성적표출력 클릭-pdf 다운‘ 하셔서, 메일로 제출해주시면 검토해드리고 있습니다.\n현재 상황에서 스스로 검토하여 어떤 과목을 얼마나 더 들을건지 말씀해주셔야 검토가 가능합니다.\n그러나 메일로 회신 드리는 사항은 공식 사정 결과는 아니므로, 참고용으로만 알고 계시면 되겠습니다.\n\n6. UT세미나, 스페셜토픽, 기계공학세미나는 각각 다른 전공선택 교과목입니다.\nUT세미나와 스페셜토픽은 총 3학점(3회 수강)까지만 전공선택으로 인정됩니다.\n기계공학세미나는 총 3학점(1회 수강)까지만 전공선택으로 인정됩니다. (안내문 2번 참고)\n\n7. 공학수학, 공학정보처리 교과목은 공과대학에서 관리하는 교과목입니다.\n관련 문의 사항은 공과대학(T.5734)로 문의하시기 바랍니다.\n\n8. 기계공학과 학부생이 대학원 과목을 전공선택 과목으로 인정받으려면 학정번호가 MEU로 시작되는 과목을 들으시면 되며,\n수강신청 시 ‘학사포탈-학사행정-수업-대학원교과목수강신청’에서 신청하시면 됩니다. (자세한 사항은 학교 공지사항 참고)\n\n9.\n공학수치해석, 확률통계 교과목 종별\n22학번부터 공학수치해석, 확률통계의 종별이 전공기초 -> 전공선택으로 변경되었습니다.\n21학번까지는 기존과 동일하게 전공기초로 인정되는 점 참고 부탁드립니다. (전공선택으로 인정받을 수 없음)\n학정번호 | 교과목명 | 교과목 종별\n21학번 까지 | 22학번 이후\nMEU3003 | 공학수치해석 | 전공기초 | 전공선택\nMAT2013 | 확률통계 | 전공기초 | 전공선택\n\n10. 학부연구, 연구논문 동일 학기 수강 불가\n2025학년도 1학기부터 학부연구와 연구논문은 동일 학기 수강이 불가합니다.\n한 학기에 두 과목을 동시 수강할 경우 한 과목에 대해서만 성적 부여 가능하며(나머지 과목은 F 혹은 NP 처리됨),\n졸업 심사 시에 이를 감안하게 되는 점 참고하여 주시기 바랍니다.\n\n감사합니다.",
-   "bodyKind": "text"
   },
   {
    "no": "712",
@@ -6154,6 +6195,96 @@ window.YSME = {
    "attName": "대학원 학사요람(2025.08.개정).pdf"
   },
   {
+   "no": "617",
+   "title": "2026학년도 2학기 ME Graduate Fellowship(MGF) 장학생 모집",
+   "date": "2026.07.15",
+   "url": "https://me.yonsei.ac.kr/me/community/notice2.do?mode=view&articleNo=474975&article.offset=0&articleLimit=10",
+   "att": true,
+   "body": "ME Graduate Fellowship(MGF)은 우수한 대학원생을 선발하여 장학금과 다양한 혜택을 제공함으로써 수상자의 자긍심을 함양하고,\n대학원 진학을 희망하는 우수 인재의 학업 및 연구 의욕을 고취하고자 합니다.\n이에 아래와 같이 장학생을 모집하오니 많은 지원 바랍니다.\n\n1. 지원자격\n- 석·박사 통합과정생에 한함\n- 2026학년도 2학기 기준 대학원 입학 예정자 또는 2학기 등록 예정자\n- 학부 성적 기준 평균평점 3.7/4.3 이상 또는 4.0/4.5 이상\n\n2. 선발인원\n- 예산 범위 내 선발\n\n3. 장학금 및 혜택\n- 장학금: 1년 간 총 1,200만원(학기당 600만원씩 지급)\n- (BK 사업 참여 시) 장기 해외연수 및 국제학술대회 참가 기회 우선 제공\n- 장학증서 수여\n- 학과 홈페이지를 통한 장학생 소개\n※ 장학금 지급 신청 시점 기준으로 재학 중이 아니거나 석·박사 통합과정 이외의 과정으로 전환한 경우 장학금 지급 대상에서 제외됨\n\n4. 제출서류\n- 지원신청서(2페이지 이내 작성) 1부\n- 성적증명서 1부\n\n5. 진행일정\n- 지원서 접수: 2026년 7월 15일 ~ 8월 5일\n- 합격자 발표: 2026년 8월 중\n- 장학금 지급: 2026년 2학기 중(2027년 1~2월 예상)\n※ 상기 일정은 사정에 따라 변경될 수 있음\n\n6. 접수방법\n- 이메일 제출: mech_bk21_ley@yonsei.ac.kr\n\n7. 문의처\n- 전화: 02-2123-7817\n- 이메일: mech_bk21_ley@yonsei.ac.kr",
+   "bodyKind": "text",
+   "attName": "2026-2학기_기계공학부_ME_Graduate_Fellowship_장학생_선발_공고.hwpx"
+  },
+  {
+   "no": "616",
+   "title": "2026학년도 2학기 연구원·연구보조원 임용 신청 안내 (공학연구원)",
+   "date": "2026.07.09",
+   "url": "https://me.yonsei.ac.kr/me/community/notice2.do?mode=view&articleNo=474717&article.offset=0&articleLimit=10",
+   "att": true,
+   "body": "공학연구원에서 연구원 및 연구보조원을 다음과 같이 모집합니다.\n\n가. 모집 대상 및 지원서류\n\n구분 | 자격요건 | 제출서류\n연구원 | 대학원 재학생 (박사 과정,통합 과정) | 공통서류 ①,②,③,④\n산학협력단과 근로계약을 체결하여 연구과제에 참여 중인 졸업생(석사 학위 이상의 소지자) | 공통서류 ①,②,③,④ 외 ⑤석사학위증명서⑥산학협력단 근로계약서 사본⑦과제 책임교수 추천서(자유양식)\n연구 보조원 | 대학원 재학생 (석사 과정) | 공통서류 ①,②,③,④\n산학협력단과 근로계약을 체결하여 연구과제에 참여 중인 졸업생(학사 학위 이상의 소지자) | 공통서류 ①,②,③,④ 외 ⑤학사학위증명서⑥산학협력단 근로계약서 사본⑦과제 책임교수 추천서(자유양식)\n\n1) 유의사항: 2026학년도 2학기 기준 휴학생, 제적생은 신청 불가\n2) 공통서류(첨부파일 활용)\n①연구원·연구보조원 등록 신청서\n②개인정보 서약서·동의서 및 지도교수 확인서\n③특수관계 확인서\n④특수관계인 공개신고서(특수관계인이 없다면 생략)\n\n나. 임용기간: 2026학년도 2학기(2026.9.1.~ 2027.2.28.)\n단, 졸업생으로서 산학협력단과 근로계약을 체결한 신청자의 경우, 학기 중에 과제가 종료된다면 과제종료일까지를 임용기간으로 함.\n다. 신청방법: 전자우편(yier@yonsei.ac.kr)으로 2026.7.6.(월)~2026.9.4.(금)까지 신청\n\n라. 비고\n1) 임용신청 후 부적격자의 경우 임용이 취소될 수 있음\n2) 공식 신청기간 내에 신청하지 못할 경우 재직증명서 발급 절대 불가능\n3) 신규 등록자의 경우 임용일 이전에 연구관리시스템에 최초 로그인 이력 필요\n4) 재직증명서는 2026.9.16.(수)부터 발급 가능",
+   "bodyKind": "text",
+   "attName": "26-2 연구원·연구보조원 임용 서류.zip"
+  },
+  {
+   "no": "615",
+   "title": "기계공학과 2026 여름학기 해외집중강의 시리즈(2차) 수강생 모집(~7/12(일)까지)",
+   "date": "2026.07.07",
+   "url": "https://me.yonsei.ac.kr/me/community/notice2.do?mode=view&articleNo=474632&article.offset=0&articleLimit=10",
+   "att": true,
+   "body": "기계공학부 구성원 여러분들의 많은 관심과 참여 바랍니다.\n\n*상세 내용 및 강의계획서는 첨부파일 확인 요망\n(신청 링크 바로가기: https://docs.google.com/forms/d/e/1FAIpQLSdGHeD1JDgCgvmpXusNhTDjDEqT99Shh2pFsUX6w5gy5JSvkQ/viewform?usp=dialog)",
+   "bodyKind": "text",
+   "attName": "mechanics_meets_genomics_syllabus.pdf"
+  },
+  {
+   "no": "614",
+   "title": "2026학년도 2학기 대학원 휴학·복학 신청 및 학적 관련 안내",
+   "date": "2026.07.02",
+   "url": "https://me.yonsei.ac.kr/me/community/notice2.do?mode=view&articleNo=474359&article.offset=0&articleLimit=10",
+   "att": true,
+   "body": "2026-2학기 대학원 휴학·복학 신청 및 학적과 관련하여 다음과 같이 안내드립니다.\n\n가. 신청 및 승인 기간\n\n구분 | 학생 신청기간 | 학과 승인기간 | 신청 및 승인 절차\n휴학 | 미등록자 | 8. 1.(토) 00:00 ~ 9. 14.(월) 23:59 | 신청기간 동안 수시 승인 | 학생신청(학사정보시스템)학과승인대학원승인\n등록자 | 8. 1.(토) 00:00 ~ 11. 13.(금) 23:59*질병, 육아사유는 12. 1.(화)까지 신청 가능\n복학 | 1차 | 7. 13.(월) 00:00 ~ 8. 9.(일) 23:59 | 8. 10.(월)까지 수시 승인 | 일부 경우를 제외하고, 복학 신청은 별도 절차 없이 자동으로 승인 (붙임 1 참고)\n2차 | 8. 10.(월) 00:00 ~ 8. 24.(월) 23:59 | 8. 25.(화)까지 수시 승인\n3차 | 8. 26.(화) 00:00 ~ 9. 2.(수) 23:59 | 9. 3.(목)까지 수시 승인\n\n* (중요)외국인 학생 비자 발급을 위한 표준입학허가서는 1차 및 2차 복학 신청 기간 내에 복학 신청을 해야 발급 가능",
+   "bodyKind": "text",
+   "attName": "붙임 1. 2026-2 휴학 복학 신청 및 학적 관련 안내(Guidance on Leave of Absence, Reinstatement and other Academic Records)(외5).zip"
+  },
+  {
+   "no": "613",
+   "title": "기계공학부「홈페이지 구축 경진대회」안내",
+   "date": "2026.06.23",
+   "url": "https://me.yonsei.ac.kr/me/community/notice2.do?mode=view&articleNo=473813&article.offset=0&articleLimit=10",
+   "att": true,
+   "body": "여러분이 직접 만든 홈페이지가 우리 학부의 공식 홈페이지가 됩니다.\n\n기계공학부가 학생 주도의 「홈페이지 구축 경진대회」를 개최합니다. 단순한 공모전이 아니라, 우수 작품은 실제 학부 공식 홈페이지(리뉴얼)의 기반으로채택·발전됩니다. 직접 만든 웹사이트를 실제 서비스로 구현하고, 포트폴리오로도남길 수 있는 기회입니다.\n\n■ 시상(총 6팀 · 290만원)\n- 1등 100만원/ 2등 각 50만원(2팀)/ 3등 각 30만원(3팀)\n\n■ 참가 대상\n- 기계공학부 학부생·대학원생 누구나 (팀당 1~4명)\n\n■ 주요 일정(상황에 따라 변동될 수 있음)\n- 신청 마감: 2026. 7. 3.(금)\n- 제작 기간: 7. 7.(화) ~ 7. 31.(금)\n- 심사·시상: 8월 첫째~둘째 주\n\n생성형AI 도구 활용이 허용되므로, 코딩이 익숙하지 않더라도 아이디어와 기획력이 있다면충분히 도전할 수 있습니다.\n\n■ 신청 방법\n- 첨부된 참가 신청서를 작성하여 민경민 교수(kmin.min@yonsei.ac.kr)에게 이메일로 제출 (팀명·팀원 정보·기획 의도 기재)\n\n자세한 공모 요건과 심사 기준은 첨부 안내문을 확인해 주세요. 여러분의 많은 도전을 기다립니다.",
+   "bodyKind": "text",
+   "attName": "기계공학부_홈페이지_경진대회_안내문_참가신청서_Final.pdf, 기계공학부_홈페이지_경진대회_안내문_참가신청서_Final.docx"
+  },
+  {
+   "no": "612",
+   "title": "2026학년도 8월 졸업예정자 학위논문 제출 및 인준 관련 안내",
+   "date": "2026.06.19",
+   "url": "https://me.yonsei.ac.kr/me/community/notice2.do?mode=view&articleNo=473603&article.offset=0&articleLimit=10",
+   "att": true,
+   "body": "2026학년도 8월 졸업예정자의 학위논문 제출 및 인준 관련 사항을 안내드립니다.\n\n가. 학위논문 작성지침\n학위논문은 연세대학교 출판부 발행 「새논문작성법」및 「대학원 학위논문에 관한 내규」에 따라 양식, 규격, 체재 등의 오류가 없도록 유의하여 작성\n※ 대학원 홈페이지 참고(바로가기 클릭)\n\n나. 학위논문 제출\n온라인 논문(PDF)파일 제출(책자 논문 제출 전면 폐지)\n1) 제출기간: 2026.7.2.(목) 09:00 ~ 7.10.(금) 16:00(기간 중 24시간 상시 가능)\n2) 제출대상: 2026년 8월 졸업예정자(학과졸업요건 미충족으로 졸업 불가한 학생은 미해당)\n3) 제출방법: 도서관 학위논문 제출 시스템 (바로가기 클릭) 접속 및 제출\n4) 제출서류(아래 (1),(2) 2가지 서류 모두 준비 및 온라인 제출)\n가) 논문전체파일 PDF 1부\n나) 원본 인준서 스캔파일 PDF 1부\n※ 논문전체파일에 포함된 인준서 페이지는 심사위원의 \"성명\"만 기재\n※ 심사위원의 서명이 완료된 인준서 스캔본은 별도 제출(스캔파일: 도서관 온라인 제출, 원본: 학위논문 제출확인서와 함께 학과 직접 제출)\n5) 유의사항\n가) 논문제출자 필독 사항: 붙임의 '온라인 학위논문 제출안내 및 FAQ' 필수 숙지\n나) 온라인 제출 완료 후 논문 수정이 필요한 경우\n(1) 제출기간 내\n(가) 제출 건 승인되기 전('논문제출 접수완료' 상태): PDF파일, 메타데이터 자유롭게 수정가능\n(나) 제출 건 반송되었을 때('반송' 상태): 수정 진행 후 재제출\n(다) 제출 건 승인된 이후('논문제출 처리완료' 상태): 재제출요청 및 제출처에서 반송 이후 수정본 재제출\n※ 제출 건 승인된 이후 메타데이터 수정은 도서관 구글폼으로 요청(도서관 홈페이지 공지사항 내 링크 참고)\n(2) 제출기간 이후: 명백한 오탈자, 편집상 오류에 한하여 교체(도서관 디지털미디어서비스팀에 공문으로 요청. 학위수여식 전날(2026.8.27.)까지 공문 도착 필수, 제출자가 수정한 논문 파일 공문 첨부 및 공문 내 수정사항 기재)\n※ 학위수여식 이후 교체 불가함을 유의\n다) 기타 유의사항: 도서관 홈페이지 공지사항 필독(바로가기 클릭)\n6) 제출 문의(도서관): 02-2123-4643~4, thesis@yonsei.ac.kr\n\n다. 학위논문 인준\n1) 학위논문 인준 지침: 대면(서면) 인준 원칙\n\n방법 | 내용\n대면(서면) 인준※ 원칙 | 인준서에 직접 서명을 원칙으로 하나 도장 날인도 허용\n학사정보시스템(온라인) 인준※ 선택 | 1. (학생/심사위원)학사포털 인준 (신청)기간: 2026.7.2.(목) ~ 7.10.(금) 2. 신청요건: 도서관에 온라인 논문 제출 이후 학사정보시스템 논문정보와 도서관 제출 정보가 일치한 경우에만 학사정보시스템 인준신청 가능3. 인준절차 (학생) 도서관 온라인 논문 제출 후 학사정보시스템 논문정 보 검증 → (학생) 학사정보시스템 인준 신청 → (심 사위원) 학사정보시스템 인준 체크 → (학생) 학사정 보시스템 인준서 출력하여 도서관과 학과 제출 ※ 학사정보시스템 인준 이후, 도서관에서 온라인 논문 교체를 허용한 경우 1회에 한 해 학사정보시스템 재인준 가능하며, 재인준 시 기존 내역은 초기화 및 재인준 일시로 최종 인준 일 적용됨\n비대면(이메일) 인준※ 선택 | 심사위원이 직접 서명한 서명 스캔본과 인준 사실을 심사위원장에게 메일로 제출 → 심사위원장 붙임의 '학위논문 인준사실 확인서' 학과 제출\n※ 심사위원이 해외체류 등 불가피한 사유가 있는 경우 학사정보시스템(온라인), 비대면(이메일) 인준 허용\n2) 인준서 양식: 대학원 홈페이지 각종 양식 내 논문양식 참고자료 활용(클릭)\n3) 인준 방법 및 절차\n\n※ 한 가지 인준방식이 아닌, 여러 인준방식이 혼합될 경우 원본 확보를 위해 아래 우선 순위에 따라 인준을 시행하되 최종본은 1장으로 구성\n※ 우선 순위: 학사정보시스템 → 비대면 → 대면\n예시1) 비대면과 대면 인준 혼합 시, 비대면 인준 우선 시행 후 해당 스캔 출력본에 최종 대면 인준\n예시2) 학사정보시스템과 대면 인준 혼합 시, 학사정보시스템 인준 우선 시행 후 해당 인준서 출력본에 최종 대면 인준\n4) 2026학년도 8월 졸업예정자 제출서 및 인준서 일정 표기 관련 안내\n가) 학위논문 제목 및 심사위원장이 표기된 인준서 양식인 경우, 구양식과 신양식 모두 제출 가능\n나) 제출서 및 인준서의 표기 날짜는 2026년 8월로 기재하여 제출해야 함(2026년 8월로 기재되지 않은 경우 학위논문 접수 불가 및 재인준 필수)\n\n붙임 1. 2026학년도 1학기 학위논문제출 안내 1부.\n2. 온라인 학위논문 제출안내 및 FAQ(한글) 1부.\n3. 온라인 학위논문 제출안내 및 FAQ(영문) 1부.\n4. 학위논문 인준절차 및 관련 자료 압축파일 1부. 끝.",
+   "bodyKind": "text",
+   "attName": "붙임1. 2026학년도 1학기 학위논문제출 안내.hwp, 붙임2. 온라인 학위논문 제출안내 및 FAQ.pdf, 붙임3. Dissertation and Thesis Submission Guidelines & FAQ.pdf, 붙임4. 학위논문 인준절차 및 관련 자료.zip"
+  },
+  {
+   "no": "611",
+   "title": "2026학년도 1학기 대학원 학사 지도 체계화를 위한 APR 계획서 작성 마감일 안내",
+   "date": "2026.06.16",
+   "url": "https://me.yonsei.ac.kr/me/community/notice2.do?mode=view&articleNo=473347&article.offset=0&articleLimit=10",
+   "att": true,
+   "body": "2026학년도 1학기 대학원 학사 지도 체계화를 위한 APR 계획서 작성 마감일 안내\n\n가. APR 시스템은 대학원생의 학업 및 연구 전반을 체계적으로 관리하기 위한 시스템으로, 기한 내 계획서 작성바랍니다.\n나. 학생 계획서 작성 기간: ~ 2026. 7. 3.(금)\n다. 지도교수 피드백 확인 가능 기간: ~ 2026. 7. 24.(금)\n라. 유의사항\n- 최종 제출 완료 후에는 제출 내역이 확정되므로, 작성 전 반드시 확인 바랍니다.\n- 지도교수님의 피드백 결과가 ‘보완필요’인 경우, 학생의 수정제출 가능합니다.",
+   "bodyKind": "text",
+   "attName": "붙임2. APR 사용 매뉴얼(학생용).pdf"
+  },
+  {
+   "no": "610",
+   "title": "기계공학과 2026 여름학기 해외집중강의 시리즈 수강생 모집 안내",
+   "date": "2026.06.11",
+   "url": "https://me.yonsei.ac.kr/me/community/notice2.do?mode=view&articleNo=473052&article.offset=0&articleLimit=10",
+   "att": true,
+   "body": "기계공학부에서 아래와 같이 해외집중강의 시리즈를 진행하오니 많은 관심과 참석 부탁드립니다.\n\n※신청 링크 바로가기: https://forms.gle/K3T7oDmsZggtmkqg7",
+   "bodyKind": "text",
+   "attName": "RLAI_Yonsei_Syllabus.pdf"
+  },
+  {
+   "no": "609",
+   "title": "2026학년도 2학기 학위과정 변경 신청 안내",
+   "date": "2026.06.09",
+   "url": "https://me.yonsei.ac.kr/me/community/notice2.do?mode=view&articleNo=472801&article.offset=0&articleLimit=10",
+   "att": true,
+   "body": "2026학년도 2학기 학위과정 변경을 다음과 같이 안내드립니다.\n\n1. 일정\n\n구 분 | 일 정 | 비 고\n학생 신청 기간 | 석사→ 통합 | 2026학년도 1학기 성적 등재 ~2026. 7. 12.(일) 23:59 | 붙임 2 참고, 학사정보시스템을 통해서 신청\n통합→ 석사 | 2026. 6. 15.(월) 09:00 ~2026. 7. 12.(일) 23:59\n승인자 확인 | 2026. 7. 24.(금) 예정 | 학사정보시스템을 통해 결과 확인\n\n2. 신청 자격요건: 붙임 1의 제3조(학위과정 변경절차 및 신청자격) 참조\n\n1) 석사학위과정에서 통합과정으로 변경\n가) 석사학위과정 2학기부터 3학기까지 재학 중 대학원이 지정한 기간에 신청 가능함(4학기 진입 시 신청 불가)\n나) 석사학위과정 2학기 재학 중 신청한 경우는 18학점 이상, 석사학위과정 3학기 재학 중 신청한 경우는 27학점 이상을 취득해야 하며,\n학업성적이 평량평균 3.3/4.3 이상이어야 함\n2) 통합과정 중단\n가) 통합과정 3학기부터 7학기까지 재학 중 대학원이 지정한 기간에 신청 가능함(8학기 진입 시 신청 불가)\n\n3. 기타 유의사항\n가. 학사정보시스템에는 2026년 6월 15일부터 신청 메뉴가 활성화 되나, 통합으로의 과정 변경은 학점 요건이 있어 성적이 등재되는 시점부터 신청이 가능합니다\n(성적 등재는 성적 정정 등의 학사 일정에 따라 변동되는 경우가 많아 정확한 기간을 명시하기가 어려우며, 대략 2026년 7월 초에 등재됨.\n실제 신청 기간은 약 1주가 안되는 기간이기에 반드시 성적 등재 이후 기간 내 신청)\n나. 학연산 과정 학생의 경우, 소속 학과에 변경을 희망하는 과정이 개설되어 있는 것과 동시에 해당 과정이 학연산 협약 대상이어야 하며,\n학연산 과정으로 재직 중인 기관에서 변경에 대한 승인(또는 확인) 공문을 대학원으로 송부해야만 신청이 가능합니다.\n다. 군위탁 또는 계약학과 학생의 경우 또한 변경하고자 하는 과정이 협약 대상인 경우만 신청 가능하며, 본인 소속 부대 또는 기관으로부터 학위과정 변경에 대한 승인(또는 확인)에 대한 자료를 추가로 제출해야 합니다.\n\n붙임1. 학위과정 변경에 관한 내규\n붙임2. 과정변경(중단) 학생 신청 메뉴얼",
+   "bodyKind": "text",
+   "attName": "붙임1.학위과정 변경에 관한 내규.pdf, 붙임2.과정변경(중단) 학생 신청 매뉴얼.pdf"
+  },
+  {
    "no": "608",
    "title": "2026학년도 박사우수장학금(이공계) 및 석사우수장학금(이공계) 신규 장학생 신청 안내",
    "date": "2026.05.29",
@@ -6244,16 +6375,6 @@ window.YSME = {
    "body": "2026학년도 신동욱 해외연수 장학생 추천과 관련하여 안내드립니다.\n\n□ 제출방법: 2026.4.28.(화) 17:20 까지 원본서류 공과대학 행정1팀(1공학관 N601호, 담당자: 홍가인 선생님)으로 제출\n\n가. 선발대상: 박사과정 연구등록학기에 있는 재학생 중 해외 소재 대학 및 연구기관에서 1년 이상의 연구를 진행하고자 하는 자\n나. 선발인원: 1명\n다. 지원규모: 연간 1,000만원 (2026. 8월, 2027. 2월에 나누어 지급)\n라. 제출서류\n1) 지원(이력)서(붙임 2)\n2) 지도교수 추천서(붙임 3)\n3) 자기소개서(붙임 4)\n4) 연구계획서 및 해외연구기관 동의확인서(자유 양식)\n5) 대학 및 대학원 성적증명서, 석사학위논문\n6) 각종 입상실적 및 연구실적을 증명할 수 있는 증빙서류",
    "bodyKind": "text",
    "attName": "붙임1.신동욱해외연수장학생_선발요강(외3).zip"
-  },
-  {
-   "no": "공지",
-   "title": "[대학원] 대학원 학사요람 (2025.08.개정)",
-   "date": "2024.05.29",
-   "url": "https://me.yonsei.ac.kr/me/community/notice2.do?mode=view&articleNo=190313&article.offset=10&articleLimit=10",
-   "att": true,
-   "body": "2025년 8월 개정된 기계공학과 대학원 학사요람을 첨부와 같이 안내하여 드리오니,\n\n개정된 학사요람을 확인하시기 바랍니다.\n\n* 주요개정사항\n\n1. 학위 취득을 위한 최소 수강 학점\n학위 과정 | 최소 졸업 학점\n석사 과정 | 27 30 (26년 이전 입학자)\n박사 과정 | 27 30 (26년 이전 입학자)\n석박사 통합 과정 | 48 54 (26년 이전 입학자)\n\n* 상기 학위 과정 이수에 필요한 최소 졸업학점을 만족하고, 총 평량 평균이 3.0/4.3 이상이어야 한다.\n2026년 1학기 혹은 이후 입학자의 경우, 학위논문연구과목의 이수학점을 최소 졸업 학점에 포함할 수 없다.\n** 2025년 2학기 및 그 이후 입학자의 경우, 석사과정은 12학점, 통합과정은 18학점, 박사과정은 12학점 이상의 “기계공학과 개설 강의과목”을 반드시 이수해야한다. 단, 석사학위를 본교 기계공학과에서 취득한 후 박사과정에 입학한 학생의 경우, 통합과정의 기준을 준용하고 석사과정시 이수한 과목을 인정한다.\n“기계공학과 개설 강의과목”: 전공강의 과목을 의미하며 세미나, 대학원에서의 연구 및 학위논문연구과목 제외",
-   "bodyKind": "text",
-   "attName": "대학원 학사요람(2025.08.개정).pdf"
   },
   {
    "no": "598",
@@ -6355,6 +6476,54 @@ window.YSME = {
   }
  ],
  "newsList": [
+  {
+   "title": "'2026 인공지능 여름학교' 연세대학교에서 성황리 개최",
+   "date": "2026.07.15",
+   "url": "https://me.yonsei.ac.kr/me/community/news.do?mode=view&articleNo=475405&article.offset=0&articleLimit=10",
+   "thumb": "https://me.yonsei.ac.kr/_attach/image/2026/07/thumb_nBrlOayzKZHEZGUhMIyS0.jpg"
+  },
+  {
+   "title": "연세대학교 기계공학부, 2026 여름학기 해외집중 강의 시리즈 개최 (2026.07.01~03)",
+   "date": "2026.07.22",
+   "url": "https://me.yonsei.ac.kr/me/community/news.do?mode=view&articleNo=475404&article.offset=0&articleLimit=10",
+   "thumb": "https://me.yonsei.ac.kr/_attach/image/2026/07/thumb_enXYiiGZOzifGPHUwqYn0.JPG"
+  },
+  {
+   "title": "Lattice Boltzmann Methodology for Single-Phase and Multiphase Nanoparticle Modeling, Springer, 도서 출간",
+   "date": "2026.06.01",
+   "url": "https://me.yonsei.ac.kr/me/community/news.do?mode=view&articleNo=475403&article.offset=0&articleLimit=10",
+   "thumb": "https://me.yonsei.ac.kr/_attach/image/2026/07/thumb_eRdjpjFFqzOyQJWAaiaZ0.png"
+  },
+  {
+   "title": "다층 그래핀 프레넬 렌즈와 딥러닝을 활용한 비접촉식 에탄올 분자 센싱 기술 개발",
+   "date": "2026.06.01",
+   "url": "https://me.yonsei.ac.kr/me/community/news.do?mode=view&articleNo=475402&article.offset=0&articleLimit=10",
+   "thumb": "https://me.yonsei.ac.kr/_attach/image/2026/07/thumb_hkBewdsWcxjuKVrFLUib0.JPG"
+  },
+  {
+   "title": "질량전달 제어로 SOEC 스택 내구성 한계 극복",
+   "date": "2026.05.21",
+   "url": "https://me.yonsei.ac.kr/me/community/news.do?mode=view&articleNo=475401&article.offset=0&articleLimit=10",
+   "thumb": "https://me.yonsei.ac.kr/_attach/image/2026/07/thumb_XwIDNEHsHRRTrMsYJDYp0.JPG"
+  },
+  {
+   "title": "정교한 촉감각 전달을 위한 액체-기체 상변화 액추에이터 및 유연 촉각 디스플레이 개발",
+   "date": "2026.05.19",
+   "url": "https://me.yonsei.ac.kr/me/community/news.do?mode=view&articleNo=475400&article.offset=0&articleLimit=10",
+   "thumb": "https://me.yonsei.ac.kr/_attach/image/2026/07/thumb_RPGutxQuPxFZjXKEckNo0.JPG"
+  },
+  {
+   "title": "불규칙한 기계적 움직임을 일정한 진동으로 변환하는 범용 자가발전 마찰전기 센서 플랫폼",
+   "date": "2026.05.12",
+   "url": "https://me.yonsei.ac.kr/me/community/news.do?mode=view&articleNo=475398&article.offset=0&articleLimit=10",
+   "thumb": "https://me.yonsei.ac.kr/_attach/image/2026/07/thumb_ZmLHxPBYtyqiAAcftZaA0.JPG"
+  },
+  {
+   "title": "연료 및 시스템 구성 변화에 따른 SOFC 열역학적 성능 분석",
+   "date": "2026.05.01",
+   "url": "https://me.yonsei.ac.kr/me/community/news.do?mode=view&articleNo=475396&article.offset=0&articleLimit=10",
+   "thumb": "https://me.yonsei.ac.kr/_attach/image/2026/07/thumb_svGNdEnGadkLkPIdtxko0.JPG"
+  },
   {
    "title": "비압전성 폴리머 필름을 이용한 유연한 음향파 발생장치 개발과 생체조직 분야로의 응용",
    "date": "2026.04.15",
@@ -6519,6 +6688,94 @@ window.YSME = {
   }
  ],
  "seminars": [
+  {
+   "no": "378",
+   "title": "[BK세미나] 7/31(금) Prof. Yoshikazu Hirai (Kyoto University) \"Wafer-Level Microfabrication Technologies for Alkali Vapor Cel",
+   "date": "2026.07.22",
+   "url": "https://me.yonsei.ac.kr/me/community/seminar.do?mode=view&articleNo=475433&article.offset=0&articleLimit=10",
+   "meta": "▣ 주 제: Wafer-Level Microfabrication Technologies for Alkali Vapor Cells Toward MEMS Atomic Clocks\n▣ 연 사: Prof. Yoshikazu Hirai\n▣ 소 속: Kyoto University\n▣ 일 시: 2026. 7. 31.(금) 17:00\n▣ 장 소: 제4공학관 D601호\n▣ 초 청: 김종백 교수",
+   "body": "기계공학부 구성원들의 많은 관심과 참여 부탁드립니다.\n\n▣ 초 록\nMicrofabricated alkali vapor cells are essential components of coherent population trapping (CPT) atomic clocks and play a central role in achieving miniaturized timing devices. In this seminar, I will present our recent progress in wafer-level microfabrication technologies for alkali vapor cells, with a particular focus on improving both manufacturability and device performance. The first topic is an integrated vapor-cell structure that combines a CPT optical cavity with Si three-dimensional microstructures [1, 2]. This structure was designed to facilitate the low-temperature thermal decomposition of RbN3, allowing efficient Rb generation under a reduced thermal budget. As a result, the Rb sourcing process inside the cell can be significantly shortened while maintaining stable Rb generation. The second topic is wafer-level, cell-by-cell control of N2 buffer-gas pressure in microfabricated vapor cells [3]. RbN3 was patterned by inkjet deposition and decomposed after wafer-level sealing using laser irradiation, generating both Rb vapor and N₂ buffer gas inside each cell. The generated N₂ pressure exhibited a linear relationship with the deposited RbN₃ amount, with a coefficient of variation (CV) of 5.0%. CPT characterization showed that, in the low-pressure regime below approximately 5 kPa, CPT-based laser stabilization can enhance the CPT resonance amplitude by improving spectral selectivity. Overall, these wafer-level approaches provide practical routes toward scalable fabrication and performance optimization of alkali vapor cells, which are critical for future MEMS atomic clocks and high-precision timing devices.",
+   "bodyKind": "text",
+   "attName": "20260731_hirai.jpg",
+   "att": true
+  },
+  {
+   "no": "377",
+   "title": "[BK세미나] 7/28(화) 김종성 교수(세종대학교 양자원자력공학과) \"Trends and Prospects of SMR Development Globally and Domestically: Strategies fo",
+   "date": "2026.07.20",
+   "url": "https://me.yonsei.ac.kr/me/community/seminar.do?mode=view&articleNo=475236&article.offset=0&articleLimit=10",
+   "meta": "▣ 주 제: Trends and Prospects of SMR Development Globally and Domestically: Strategies for Development in Korea\n▣ 연 사: 김종성 교수\n▣ 소 속: 세종대학교 양자원자력공학과\n▣ 일 시: 2026. 7. 28.(화) 16:00\n▣ 장 소: 제4공학관 D604호\n▣ 초 청: 박노철 교수",
+   "body": "기계공학부 구성원들의 많은 관심과 참여 부탁드립니다.\n\n▣ 초 록\nIn recent years, the global energy landscape has been undergoing a significant transformation, driven by the urgent need to reduce carbon emissions and transition towards sustainable energy solutions. Amidst this shift, nuclear energy has resurfaced as a viable option, notably with advancements in reactor technology aimed at addressing past challenges related to safety, waste management, and cost. The development of Small Modular Reactors (SMRs) is at the forefront of this nuclear renaissance, offering a flexible, scalable, and potentially more economical alternative to traditional large-scale nuclear power plants. SMRs are perceived as pivotal in enhancing energy security and providing clean and reliable energy, thus playing a crucial role in meeting future energy demands and environmental goals.\nAs one of the emerging game-changers in the nuclear industry, Small Modular Reactors (SMRs) have garnered significant attention worldwide. Before delving into an in-depth discussion about SMRs, this seminar will provide a foundational overview of nuclear energy, setting the stage for a comprehensive exploration of SMRs.\nThe session will begin by defining SMRs, highlighting their unique characteristics that distinguish them from conventional nuclear reactors. Following this, a detailed examination of both domestic and international SMR development will be conducted, showcasing the operational features and deployment status of these advanced nuclear systems.\nFurthermore, the seminar aims to outline the strategic approach and ongoing R&D initiatives within the South Korean nuclear sector, which are pivotal for advancing the development of SMRs. By analyzing these strategies and projects, we will assess the potential for commercialization of SMRs both in South Korea and globally.\nThis presentation seeks to provide participants with insights into the transformative potential of SMRs, equipping them with a better understanding of how these innovative systems can shape the future of nuclear energy, both locally and worldwide.",
+   "bodyKind": "text",
+   "attName": "20260728_김종성.jpg",
+   "att": true
+  },
+  {
+   "no": "376",
+   "title": "[BK세미나] 7/21(화) Prof. Reza Talemi(KU Leuven) \"Tribo-Fatigue Fracture Response of Additively Manufactured Metallic Alloys",
+   "date": "2026.07.13",
+   "url": "https://me.yonsei.ac.kr/me/community/seminar.do?mode=view&articleNo=474858&article.offset=0&articleLimit=10",
+   "meta": "▣ 주 제: Tribo-Fatigue Fracture Response of Additively Manufactured Metallic Alloys\n▣ 연 사: Prof. Reza Talemi\n▣ 소 속: KU Leuven\n▣ 일 시: 2026. 7. 21.(화) 13:00\n▣ 장 소: 제1공학관 A442호\n▣ 초 청: 김대은 교수",
+   "body": "기계공학부 구성원들의 많은 관심과 참여 부탁드립니다.\n\n▣ 초 록\nAdditive Manufacturing (AM) has revolutionized the production of complex and customized components, offering unprecedented design flexibility. However, the tribo-mechanical response of AM materials, covering their wear, friction, and mechanical performance under various loading conditions, remains a critical challenge. This seminar will explore the unique microstructural features of AM materials and their impact on tribological and mechanical properties. Emphasis will be placed on fatigue and fretting fatigue behaviours, with insights from advanced experimental techniques and numerical simulations. The talk will also address ongoing challenges, including anisotropy, surface features, and surface/subsurface defects, while proposing strategies for optimizing material performance for industrial applications.",
+   "bodyKind": "text",
+   "attName": "20260721_Reza Talemi.jpg",
+   "att": true
+  },
+  {
+   "no": "375",
+   "title": "[BK세미나] 7/15(수) Prof. Robert G. Landers(University of Notre Dame) \"Off-Line and On-Line Volumetric Error Compensation of",
+   "date": "2026.07.08",
+   "url": "https://me.yonsei.ac.kr/me/community/seminar.do?mode=view&articleNo=474695&article.offset=0&articleLimit=10",
+   "meta": "▣ 주 제: Off-Line and On-Line Volumetric Error Compensation of Machine Tools and IndustrialRobots\n▣ 연 사: Prof. Robert G. Landers\n▣ 소 속: University of Notre Dame\n▣ 일 시: 2026. 7. 15.(수) 10:30\n▣ 장 소: 제1공학관 A205호\n▣ 초 청: 민병권 교수",
+   "body": "기계공학부 구성원들의 많은 관심과 참여 부탁드립니다.\n\n▣ 초 록\nDue to inaccuracies in component fabrication and assembly, machine tools and industrial robots have geometric errors (i.e., difference between nominal and actual kinematic motions), which greatly contribute to the errors in parts fabricated on these machines, as well as unduly long process certification times. To compensate for machine tool geometric errors, the standard practice is to directly measure each error individually and, from these measurements, directly populate compensation tables found in the machine tool controller. The drawback to this method is that it is extremely slow due to long instrument set up times and does not capture the complexity (e.g., sagging, twisting) of large machine tools. To compensate for industrial robot geometric errors, circle point analysis is used where the errors of each joint are measured independently. While this method is fast, it still does not capture the complexity of robot kinematic errors. In addition, machine tools and industrial robots suffer from thermal deformations due to changes in ambient temperature and heat sources on the machine, and deflections between the tool and part due to processing forces. These error sources are very difficult to model and, thus, are typically ignored.\nThis talk will discuss recent work on the volumetric error compensation of large machine tools and industrial robots used for manufacturing tasks A laser tracker is used to measure the machine tool and robot geometric errors over the entire visible joint space. A 6 Degree of Freedom geometric error model is constructed for every joint. Translational and rotational errors for each joint are described by a set of joint-position dependent basis functions and probability-based estimators are employed to identify the geometric error model coefficients. Based on this model, an optimization algorithm is used to populate compensation tables for machine tools, or the inverse Jacobian method is used to modify the joint commands for robots. In this talk we will discuss the details of the new volumetric error compensation methodology and provide several examples of machine tools and robots we have modeled and compensated for a variety of industrial partners. Also, we will discuss our most recent work in on-line compensation of industrial robots where errors are directly measured and compensated for during the operation.",
+   "bodyKind": "text",
+   "attName": "20260715_Landers.jpg",
+   "att": true
+  },
+  {
+   "no": "374",
+   "title": "[BK세미나] 7/14(화) Prof. Jihyun Lee(University of Calgary, Canada) \"Robotic Machining and Mechatronics for Intelligent Manu",
+   "date": "2026.07.08",
+   "url": "https://me.yonsei.ac.kr/me/community/seminar.do?mode=view&articleNo=474694&article.offset=0&articleLimit=10",
+   "meta": "▣ 주 제: Robotic Machining and Mechatronics for Intelligent Manufacturing\n▣ 연 사: Prof. Jihyun Lee\n▣ 소 속: University of Calgary, Canada\n▣ 일 시: 2026. 7. 14.(화) 11:00\n▣ 장 소: 제1공학관 A205호\n▣ 초 청: 민병권 교수",
+   "body": "기계공학부 구성원들의 많은 관심과 참여 부탁드립니다.\n\n▣ 초 록\nIndustrial robots are widely used in manufacturing for tasks such as loading and unloading,assembly, welding, and cutting, due to their flexibility, long reach, multiple degrees of freedom,and ability to perform repetitive tasks efficiently at low cost. However, their application is still limited to low-load, low-contact-force operations because of their low structural rigidity. Thislimitation often results in vibrations during high-speed movement or heavy cutting, which increases processing time and reduces the surface finish quality. If effective hardware andsoftware solutions can be developed to allow robots to withstand larger contact forces, thepotential applications could greatly expand to include humanoid robots capable of machining and heavy-duty factory automation systems.This seminar introduces several research efforts aimed at addressing these challenges. First, anovel parallel-serial robotic architecture, called a \"cable-assisted robotic system\", has been developed to improve structural rigidity. Second, new methods have been proposed to predict cutting forces and compensate for static deflection in robotic milling operations. Third, aninnovative fast-chirp centrifugal force excitation technique enables the identification of jointdynamic parameters during robot motion. Finally, Dr. Lee will present collaborative projects with manufacturing industries that applies mechatronics for process automation. Together, theseefforts highlight a comprehensive approach to enhancing the performance and applicability ofindustrial robots in advanced manufacturing.",
+   "bodyKind": "text",
+   "attName": "20260714_이지현.jpg",
+   "att": true
+  },
+  {
+   "no": "373",
+   "title": "[BK세미나] 6/11(목) Prof. Dvir Yelin(Technion–Israel Institute of Technology) \"Imaging tympanic membrane vibrations\"",
+   "date": "2026.06.04",
+   "url": "https://me.yonsei.ac.kr/me/community/seminar.do?mode=view&articleNo=472474&article.offset=0&articleLimit=10",
+   "meta": "▣ 주 제: Imaging tympanic membrane vibrations\n▣ 연 사: Prof. Dvir Yelin\n▣ 소 속: Technion–Israel Institute of Technology\n▣ 일 시: 2026. 6. 11.(목) 13:00\n▣ 장 소: 제4공학관 D601호\n▣ 초 청: 주철민 교수",
+   "body": "기계공학부 구성원들의 많은 관심과 참여 부탁드립니다.\n\n▣ 초 록\nImaging the function and dynamics of the human ear is an extremely challenging task due to its minute anatomical structures and nanometric-scale movements in response to sound. By combining spectrally encoded endoscopy with phase-sensitive, spectral-domain interferometry, we demonstrate effective, noninvasive in vivo functional imaging of the vibrating human tympanic membrane. Our system attains high-speed and high-resolution imaging through a compact handheld probe, allowing to measure the amplitude and phase of the vibrational patterns generated within the tympanic membrane in response to a wide range of acoustic frequencies. The unique physiological data captured by the system allows measuring a wide range of clinically relevant parameters, offering a powerful experimental platform for studying middle and inner ear physiology.",
+   "bodyKind": "text",
+   "attName": "20260611_Dvir Yelin.jpg",
+   "att": true
+  },
+  {
+   "no": "372",
+   "title": "[학부 세미나] 6/5(금) 김석 교수(연세대학교 기계공학과) \"Programmable Mechanical Matter: 구조로 기능을 코딩하는 기계물질 설계\"",
+   "date": "2026.06.04",
+   "url": "https://me.yonsei.ac.kr/me/community/seminar.do?mode=view&articleNo=472463&article.offset=0&articleLimit=10",
+   "meta": "▣ 제 목: Programmable Mechanical Matter: 구조로 기능을 코딩하는 기계물질 설계\n▣ 연 사: 김석 교수\n▣ 소 속: 연세대학교 기계공학과\n▣ 일 시: 2026. 6. 5.(Fri) 16:00\n▣ 장 소: 제2공학관 B040호",
+   "body": "기계공학부 구성원들의 많은 관심과 참여 부탁드립니다.\n\n▣ 초 록\n자연은 수억 년의 진화를 통해 놀라운 공학적 해답을 물질의 구조 속에 새겨두었다. 뼈, 나무, 조개껍데기, 곤충의 외골격은 모두 나노미터에서 센티미터에 이르는 다중 스케일의 셀룰러(cellular) 계층 구조로 이루어져 있으며, 이 구조 덕분에 최소한의 질량으로 높은 강성·인성·다기능성을 동시에 구현한다. 핵심은 재료 자체의 조성이 아니라, 구조의 형상·기공성·연결성·주기성이라는 설계 변수를 통해 물성이'프로그래밍'된다는 점이다.\n본 세미나는 이러한 자연의 원리를 공학적으로 구현하는Programmable Mechanical Matter (구조 설계를 통해 기계적·물리적 기능을 능동적으로 제어하는 물질 시스템)를 주제로 한다. 특히 적층제조 고려 설계(Design for Additive Manufacturing, DfAM)를 핵심 제작 수단으로 삼아, 전통적인 절삭·금형 공정으로는 구현할 수 없었던 복잡한 멀티스케일 구조체를 어떻게 실현하는지를 구체적인 연구 사례와 함께 소개한다.\n본 세미나에서 다루는 내용은 크게 세 가지 부분으로 구성된다. 첫째, 발수·발액·입자 포집 등 생체모방 기능성 표면 미세구조 설계 및 대면적 제조 기술이다. 둘째, 비주기 격자 등 기계적 메타물질 설계를 통한 강성·에너지 흡수 특성의 능동적 제어이다. 셋째, 물 반응형4D 프린팅을 활용한 형상 변환 구조 및 다공성 구조체 기반의 물질 변환 사례이다. 이를 통해 구조-재료-제조의 삼각 축을 유기적으로 연결함으로써, 경량 고강성 구조, 에너지 효율화 촉매 반응기, 다기능성 표면 시스템 등 다양한 응용 가능성을 논의한다.\n기계공학의 고전적 설계 관점이 어떻게 재료과학·제조공학·물리학과 융합되어 새로운 패러다임으로 진화하고 있는지, 그리고 이 분야에 어떻게 진입할 수 있는지를 함께 모색하는 자리가 되길 기대한다.",
+   "bodyKind": "text",
+   "attName": "20260605_학부_김석 교수.jpg",
+   "att": true
+  },
+  {
+   "no": "371",
+   "title": "[대학원 세미나] 6/5(금) 나성수 교수(고려대학교 기계공학부) \"From Conventional Dynamics to Multiscale Dynamics\"",
+   "date": "2026.06.04",
+   "url": "https://me.yonsei.ac.kr/me/community/seminar.do?mode=view&articleNo=472461&article.offset=0&articleLimit=10",
+   "meta": "▣ 제 목: From Conventional Dynamics to Multiscale Dynamics\n▣ 연 사: 나성수 교수\n▣ 소 속: 고려대학교 기계공학부\n▣ 일 시: 2026. 6. 5.(Fri) 13:00\n▣ 장 소: 제2공학관 B040호",
+   "body": "기계공학부 구성원들의 많은 관심과 참여 부탁드립니다.\n\n▣ 초 록\n(1) Conventional dynamics: Structural dynamics and vibration의 연구내용으로써 복합재로 구성된 비행체 날개구조물의 진동제어와 공탄성제어기법을 소개한다.\n(2) Protein dynamics : Structural dynamics와 protein dynamics 연구의 상관성과 연구의 확장성에 대해서 소개하고 아밀로이드 파이버의 물성연구와 질환의 상관성 연구\n(3) 나노독성물질 계측기술에 관해서 진동센서로써 마이크로 캔틸레버를 이용한 resonator를 사용하여 CNT/ ZnO NW/ Silver Ion 등 나노물질의 센싱기법에 대해서 소개함.\n(4) 혈중순환 종양 DNA의 초민감 검출기법에 대해서 소개함\n(5) 실크재료의 물성치 연구로써 다음의 주제에 대해서 발표함\n- Mechanical properties of silk depend on amino acid sequence: spider silk vs. silkworm silk\n-실크섬유의 나노그물망 강화 메커니즘\n(6) Multiscale QM-MD-ENM analysis of EUV-induced Mechanical response in Silk-based Photoresists.",
+   "bodyKind": "text",
+   "attName": "20260605_대학원_나성수.jpg",
+   "att": true
+  },
   {
    "no": "370",
    "title": "[학부 세미나] 5/29(금) 임근배 교수(포항공과대학교 기계공학과) \"Mechanics for Biomedical Engineering\"",
@@ -6741,6 +6998,26 @@ window.YSME = {
   }
  ],
  "events": [
+  {
+   "no": "39",
+   "title": "[7/20~7/24] 기계공학과 2026 여름학기 해외집중강의 시리즈(2차)",
+   "date": "2026.07.07",
+   "url": "https://me.yonsei.ac.kr/me/community/seminar_graduate1.do?mode=view&articleNo=474630&article.offset=0&articleLimit=10",
+   "body": "기계공학부 구성원 여러분들의 많은 관심과 참여 바랍니다.\n\n*상세 내용 및 강의계획서는 첨부파일 확인 요망\n(신청 링크 바로가기: https://docs.google.com/forms/d/e/1FAIpQLSdGHeD1JDgCgvmpXusNhTDjDEqT99Shh2pFsUX6w5gy5JSvkQ/viewform?usp=dialog)",
+   "bodyKind": "text",
+   "attName": "mechanics_meets_genomics_syllabus.pdf",
+   "att": true
+  },
+  {
+   "no": "38",
+   "title": "[7/1~7/3] 기계공학과 2026 여름학기 해외집중강의 시리즈",
+   "date": "2026.06.11",
+   "url": "https://me.yonsei.ac.kr/me/community/seminar_graduate1.do?mode=view&articleNo=473049&article.offset=0&articleLimit=10",
+   "body": "기계공학부 구성원 여러분들의 많은 관심과 참석 부탁드립니다.\n※신청 링크 바로가기: https://forms.gle/K3T7oDmsZggtmkqg7",
+   "bodyKind": "text",
+   "attName": "RLAI_Yonsei_Syllabus.pdf",
+   "att": true
+  },
   {
    "no": "37",
    "title": "[4/13(월)] Nature Forum: The Future of Sensing Technologies",

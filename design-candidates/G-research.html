@@ -28,7 +28,7 @@
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
 <link rel="stylesheet" href="assets/fonts.css?v=1" />
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
-<link rel="preload" as="script" href="assets/js/data.js?v=d21" />
+<link rel="preload" as="script" href="assets/js/data.js?v=d22" />
 <link rel="preload" as="script" href="assets/nav.js?v=115" />
 <style>
 /* ═══════════════════════════════════════════════════════════
@@ -726,9 +726,11 @@ html[lang="en"] .lab-en-only{display:none}
   color:var(--fc,var(--navy));opacity:.85}
 .fd-c-ko{font-family:var(--kr);font-weight:800;color:var(--ink);
   font-size:clamp(1.35rem,1.05rem + 1.1vw,1.75rem);line-height:1.18;letter-spacing:-.01em;margin-top:.5rem}
-.fd-c-count{font-family:var(--num);font-weight:300;font-size:clamp(1.7rem,1.2rem + 1.4vw,2.2rem);
-  line-height:.9;color:var(--fc,var(--navy));font-variant-numeric:tabular-nums;white-space:nowrap;flex:none}
-.fd-c-count .u{font-family:var(--kr);font-size:.36em;font-weight:600;color:var(--muted);margin-left:.12em;letter-spacing:0}
+/* 연구실 수 — 카드에서 가장 큰 글자였는데, 정작 읽어야 할 것은 분야 이름이다.
+   숫자를 분야 이름보다 작게 낮춰 차례를 바로잡는다. */
+.fd-c-count{font-family:var(--num);font-weight:500;font-size:clamp(1.05rem,.95rem + .45vw,1.32rem);
+  line-height:1.1;color:var(--fc,var(--navy));font-variant-numeric:tabular-nums;white-space:nowrap;flex:none}
+.fd-c-count .u{font-family:var(--kr);font-size:.62em;font-weight:600;color:var(--muted);margin-left:.16em;letter-spacing:0}
 /* 요약(desc) — 접힘 상태에서 보이는 짧은 소개 */
 .fd-c-desc{font-family:var(--kr);font-size:.92rem;color:var(--sub);line-height:1.7;margin-top:.9rem}
 /* 자세한 설명(intro) — 확장 시 열리는 큰 박스 */
@@ -1238,7 +1240,7 @@ html[lang="en"] .lab-en-only{display:none}
   </section>
 
 <!-- 공유 단일 데이터 소스 (window.YSME) -->
-<script src="assets/js/data.js?v=d21"></script>
+<script src="assets/js/data.js?v=d22"></script>
 <script>
 (function(){
   'use strict';

@@ -34,8 +34,10 @@
       'border-bottom:1px solid ' + LINE + ';transition:background .32s ease,border-color .32s ease}',
     /* 히어로 위에 얹혀 있는 동안에는 바탕을 지운다 — 사진이 바 밑으로 이어져 보인다.
        히어로를 지나가면 흰 바탕으로 돌아온다(.over 를 뗀다). */
-    '.ynv.over .ynv-hdr{background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;' +
-      'border-bottom-color:transparent}',
+    /* 완전한 투명 대신 아주 옅은 그늘 하나 — 사진은 그대로 비쳐 보이지만,
+       화면 폭에 따라 사진이 밝게 잘려도 흰 글자가 읽히는 것이 보장된다. */
+    '.ynv.over .ynv-hdr{background:linear-gradient(180deg,rgba(9,17,34,.34),rgba(9,17,34,0));' +
+      '-webkit-backdrop-filter:none;backdrop-filter:none;border-bottom-color:transparent}',
     '.ynv.over .ynv-brand .bko{color:#fff}',
     '.ynv.over .ynv-brand .ben{color:rgba(255,255,255,.72)}',
     '.ynv.over .ynv-i>a{color:#fff}',
@@ -57,15 +59,27 @@
       'transform:scaleX(0);transform-origin:right;transition:transform .45s ' + E + '}',
     '.ynv-i:hover>a,.ynv-i>a.cur{color:' + NAVY + '}',
     '.ynv-i:hover>a::after,.ynv-i>a.cur::after{transform:scaleX(1);transform-origin:left}',
-    /* 드롭다운 */
-    '.ynv-d{position:absolute;top:calc(100% + .35rem);left:50%;min-width:12.5rem;background:#fff;' +
-      'border:1px solid ' + LINE + ';border-top:2px solid ' + NAVY + ';box-shadow:0 22px 48px rgba(15,27,48,.14);' +
-      'padding:.55rem 0;display:flex;flex-direction:column;opacity:0;visibility:hidden;transform:translate(-50%,14px);z-index:60;' +
-      'transition:opacity .35s ' + E + ',transform .5s ' + E + ',visibility .35s}',
+    /* 드롭다운 — 지면의 짜임을 그대로 쓴다: 각진 모서리, 머리에 네이비 두 줄,
+       항목 사이는 헤어라인, 올려 둔 항목에는 왼쪽에 네이비 기둥.
+       예전에는 항목 가운데(left:50%)에 맞춰 띄웠는데, 상단 바가 화면 끝까지
+       넓어지면서 오른쪽 메뉴(소식·입학)의 창 절반이 화면 밖으로 잘렸다.
+       이제 왼쪽 끝을 항목에 맞추고, 오른쪽 세 개만 오른쪽 끝을 맞춘다. */
+    '.ynv-d{position:absolute;top:calc(100% + .5rem);left:0;min-width:13.5rem;background:#fff;' +
+      'border:1px solid ' + LINE + ';border-top:2px solid ' + NAVY + ';border-radius:0;' +
+      'box-shadow:0 14px 30px rgba(15,27,48,.10);' +
+      'padding:0;display:flex;flex-direction:column;opacity:0;visibility:hidden;transform:translateY(12px);z-index:60;' +
+      'transition:opacity .3s ' + E + ',transform .42s ' + E + ',visibility .3s}',
+    /* 오른쪽 끝 메뉴는 창을 왼쪽으로 편다 — 화면 밖으로 나가지 않게 */
+    '.ynv-menu .ynv-i:nth-last-child(-n+3) .ynv-d{left:auto;right:0}',
     '.ynv-d::before{content:"";position:absolute;top:-1rem;left:0;right:0;height:1rem}',
-    '.ynv-i:hover .ynv-d,.ynv-i:focus-within .ynv-d{opacity:1;visibility:visible;transform:translate(-50%,4px)}',
-    '.ynv-d a{padding:.52rem 1.25rem;font-size:.87rem;font-weight:500;color:' + MUTED + ';text-decoration:none;' +
-      'opacity:0;transform:translateY(7px);transition:opacity .4s ease,transform .5s ' + E + ',color .15s,background .15s,padding .3s ' + E + '}',
+    '.ynv-i:hover .ynv-d,.ynv-i:focus-within .ynv-d{opacity:1;visibility:visible;transform:translateY(2px)}',
+    '.ynv-d a{position:relative;padding:.66rem 1.15rem;font-size:.87rem;font-weight:600;' +
+      'letter-spacing:-.01em;color:' + MUTED + ';text-decoration:none;' +
+      'opacity:0;transform:translateY(7px);transition:opacity .4s ease,transform .5s ' + E + ',color .15s,background .15s}',
+    '.ynv-d a + a{border-top:1px solid ' + LINE + '}',
+    /* 올려 둔 항목의 왼쪽 기둥 — 지면 곳곳에서 쓰는 표시와 같은 형태 */
+    '.ynv-d a::after{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:' + NAVY + ';' +
+      'transform:scaleY(0);transform-origin:50% 0;transition:transform .22s ' + E + '}',
     '.ynv-i:hover .ynv-d a,.ynv-i:focus-within .ynv-d a{opacity:1;transform:none}',
     /* 등장 계단 — 예전엔 5번까지만 지연이 적혀 있었다. 소식은 하위가 7개라
        6·7번(자료실·취업 정보)만 지연 0이 되어 위 항목들보다 먼저 떠올랐다.
@@ -76,7 +90,8 @@
     '.ynv-d a:nth-child(4){--dd:.12s}.ynv-d a:nth-child(5){--dd:.16s}',
     '.ynv-d a:nth-child(6){--dd:.2s}.ynv-d a:nth-child(7){--dd:.24s}',
     '.ynv-d a:nth-child(n+8){--dd:.28s}',
-    '.ynv-d a:hover{color:' + NAVY + ';background:' + PAPER + ';padding-left:1.6rem}',
+    '.ynv-d a:hover{color:' + NAVY + ';background:' + PAPER + '}',
+    '.ynv-d a:hover::after{transform:scaleY(1)}',
     '[id]{scroll-margin-top:5rem}',
     'body.has-ysub [id]{scroll-margin-top:var(--ys-stick,7.6rem)}',
     /* breadcrumb 링크 */
@@ -311,7 +326,7 @@
       '<span class="bko">연세대학교 기계공학부<span class="ben">School of Mechanical Engineering</span></span></a>';
 
   var nav = document.createElement('div');
-  nav.className = 'ynv';
+  nav.className = 'ynv' + (document.querySelector('.hero') ? ' over' : '');
   nav.innerHTML =
     '<div class="ynv-top"><div class="ynv-w">' +
       '<a href="https://www.yonsei.ac.kr" target="_blank" rel="noopener">연세대학교</a>' +
@@ -824,7 +839,10 @@
     setupReveal();
 
     /* 스크롤 시 유틸바 접힘 + 히어로 위에서는 투명 헤더 */
-    var min = false, over = false;
+    var min = false;
+    /* 만들 때 이미 붙여 둔 상태에서 시작한다 — false 로 두면 앵커로 아래쪽에 열린 화면에서
+       「끄기」가 한 번도 일어나지 않아 투명인 채로 남는다. */
+    var over = nav.classList.contains('over');
     /* 히어로가 있는 화면(메인)에서만 투명하게 둔다. 하위 페이지는 늘 흰 바다. */
     var heroEl = document.querySelector('.hero');
     var heroH = 0;

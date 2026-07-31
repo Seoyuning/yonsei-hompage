@@ -906,18 +906,16 @@
           var r = it.getBoundingClientRect();
           return (r.left + r.right) / 2 - m.left;
         });
-        /* 항목 이름의 글자 수가 달라(「학부소개」4자 · 「연구」2자) 가운데끼리의
-           간격이 균일하지 않다. 칸을 모두 같은 폭으로 두면 그만큼씩 어긋난다.
-           그래서 칸 경계를 하나씩 풀어 나간다 — 칸 i 의 가운데가 항목 i 의 가운데가
-           되도록 b(i+1) = 2·c(i) − b(i). 첫 경계만 정하면 나머지는 따라온다. */
-        var first = cs.length > 1 ? (cs[1] - cs[0]) : 160;
-        var b = [cs[0] - first / 2];
-        for (var i = 0; i < cs.length; i++) b.push(2 * cs[i] - b[i]);
-        var ws = [];
-        for (var k = 0; k < cs.length; k++) ws.push(Math.max(56, b[k + 1] - b[k]));
-        inn.style.paddingLeft = Math.max(0, Math.round(b[0])) + 'px';
+        /* 칸 폭은 모두 같게 둔다 — 항목 이름의 글자 수를 따라가면 「연구」 칸만 좁고
+           「구성원」 칸만 넓어 판이 들쭉날쭉해진다. 폭은 항목 사이 평균 간격으로 잡고
+           덩어리 전체를 메뉴 가운데에 맞춘다. */
+        var step = cs.length > 1 ? (cs[cs.length - 1] - cs[0]) / (cs.length - 1) : 160;
+        var colW = Math.max(96, step);
+        var total = colW * cs.length;
+        var start = (cs[0] + cs[cs.length - 1]) / 2 - total / 2;
+        inn.style.paddingLeft = Math.max(0, Math.round(start)) + 'px';
         inn.style.paddingRight = '0px';
-        inn.style.gridTemplateColumns = ws.map(function (w) { return w.toFixed(2) + 'px'; }).join(' ');
+        inn.style.gridTemplateColumns = 'repeat(' + cs.length + ',' + colW.toFixed(2) + 'px)';
       }
       fitMega();
       addEventListener('resize', fitMega, { passive: true });

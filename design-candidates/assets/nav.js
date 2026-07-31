@@ -946,18 +946,11 @@
   }
 
   function setupLoader() {
-    /* ① 첫 걸음 — 이 창에서 이 사이트를 처음 여는 순간에만. 900ms 는 채운다
-          (눈 깜짝할 새 사라지면 「고장난 깜빡임」으로 읽힌다). */
-    var first = false;
-    try { first = sessionStorage.getItem('ysme-seen') !== '1'; } catch (e) {}
-    if (first && document.readyState !== 'complete') {
-      showLoader();
-      /* load 를 기다리지 않는다 — 히어로 사진·분야 사진·뉴스 썸네일이 다 와야 load 이고,
-         그때까지 기다리면 판이 몇 초씩 떠 있어 오히려 느려 보인다.
-         글과 뼈대는 이미 그려진 시점이므로 짧게 보여 주고 비킨다. */
-      setTimeout(hideLoader, 900);
-    }
-    try { sessionStorage.setItem('ysme-seen', '1'); } catch (e) {}
+    /* ① 첫 걸음에는 띄우지 않는다.
+          로딩 표시는 「지금 다른 쪽으로 넘어가는 중」이라는 뜻이라야 읽힌다.
+          주소를 치고 처음 들어온 순간에 띄우면 넘어가는 것이 아무것도 없는데
+          판만 한 번 깜빡이는 꼴이고, 특히 휴대폰에서는 그 깜빡임이
+          첫인상 전체를 「느린 사이트」로 만든다. 그래서 쪽 옮김에만 쓴다. */
 
     /* ② 쪽 옮김 — 같은 사이트 안의 보통 링크만. 새 창·내려받기·앵커는 두고 본다 */
     document.addEventListener('click', function (e) {

@@ -239,101 +239,99 @@ img{display:block;max-width:100%}
 .tw-scene.is-say{height:230vh;height:230svh;background:#fff}
 .tw-pin{position:sticky;top:0;height:100vh;height:100svh;
   display:flex;flex-direction:column;justify-content:center;overflow:hidden}
-/* ── 확대 구간 ── 작게 있던 그림이 스크롤을 따라 화면을 채운다 */
-.tw-scene.is-zoom{height:220vh;height:220svh;background:#fff}
-.is-zoom .tw-pin{background:#fff;padding:0}
-/* 폭·높이를 같이 늘리면 잘리는 자리가 계속 바뀌어 그림이 미끄러지듯 어색해진다.
-   상자는 처음부터 화면 크기로 두고 통째로 키우기만 한다(잘림이 변하지 않는다). */
-/* will-change 로 이 상자를 미리 제 층에 올려 둔다 — 그러면 scale 은 합성기만 쓰고
-   프레임마다 다시 그리지 않는다. 화면 하나 크기의 층 하나뿐이라 감당할 만하다. */
-.tw-zoom{position:relative;margin:0 auto;overflow:hidden;width:100%;height:100vh;height:100svh;
-  transform:scale(calc(.72 + min(1, var(--p,0) / .8) * .28));
-  transform-origin:50% 50%;will-change:transform;
-  border-radius:1.4rem;
-  box-shadow:0 40px 90px rgba(0,0,0,.42);
-  /* 모서리와 그림자는 --p 대신 「다 커졌다」는 표시 하나로 한 번만 바꾼다.
-     매 프레임 calc 로 움직이면 그때마다 이 층을 통째로 다시 칠한다. */
-  transition:border-radius .45s ease,box-shadow .45s ease}
-.tw-zoom.is-full{border-radius:0;box-shadow:none}
-.tw-zoom img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
-  filter:saturate(1.04) contrast(1.03)}
-.tw-zoom figcaption .cred{display:block;margin-top:.35rem;font-weight:500;font-size:.72em;
-  color:rgba(255,255,255,.62);letter-spacing:0}
-/* 캡션도 프레임마다 transform·opacity 가 바뀐다. 부모 층 안에 그대로 두면
-   그 영역만큼 부모 층을 다시 칠하므로, 캡션에도 제 층을 미리 잡아 준다. */
-.tw-zoom figcaption{position:absolute;left:0;right:0;bottom:0;z-index:1;
-  will-change:transform,opacity;
-  transform:scale(calc(1 / (.72 + min(1, var(--p,0) / .8) * .28)));transform-origin:50% 100%;
-  padding:clamp(1rem,3vh,2rem) clamp(1.2rem,3vw,2.6rem);
-  background:linear-gradient(180deg,rgba(8,17,34,0),rgba(8,17,34,.82));
-  font-family:var(--kr);font-size:clamp(.82rem,.78rem + .25vw,1rem);font-weight:600;
-  color:rgba(255,255,255,.9);letter-spacing:-.01em;
-  opacity:calc(min(1, max(0, var(--p,0) - .35) / .25))}
-
-/* ── 번호 목록 ── 스크롤을 따라 한 구분씩 짙어진다 */
-.tw-scene.is-list{height:340vh;height:340svh;background:#fff}
-.is-list .tw-pin{background:#fff}
-/* 구간 머리 — 작은 라벨 아래 검은 가로줄 (참고 화면의 구간 구분선) */
-.tl-top{width:100%;max-width:1320px;margin:0 auto clamp(2rem,4vh,3.4rem);
+/* ── 여섯 분야 ── 히어로·지표 바로 뒤, 화면을 채우는 여섯 칸.
+   교수님이 가장 앞세우고 싶어 하시는 것이 여섯 분야라, 스크롤을 내리자마자
+   이것부터 만나게 한다. 스크롤이 지나가는 동안 한 칸씩 넓어지며 설명이 열리고,
+   커서를 올리면 그 칸이 대신 열린다. 예전에 아래쪽에 따로 있던 번호 목록은
+   같은 여섯 분야였으므로 여기로 합쳤다 — 두 번 보여 주면 강조가 오히려 흐려진다. */
+.tw-scene.is-areas{height:300vh;height:300svh;background:var(--navy-d)}
+.is-areas .tw-pin{background:var(--navy-d);color:#fff;justify-content:center;
+  gap:clamp(1.1rem,2.6vh,2rem);
+  padding:clamp(4.2rem,8vh,6rem) 0 clamp(2rem,4.5vh,3.2rem)}
+.ar-head{width:100%;max-width:1320px;margin:0 auto;
   padding:0 clamp(1.2rem,.6rem + 2vw,3rem)}
-.tl-eyebrow{font-family:var(--mono);font-size:.68rem;font-weight:600;letter-spacing:.22em;
-  text-transform:uppercase;color:var(--ink);padding-bottom:.85rem;
-  border-bottom:1px solid #111318}
-.tl-wrap{width:100%;max-width:1320px;margin:0 auto;padding:0 clamp(1.2rem,.6rem + 2vw,3rem);
-  display:grid;grid-template-columns:11rem minmax(0,1fr) minmax(0,18rem);
-  gap:clamp(1.4rem,3vw,3rem);align-items:start}
-/* 사진 칸 — 사진 아래에 「연구실 전체」 */
-.tl-shot{display:flex;flex-direction:column;gap:.85rem}
-.tl-all{font-family:var(--kr);font-size:.86rem;font-weight:700;color:var(--navy);
-  letter-spacing:-.01em;transition:color .18s}
-.tl-all:hover{color:var(--accent-ink,#8E5A4F)}
-.tl-all span{color:var(--accent);margin-left:.2rem}
-/* 목록 머리 — 섹션 번호·킥커·제목·전체 링크를 왼쪽 칸에 세운다 */
-.tl-head{display:flex;flex-direction:column;gap:.3rem;padding-top:.2rem}
-.tl-head .sidx{font-family:var(--mono);font-size:clamp(2.4rem,1.6rem + 2vw,3.6rem);font-weight:700;color:var(--line);line-height:1;letter-spacing:-.03em}
-.tl-head .kick{font-family:var(--mono);font-size:.64rem;font-weight:600;letter-spacing:.2em;
-  text-transform:uppercase;color:var(--coral);margin-top:.5rem}
-.tl-head .sec-title{margin-top:.1rem;font-size:clamp(1.5rem,1.1rem + 1.4vw,2.1rem);line-height:1.2}
-.tl-head .more{margin-top:.7rem;font-size:.84rem;color:var(--muted)}
-.tl-head .more:hover{color:var(--navy)}
-.tl-list{list-style:none;margin:0;padding:0}
-.tl-list li{display:flex;align-items:baseline;gap:clamp(.9rem,2.2vw,1.8rem);
-  font-family:var(--kr);font-weight:800;letter-spacing:-.03em;line-height:1.28;
-  font-size:clamp(1.25rem,.8rem + 2.2vw,2.5rem);
-  color:rgba(26,61,117,.17);transition:color .32s ease}
-/* 줄 사이를 넉넉히 — 붙어 있으면 어느 줄이 켜졌는지 눈에 덜 들어온다 */
-.tl-list li + li{margin-top:clamp(1rem,2.2vh,2rem)}
-.tl-list li .n{font-family:var(--mono);font-weight:600;font-size:.5em;
-  color:rgba(26,61,117,.17);transition:color .32s ease;min-width:1.2em}
-.tl-list li.on{color:var(--navy)}
-.tl-list li.on .n{color:var(--accent)}
-/* 오른쪽 칸 — 글 대신 그 분야를 보여 주는 사진 한 장 */
-.tl-side{position:relative;aspect-ratio:4/5;overflow:hidden;border-radius:.3rem;background:var(--soft)}
-/* 사진 넘김 — 겹쳐 두고 투명도로 바꾸되, 들어오는 사진이 아주 살짝 커지며 안착한다.
-   꺼진 사진은 visibility 로 아예 그리지 않는다 — opacity 0 만으로 겹쳐 두면
-   합성 층이 남아 활성 사진을 덮어 버리는 경우가 있다(빈 상자로 보였던 원인). */
-.tl-side img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
-  opacity:0;visibility:hidden;transform:scale(1.05);
-  transition:opacity .62s ease,transform .9s cubic-bezier(.22,1,.36,1)}
-.tl-side img.on{opacity:1;visibility:visible;transform:scale(1)}
-.tl-side .cap{position:absolute;left:0;right:0;bottom:0;z-index:1;padding:.7rem .8rem;
-  background:linear-gradient(180deg,rgba(8,17,34,0),rgba(8,17,34,.78));
-  font-family:var(--kr);font-size:.66rem;font-weight:500;color:rgba(255,255,255,.72);
-  letter-spacing:0;line-height:1.5}
+.ar-eyebrow{font-family:var(--mono);font-size:.68rem;font-weight:600;letter-spacing:.22em;
+  text-transform:uppercase;color:rgba(255,255,255,.6);
+  padding-bottom:.8rem;border-bottom:1px solid rgba(255,255,255,.28)}
+.ar-head-row{display:flex;align-items:baseline;justify-content:space-between;
+  gap:1rem;flex-wrap:wrap;margin-top:clamp(.9rem,2vh,1.5rem)}
+.ar-head .sec-title{margin:0;color:#fff;font-weight:800;letter-spacing:-.03em;line-height:1.14;
+  font-size:clamp(1.5rem,1.05rem + 1.6vw,2.4rem)}
+.ar-head .more{color:#8fa2c2}
+.ar-head .more:hover{color:#fff}
+/* 여섯 칸 — 폭만 서로 주고받는다. 넓어지는 칸 하나와 좁아지는 다섯 칸뿐이라
+   레이아웃 계산이 여섯 상자에 그친다. */
+.ar-strip{width:100%;max-width:1320px;margin:0 auto;
+  padding:0 clamp(1.2rem,.6rem + 2vw,3rem);
+  display:flex;gap:clamp(.4rem,.8vw,.7rem);height:clamp(15rem,54vh,30rem)}
+.ar-p{position:relative;flex:1 1 0;min-width:0;overflow:hidden;
+  border-radius:.42rem;background:#0d1c36;color:#fff;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:clamp(.9rem,1.5vw,1.35rem);
+  opacity:0;transform:translateY(24px);
+  /* 들어오는 움직임에만 차례(--d)를 주고, 폭이 바뀌는 것은 늘 즉시 반응하게
+     property 마다 지연을 따로 적는다 — 한 줄로 묶으면 넓어지는 것까지 늦어진다. */
+  transition:flex-grow .6s cubic-bezier(.22,1,.36,1) 0s,
+             opacity .68s ease var(--d,0s),
+             transform .68s cubic-bezier(.22,1,.36,1) var(--d,0s)}
+.is-areas.in .ar-p{opacity:1;transform:none}
+/* 사진은 아래로 갈수록 짙어지는 덮개가 글자를 받쳐 주므로, 위쪽은 넉넉히 보여 준다.
+   덮개가 아래를 확실히 눌러 주는 덕에 사진을 밝게 두어도 이름은 그대로 읽힌다. */
+.ar-p img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  opacity:.5;transform:scale(1.05);
+  transition:opacity .5s ease,transform .8s cubic-bezier(.22,1,.36,1)}
+.ar-p::after{content:"";position:absolute;inset:0;z-index:1;
+  background:linear-gradient(180deg,rgba(9,20,40,.06) 0%,rgba(9,20,40,.42) 42%,rgba(9,20,40,.9) 100%)}
+.ar-n{position:absolute;z-index:2;top:clamp(.85rem,1.4vw,1.25rem);left:clamp(.9rem,1.5vw,1.35rem);
+  font-family:var(--mono);font-size:.7rem;font-weight:700;letter-spacing:.14em;
+  /* 번호는 사진 위쪽에 얹히는데 밝은 사진도 있어, 옅은 그림자로 바닥을 깔아 준다 */
+  color:rgba(255,255,255,.66);text-shadow:0 1px 3px rgba(6,14,30,.6)}
+.ar-body{position:relative;z-index:2;display:flex;flex-direction:column;gap:.26rem}
+.ar-ko{font-family:var(--kr);font-weight:800;letter-spacing:-.03em;line-height:1.2;
+  font-size:clamp(1rem,.86rem + .48vw,1.28rem)}
+/* 영문명이 한 줄인 칸과 두 줄인 칸이 섞여 있어, 자리를 두 줄로 잡아 두어야
+   여섯 칸의 한글 이름이 같은 높이에 선다. */
+.ar-en{font-family:var(--mono);font-size:.62rem;font-weight:600;letter-spacing:.09em;
+  text-transform:uppercase;color:rgba(255,255,255,.58);line-height:1.42;min-height:2.84em}
+/* 설명은 열린 칸에서만 — 접힌 칸에서는 높이를 0 으로 두어 자리를 차지하지 않는다 */
+.ar-d{max-height:0;opacity:0;overflow:hidden;
+  font-family:var(--kr);font-size:.83rem;font-weight:500;line-height:1.62;
+  color:rgba(255,255,255,.84);letter-spacing:-.01em;
+  transition:max-height .48s ease,opacity .38s ease,margin-top .48s ease}
+.ar-c{margin-top:.5rem;font-family:var(--mono);font-size:.68rem;font-weight:600;
+  letter-spacing:.05em;color:var(--accent-d)}
+/* 열린 칸은 폭이 넓어 영문명이 한 줄로 들어간다 — 두 줄 자리를 그대로 두면
+   설명과의 사이에 빈 줄이 남으므로, 열린 동안에는 자리를 풀어 준다. */
+.ar-p.on .ar-en,.ar-p:hover .ar-en{min-height:0}
+.ar-strip:hover .ar-p.on:not(:hover) .ar-en{min-height:2.84em}
+.ar-p.on{flex-grow:2.35}
+.ar-p.on img{opacity:.68;transform:scale(1)}
+.ar-p.on .ar-d{max-height:9.5rem;opacity:1;margin-top:.5rem}
+/* 커서가 띠 위에 있는 동안에는 스크롤이 고른 칸을 접고 커서가 가리키는 칸을 연다 */
+.ar-strip:hover .ar-p.on:not(:hover){flex-grow:1}
+.ar-strip:hover .ar-p.on:not(:hover) img{opacity:.5;transform:scale(1.05)}
+.ar-strip:hover .ar-p.on:not(:hover) .ar-d{max-height:0;opacity:0;margin-top:0}
+.ar-p:hover{flex-grow:2.35}
+.ar-p:hover img{opacity:.68;transform:scale(1)}
+.ar-p:hover .ar-d{max-height:9.5rem;opacity:1;margin-top:.5rem}
+.ar-p:focus-visible{outline:2px solid var(--accent-d);outline-offset:3px}
+/* 영문으로 바꾸면 한글 이름 칸이 곧 영문명이 되어 아래 영문 줄과 겹친다 — 그때는 감춘다 */
+html[lang="en"] .ar-en{display:none}
+.ar-cred{width:100%;max-width:1320px;margin:0 auto;
+  padding:0 clamp(1.2rem,.6rem + 2vw,3rem);
+  font-family:var(--kr);font-size:.62rem;font-weight:500;line-height:1.6;
+  color:rgba(255,255,255,.4);letter-spacing:0}
 @media (max-width:860px){
-  .tw-scene.is-list{height:300vh;height:300svh}
-  .tl-wrap{grid-template-columns:1fr;gap:.9rem}
-  .tl-shot{max-width:20rem}
-  .tl-side{min-height:7rem;font-size:.84rem}
-  /* ── 휴대폰 — 프레임마다 「다시 칠할 일」을 없앤다 ──
-     transform 과 opacity 는 합성기만 쓰므로 거의 공짜지만,
-     border-radius 는 층 전체를 래스터라이즈 다시 하게 만들고
-     box-shadow(90px 흐림)는 화면만 한 상자를 매 프레임 다시 그린다.
-     휴대폰에서 버벅이던 주범이라 확대 중에는 둘 다 끈다.
-     이미지 필터도 층을 하나 더 만들어 확대와 겹치면 매번 다시 건다. */
-  .tw-zoom{border-radius:0;box-shadow:none}
-  .tw-zoom img{filter:none}
+  /* 휴대폰에서는 고정 구간을 쓰지 않는다 — 여섯 칸을 두 줄씩 한 번에 보여 주는 편이
+     좁은 화면에서 훨씬 빨리 읽히고, 비싼 sticky 구간도 지나지 않는다. */
+  .tw-scene.is-areas{height:auto}
+  .is-areas .tw-pin{position:relative;height:auto;overflow:visible;
+    padding:clamp(3rem,7vh,4.5rem) 0}
+  .ar-strip{display:grid;grid-template-columns:1fr 1fr;height:auto;gap:.5rem}
+  .ar-p{flex:none;aspect-ratio:1/1;opacity:1;transform:none}
+  .ar-d{display:none}
 }
+@media (max-width:380px){.ar-strip{grid-template-columns:1fr}.ar-p{aspect-ratio:16/9}}
 /* 문장 구간 — 단어가 하나씩 진해진다. 다 켜지면 우리 네이비가 된다 */
 .is-say .tw-pin{background:#fff}
 .tw-say{width:100%;max-width:1180px;margin:0 auto;padding:0 clamp(1.2rem,.6rem + 2vw,3rem);
@@ -346,17 +344,15 @@ img{display:block;max-width:100%}
      한 화면에 몇 단어씩만 들어와 문장이 끊겨 읽히고, 그것만으로 1.4화면을
      더 내려야 했다. 같은 내용은 학부소개에 그대로 있다. */
   .tw-scene.is-say{display:none}
-  /* 비싼 sticky 구간을 지나는 스크롤 거리를 줄인다 — 520svh 를 380svh 로.
-     휴대폰은 한 번에 보이는 화면이 작아 구간이 길수록 「안 끝나는」 느낌만 커진다. */
-  .tw-scene.is-zoom{height:160vh;height:160svh}
-  .tw-scene.is-list{height:220vh;height:220svh}
 }
 @media (prefers-reduced-motion:reduce){
   .tw-scene{height:auto}
-  .tw-pin{position:relative;height:auto;padding:7rem 0}
-  .tw-zoom{transform:none;height:60vh}
-  .tw-zoom figcaption{opacity:1}
-  .tl-list li{color:var(--navy)}.tl-list li .n{color:var(--accent)}
+  .tw-pin{position:relative;height:auto;overflow:visible;padding:7rem 0}
+  /* 움직임을 줄인 설정에서는 여섯 칸을 처음부터 다 열어 둔다 */
+  .ar-p{opacity:1;transform:none}
+  .ar-strip{flex-wrap:wrap;height:auto}
+  .ar-p{flex:1 1 15rem;min-height:13rem}
+  .ar-d{max-height:none;opacity:1;margin-top:.5rem}
   .tw-say{color:var(--navy,#1a3d75)}
 }
 
@@ -568,15 +564,82 @@ img{display:block;max-width:100%}
 </div>
 
 
-<!-- 스크롤 구간 — 학사와 같은 짜임. 그림이 화면을 꽉 채운 뒤에야 다음으로 넘어가고,
+<!-- 스크롤 구간 — 학사와 같은 짜임. 화면에 고정된 채로 여섯 분야가 한 칸씩 열리고,
      이어지는 문장은 스크롤을 따라 단어가 하나씩 짙어진다. -->
-<section class="tw-scene is-zoom" aria-label="학부 전경">
+<section class="tw-scene is-areas" id="twAreas" aria-labelledby="h-research">
   <div class="tw-pin">
-    <figure class="tw-zoom">
-      <img src="assets/yonsei-engineering.jpg" alt="연세대학교 공과대학 건물" loading="lazy" decoding="async">
-      <figcaption>연세대학교 공과대학 · 기계공학부
-        <span class="cred">사진 Striker9498 · Wikimedia Commons · CC BY-SA 4.0</span></figcaption>
-    </figure>
+    <div class="ar-head">
+      <p class="ar-eyebrow">Research Area</p>
+      <div class="ar-head-row">
+        <h2 class="sec-title" id="h-research" data-i18n="areasTitle">여섯 개 연구 분야</h2>
+        <a class="more" href="G-research.html" data-i18n="moreLabs">연구실 목록 →</a>
+      </div>
+    </div>
+    <div class="ar-strip" id="arStrip">
+      <a class="ar-p" href="G-research.html#solid" style="--i:0;--d:0s">
+        <img src="assets/fields/solid.jpg" alt="" loading="lazy" decoding="async">
+        <span class="ar-n">01</span>
+        <span class="ar-body">
+          <span class="ar-ko">역학·소재</span>
+          <span class="ar-en">Mechanics &amp; Materials</span>
+          <span class="ar-d">금속·복합재·연성재료가 힘을 받아 어떻게 변형하고 파손되는지 실험과 시뮬레이션으로 규명합니다.</span>
+          <span class="ar-c">연구실 6곳</span>
+        </span>
+      </a>
+      <a class="ar-p" href="G-research.html#thermal" style="--i:1;--d:.075s">
+        <img src="assets/fields/thermal.jpg" alt="" loading="lazy" decoding="async">
+        <span class="ar-n">02</span>
+        <span class="ar-body">
+          <span class="ar-ko">에너지·열유체</span>
+          <span class="ar-en">Energy / Thermal-Fluid Systems</span>
+          <span class="ar-d">난류·미세유동과 연소·열전달을 해석해 연료전지·수소·배터리처럼 에너지를 다루는 기술을 연구합니다.</span>
+          <span class="ar-c">연구실 7곳</span>
+        </span>
+      </a>
+      <a class="ar-p" href="G-research.html#dynamics" style="--i:2;--d:.15s">
+        <img src="assets/fields/dynamics.jpg" alt="" loading="lazy" decoding="async">
+        <span class="ar-n">03</span>
+        <span class="ar-body">
+          <span class="ar-ko">로보틱스·제어</span>
+          <span class="ar-en">Robotics &amp; Intelligent Control</span>
+          <span class="ar-d">로봇과 자율 시스템이 스스로 감지하고 정밀하게 움직이도록 제어와 메카트로닉스를 연구합니다.</span>
+          <span class="ar-c">연구실 4곳</span>
+        </span>
+      </a>
+      <a class="ar-p" href="G-research.html#manufacturing" style="--i:3;--d:.225s">
+        <img src="assets/fields/manufacturing.jpg" alt="" loading="lazy" decoding="async">
+        <span class="ar-n">04</span>
+        <span class="ar-body">
+          <span class="ar-ko">설계·제조</span>
+          <span class="ar-en">Design &amp; Smart Manufacturing</span>
+          <span class="ar-d">전산 최적설계로 형상을 찾고 정밀·극한 가공으로 구현합니다. 반도체 장비·전기차 같은 첨단 제조를 다룹니다.</span>
+          <span class="ar-c">연구실 6곳</span>
+        </span>
+      </a>
+      <a class="ar-p" href="G-research.html#micro" style="--i:4;--d:.3s">
+        <img src="assets/fields/micro.jpg" alt="" loading="lazy" decoding="async">
+        <span class="ar-n">05</span>
+        <span class="ar-body">
+          <span class="ar-ko">마이크로·나노</span>
+          <span class="ar-en">Micro / Nano Systems</span>
+          <span class="ar-d">MEMS와 박막·미세가공, 나노 소자·센서로 눈에 보이지 않는 스케일의 구조와 현상을 다룹니다.</span>
+          <span class="ar-c">연구실 5곳</span>
+        </span>
+      </a>
+      <a class="ar-p" href="G-research.html#optics" style="--i:5;--d:.375s">
+        <img src="assets/fields/optics.jpg" alt="" loading="lazy" decoding="async">
+        <span class="ar-n">06</span>
+        <span class="ar-body">
+          <span class="ar-ko">바이오·포토닉스</span>
+          <span class="ar-en">Bio &amp; Photonics</span>
+          <span class="ar-d">광학·이미징과 바이오칩, 생체역학을 결합해 질병 진단과 의료 광학·바이오 센싱을 연구합니다.</span>
+          <span class="ar-c">연구실 5곳</span>
+        </span>
+      </a>
+    </div>
+    <!-- 분야 사진은 우리 연구실 사진이 아니라 그 분야를 보여 주는 자유 이용 사진이다.
+         CC BY 계열은 저작자 표시가 조건이라 화면에 그대로 남겨 둔다. -->
+    <p class="ar-cred">사진 Wikimedia Commons · Kerina yin(CC0) · Tommi Nummelin(CC BY-SA 3.0) · Auledas(CC BY-SA 4.0) · Adoscam(CC BY-SA 4.0) · 작자 미상(CC BY 2.5) · Steve Jurvetson(CC BY 2.0)</p>
   </div>
 </section>
 
@@ -630,43 +693,7 @@ img{display:block;max-width:100%}
   </section>
 
   <!-- ═══ 공지 · 세미나 보드 ═══ -->
-  <!-- ═══ 연구 분야 (SNU 6분야 그리드 스타일) ═══ -->
-  <!-- 연구 분야 — 카드 격자를 걷고 번호 목록 하나로 합쳤다.
-       스크롤을 따라 한 분야씩 짙어지고, 옆 칸에 그 분야 설명과 연구실 링크가 뜬다.
-       같은 내용을 두 벌로 보여 주던 중복을 없앤다. -->
-  <section class="tw-scene is-list" id="twList" aria-labelledby="h-research">
-    <div class="tw-pin">
-      <div class="tl-top">
-        <p class="tl-eyebrow">Research Area</p>
-      </div>
-      <div class="tl-wrap">
-        <div class="tl-head">
-          <h2 class="sec-title" id="h-research" data-i18n="areasTitle">연구 분야</h2>
-          <a class="more" href="G-research.html" data-i18n="moreLabs">연구실 목록 →</a>
-        </div>
-        <ol class="tl-list" id="twListItems">
-          <li data-b="solid"><span class="n">1</span><span class="t">역학·소재</span></li>
-          <li data-b="thermal"><span class="n">2</span><span class="t">에너지·열유체</span></li>
-          <li data-b="dynamics"><span class="n">3</span><span class="t">로보틱스·제어</span></li>
-          <li data-b="manufacturing"><span class="n">4</span><span class="t">설계·제조</span></li>
-          <li data-b="micro"><span class="n">5</span><span class="t">마이크로·나노</span></li>
-          <li data-b="optics"><span class="n">6</span><span class="t">바이오·포토닉스</span></li>
-        </ol>
-        <div class="tl-shot">
-        <div class="tl-side" id="twListSide" aria-hidden="true">
-          <img src="assets/fields/solid.jpg" alt="" data-b="solid" fetchpriority="low" decoding="async">
-          <img src="assets/fields/thermal.jpg" alt="" data-b="thermal" loading="lazy" decoding="async">
-          <img src="assets/fields/dynamics.jpg" alt="" data-b="dynamics" loading="lazy" decoding="async">
-          <img src="assets/fields/manufacturing.jpg" alt="" data-b="manufacturing" loading="lazy" decoding="async">
-          <img src="assets/fields/micro.jpg" alt="" data-b="micro" loading="lazy" decoding="async">
-          <img src="assets/fields/optics.jpg" alt="" data-b="optics" loading="lazy" decoding="async">
-          <span class="cap" id="twListCap"></span>
-        </div>
-        <a class="tl-all" id="twListAll" href="G-research.html">연구실 전체 <span aria-hidden="true">→</span></a>
-        </div>
-      </div>
-    </div>
-  </section>
+  <!-- 연구 분야는 히어로 바로 뒤(#twAreas)로 올렸다 — 여섯 분야를 가장 먼저 만나게 한다. -->
 
 
   <section class="wrap sec sec-navy" aria-labelledby="h-people">
@@ -792,7 +819,7 @@ img{display:block;max-width:100%}
       newsTitle: '연구 소식', moreAll: '전체 보기 →',
       ntTitle: '공지사항', tabAll: '전체', tabUG: '학부', tabGrad: '대학원',
       smTitle: '세미나', moreShort: '전체 →',
-      areasTitle: '연구 분야', moreLabs: '연구실 목록 →',
+      areasTitle: '여섯 개 연구 분야', moreLabs: '연구실 목록 →',
       peopleTitle: '교수진', morePeople: '교수진 전체 →',
       qAdm: '입학 안내', qAdmS: '학부·대학원 지원 경로', qAcad: '학사 · 교과', qAcadS: '교과과정과 이수 체계',
       qFac: '교수진', qFacS: '33명의 전임 교수', qDir: '오시는 길', qDirS: '서울 서대문구 연세로 50',
@@ -816,7 +843,7 @@ img{display:block;max-width:100%}
       newsTitle: 'Research News', moreAll: 'View all →',
       ntTitle: 'Notices', tabAll: 'All', tabUG: 'Undergrad', tabGrad: 'Graduate',
       smTitle: 'Seminars', moreShort: 'All →',
-      areasTitle: 'Research Areas', moreLabs: 'All laboratories →',
+      areasTitle: 'Six Research Areas', moreLabs: 'All laboratories →',
       peopleTitle: 'Faculty', morePeople: 'All faculty →',
       qAdm: 'Admissions', qAdmS: 'Undergraduate & graduate', qAcad: 'Academics', qAcadS: 'Curriculum & requirements',
       qFac: 'Faculty', qFacS: '33 full-time professors', qDir: 'Directions', qDirS: '50 Yonsei-ro, Seodaemun-gu, Seoul',
@@ -1302,10 +1329,8 @@ img{display:block;max-width:100%}
     try { return localStorage.getItem('ysme-lang') === 'en' ? 'en' : 'ko'; } catch (e) { return 'ko'; }
   }
   var TXT = {
-    ko: { say: '1958년 이래 여섯 개 연구 분야에서 전임 교수 33명이 교육과 연구를 이어 오고 있습니다.',
-          cap: '연세대학교 공과대학 · 기계공학부', all: '연구실 전체', photo: '사진' },
-    en: { say: 'Since 1958, 33 full-time professors have taught and carried out research across six fields.',
-          cap: 'College of Engineering, Yonsei University · Mechanical Engineering', all: 'All labs', photo: 'Photo' }
+    ko: { say: '1958년 이래 여섯 개 연구 분야에서 전임 교수 33명이 교육과 연구를 이어 오고 있습니다.' },
+    en: { say: 'Since 1958, 33 full-time professors have taught and carried out research across six fields.' }
   };
   var say = document.getElementById('twSayText'), words = [];
   function buildSay() {
@@ -1320,40 +1345,19 @@ img{display:block;max-width:100%}
     say.textContent = ''; say.appendChild(frag);
   }
   buildSay();
-  function applyLang() {
-    var L = TXT[curLang()];
-    buildSay();
-    var zc = document.querySelector('.is-zoom figcaption');
-    if (zc) zc.childNodes[0].nodeValue = L.cap + ' ';
-    var al = document.getElementById('twListAll');
-    if (al) al.childNodes[0].nodeValue = L.all + ' ';
-    cur = -1;   /* 사진 캡션(크레딧)도 다시 쓰이게 */
-  }
+  /* 이 구간에서 사전이 못 건드리는 글은 쪼개 둔 문장 하나뿐이라 그것만 다시 만든다.
+     여섯 칸의 이름·설명은 통째 텍스트라 i18n.js 가 en.json 으로 알아서 바꾼다. */
+  function applyLang() { buildSay(); }
   /* 헤더의 한/영 버튼은 nav.js 가 나중에 붙이므로 문서 위임으로 받는다 */
   document.addEventListener('click', function (e) {
     var t = e.target && e.target.closest ? e.target.closest('#ynvKo,#ynvEn') : null;
     if (t) setTimeout(function () { applyLang(); run(); }, 60);
   });
 
-  /* 번호 목록 — 여덟 구분의 설명은 아래 「전공 교과」의 BLOCKS 설명과 같은 문장이다 */
-  var listSec = document.getElementById('twList');
-  var items = listSec ? [].slice.call(listSec.querySelectorAll('.tl-list li')) : [];
-  var side = document.getElementById('twListSide'), cur = -1;
-  /* 분야 사진 — 각 분야를 보여 주는 자유 이용 사진. 우리 연구실 사진이 아니라
-     그 분야를 대표하는 장면이라, 아래에 출처·저작자·라이선스를 함께 적는다. */
-  var shots = listSec ? [].slice.call(listSec.querySelectorAll('.tl-side img')) : [];
-  var cap = document.getElementById('twListCap');
-  var allLink = document.getElementById('twListAll');
-  var CRED = {
-    solid: '사진 Kerina yin · Wikimedia Commons · CC0',
-    thermal: '사진 Tommi Nummelin · Wikimedia Commons · CC BY-SA 3.0',
-    dynamics: '사진 Auledas · Wikimedia Commons · CC BY-SA 4.0',
-    manufacturing: '사진 Adoscam · Wikimedia Commons · CC BY-SA 4.0',
-    micro: '사진 작자 미상 · Wikimedia Commons · CC BY 2.5',
-    optics: '사진 Steve Jurvetson from Menlo Park, USA · Wikimedia Commons · CC BY 2.0'
-  };
-  function esc(v){ return String(v).replace(/[&<>"]/g, function(c){
-    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  /* 여섯 분야 — 스크롤이 구간을 지나는 동안 한 칸씩 열린다 */
+  var areaSec = document.getElementById('twAreas');
+  var panels = areaSec ? [].slice.call(areaSec.querySelectorAll('.ar-p')) : [];
+  var curA = -1;
 
   /* 구간 높이는 스크롤 중에 변하지 않는다 — 프레임마다 offsetHeight 를 다시 재면
      그때마다 레이아웃을 강제로 계산한다. 처음과 resize 때만 재고 캐시해 둔다. */
@@ -1365,9 +1369,6 @@ img{display:block;max-width:100%}
   measure();
 
   var t = 0, sayOn = 0;
-  /* 프레임마다 DOM 을 찾지 않도록 한 번만 잡아 둔다 */
-  var zoomScene = document.querySelector('.tw-scene.is-zoom');
-  var zoomBox = zoomScene ? zoomScene.querySelector('.tw-zoom') : null;
 
   function run() {
     t = 0;
@@ -1379,9 +1380,18 @@ img{display:block;max-width:100%}
       if (spans[si] <= 1) return;
       var p = Math.min(1, Math.max(0, -tops[si] / spans[si]));
       sc.style.setProperty('--p', p.toFixed(4));
-      /* 다 커진 뒤에만 모서리·그림자를 지운다 — 표시 하나를 켜고 끄는 것이라
-         전환이 일어나는 0.45초 동안만 다시 칠하고, 그 밖에는 손대지 않는다. */
-      if (zoomBox && sc === zoomScene) zoomBox.classList.toggle('is-full', p >= .78);
+      if (sc.id === 'twAreas' && panels.length) {
+        /* 구간에 들어서면 여섯 칸이 차례로 올라온다 — 표시 하나만 켜고 나머지는 CSS 가 한다 */
+        if (p > .012) sc.classList.add('in');
+        /* 앞뒤 여유를 두고 가운데에서 한 칸씩 넘긴다. 열린 칸이 그대로면 손대지 않는다 —
+           프레임마다 클래스를 휘저으면 그때마다 여섯 상자의 폭을 다시 계산한다. */
+        var ra = Math.min(.999, Math.max(0, (p - .1) / .82));
+        var ai = Math.floor(ra * panels.length);
+        if (ai !== curA) {
+          curA = ai;
+          panels.forEach(function (el, k) { el.classList.toggle('on', k === ai); });
+        }
+      }
       if (sc.id === 'twSay' && words.length) {
         /* 앞뒤 15% 는 여유로 두고 가운데 70% 동안 단어를 켠다 */
         var q = Math.min(1, Math.max(0, (p - .15) / .7));
@@ -1391,26 +1401,6 @@ img{display:block;max-width:100%}
         if (n !== sayOn) {
           for (var k = Math.min(n, sayOn); k < Math.max(n, sayOn); k++) words[k].classList.toggle('on', k < n);
           sayOn = n;
-        }
-      }
-      if (sc.id === 'twList' && items.length) {
-        /* 앞뒤 10% 여유. 활성 하나만 짙게 두고, 옆 칸의 사진도 그 분야로 바꾼다 */
-        var r2 = Math.min(.999, Math.max(0, (p - .1) / .8));
-        var idx = Math.floor(r2 * items.length);
-        if (idx !== cur) {
-          cur = idx;
-          items.forEach(function (li, k) { li.classList.toggle('on', k === idx); });
-          var b = items[idx].getAttribute('data-b');
-          shots.forEach(function (im) {
-            var isOn = im.getAttribute('data-b') === b;
-            im.classList.toggle('on', isOn);
-            /* 꺼진 사진은 아예 그리지 않는다 — 겹친 층이 활성 사진을 덮는 일을 원천 차단 */
-            if (isOn) { im.style.visibility = 'visible'; }
-            else { setTimeout(function () { if (!im.classList.contains('on')) im.style.visibility = 'hidden'; }, 650); }
-          });
-          if (cap) cap.textContent = (CRED[b] || '').replace(/^사진|^Photo/, TXT[curLang()].photo);
-          /* 「연구실 전체」는 지금 켜진 분야로 이어진다 */
-          if (allLink) allLink.setAttribute('href', 'G-research.html#' + b);
         }
       }
     });

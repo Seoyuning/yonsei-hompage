@@ -295,8 +295,21 @@ main{position:relative;z-index:2;background:var(--paper)}
   display:flex;flex-direction:column;justify-content:center;overflow:hidden}
 /* 문장 구간 — 스크롤을 따라 단어가 하나씩 진해진다. 다 켜지면 우리 네이비가 된다.
    (연구 분야 CSS 를 갈아 끼울 때 이 규칙이 같이 지워져 문장이 회색으로 굳어 있었다) */
+/* position 을 여기서 다시 선언하면 안 된다 — .tw-pin 은 sticky 인데 relative 를 얹으면
+   sticky 가 죽어 문장이 화면에 붙지 않고 그냥 지나가 버린다.
+   sticky 요소도 절대 배치 자식의 기준 상자가 되므로 아래 ::before 는 그대로 앉는다. */
 .is-say .tw-pin{background:#fff}
-.tw-say{width:100%;max-width:1180px;margin:0 auto;padding:0 clamp(1.2rem,.6rem + 2vw,2.6rem);
+/* 문장 뒤에 마스코트 독수리를 옅게 깐다 — 흰 바탕에 글자만 떠 있어 화면이 허전했다.
+   그림 파일이 이미 우리 네이비 선화라 색을 따로 입히지 않고 투명도만 낮춘다.
+   글자보다 크게 잡아 날개와 꼬리가 문장 위아래로 삐져나오게 두면 「배경」으로 읽힌다.
+   .07 — 꺼진 낱말(rgba(26,61,117,.16))보다 옅어야 글자가 먼저 읽힌다. */
+.is-say .tw-pin::before{content:"";position:absolute;z-index:0;pointer-events:none;
+  left:50%;top:50%;transform:translate(-50%,-50%);
+  width:min(64vw,760px);aspect-ratio:1/1;
+  background:url("assets/me-eagle.png") center/contain no-repeat;
+  opacity:.07}
+/* 글은 반드시 그림 위에 — 층을 잡지 않으면 배경이 글자를 덮는 자리가 생긴다 */
+.tw-say{position:relative;z-index:1;width:100%;max-width:1180px;margin:0 auto;padding:0 clamp(1.2rem,.6rem + 2vw,2.6rem);
   font-family:var(--kr);font-weight:800;letter-spacing:-.03em;line-height:1.32;
   font-size:clamp(1.5rem,.9rem + 3.2vw,3.4rem);color:rgba(26,61,117,.16)}
 .tw-say .sw{transition:color .3s ease}

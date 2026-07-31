@@ -267,8 +267,12 @@ a{color:inherit;text-decoration:none}
   gap:0 clamp(.9rem,.5rem + 1.2vw,1.5rem);align-items:center;
   padding:clamp(1.3rem,1rem + 1.2vw,1.9rem) clamp(.2rem,.1rem + .4vw,.6rem)
           clamp(1.3rem,1rem + 1.2vw,1.9rem) clamp(1rem,.75rem + .7vw,1.5rem);
-  border-bottom:0;transition:padding-left .25s}
-.cl-head:hover{padding-left:clamp(1.4rem,1.05rem + 1.1vw,2.1rem)}
+  border-bottom:0;
+  /* 왼쪽으로 밀리는 손맛은 그대로 두되, padding 이 아니라 transform 으로 민다.
+     padding-left 를 애니메이션하면 프레임마다 이 줄(4단 격자)의 배치를 다시 계산한다 —
+     transform 은 합성기가 층을 옮기기만 하므로 배치를 건드리지 않는다. */
+  transition:transform .25s}
+.cl-head:hover{transform:translateX(clamp(.4rem,.3rem + .4vw,.6rem))}
 .cl-code{display:flex;align-items:center}
 .cl-code .cdot{width:7px;height:7px;border-radius:50%;background:var(--cl-c,var(--coral));flex:none;
   transition:transform .25s}

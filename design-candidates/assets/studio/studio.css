@@ -1238,3 +1238,6 @@ div.ys-vs-warn {
   background: var(--ys-line-2);
   color: var(--ys-muted);
 }
+
+/* 다른 패널에서 「이동」으로 건너왔을 때의 되돌아가기 줄 */
+.ys-insp-back { margin-bottom: .55rem; }

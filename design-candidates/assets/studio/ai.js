@@ -1334,10 +1334,23 @@
       return;
     }
 
-    /* 고른 상태로 남겨 둔다 — 무엇을 고칠 자리인지 테두리가 계속 보이고,
-       그대로 「편집」을 켜면 바로 그 칸을 고칠 수 있다. 곳 목록은 그대로 둔다. */
+    /* 그 자리로 데려가고 **바로 고칠 수 있는 상태**로 만든다 —
+       편집 모드를 켜고 인스펙터를 열어 그 요소의 텍스트 칸을 준다.
+       선택만 해 두면 테두리만 보이고 정작 바꿀 칸이 없어 "이동했는데 뭘 하라는 거지" 가 된다.
+       고친 뒤 목록으로 돌아올 길은 인스펙터 맨 위에 둔다. */
     if (Y.hud && Y.hud.revealIdx) {
-      Y.hud.revealIdx(idx, { select: true, label: '줄 ' + hit.line + ' · ' + (HIT_KIND[hit.kind] || hit.kind) });
+      Y.hud.revealIdx(idx, {
+        edit: true,
+        label: '줄 ' + hit.line + ' · ' + (HIT_KIND[hit.kind] || hit.kind),
+        back: {
+          label: '찾은 곳 목록으로',
+          fn: function () {
+            st.expand[ch.id] = true;
+            if (Y.hud.openPanel) Y.hud.openPanel(PANEL_ID);
+            render();
+          }
+        }
+      });
     }
     if (info.runtime) {
       Y.toast('이 글자는 화면에서 런타임이 다시 그리는 자리입니다. 파일에는 정상으로 반영됩니다.', 'warn');

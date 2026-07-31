@@ -125,7 +125,24 @@ img{display:block;max-width:100%}
 /* ── 지표 ── 네이비 판 하나로 칠하던 것을 지면의 짜임으로 바꿨다:
    흰 바탕에 위아래 먹줄, 칸 사이는 헤어라인, 숫자 위에 작은 영문 라벨.
    섹션 머리(영문 → 실선 → 큰 글자)와 같은 차례라 아래 구간과 이어져 읽힌다. */
-.stats{background:var(--paper);border-top:1px solid #111318;border-bottom:1px solid #111318}
+/* ── 지표 띠 — 히어로 위로 한 장 얹히듯 올라온다 (참고: pagePiling.js) ──
+   pagePiling 은 같은 자리에 겹쳐 둔 판을 z-index 순으로 쌓고, 위 판이 미끄러지면
+   아래 판이 드러난다. 여기서는 띠 하나라 그 결만 가져온다 —
+   히어로 위에 얹히는 판처럼 아래에서 올라오고, 위쪽에 그림자를 드리워
+   「덮었다」는 것이 보이게 한다. 움직이는 것은 transform 뿐이다. */
+.stats{position:relative;z-index:2;background:var(--paper);
+  border-top:1px solid #111318;border-bottom:1px solid #111318;
+  transform:translateY(56px);
+  box-shadow:0 -1px 0 rgba(6,14,30,0);
+  transition:transform 1s cubic-bezier(.16,1,.3,1),box-shadow 1s ease}
+.stats.in{transform:none;box-shadow:0 -26px 54px rgba(6,14,30,.20)}
+/* 판이 올라오는 동안 히어로는 살짝 물러난다 — 아래에 깔린 판으로 읽힌다 */
+.hero{transition:transform .95s cubic-bezier(.16,1,.3,1),filter .95s ease}
+body.piled .hero{transform:scale(.985) translateY(-14px);filter:brightness(.9)}
+@media (prefers-reduced-motion:reduce){
+  .stats{transform:none;transition:none;box-shadow:none}
+  .hero,body.piled .hero{transform:none;filter:none;transition:none}
+}
 .stats .wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:0;
   padding-top:clamp(2.4rem,5vh,3.6rem);padding-bottom:clamp(2.4rem,5vh,3.6rem)}
 .st{display:flex;flex-direction:column;gap:.4rem;padding:0 clamp(1rem,2.4vw,2.2rem)}
@@ -1461,6 +1478,7 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
       var io = new IntersectionObserver(function (es) {
         if (!es[0].isIntersecting) return;
         st.classList.add('in');
+        document.body.classList.add('piled');   /* 히어로가 뒤로 물러난다 */
         io.disconnect();
       }, { threshold: .3 });
       io.observe(st);

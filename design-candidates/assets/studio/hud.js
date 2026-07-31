@@ -1500,19 +1500,43 @@
     });
   }
 
-  /** 초안 하나를 사람 말로 요약한다 — "글 13건" · 안 되면 줄·글자 수로 물러선다. */
+  /** 같은 말이 여러 곳에서 한꺼번에 바뀌면 정렬기가 짝을 놓치고, 멀쩡히 남아 있는 요소가
+      「삭제」로 분류된다. 요소 수가 그대로인데 삭제·추가가 잡혔다면 그 요약은 믿을 수 없다 —
+      게시 직전 화면의 「삭제 5건」은 사람을 잘못 멈춰 세운다. */
+  function suspectSummary(path, orig, src, list) {
+    if (!/\.html?$/i.test(String(path || ''))) return false;
+    var phantom = 0;
+    for (var i = 0; i < list.length; i++) if (list[i].type === 'del' || list[i].type === 'add') phantom++;
+    if (!phantom) return false;
+    try {
+      var P = new DOMParser();
+      var a = P.parseFromString(orig, 'text/html').querySelectorAll('*').length;
+      var b = P.parseFromString(src, 'text/html').querySelectorAll('*').length;
+      return a === b;                       // 요소가 하나도 안 늘고 안 줄었다 = 삭제·추가가 아니다
+    } catch (e) { return false; }
+  }
+
+  /** 줄 단위로 정직하게 센다 — 분류가 못 미더울 때의 기준선 */
+  function lineSummary(orig, src) {
+    var la = orig.split('\n'), lb = src.split('\n');
+    if (la.length !== lb.length) return la.length + '줄 → ' + lb.length + '줄';
+    var n = 0;
+    for (var i = 0; i < la.length; i++) if (la[i] !== lb[i]) n++;
+    return n ? n + '줄 바뀜' : '내용 바뀜';
+  }
+
+  /** 초안 하나를 사람 말로 요약한다 — "글 13건" · 못 미더우면 줄 수로 물러선다. */
   function describeDraft(d) {
     var orig = d.origSrc == null ? '' : d.origSrc;
     if (Y.changes && Y.changes.of) {
       try {
         var r = Y.changes.of(d.path, orig, d.src);
-        if (r && r.ok && r.list && r.list.length) return Y.changes.summarize(r.list);
+        if (r && r.ok && r.list && r.list.length && !suspectSummary(d.path, orig, d.src, r.list)) {
+          return Y.changes.summarize(r.list);
+        }
       } catch (e) { /* 아래로 물러선다 */ }
     }
-    var la = orig.split('\n').length, lb = d.src.split('\n').length;
-    if (la !== lb) return la + '줄 → ' + lb + '줄';
-    var dl = d.src.length - orig.length;
-    return dl === 0 ? '내용 바뀜' : (dl > 0 ? '+' : '') + dl + '자';
+    return lineSummary(orig, d.src);
   }
 
   function askPublish(recs) {

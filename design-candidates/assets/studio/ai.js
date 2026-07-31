@@ -696,8 +696,9 @@
     }, function () { return [cur]; });
   }
 
-  function applyReplace(ch) {
+  function applyReplace(ch, onProgress) {
     var find = ch.find, rep = ch.replace;
+    function tick(done, total) { if (typeof onProgress === 'function') { try { onProgress(done, total); } catch (e) {} } }
     if (!find) return Promise.resolve({ ok: false, msg: '찾을 말이 비어 있습니다.' });
     if (find === rep) return Promise.resolve({ ok: false, msg: '찾을 말과 바꿀 말이 같습니다.' });
     if (!Y.replace) return Promise.resolve({ ok: false, msg: '찾아 바꾸기 모듈을 불러오지 못했습니다.' });
@@ -746,6 +747,7 @@
           });
         }
         var p = pages[i], n = 0;
+        tick(i, pages.length);
         return Y.engine.patchPage(p, function (src) {
           var r = Y.replace.plan(src, find, rep);
           n = r.changed;
@@ -766,9 +768,9 @@
   }
 
   /* 승인 경로 — 모든 op 를 Promise 로 통일한다(전영역 치환은 다른 페이지를 읽어야 한다). */
-  function applyChangeAsync(ch) {
+  function applyChangeAsync(ch, onProgress) {
     if (ch.state === 'approved') return Promise.resolve({ ok: false, msg: '이미 승인된 항목입니다.' });
-    if (ch.op === 'replaceText') return applyReplace(ch);
+    if (ch.op === 'replaceText') return applyReplace(ch, onProgress);
     try { return Promise.resolve(applyChange(ch)); }
     catch (e) { return Promise.resolve({ ok: false, msg: (e && e.message) || '적용 중 오류가 발생했습니다.' }); }
   }
@@ -1106,7 +1108,10 @@
           rActs.appendChild(btn('승인', 'ys-ai-btn', function (ev) {
             var b2 = ev && ev.currentTarget;
             if (b2) { b2.disabled = true; b2.textContent = '바꾸는 중…'; }
-            applyChangeAsync(ch).then(function (r) {
+            /* 전영역이면 9개 페이지를 하나씩 읽는다 — 몇 초 동안 아무 말이 없으면 멈춘 줄 안다 */
+            applyChangeAsync(ch, function (done, total) {
+              if (b2 && total > 1) b2.textContent = '바꾸는 중… ' + (done + 1) + '/' + total;
+            }).then(function (r) {
               if (b2) { b2.disabled = false; b2.textContent = '승인'; }
               if (r.ok) {
                 ch.state = 'approved'; ch.stale = false; ch.msg = r.msg || '';

@@ -1010,3 +1010,153 @@ div.ys-vs-warn {
   list-style: revert;
 }
 .ys-advfold > summary:hover { color: var(--ys-navy); }
+
+/* ══ 17. AI 수정 패널 (.ys-ai-*, ai.js) ══
+   지금까지 이 패널만 studio.css 에 규칙이 없어 ai.js 안의 「최소 폴백」으로 그려졌다.
+   그래서 다른 패널과 결이 다르고, 무엇보다 **라디오를 정확히 겨눠야만 눌렸다**
+   (범위를 「전영역」으로 바꾸려다 몇 번이나 빗나간다). 여기서 제대로 입힌다.
+   ai.js 의 폴백은 head 첫 자식으로 들어가므로 이 파일이 언제나 이긴다. */
+.ys-ai-panel {
+  display: flex;
+  flex-direction: column;
+  gap: .85rem;
+  font-family: var(--ys-kr);
+  font-size: .84rem;
+  line-height: 1.6;
+  color: var(--ys-ink);
+}
+.ys-ai-note { margin: 0; font-size: .76rem; color: var(--ys-muted); }
+.ys-ai-row { display: flex; gap: .45rem; align-items: center; flex-wrap: wrap; }
+.ys-ai-field { display: flex; flex-direction: column; gap: .3rem; }
+.ys-ai-label { font-size: .74rem; font-weight: 700; color: var(--ys-navy); letter-spacing: .01em; }
+
+.ys-ai-input,
+.ys-ai-text {
+  width: 100%;
+  box-sizing: border-box;
+  padding: .5rem .6rem;
+  border: 1px solid var(--ys-line);
+  border-radius: 9px;
+  background: #fff;
+  color: var(--ys-ink);
+  font: inherit;
+}
+.ys-ai-text { min-height: 6.5rem; resize: vertical; }
+.ys-ai-input:focus,
+.ys-ai-text:focus { outline: 2px solid var(--ys-navy-2); outline-offset: -1px; border-color: var(--ys-navy-2); }
+
+/* ── 범위 선택 ──
+   라디오 원만 표적이면 손이 자꾸 빗나간다. 라벨 전체를 누를 수 있게 넓히고
+   지금 고른 것이 한눈에 보이도록 칠한다. */
+.ys-ai-field > .ys-ai-row { gap: .35rem; }
+.ys-ai-field > .ys-ai-row > label.ys-ai-row {
+  flex: 1 1 auto;
+  min-width: 8rem;
+  min-height: 2.3rem;
+  gap: .45rem;
+  padding: .35rem .6rem;
+  border: 1px solid var(--ys-line);
+  border-radius: 9px;
+  background: #fff;
+  cursor: pointer;
+  font-size: .8rem;
+  transition: background .12s, border-color .12s;
+}
+.ys-ai-field > .ys-ai-row > label.ys-ai-row:hover { background: var(--ys-tint); border-color: #c3d0e4; }
+.ys-ai-field > .ys-ai-row > label.ys-ai-row:has(input:checked) {
+  background: var(--ys-tint);
+  border-color: var(--ys-navy-2);
+  font-weight: 700;
+  color: var(--ys-navy);
+}
+.ys-ai-field > .ys-ai-row > label.ys-ai-row:has(input:disabled) { opacity: .45; cursor: not-allowed; }
+.ys-ai-field input[type="radio"] {
+  flex: none;
+  width: 1.05rem;
+  height: 1.05rem;
+  margin: 0;
+  accent-color: var(--ys-navy-2);
+  cursor: inherit;
+}
+
+/* ── 버튼 ── */
+.ys-ai-btn,
+.ys-ai-btn2 {
+  min-height: 2.2rem;
+  padding: .45rem .85rem;
+  border-radius: 9px;
+  font: 700 .8rem/1.25 var(--ys-kr);
+  cursor: pointer;
+}
+.ys-ai-btn { border: 1px solid var(--ys-navy); background: var(--ys-navy); color: #fff; }
+.ys-ai-btn:hover { background: var(--ys-navy-2); border-color: var(--ys-navy-2); }
+.ys-ai-btn2 { border: 1px solid var(--ys-line); background: #fff; color: var(--ys-navy); }
+.ys-ai-btn2:hover { background: var(--ys-tint); border-color: #c3d0e4; }
+.ys-ai-btn[disabled],
+.ys-ai-btn2[disabled] { opacity: .5; cursor: progress; }
+.ys-ai-strong { box-shadow: 0 0 0 2px var(--ys-gold); }
+
+/* ── 변경안 목록 ── */
+.ys-ai-item {
+  border: 1px solid var(--ys-line);
+  border-radius: 11px;
+  background: #fff;
+  overflow: hidden;
+  box-shadow: var(--ys-sh);
+}
+.ys-ai-head {
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 2.6rem;
+  padding: .5rem .65rem;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+.ys-ai-head:hover { background: var(--ys-tint); }
+.ys-ai-num { flex: none; color: var(--ys-dim); font-weight: 700; }
+.ys-ai-line { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ys-ai-chip {
+  flex: none;
+  font-size: .7rem;
+  font-weight: 700;
+  padding: .12rem .42rem;
+  border-radius: 999px;
+  border: 1px solid var(--ys-line);
+  background: var(--ys-tint);
+  color: var(--ys-muted);
+}
+.ys-ai-ok { background: var(--ys-add-bg); border-color: #bcd9c4; color: var(--ys-add-fg); }
+.ys-ai-no { background: var(--ys-del-bg); border-color: #e6c3bd; color: var(--ys-danger); }
+.ys-ai-body { display: flex; flex-direction: column; gap: .5rem; padding: 0 .65rem .7rem; }
+.ys-ai-meta { font-size: .73rem; color: var(--ys-muted); word-break: break-all; }
+.ys-ai-why { margin: 0; font-size: .8rem; }
+.ys-ai-msg { margin: 0; font-size: .76rem; white-space: pre-wrap; color: var(--ys-muted); }
+.ys-ai-err { color: var(--ys-danger); }
+.ys-ai-pre {
+  margin: 0;
+  max-height: 60vh;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font: 400 .78rem/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* ai.js 자체 디프(폴백) — diff.js 가 없을 때만 보인다 */
+.ys-ai-diff {
+  border: 1px solid var(--ys-line);
+  border-radius: 9px;
+  overflow-x: auto;
+  background: #fff;
+  font: 400 .76rem/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.ys-ai-dline { display: flex; gap: .45rem; padding: .1rem .45rem; white-space: pre-wrap; word-break: break-word; }
+.ys-ai-del { background: var(--ys-del-bg); }
+.ys-ai-add { background: var(--ys-add-bg); }
+.ys-ai-sign { flex: none; font-weight: 700; opacity: .6; }

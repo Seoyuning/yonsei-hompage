@@ -34,7 +34,9 @@ design-candidates/
 │     ├─ net.js               api 클라이언트
 │     ├─ align.js             원본 DOM ↔ 라이브 DOM 정렬
 │     ├─ source.js            HTML 원문 스캔 · 오프셋 편집 원시연산 (= 저장 경계)
-│     ├─ engine.js            원본 진실 모델 · eid · 편집 적용 · undo/redo
+│     ├─ engine.js            원본 진실 모델 · eid · 편집 적용 · undo/redo · patchPage(다른 페이지)
+│     ├─ replace.js           찾아 바꾸기 — 원문을 훑어 **사람이 읽는 글자만** 바꾼다
+│     │                       (텍스트·보이는 속성값·스크립트 문자열 / 태그·class·href·주석 제외)
 │     ├─ datamap.js           data.js 소유 판별 + JSON 소스 오프셋 편집 · 배열 항목 추가/삭제
 │     ├─ pagedict.js          홈 인라인 `var I18N` 사전의 소스 오프셋 편집
 │     ├─ posts.js             공지·뉴스·세미나·행사 등록 패널
@@ -77,6 +79,14 @@ env: `GH_TOKEN` `GH_OWNER` `GH_REPO` `GH_BRANCH`(기본 main) `GH_BASEPATH`(= `d
 
 `{ passcode, provider:'gemini'|'claude', model, apiKey?, system?, messages:[{role,content}], json?:true, schema? }`
 → `{ text }` 또는 `json:true 일 때 { data }` · 오류는 `{ error, status }`.
+
+**계획 스키마는 두 갈래다.**
+- `changes[]` — 요소 하나를 고친다(eid 기준). 최대 10건.
+- `replacements[]` — `{id, find, replace, why}`. 「A 를 B 로」 같은 **일괄 치환**.
+  AI 는 무엇을 무엇으로 바꿀지만 정하고, 빠짐없이 찾는 일은 클라이언트(`replace.js`)가 한다.
+  상한이 없다. 아웃라인은 텍스트 리프만 담아 `<title>`·`<meta>`·속성값·인라인 사전을
+  통째로 놓치므로, 요소를 열거시키면 **반드시 빠진다**(H-academic.html 의 '연세대학교'
+  13곳 중 아웃라인에 오르는 건 1곳뿐이다). 범위가 「전영역」이면 replacements 만 쓴다.
 
 `{ passcode, probe:true }` → `{ ok:true, serverKey:{gemini:bool, claude:bool} }`
 브라우저가 "서버에 키가 있나" 만 묻는 질의. **불리언만 돌려주고 키 값은 절대 내보내지 않는다.**

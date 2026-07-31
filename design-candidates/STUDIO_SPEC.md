@@ -75,10 +75,22 @@ env: `GH_TOKEN` `GH_OWNER` `GH_REPO` `GH_BRANCH`(기본 main) `GH_BASEPATH`(= `d
 
 ## 3. 서버 계약 — `POST /api/ai`
 
-`{ passcode, provider:'gemini'|'claude', model, apiKey, system?, messages:[{role,content}], json?:true, schema? }`
+`{ passcode, provider:'gemini'|'claude', model, apiKey?, system?, messages:[{role,content}], json?:true, schema? }`
 → `{ text }` 또는 `json:true 일 때 { data }` · 오류는 `{ error, status }`.
 
-- 암호 검증 필수(오픈 프록시 방지). **API 키는 요청 본문으로만 받고 로그·저장·에코 금지.**
+`{ passcode, probe:true }` → `{ ok:true, serverKey:{gemini:bool, claude:bool} }`
+브라우저가 "서버에 키가 있나" 만 묻는 질의. **불리언만 돌려주고 키 값은 절대 내보내지 않는다.**
+페이지를 열 때마다 부르는 값싼 질의라 호출 제한에서 제외한다.
+
+env: `PUBLISH_PASSCODE`(필수) · `GEMINI_API_KEY` · `ANTHROPIC_API_KEY`
+`AI_RATE_MAX`(기본 100) · `AI_RATE_WINDOW_MS`(기본 300000) — IP 당 5분에 100회.
+
+- **키는 두 갈래.** 본문 `apiKey` 가 있으면 그것을, 없으면 서버 환경변수의 키를 쓴다.
+  둘 다 없으면 400. 개인 키가 서버 키보다 우선한다.
+- 서버 키 경로에서는 **공용 암호가 곧 요금 방어선**이다. 그래서 IP 별 고정 창 호출 제한을 둔다.
+  인스턴스 메모리에만 있으므로 인스턴스가 여러 개면 그만큼 느슨하다 —
+  완전한 방어가 아니라 과금 사고를 막는 속도 방지턱이다. 초과 시 429 + `Retry-After`.
+- 암호 검증 필수(오픈 프록시 방지). **API 키는 로그·저장·에코 금지.**
 - Gemini: `x-goog-api-key` 헤더 사용(URL 쿼리 금지). `json:true` → `responseMimeType:'application/json'` + `responseSchema`.
 - Claude: `x-api-key` + `anthropic-version: 2023-06-01`. 스키마는 tool 강제 대신 프롬프트+검증으로 처리.
 

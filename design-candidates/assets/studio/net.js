@@ -60,13 +60,19 @@
 
     checkpoints: function () { return net.call('checkpoints', {}); },
 
-    /* AI 프록시 — key 는 브라우저가 보관, 서버는 중계만 한다 */
+    /* 서버에 등록된 AI 키가 있는지만 묻는다 — 응답은 불리언뿐, 키 값은 오지 않는다 */
+    aiProbe: function () {
+      return post(Y.config.api + '/ai', { passcode: Y.session.passcode(), probe: true });
+    },
+
+    /* AI 프록시 — 개인 키는 브라우저가 보관하고 서버는 중계만 한다.
+       apiKey 를 비우면 서버가 자기 환경변수의 키로 대신 호출한다(시연 경로). */
     ai: function (opts) {
       return post(Y.config.api + '/ai', {
         passcode: Y.session.passcode(),
         provider: opts.provider || 'gemini',
         model: opts.model,
-        apiKey: opts.apiKey,
+        apiKey: opts.apiKey || undefined,
         system: opts.system || undefined,
         messages: opts.messages || [],
         json: !!opts.json,

@@ -11,7 +11,12 @@
       절대 여기서 적용하지 않는다(엔진 버퍼에는 현재 페이지 원문만 있다).
 
    계획(plan)은 IndexedDB 'plans' 에 저장되므로 페이지를 옮겨도 승인/거절 상태가 유지된다.
-   API 키는 IndexedDB 'meta' 의 ai-config 레코드에만 두고, 화면·로그·에러 메시지에 남기지 않는다.
+
+   키는 두 갈래다.
+   ① 개인 키 — IndexedDB 'meta' 의 ai-config 레코드에만 두고, 화면·로그·에러 메시지에 남기지 않는다.
+   ② 서버 키 — 서버 환경변수에 있고 브라우저는 **있다/없다만** 안다(net.aiProbe).
+      서버 키가 있으면 키 등록 화면을 건너뛰고 로그인 직후 바로 요청 화면이 뜬다(시연 경로).
+      개인 키가 등록돼 있으면 그쪽을 우선한다 — 이미 한 선택을 뒤엎지 않는다.
 */
 (function () {
   'use strict';
@@ -58,7 +63,8 @@
   var st = {
     host: null,          // 패널 본문 요소
     view: 'key',         // 'key' | 'ask' | 'result'
-    cfg: null,           // {provider, model, apiKey, ts}
+    cfg: null,           // {provider, model, apiKey, ts} · 서버 키 모드면 {provider, model, server:true}
+    server: null,        // 서버 키 보유 여부 {gemini:bool, claude:bool} — 조회 전이면 null
     plan: null,          // 계획 레코드
     prompt: '',          // 요청 입력값(재렌더 후 복원)
     scope: 'page',       // 'page' | 'element'
@@ -160,7 +166,7 @@
   /* ── 설정(제공자·모델·키) ── */
   function loadCfg() {
     return Y.store.get('meta', CFG_KEY).then(function (rec) {
-      st.cfg = (rec && rec.apiKey) ? rec : null;
+      st.cfg = (rec && (rec.apiKey || rec.server)) ? rec : null;
       return st.cfg;
     }, function () { st.cfg = null; return null; });
   }
@@ -169,9 +175,55 @@
     st.cfg = rec;
     return Y.store.put('meta', rec);
   }
+  /* 서버 키 모드 — apiKey 필드를 아예 만들지 않는다(브라우저에 키가 없다는 뜻) */
+  function saveServerCfg(provider, model) {
+    var rec = { key: CFG_KEY, provider: provider, model: model, server: true, ts: Date.now() };
+    st.cfg = rec;
+    return Y.store.put('meta', rec);
+  }
   function dropCfg() {
     st.cfg = null;
     return Y.store.del('meta', CFG_KEY);
+  }
+
+  /* ── 서버 키 ── */
+  function serverHas(p) { return !!(st.server && st.server[p]); }
+  function serverProvider() {
+    for (var i = 0; i < PROVIDERS.length; i++) if (serverHas(PROVIDERS[i][0])) return PROVIDERS[i][0];
+    return null;
+  }
+  /* 이 설정으로 지금 요청을 보낼 수 있는가 */
+  function usable(cfg) {
+    if (!cfg) return false;
+    if (cfg.apiKey) return true;
+    return !!(cfg.server && serverHas(cfg.provider));
+  }
+
+  /* 서버에 키가 있는지 묻는다(불리언만 온다). 로그인 전이면 묻지 않는다 — 401 만 받는다. */
+  var probeP = null;
+  function ensureProbe(force) {
+    if (force) probeP = null;
+    if (probeP) return probeP;
+    if (!Y.session.passcode()) return Promise.resolve(null);
+    probeP = Y.net.aiProbe().then(function (d) {
+      st.server = (d && d.serverKey) || null;
+      return st.server;
+    }, function () {
+      st.server = null;
+      probeP = null;                  // 실패는 캐시하지 않는다 — 다음 기회에 다시 묻는다
+      return null;
+    });
+    return probeP;
+  }
+
+  /* 개인 키를 등록한 적 없는 사람에게 서버 키를 기본값으로 붙여 준다.
+     이미 설정이 있으면 건드리지 않는다 — 사람이 한 선택을 뒤엎지 않는다. */
+  function applyServerDefault() {
+    if (st.cfg) return false;
+    var p = serverProvider();
+    if (!p) return false;
+    st.cfg = { key: CFG_KEY, provider: p, model: MODELS[p][0][0], server: true, ts: Date.now() };
+    return true;
   }
 
   /* ── 계획 저장/불러오기 ── */
@@ -431,7 +483,7 @@
   /* ── 요청 ── */
   function requestPlan(sendBtn) {
     if (st.busy) return;
-    if (!st.cfg || !st.cfg.apiKey) { st.view = 'key'; render(); return; }
+    if (!usable(st.cfg)) { st.view = 'key'; render(); return; }
     var promptText = String(st.prompt || '').trim();
     if (!promptText) { Y.toast('수정 요청을 적어 주세요.', 'warn'); return; }
     if (!Y.engine.mapped()) {
@@ -463,7 +515,7 @@
     Y.net.ai({
       provider: st.cfg.provider,
       model: st.cfg.model,
-      apiKey: st.cfg.apiKey,
+      apiKey: st.cfg.apiKey || '',        // 비워 보내면 서버가 자기 키로 호출한다
       system: buildSystem(page),
       messages: [{ role: 'user', content: buildUser(promptText, page, outline, selIdx) }],
       json: true,
@@ -630,17 +682,38 @@
 
   /* ── 화면: 키 등록 ── */
   function renderKey(host) {
-    var provider = (st.cfg && st.cfg.provider) || 'gemini';
+    var provider = (st.cfg && st.cfg.provider) || serverProvider() || 'gemini';
     if (!MODELS[provider]) provider = 'gemini';
     var model = (st.cfg && st.cfg.model) || MODELS[provider][0][0];
 
     host.appendChild(el('p', 'ys-ai-note',
-      st.cfg ? 'AI 키가 등록되어 있습니다. 새 키를 넣으면 이전 키를 대체합니다.'
-             : 'AI 수정을 쓰려면 먼저 API 키를 등록하세요. 키는 이 브라우저에만 저장되고 서버는 중계만 합니다.'));
+      (st.cfg && st.cfg.server) ? '지금은 서버에 등록된 키를 쓰고 있습니다. 개인 키를 넣으면 그쪽이 우선합니다.'
+      : (st.cfg && st.cfg.apiKey) ? 'AI 키가 등록되어 있습니다. 새 키를 넣으면 이전 키를 대체합니다.'
+      : serverProvider() ? '서버에 키가 등록되어 있어 키를 넣지 않아도 바로 쓸 수 있습니다. 개인 키를 쓰려면 아래에 넣으세요.'
+      : 'AI 수정을 쓰려면 먼저 API 키를 등록하세요. 키는 이 브라우저에만 저장되고 서버는 중계만 합니다.'));
 
     var pSel = select('ys-ai-input', PROVIDERS, provider);
     var mSel = select('ys-ai-input', MODELS[provider], model);
     var hint = el('p', 'ys-ai-note', KEY_HINT[provider]);
+
+    /* 서버 키 줄 — 고른 제공자가 서버에 등록돼 있을 때만 나타난다 */
+    var srvRow = el('div', 'ys-ai-row');
+    var srvBtn = btn('서버 키로 사용', 'ys-ai-btn', function () {
+      saveServerCfg(pSel.value, mSel.value).then(function () {
+        st.view = 'ask';
+        Y.toast('서버에 등록된 키를 사용합니다.');
+        render();
+      }, function () { Y.toast('설정을 저장하지 못했습니다.', 'error'); });
+    });
+    srvRow.appendChild(srvBtn);
+    var srvNote = el('p', 'ys-ai-note', '');
+
+    function syncServerRow() {
+      var has = serverHas(pSel.value);
+      srvRow.style.display = has ? '' : 'none';
+      srvNote.style.display = has ? '' : 'none';
+      srvNote.textContent = has ? '이 제공자는 서버에 키가 있습니다. 키를 브라우저에 저장하지 않고 그대로 쓸 수 있습니다.' : '';
+    }
 
     pSel.addEventListener('change', function () {
       var p = pSel.value;
@@ -653,6 +726,7 @@
         mSel.appendChild(o);
       }
       hint.textContent = KEY_HINT[p] || '';
+      syncServerRow();
     });
 
     var keyIn = document.createElement('input');
@@ -664,12 +738,16 @@
 
     host.appendChild(field('제공자', pSel));
     host.appendChild(field('모델', mSel));
-    var kf = field('API 키', keyIn);
+    host.appendChild(srvNote);
+    host.appendChild(srvRow);
+    syncServerRow();
+
+    var kf = field('API 키 (직접 쓸 때만)', keyIn);
     kf.appendChild(hint);
     host.appendChild(kf);
 
     var row = el('div', 'ys-ai-row');
-    row.appendChild(btn('연결', 'ys-ai-btn', function () {
+    row.appendChild(btn('개인 키로 연결', serverProvider() ? 'ys-ai-btn2' : 'ys-ai-btn', function () {
       var k = keyIn.value.replace(/\s+/g, '');
       keyIn.value = '';                                  // 입력칸은 즉시 비운다
       if (k.length < 8) { Y.toast('키가 너무 짧습니다. 다시 확인하세요.', 'error'); return; }
@@ -679,13 +757,20 @@
         render();
       }, function () { Y.toast('키를 저장하지 못했습니다.', 'error'); });
     }));
-    if (st.cfg) {
+    if (usable(st.cfg)) {
       row.appendChild(btn('취소', 'ys-ai-btn2', function () { st.view = 'ask'; render(); }));
+    }
+    if (st.cfg && st.cfg.apiKey) {
       row.appendChild(btn('키 삭제', 'ys-ai-btn2', function () {
         var ask = (Y.hud && Y.hud.confirm) ? Y.hud.confirm('저장된 AI 키를 삭제할까요?') : Promise.resolve(true);
         ask.then(function (yes) {
           if (!yes) return;
-          dropCfg().then(function () { Y.toast('AI 키를 삭제했습니다.'); render(); });
+          dropCfg().then(function () {
+            /* 서버 키가 있으면 그쪽으로 자연스럽게 되돌아간다 — 손이 묶이지 않게 */
+            if (applyServerDefault()) { st.view = 'ask'; Y.toast('개인 키를 지우고 서버 키로 돌아갑니다.'); }
+            else Y.toast('AI 키를 삭제했습니다.');
+            render();
+          });
         });
       }));
     }
@@ -696,6 +781,7 @@
   function renderAsk(host) {
     var head = el('div', 'ys-ai-row');
     head.appendChild(el('span', 'ys-ai-chip', (st.cfg ? st.cfg.provider : '') + ' · ' + (st.cfg ? st.cfg.model : '')));
+    if (st.cfg && st.cfg.server) head.appendChild(el('span', 'ys-ai-chip', '서버 키'));
     head.appendChild(btn('키 변경', 'ys-ai-btn2', function () { st.view = 'key'; render(); }));
     if (st.plan) head.appendChild(btn('지난 변경안 보기', 'ys-ai-btn2', function () { st.view = 'result'; render(); }));
     host.appendChild(head);
@@ -942,7 +1028,8 @@
     root.setAttribute(Y.config.uiAttr, '');
     host.appendChild(root);
 
-    if (!st.cfg) st.view = 'key';
+    /* 서버 키 모드였는데 서버에서 키가 사라졌다면 여기서 다시 등록 화면으로 내려간다 */
+    if (!usable(st.cfg)) st.view = 'key';
     else if (st.view === 'result' && !st.plan) st.view = 'ask';
 
     if (st.view === 'key') renderKey(root);
@@ -980,14 +1067,17 @@
     }
     var id = wantPlan || planId;
 
-    loadCfg().then(function () {
-      st.view = st.cfg ? 'ask' : 'key';
+    /* 서버 키 조회를 먼저 끝내야 "키 등록 화면을 띄울지" 를 옳게 판단할 수 있다.
+       로그인 전이면 조회가 즉시 null 로 끝나고, 로그인 시점에 session:change 가 다시 부른다. */
+    loadCfg().then(function () { return ensureProbe(); }).then(function () {
+      applyServerDefault();
+      st.view = usable(st.cfg) ? 'ask' : 'key';
       if (!id) { render(); return; }
       return Y.store.get('plans', id).then(function (rec) {
         if (!rec || !rec.changes) { rememberPlan(null); render(); return; }
         st.plan = rec;
         rememberPlan(rec.id);
-        if (st.cfg) st.view = 'result';
+        if (usable(st.cfg)) st.view = 'result';
         if (wantChange) {
           st.expand[wantChange] = true;
           st.focusId = wantChange;
@@ -1025,9 +1115,22 @@
   /* 세션이 끊기면 계획 포인터만 지운다(계획 자체는 남긴다) */
   Y.bus.on('session:invalid', function () { rememberPlan(null); });
 
+  /* 로그인해야 암호가 생기고, 암호가 있어야 서버 키를 물어볼 수 있다.
+     부팅 시점엔 대개 아직 로그인 전이므로 여기가 실제 진입점이다 —
+     **암호 입력 → 키 등록 화면 없이 곧바로 요청 화면**이 되는 자리. */
+  Y.bus.on('session:change', function (s) {
+    if (!s || !s.passcode) { probeP = null; st.server = null; return; }
+    ensureProbe(true).then(function () {
+      var changed = applyServerDefault();
+      if (st.view === 'key' && usable(st.cfg)) { st.view = 'ask'; changed = true; }
+      if (changed) render();
+    });
+  });
+
   Y.ai = {
     open: function () { if (Y.hud && Y.hud.openPanel) Y.hud.openPanel(PANEL_ID); },
-    hasKey: function () { return !!(st.cfg && st.cfg.apiKey); },
+    hasKey: function () { return usable(st.cfg); },
+    usingServerKey: function () { return !!(st.cfg && st.cfg.server && usable(st.cfg)); },
     plan: function () { return st.plan; }
   };
 })();

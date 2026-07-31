@@ -5,17 +5,27 @@
    (2) 사이트 페이지에 외부 호출을 허용하는 CSP 구멍을 뚫어야 한다.
    여기서 중계하면 페이지는 동일 오리진만 호출하면 된다.
 
-   API 키는 요청 본문으로만 받고 **저장·로그·에코하지 않는다.**
+   키는 두 갈래로 온다.
+     ① 브라우저가 보낸 키 — 요청 본문으로만 받고 **저장·로그·에코하지 않는다.**
+     ② 서버 환경변수의 키 — 본문에 키가 없을 때 쓴다. **브라우저로 내려보내지 않는다.**
+   ②가 시연 경로다: 공용 암호만 입력하면 키 등록 없이 바로 AI 수정이 된다.
+   그래서 암호가 곧 요금 방어선이 된다 — 아래 호출 제한과 함께 봐야 한다.
+
    오픈 프록시가 되지 않도록 편집자 공용 암호(PUBLISH_PASSCODE)를 요구한다.
 
    요청 (POST JSON):
-     { passcode, provider:'gemini'|'claude', model, apiKey,
+     { passcode, probe:true }                       서버 키 보유 여부만 묻는다
+     { passcode, provider:'gemini'|'claude', model, apiKey?,
        system?, messages:[{role:'user'|'assistant', content}],
        json?:true, schema?, temperature?, maxOutputTokens? }
    응답:
+     { ok:true, serverKey:{gemini,claude} }   probe — 불리언만, 키 값은 절대 안 나간다
      { text }                     일반 응답
      { text, data }               json:true 이고 파싱 성공 시 data 포함
      { error, status }            실패
+
+   env: PUBLISH_PASSCODE(필수) · GEMINI_API_KEY · ANTHROPIC_API_KEY
+        AI_RATE_MAX(기본 100) · AI_RATE_WINDOW_MS(기본 300000)  — IP 당 5분에 100회
 */
 
 var GEMINI_BASE = 'https://generativelanguage.googleapis.com/v1beta/models/';
@@ -39,11 +49,42 @@ module.exports = async (req, res) => {
     return;
   }
 
+  /* 조회 — 브라우저는 "서버에 키가 있나?" 만 묻는다. 키 값 자체는 절대 내려가지 않는다.
+     페이지를 열 때마다 한 번씩 부르는 값싼 질의라 호출 제한에서 빼 둔다. */
+  if (body.probe) {
+    res.status(200).json({
+      ok: true,
+      serverKey: { gemini: !!envKey('gemini'), claude: !!envKey('claude') }
+    });
+    return;
+  }
+
   var provider = String(body.provider || 'gemini');
   var model = String(body.model || '');
-  var apiKey = String(body.apiKey || '');
   if (!/^[A-Za-z0-9._:-]{1,80}$/.test(model)) { res.status(400).json({ error: '모델 이름이 올바르지 않습니다.' }); return; }
-  if (apiKey.length < 8 || apiKey.length > 400) { res.status(400).json({ error: 'API 키를 확인하세요.' }); return; }
+
+  /* 키 결정 — 본문에 키가 있으면 그것을, 없으면 서버 환경변수의 키를 쓴다. */
+  var apiKey = String(body.apiKey || '').trim();
+  if (!apiKey) {
+    apiKey = envKey(provider);
+    if (!apiKey) {
+      res.status(400).json({ error: 'API 키가 없습니다. 키를 등록하거나 서버에 키를 설정하세요.' });
+      return;
+    }
+  } else if (apiKey.length < 8 || apiKey.length > 400) {
+    res.status(400).json({ error: 'API 키를 확인하세요.' });
+    return;
+  }
+
+  /* 호출 제한 — 공용 암호가 새어 나갔을 때 요금이 폭주하는 것을 막는다.
+     서버리스 인스턴스 메모리에만 있으므로 인스턴스가 여러 개면 그만큼 느슨해진다.
+     완전한 방어가 아니라 과금 사고를 막는 속도 방지턱이다. */
+  var gate = rateCheck(clientIp(req));
+  if (!gate.ok) {
+    res.setHeader('Retry-After', String(gate.retryAfter));
+    res.status(429).json({ error: '요청이 너무 잦습니다. ' + gate.retryAfter + '초 뒤에 다시 시도해 주세요.' });
+    return;
+  }
 
   var messages = Array.isArray(body.messages) ? body.messages : [];
   if (!messages.length) { res.status(400).json({ error: '보낼 메시지가 없습니다.' }); return; }
@@ -172,6 +213,42 @@ function numOr(v, dflt, lo, hi) {
   if (!isFinite(n)) return dflt;
   return Math.max(lo, Math.min(hi, n));
 }
+/* 서버에 등록된 키. 이 함수 밖으로 값이 나가는 곳은 제공자 호출 헤더뿐이다. */
+function envKey(provider) {
+  var v = (provider === 'claude')
+    ? (process.env.ANTHROPIC_API_KEY || process.env.CLAUDE_API_KEY)
+    : (process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY);
+  return String(v || '').trim();
+}
+
+function clientIp(req) {
+  var xf = req.headers['x-forwarded-for'];
+  if (Array.isArray(xf)) xf = xf[0];
+  var ip = String(xf || '').split(',')[0].trim();
+  return ip || String(req.headers['x-real-ip'] || '').trim() || 'unknown';
+}
+
+/* 고정 창(fixed window) 카운터 — 인스턴스 메모리에만 산다. */
+var hits = new Map();
+function rateCheck(ip) {
+  var max = Math.round(numOr(process.env.AI_RATE_MAX, 100, 1, 10000));
+  var win = Math.round(numOr(process.env.AI_RATE_WINDOW_MS, 300000, 1000, 3600000));
+  var now = Date.now();
+
+  var rec = hits.get(ip);
+  if (!rec || now - rec.start >= win) { rec = { start: now, n: 0 }; hits.set(ip, rec); }
+  rec.n++;
+
+  if (hits.size > 500) {                       // 만료된 항목 청소 — 메모리가 무한정 늘지 않게
+    hits.forEach(function (v, k) { if (now - v.start >= win) hits.delete(k); });
+  }
+
+  if (rec.n > max) {
+    return { ok: false, retryAfter: Math.max(1, Math.ceil((rec.start + win - now) / 1000)) };
+  }
+  return { ok: true };
+}
+
 function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
 function safeEqual(a, b) {
   if (a.length !== b.length) return false;

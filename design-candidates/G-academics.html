@@ -532,14 +532,12 @@ a{color:inherit;text-decoration:none}
 
 /* 스크롤은 이 컨테이너 안에서만 — 페이지 전체는 절대 가로로 밀리지 않는다 */
 /* ── 기본형 / 트리형 ──
-   트리형은 학기 격자 위에 선을 얹지 않는다. 선이 지나가는 자리의 과목이 가려져
-   읽히지 않았다. 대신 관계만 따로 보여 주는 화면을 만든다 —
-   무엇을 먼저 듣고 무엇으로 이어지는지 한 줄로 읽힌다.
-   근거가 있는 것만 싣는다: 공식 선수과목(courses[].prereq)과
-   번호로 이어지는 과목(1 → 2). 관계를 지어내지 않는다. */
+   트리형은 학기 격자를 그대로 두되 과목을 한 칸에 한 줄씩 펼친다.
+   그래야 과목 사이를 잇는 선이 지나갈 빈자리가 생긴다 —
+   빽빽한 격자 위에 선만 얹으면 선이 과목을 가려 오히려 안 읽힌다(참고: yonsei-me).
+   근거가 있는 관계만 긋는다: 공식 선수과목(실선)과 번호로 이어지는 과목(점선). */
 .tree-top-row{display:flex;align-items:flex-start;justify-content:space-between;
   gap:1rem clamp(1rem,3vw,2.4rem);flex-wrap:nowrap}
-/* 범례 자리를 두 줄로 잡아 둔다 — 보기를 바꿔도 아래가 밀려 내려가지 않는다 */
 .tree-legend{flex:1 1 auto;min-height:2.9em;align-content:flex-start}
 .tree-mode{flex:0 0 auto;display:inline-flex;align-items:center;gap:.45rem;
   font-family:var(--kr);font-size:.82rem;font-weight:700;letter-spacing:-.01em;
@@ -553,49 +551,53 @@ a{color:inherit;text-decoration:none}
 .is-tree .tree-legend .only-grid{display:none}
 .is-tree .tree-legend .only-tree{display:inline-flex}
 .is-tree .tree-scroll{display:none}
-.tf-sw-req{width:20px;height:0;border-top:2px solid var(--navy)}
-.tf-sw-seq{width:20px;height:0;border-top:2px dashed var(--dim)}
+.tf-sw-req{width:22px;height:0;border-top:2px solid var(--navy)}
+.tf-sw-seq{width:22px;height:0;border-top:2px dashed var(--dim)}
 
-/* ── 트리형 화면 ── */
-.tree-flow{margin-top:clamp(1rem,2.4vh,1.6rem)}
-.tf-group{padding:clamp(1.1rem,2.4vh,1.7rem) 0;border-top:1px solid var(--line)}
-.tf-group:first-child{border-top:0;padding-top:.2rem}
-.tf-gh{margin:0 0 clamp(.9rem,2vh,1.3rem);font-family:var(--kr);
-  font-size:.86rem;font-weight:700;letter-spacing:-.01em;color:var(--ink)}
-.tf-gh span{margin-left:.5rem;font-weight:500;color:var(--muted)}
-/* 한 줄 = 하나의 흐름. 좁으면 옆으로 밀어 본다 */
-.tf-row{display:flex;align-items:center;gap:0;flex-wrap:wrap;
-  padding:.55rem 0}
-.tf-row + .tf-row{border-top:1px dashed var(--line)}
-.tf-c{display:inline-flex;align-items:center;gap:.4rem;
-  padding:.52rem .85rem;border:1px solid var(--line);background:#fff;
-  font-family:var(--kr);font-size:.88rem;font-weight:600;letter-spacing:-.01em;
-  color:var(--ink);text-decoration:none;white-space:nowrap;
-  transition:border-color .18s,color .18s,background .18s}
-a.tf-c:hover{border-color:var(--navy);color:var(--navy);background:var(--row,#f7f8fa)}
-.tf-c.is-req{border-color:var(--navy);color:var(--navy);font-weight:700}
-.tf-c .tf-code{font-family:var(--mono);font-size:.72rem;font-weight:600;color:var(--dim)}
-/* 화살표 — 실선은 공식 선수과목, 점선은 이어지는 과목 */
-/* 화살표 몸통 — 점선은 배경 그라데이션으로 그린다(border-top 은 flex 안에서
-   높이가 0 이 되어 선이 사라졌다). */
-.tf-a{position:relative;flex:0 0 clamp(2.4rem,4vw,3.8rem);height:2px;
-  background:var(--navy);margin:0 .35rem}
-.tf-a.seq{background-color:transparent;
-  background-image:repeating-linear-gradient(90deg,#6b7688,#6b7688 5px,transparent 5px,transparent 10px)}
-.tf-a::after{content:"";position:absolute;right:-1px;top:50%;
-  width:7px;height:7px;border-top:2px solid var(--navy);border-right:2px solid var(--navy);
-  transform:translateY(-50%) rotate(45deg)}
-.tf-a.seq::after{border-color:var(--dim)}
-/* 여러 과목이 하나로 모이는 자리(4대 역학 → 창의제품설계) */
-.tf-many{display:flex;flex-direction:column;gap:.4rem;
-  padding-left:.9rem;border-left:2px solid var(--navy)}
-.tf-note{margin:.7rem 0 0;font-family:var(--kr);font-size:.8rem;font-weight:500;
-  line-height:1.7;color:var(--muted)}
+/* ── 트리형 판 ── */
+.tree-flow{margin-top:clamp(.9rem,2vh,1.4rem);overflow-x:auto;overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;border:1px solid var(--line);background:#fff}
+.tree-flow::-webkit-scrollbar{height:9px}
+.tree-flow::-webkit-scrollbar-thumb{background:var(--line);border-radius:9px}
+.tf-canvas{position:relative;min-width:1180px;padding:0 0 1.2rem}
+/* 학기 머리 — 기본형과 같은 표기 */
+.tf-head{display:grid;grid-template-columns:7.5rem repeat(8,1fr);
+  border-bottom:2px solid var(--navy);position:sticky;top:0;background:#fff;z-index:3}
+.tf-head span{padding:.7rem .4rem;text-align:center;font-family:var(--mono);
+  font-size:.74rem;font-weight:700;letter-spacing:.06em;color:var(--ink)}
+.tf-head span:first-child{text-align:left;padding-left:.9rem}
+/* 띠(MSC · 전공 · 종합) */
+.tf-band{position:relative;display:grid;grid-template-columns:7.5rem repeat(8,1fr);
+  border-top:1px solid var(--line)}
+.tf-band:first-of-type{border-top:0}
+.tf-band > .tf-bl{grid-column:1;display:flex;align-items:center;padding:.9rem;
+  font-family:var(--kr);font-size:.84rem;font-weight:800;letter-spacing:-.01em;
+  color:var(--navy);border-right:1px solid var(--line)}
+.tf-cells{grid-column:2 / -1;display:grid;
+  grid-template-columns:repeat(8,1fr);align-items:start;
+  padding:1rem 0;row-gap:.5rem;position:relative;z-index:2}
+/* 과목 하나 = 한 칸. 세로로 겹치지 않게 제 줄을 갖는다 */
+.tf-box{grid-column:var(--c);grid-row:var(--r);
+  margin:0 clamp(.5rem,1vw,.9rem);padding:.5rem .6rem;
+  border:1px solid var(--line);background:#fff;border-radius:2px;
+  font-family:var(--kr);font-size:.79rem;font-weight:600;letter-spacing:-.02em;
+  line-height:1.3;color:var(--ink);text-align:center;text-decoration:none;
+  display:flex;align-items:center;justify-content:center;min-height:2.4rem;
+  transition:border-color .18s,color .18s}
+a.tf-box:hover{border-color:var(--navy);color:var(--navy)}
+.tf-box.is-req{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:700}
+a.tf-box.is-req:hover{background:var(--navy-d,#12294f);color:#fff}
+/* 선 — 칸 사이 빈자리를 지난다 */
+.tf-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+.tf-svg path{fill:none;stroke:var(--navy);stroke-width:1.4}
+.tf-svg path.seq{stroke:#6b7688;stroke-dasharray:4 4}
+.tf-svg polygon{fill:var(--navy)}
+.tf-svg polygon.seq{fill:#6b7688}
+.tf-note{margin:.9rem clamp(1.2rem,.6rem + 2vw,2.6rem) 0;font-family:var(--kr);
+  font-size:.8rem;font-weight:500;line-height:1.7;color:var(--muted)}
 @media (max-width:860px){
   .tree-top-row{flex-wrap:wrap}
   .tree-legend{min-height:0}
-  .tf-row{gap:.4rem}
-  .tf-a{flex-basis:1.8rem}
 }
 .tree-scroll{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
   border:1px solid var(--line-soft);background:#fff}
@@ -1753,101 +1755,146 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
   }
 
 
-  /* ── 기본형 / 트리형 ──
-     격자 위에 선을 얹던 방식을 걷었다 — 선이 지나가는 자리의 과목이 가려졌다.
-     트리형은 관계만 따로 보여 주는 화면이다: 「무엇을 먼저 → 무엇을」 한 줄.
-     근거가 있는 것만 싣는다.
-       실선 — 공식 선수과목 (data.js courses[].prereq)
-       점선 — 번호로 이어지는 과목(공학수학 1 → 2). 관계를 지어낸 것이 아니라
-              「2 다음이 3」이라는 이름의 사실을 따른 것이다. */
+  /* ── 기본형 / 트리형 (참고: yonsei-me) ──
+     학기 격자는 그대로 두고 과목을 한 칸에 한 줄씩 펼친다. 그래야 과목을 잇는 선이
+     지나갈 빈자리가 생긴다 — 빽빽한 격자 위에 선만 얹으면 선이 과목을 가린다.
+     이어지는 과목(공학수학 1→2→3→4)은 같은 줄에 놓아 선이 수평으로 흐르게 한다.
+     근거가 있는 관계만 긋는다: 공식 선수과목(실선)과 번호로 이어지는 과목(점선). */
   (function () {
     var sec  = document.getElementById('roadmap');
     var flow = document.getElementById('treeFlow');
     var btn  = document.getElementById('treeMode');
     var lab  = document.getElementById('treeModeLabel');
-    if (!sec || !flow || !btn) return;
+    if (!sec || !flow || !btn || !tree) return;
 
-    var byCode = {}, byKo = {};
-    (D.courses || []).forEach(function (c) { byCode[c.code] = c; byKo[c.ko] = c; });
+    var SEMS = tree.semesters || [];
+    var byCode = {}; (D.courses || []).forEach(function (c) { byCode[c.code] = c; });
 
-    /* 번호로 이어지는 과목 — 트리 표기 그대로 */
+    /* 번호로 이어지는 과목 — 이름의 사실을 따른다(관계를 지어내는 것이 아니다) */
     var SEQ = [
       ['공학수학 1', '공학수학 2', '공학수학 3', '공학수학 4'],
       ['공학물리학 및 실험 1', '공학물리학 및 실험 2'],
       ['공학화학 및 실험 1', '공학화학 및 실험 2'],
-      ['기계공학세미나 (1)', '기계공학세미나 (2)'],
-      ['학부연구 (1)', '학부연구 (2)']
+      ['기계공학실험(1)', '기계공학실험(2)'],
+      ['학부연구(1)', '학부연구(2)'],
+      ['기계공학세미나(1)', '기계공학세미나(2)']
     ];
+    /* 공식 선수과목 — data.js courses[].prereq */
+    var PRE = [];
+    (D.courses || []).forEach(function (c) {
+      (c.prereq || []).forEach(function (pc) {
+        if (byCode[pc]) PRE.push([byCode[pc].ko, c.ko]);
+      });
+    });
 
-    function chip(name, code) {
-      var c = code ? byCode[code] : byKo[name];
-      var cd = c ? c.code : (code || '');
-      var req = c && c.type && c.type.indexOf('필수') >= 0;
-      var cls = 'tf-c' + (req ? ' is-req' : '');
-      var inner = esc(name) + (cd ? '<span class="tf-code">' + esc(cd) + '</span>' : '');
-      return cd
-        ? '<a class="' + cls + '" href="#course-' + esc(cd) + '">' + inner + '</a>'
-        : '<span class="' + cls + '">' + inner + '</span>';
+    function norm(x) { return String(x).replace(/[()\s]/g, ''); }
+    var seqNext = {};
+    SEQ.forEach(function (ch) {
+      for (var i = 0; i + 1 < ch.length; i++) seqNext[norm(ch[i])] = norm(ch[i + 1]);
+    });
+
+    /* ── 배치 ──
+       띠마다 과목을 학기 칸에 넣되, 이어지는 과목은 앞 과목과 같은 줄에 둔다. */
+    function layout(items) {
+      var rowOf = {}, used = [], out = [];
+      items.forEach(function (it) {
+        var col = SEMS.indexOf(it.at) + 1;
+        if (col < 1) return;
+        var key = norm(it.ko), r = 0;
+        /* 앞 편이 이미 놓였으면 같은 줄 */
+        for (var k in seqNext) if (seqNext[k] === key && rowOf[k]) { r = rowOf[k]; break; }
+        if (!r) { r = 1; while (used.some(function (u) { return u.r === r && u.c === col; })) r++; }
+        while (used.some(function (u) { return u.r === r && u.c === col; })) r++;
+        used.push({ r: r, c: col });
+        rowOf[key] = r;
+        out.push({ ko: it.ko, code: it.code, req: it.req, c: col, r: r });
+      });
+      return out;
     }
-    function arrow(seq) { return '<i class="tf-a' + (seq ? ' seq' : '') + '" aria-hidden="true"></i>'; }
+
+    function boxHtml(b) {
+      var code = b.code || '';
+      var cls = 'tf-box' + (b.req ? ' is-req' : '');
+      var st = ' style="--c:' + b.c + ';--r:' + b.r + '"';
+      var id = ' data-tb="' + esc(norm(b.ko)) + '"';
+      return code
+        ? '<a class="' + cls + '"' + st + id + ' href="#course-' + esc(code) + '">' + esc(b.ko) + '</a>'
+        : '<span class="' + cls + '"' + st + id + '>' + esc(b.ko) + '</span>';
+    }
+
+    function collect() {
+      var bands = [];
+      (tree.rows || []).forEach(function (row) {
+        if (row.id === 'liberal') return;          /* 교양은 관계가 없어 트리에 싣지 않는다 */
+        var items = [];
+        (row.cells || []).forEach(function (cell) {
+          (cell.courses || []).forEach(function (c) {
+            items.push({ ko: c.ko, code: c.code, req: c.req, at: cell.at });
+          });
+        });
+        if (row.choose) (row.choose.courses || []).forEach(function (c) {
+          items.push({ ko: c.ko, code: c.code, req: false, at: '3-1' });
+        });
+        /* 3·4학년 전공과 종합 과목 */
+        if (row.upper) (row.upper.terms || []).forEach(function (t, ti) {
+          (t.courses || []).forEach(function (c) {
+            items.push({ ko: c.ko, code: c.code, req: c.req, at: ti === 0 ? '3-1' : '3-2' });
+          });
+        });
+        if (row.capstone) (row.capstone || []).forEach(function (c, i) {
+          items.push({ ko: c.ko, code: c.code, req: c.req, at: i < 2 ? '4-1' : '4-2' });
+        });
+        bands.push({ label: row.label, boxes: layout(items) });
+      });
+      return bands;
+    }
 
     function build() {
-      var h = '';
-
-      /* ① 공식 선수과목 — 앞 과목을 이수해야 들을 수 있는 것 */
-      var rows = [];
-      (D.courses || []).forEach(function (c) {
-        var pre = c.prereq || [];
-        if (!pre.length) return;
-        var froms = pre.map(function (pc) { return byCode[pc]; }).filter(Boolean);
-        if (!froms.length) return;
-        rows.push({ to: c, froms: froms });
+      var bands = collect();
+      var h = '<div class="tf-canvas"><div class="tf-head"><span>구분</span>'
+            + SEMS.map(function (s2) {
+                var p = s2.split('-');
+                return '<span>' + p[0] + '-' + p[1] + '</span>';
+              }).join('') + '</div>';
+      bands.forEach(function (b) {
+        h += '<section class="tf-band"><div class="tf-bl">' + esc(b.label) + '</div>'
+           + '<div class="tf-cells">' + b.boxes.map(boxHtml).join('') + '</div></section>';
       });
-      if (rows.length) {
-        h += '<div class="tf-group"><p class="tf-gh">공식 선수과목'
-           + '<span>앞 과목을 이수해야 들을 수 있습니다</span></p>';
-        rows.forEach(function (r) {
-          h += '<div class="tf-row">';
-          if (r.froms.length === 1) {
-            h += chip(r.froms[0].ko, r.froms[0].code);
-          } else {
-            h += '<span class="tf-many">'
-               + r.froms.map(function (f) { return chip(f.ko, f.code); }).join('')
-               + '</span>';
-          }
-          h += arrow(false) + chip(r.to.ko, r.to.code) + '</div>';
-        });
-        h += '</div>';
-      }
-
-      /* ② 번호로 이어지는 과목 */
-      h += '<div class="tf-group"><p class="tf-gh">이어지는 과목'
-         + '<span>같은 과목의 다음 편입니다</span></p>';
-      SEQ.forEach(function (chain) {
-        h += '<div class="tf-row">';
-        chain.forEach(function (n, i) {
-          if (i) h += arrow(true);
-          h += chip(n, null);
-        });
-        h += '</div>';
-      });
-      h += '</div>';
-
-      /* ③ 학년 관문 — 공식 트리 그림에 그려진 두 화살표 */
-      var pq = (tree && tree.prereq) || [];
-      if (pq.length) {
-        h += '<div class="tf-group"><p class="tf-gh">학년 진입 요건'
-           + '<span>학부 공식 「교과목 트리」에 표시된 것입니다</span></p>';
-        pq.forEach(function (g) {
-          h += '<div class="tf-row">' + chip(g.from, null) + arrow(false)
-             + '<span class="tf-c">' + esc(g.label) + '</span></div>';
-        });
-        h += '</div>';
-      }
-
-      h += '<p class="tf-note">여기 실린 관계는 학부 공식 「교과목 트리」와 교과목 정보에 있는 것만 옮긴 것입니다. '
-         + '학번마다 교과목 체계가 다르니 상세 정보는 각 학번의 졸업 요건을 확인하시기 바랍니다.</p>';
+      h += '<svg class="tf-svg" id="tfSvg" aria-hidden="true"></svg>'
+         + '<p class="tf-note">여기 실린 관계는 학부 공식 「교과목 트리」와 교과목 정보에 있는 것만 옮긴 것입니다. '
+         + '학번마다 교과목 체계가 다르니 상세 정보는 각 학번의 졸업 요건을 확인하시기 바랍니다.</p></div>';
       flow.innerHTML = h;
+      requestAnimationFrame(links);
+    }
+
+    function links() {
+      var canvas = flow.querySelector('.tf-canvas');
+      var svg = document.getElementById('tfSvg');
+      if (!canvas || !svg) return;
+      var C = canvas.getBoundingClientRect();
+      svg.setAttribute('viewBox', '0 0 ' + Math.round(C.width) + ' ' + Math.round(C.height));
+      var ns = 'http://www.w3.org/2000/svg', out = '';
+      function find(n) { return canvas.querySelector('[data-tb="' + norm(n) + '"]'); }
+      function join(a, b, seq) {
+        var A = find(a), B = find(b);
+        if (!A || !B) return;
+        var ra = A.getBoundingClientRect(), rb = B.getBoundingClientRect();
+        var x1 = ra.right - C.left, y1 = ra.top + ra.height / 2 - C.top;
+        var x2 = rb.left - C.left,  y2 = rb.top + rb.height / 2 - C.top;
+        if (x2 < x1) return;                       /* 뒤로 가는 선은 그리지 않는다 */
+        var mx = x1 + (x2 - x1) / 2;
+        var d = (Math.abs(y1 - y2) < 2)
+          ? 'M' + x1 + ',' + y1 + ' H' + (x2 - 7)
+          : 'M' + x1 + ',' + y1 + ' H' + mx + ' V' + y2 + ' H' + (x2 - 7);
+        out += '<path d="' + d + '"' + (seq ? ' class="seq"' : '') + '/>'
+             + '<polygon points="' + (x2 - 7) + ',' + (y2 - 3.5) + ' ' + x2 + ',' + y2 + ' '
+             + (x2 - 7) + ',' + (y2 + 3.5) + '"' + (seq ? ' class="seq"' : '') + '/>';
+      }
+      PRE.forEach(function (p) { join(p[0], p[1], false); });
+      SEQ.forEach(function (ch) {
+        for (var i = 0; i + 1 < ch.length; i++) join(ch[i], ch[i + 1], true);
+      });
+      svg.innerHTML = out;
     }
 
     var built = false;
@@ -1858,7 +1905,9 @@ a.tree-course.is-req:hover,a.tree-course.is-req:focus-visible{background:#16345f
       flow.hidden = !on;
       btn.setAttribute('aria-pressed', on ? 'true' : 'false');
       if (lab) lab.textContent = on ? '기본형으로' : '트리형으로';
+      if (on) requestAnimationFrame(links);
     });
+    addEventListener('resize', function () { if (built && sec.classList.contains('is-tree')) links(); }, { passive: true });
   })();
 
   /* ── §04 학부 전공 교과 — 영역별 편집형(재디자인).

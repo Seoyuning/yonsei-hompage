@@ -23,7 +23,7 @@
 <meta name="twitter:image" content="https://yonsei-me-homepage.vercel.app/assets/og-cover.jpg" />
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d20" />
-<link rel="preload" as="script" href="assets/nav.js?v=109" />
+<link rel="preload" as="script" href="assets/nav.js?v=111" />
 <style>
 /* 소식 — 흰 배경 · 네이비 제목 · 실제 학과식 풀폭 게시판(표) 목록.
    히어로: 이미지 배너 + 중앙 정렬 타이틀 + 브레드크럼.
@@ -236,6 +236,102 @@ a{color:inherit;text-decoration:none}
   padding-bottom:.7rem;border-bottom:2px solid var(--navy)}
 .duo h3 .cnt{font-size:.8rem;font-weight:500;color:var(--muted);margin-left:.45rem;font-variant-numeric:tabular-nums}
 
+
+
+/* 공지 구분(학부 / 대학원) — 분류 칩보다 상위 구분이라 네모 버튼으로 격을 달리한다.
+   구성원 화면의 신분 구분 버튼과 같은 어법: 모서리를 굴리지 않고, 고른 쪽만 네이비로 채운다. */
+.nseg{display:flex;gap:.4rem;margin:0 0 clamp(1rem,.8rem + .8vw,1.5rem)}
+.nseg-b{font-family:var(--kr);font-size:.95rem;font-weight:700;color:var(--muted);
+  background:#fff;border:1px solid var(--line);border-radius:0;
+  padding:.55rem 1.05rem .6rem;cursor:pointer;
+  transition:color .16s,border-color .16s,background .16s}
+.nseg-b:hover{color:var(--navy);border-color:var(--navy)}
+.nseg-b[aria-selected="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
+.nseg-b .kn{font-family:var(--num);font-size:.8rem;font-weight:600;color:var(--label);
+  margin-left:.3rem;font-variant-numeric:tabular-nums}
+.nseg-b[aria-selected="true"] .kn{color:rgba(255,255,255,.78)}
+.nseg-b:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (max-width:560px){ .nseg-b{font-size:.88rem;padding:.5rem .8rem .55rem} }
+
+/* ── 학사 일정 달력 ──
+   새 일정을 지어내지 않는다. 학부 공식 게시판에서 받아 둔 세미나 · 행사 · 학위논문심사
+   글의 「제목 안에 이미 적혀 있는 날짜」(5/29(금) · [4/13(월)] · [260424] · [7/1~7/29])를
+   읽어 달력에 놓을 뿐이다. 제목에서 날짜를 못 찾으면 그 글은 달력에 올리지 않는다 —
+   게시일을 일정 날짜인 척 쓰면 없는 사실을 만드는 셈이 된다. */
+.cal-wrap{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);
+  gap:clamp(1.6rem,1rem + 2.4vw,3.2rem);align-items:start}
+.cal-bar{display:flex;align-items:baseline;gap:.9rem;
+  padding-bottom:.8rem;border-bottom:1px solid #111318;margin-bottom:1rem}
+.cal-ym{font-family:var(--num);font-weight:800;letter-spacing:-.02em;color:var(--navy);
+  font-size:clamp(1.25rem,1.05rem + .9vw,1.7rem);line-height:1;
+  font-variant-numeric:tabular-nums;margin:0}
+.cal-ym .mo{font-size:.72em;margin-left:.3em;color:var(--sub)}
+.cal-nav{margin-left:auto;display:flex;gap:.3rem}
+.cal-nav button{width:2rem;height:2rem;display:grid;place-items:center;cursor:pointer;
+  background:none;border:1px solid var(--line);color:var(--sub);
+  transition:border-color .18s,color .18s,background .18s}
+.cal-nav button:hover:not(:disabled){border-color:var(--navy);color:var(--navy);background:#fbfcfe}
+.cal-nav button:disabled{opacity:.35;cursor:default}
+.cal-nav button:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
+.cal-nav svg{width:1rem;height:1rem}
+/* 격자 — 칠 없이 헤어라인으로만 나눈다. 요일 머리는 작은 라벨 어법 */
+.cal-dow{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));
+  font-family:var(--mono);font-size:.7rem;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--label);text-align:center;padding-bottom:.6rem}
+.cal-dow span:first-child{color:var(--accent-ink,#8E5A4F)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));
+  border-top:1px solid var(--line);border-left:1px solid var(--line)}
+.cal-d{position:relative;min-height:clamp(3.4rem,7vw,4.6rem);
+  border:0;border-right:1px solid var(--line);border-bottom:1px solid var(--line);
+  padding:.4rem .45rem .5rem;background:none;text-align:left;cursor:default;
+  font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
+.cal-d .n{font-family:var(--num);font-size:.82rem;font-weight:600;color:var(--sub);
+  font-variant-numeric:tabular-nums;line-height:1}
+.cal-d.is-out .n{color:#c4cbd6}
+.cal-d.is-sun .n{color:var(--accent-ink,#8E5A4F)}
+.cal-d.has{cursor:pointer;transition:background .16s}
+.cal-d.has:hover{background:#fbfcfe}
+.cal-d.has .n{color:var(--ink);font-weight:800}
+.cal-d:focus-visible{outline:2px solid var(--navy);outline-offset:-2px;z-index:1}
+/* 고른 날 — 칠하지 않고 왼쪽에 네이비 기둥 하나 (이 사이트의 활성 표시) */
+.cal-d.on{background:#fbfcfe;box-shadow:inset 3px 0 0 var(--navy)}
+/* 그 날 무엇이 있는지 — 점 색으로 갈래를 나눈다. 점은 장식이므로 글자에는 색을 쓰지 않는다 */
+.cal-dots{position:absolute;left:.45rem;bottom:.5rem;display:flex;flex-wrap:wrap;gap:3px;max-width:calc(100% - .9rem)}
+.cal-dots i{width:5px;height:5px;border-radius:50%;background:var(--k-c,var(--navy))}
+/* 여러 날에 걸친 일정 — 점 대신 가는 띠로 「이어짐」을 보인다 */
+.cal-d .span{position:absolute;left:0;right:0;bottom:.42rem;height:2px;background:var(--k-c,var(--navy));opacity:.5}
+.cal-legend{display:flex;flex-wrap:wrap;gap:.35rem 1.1rem;margin-top:.9rem;
+  font-size:.76rem;color:var(--muted)}
+.cal-legend b{display:inline-flex;align-items:center;gap:.4rem;font-weight:500}
+.cal-legend i{width:6px;height:6px;border-radius:50%;background:var(--k-c)}
+/* 오른쪽 — 고른 날(또는 그 달 전체)의 일정 목록 */
+.cal-side{min-width:0}
+.cal-side h3{font-size:1.02rem;font-weight:700;color:var(--navy);margin:0 0 .2rem;
+  padding-bottom:.7rem;border-bottom:2px solid var(--navy)}
+.cal-side h3 .cnt{font-family:var(--num);font-size:.8rem;font-weight:500;color:var(--muted);
+  margin-left:.45rem;font-variant-numeric:tabular-nums}
+.cal-list{border-top:0}
+.cal-e{display:grid;grid-template-columns:3.4rem minmax(0,1fr);gap:.2rem .8rem;
+  padding:.85rem .1rem;border-bottom:1px solid var(--line-soft);text-decoration:none;color:inherit}
+.cal-e:hover .cal-e-t{color:var(--coral)}
+.cal-e-d{grid-row:1 / span 2;font-family:var(--num);font-size:.78rem;font-weight:700;
+  color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.5;padding-top:.08rem}
+.cal-e-k{font-family:var(--mono);font-size:.66rem;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--k-c,var(--muted))}
+.cal-e-t{font-size:.88rem;line-height:1.6;color:var(--sub);transition:color .18s;
+  overflow-wrap:anywhere}
+.cal-empty{padding:1.2rem .1rem;font-size:.85rem;color:var(--muted);line-height:1.75}
+.cal-src{margin-top:1.4rem;font-size:.78rem;color:var(--muted);line-height:1.8}
+.cal-src a{color:var(--sub);text-decoration:underline;text-decoration-color:var(--line);
+  text-underline-offset:3px}
+.cal-src a:hover{color:var(--navy);text-decoration-color:var(--accent)}
+@media (max-width:860px){
+  .cal-wrap{grid-template-columns:1fr;gap:1.8rem}
+  .cal-d{min-height:2.9rem;padding:.32rem .3rem .4rem}
+  .cal-d .n{font-size:.76rem}
+}
+@media (prefers-reduced-motion:reduce){ .cal-d.has,.cal-e-t,.cal-nav button{transition:none} }
+
 /* ── 반응형 ── */
 @media (max-width:860px){
   .news-lead{grid-template-columns:1fr}
@@ -270,7 +366,7 @@ a{color:inherit;text-decoration:none}
 <script>/* 탭 해시 진입은 히어로부터 — 파싱 전에 해시를 떼어 앵커 점프·상단바 접힘 왕복을 원천 차단(nav.js가 탭 복원).
    scrollRestoration=manual: 뒤로가기·같은 주소 재방문 때 브라우저가 이전 스크롤을 되살려
    히어로를 건너뛰고 첫 탭 중간부터 보이는 것을 막는다(깊은 앵커 #id 이동에는 영향 없음). */
-(function(){try{history.scrollRestoration="manual"}catch(e){}var h=location.hash.slice(1);if(h&&/^(intro|vision|organization|history|location|faculty|dir|staff|fields|fieldsDetail|clusters|labvideos|partnership|curriculum|requirements|abeek|roadmap|graduation|mechanics|courses|grad|clubs|grad-admission|grad-req|grad-courses|grad-labs|bk21|notice-ug|notice-grad|hi|sched|thesis|archive|jobs|undergraduate|graduate|scholarships|careers|alumni|faq)$/.test(h)){window.__ysTab=h;try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}}})();</script>
+(function(){try{history.scrollRestoration="manual"}catch(e){}var h=location.hash.slice(1);if(h&&/^(intro|vision|organization|history|location|faculty|dir|staff|fields|fieldsDetail|clusters|labvideos|partnership|curriculum|requirements|abeek|roadmap|graduation|mechanics|courses|grad|clubs|grad-admission|grad-req|grad-courses|grad-labs|bk21|notice|hi|sched|calendar|thesis|archive|jobs|undergraduate|graduate|scholarships|careers|alumni|faq)$/.test(h)){window.__ysTab=h;try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}}})();</script>
 </head>
 <body>
 <div class="ynav-ph" aria-hidden="true"></div>
@@ -287,50 +383,25 @@ a{color:inherit;text-decoration:none}
   </header>
 
   <!-- 학부 공지사항 -->
-  <section class="sec" id="notice-ug" aria-labelledby="t-ug">
+  <!-- 공지사항 — 학부와 대학원을 한 화면에 두고 위에서 고른다.
+       예전에는 형제 탭이 둘로 나뉘어, 같은 짜임의 게시판을 보려고 탭을 오갔다. -->
+  <section class="sec" id="notice" aria-labelledby="t-notice">
     <div class="sec-head">
-      <p class="sec-kick">Undergraduate</p>
-      <h2 class="sec-title" id="t-ug">학부 공지사항</h2>
+      <p class="sec-kick">Notices</p>
+      <h2 class="sec-title" id="t-notice">공지사항</h2>
     </div>
-    <div class="board" data-scope="ug">
+    <div class="nseg" role="tablist" aria-label="공지 구분">
+      <button type="button" class="nseg-b" role="tab" data-scope="ug" aria-selected="true">학부 <span class="kn" id="nsegUG"></span></button>
+      <button type="button" class="nseg-b" role="tab" data-scope="grad" aria-selected="false">대학원 <span class="kn" id="nsegGR"></span></button>
+    </div>
+    <div class="board" data-scope="notice">
       <div class="board-tool">
-        <div class="board-cats" role="group" aria-label="학부 공지 분류 필터"></div>
+        <div class="board-cats" role="group" aria-label="공지 분류 필터"></div>
         <form class="board-search" role="search" onsubmit="return false">
           <span class="field">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.8-3.8"/></svg>
-            <label class="visually-hidden" for="q-ug">학부 공지 제목 검색</label>
-            <input type="search" id="q-ug" placeholder="공지 제목 검색" autocomplete="off" />
-          </span>
-          <button type="submit">검색</button>
-        </form>
-      </div>
-      <div class="board-meta"><span class="board-status" role="status" aria-live="polite"></span></div>
-      <table class="ntable">
-        <colgroup><col class="c-no"><col class="c-cat"><col class="c-title"><col class="c-writer"><col class="c-date"></colgroup>
-        <thead><tr>
-          <th class="h-no">번호</th><th>분류</th><th class="h-title">제목</th><th class="h-writer">작성자</th><th>등록일</th>
-        </tr></thead>
-        <tbody></tbody>
-      </table>
-      <p class="nempty" hidden>조건에 맞는 공지가 없습니다. 검색어나 분류를 조정해 보세요.</p>
-      <nav class="pager" aria-label="공지 목록 페이지"></nav>
-    </div>
-  </section>
-
-  <!-- 대학원 공지사항 -->
-  <section class="sec" id="notice-grad" aria-labelledby="t-grad">
-    <div class="sec-head">
-      <p class="sec-kick">Graduate</p>
-      <h2 class="sec-title" id="t-grad">대학원 공지사항</h2>
-    </div>
-    <div class="board" data-scope="grad">
-      <div class="board-tool">
-        <div class="board-cats" role="group" aria-label="대학원 공지 분류 필터"></div>
-        <form class="board-search" role="search" onsubmit="return false">
-          <span class="field">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.8-3.8"/></svg>
-            <label class="visually-hidden" for="q-grad">대학원 공지 제목 검색</label>
-            <input type="search" id="q-grad" placeholder="공지 제목 검색" autocomplete="off" />
+            <label class="visually-hidden" for="q-notice">공지 제목 검색</label>
+            <input type="search" id="q-notice" placeholder="공지 제목 검색" autocomplete="off" />
           </span>
           <button type="submit">검색</button>
         </form>
@@ -370,10 +441,49 @@ a{color:inherit;text-decoration:none}
       <div>
         <h3>세미나<span class="cnt" id="semCount"></span></h3>
         <div class="nlist" id="semRows"></div>
+        <nav class="pager" aria-label="세미나 목록 페이지"></nav>
       </div>
       <div>
         <h3>행사<span class="cnt" id="evtCount"></span></h3>
         <div class="nlist" id="evtRows"></div>
+        <nav class="pager" aria-label="행사 목록 페이지"></nav>
+      </div>
+    </div>
+  </section>
+
+  <!-- 학사 일정 — 세미나 · 행사 · 학위논문심사를 한 달력에 모아 본다 -->
+  <section class="sec" id="calendar" aria-labelledby="t-cal">
+    <div class="sec-head">
+      <p class="sec-kick">Academic Calendar</p>
+      <h2 class="sec-title" id="t-cal">학사 일정</h2>
+    </div>
+    <div class="cal-wrap">
+      <div>
+        <div class="cal-bar">
+          <p class="cal-ym" id="calYm" aria-live="polite"></p>
+          <div class="cal-nav">
+            <button type="button" id="calPrev" aria-label="이전 달">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+            </button>
+            <button type="button" id="calNext" aria-label="다음 달">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="cal-dow" aria-hidden="true"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div>
+        <div class="cal-grid" id="calGrid" role="grid" aria-labelledby="t-cal"></div>
+        <p class="cal-legend" id="calLegend"></p>
+      </div>
+      <div class="cal-side">
+        <h3 id="calSideH">이 달의 일정<span class="cnt" id="calCount"></span></h3>
+        <div class="cal-list" id="calList" aria-live="polite"></div>
+        <p class="cal-src">
+          날짜는 학부 공식 게시판 글 <b>제목에 적힌 일정 날짜</b>를 그대로 옮긴 것입니다.
+          제목에 날짜가 없는 글은 달력에 올리지 않았습니다.
+          <br />출처 — <a href="https://me.yonsei.ac.kr/me/community/seminar.do" target="_blank" rel="noopener">학부 세미나 <span aria-hidden="true">↗</span></a>
+          · <a href="https://me.yonsei.ac.kr/me/community/seminar_graduate1.do" target="_blank" rel="noopener">행사 <span aria-hidden="true">↗</span></a>
+          · <a href="https://me.yonsei.ac.kr/me/community/degree_thesis_review.do" target="_blank" rel="noopener">학위논문심사 <span aria-hidden="true">↗</span></a>
+        </p>
       </div>
     </div>
   </section>
@@ -386,11 +496,13 @@ a{color:inherit;text-decoration:none}
         <h2 class="sec-title" id="t-thesis">학위논문심사</h2>
       </div>
     </div>
+    <div class="board-meta"><span class="board-status" role="status" aria-live="polite"></span></div>
     <table class="ntable">
       <colgroup><col class="c-no"><col class="c-title"><col class="c-writer"><col class="c-date"></colgroup>
       <thead><tr><th class="h-no">번호</th><th class="h-title">제목</th><th class="h-writer">작성자</th><th>등록일</th></tr></thead>
       <tbody id="thesisRows"></tbody>
     </table>
+    <nav class="pager" aria-label="학위논문심사 목록 페이지"></nav>
     <div class="rule-note">
       <h3>심사 규정 요약 <span>— 대학원 졸업요건 원문 인용</span></h3>
       <p>“예비심사 위원회는 주임교수와 지도교수가 협의하여 석사학위 논문의 경우 3인, 박사학위 논문의 경우 5인으로 구성한다.”</p>
@@ -408,11 +520,13 @@ a{color:inherit;text-decoration:none}
         <h2 class="sec-title" id="t-archive">자료실</h2>
       </div>
     </div>
+    <div class="board-meta"><span class="board-status" role="status" aria-live="polite"></span></div>
     <table class="ntable">
       <colgroup><col class="c-no"><col class="c-title"><col class="c-att"><col class="c-writer"><col class="c-date"></colgroup>
       <thead><tr><th class="h-no">번호</th><th class="h-title">제목</th><th>첨부</th><th class="h-writer">작성자</th><th>등록일</th></tr></thead>
       <tbody id="archiveRows"></tbody>
     </table>
+    <nav class="pager" aria-label="자료실 목록 페이지"></nav>
   </section>
 
   <!-- 취업 정보 -->
@@ -423,11 +537,13 @@ a{color:inherit;text-decoration:none}
         <h2 class="sec-title" id="t-jobs">취업 정보</h2>
       </div>
     </div>
+    <div class="board-meta"><span class="board-status" role="status" aria-live="polite"></span></div>
     <table class="ntable">
       <colgroup><col class="c-no"><col class="c-cat"><col class="c-title"><col class="c-writer"><col class="c-date"></colgroup>
       <thead><tr><th class="h-no">번호</th><th>구분</th><th class="h-title">제목</th><th class="h-writer">작성자</th><th>등록일</th></tr></thead>
       <tbody id="jobsRows"></tbody>
     </table>
+    <nav class="pager" aria-label="취업 정보 목록 페이지"></nav>
   </section>
   </main>
 
@@ -475,6 +591,7 @@ a{color:inherit;text-decoration:none}
   /* ── 재사용 게시판(표) 빌더 — 학부/대학원 각각 ── */
   function buildBoard(scope, list){
     var root = document.querySelector('.board[data-scope="'+scope+'"]');
+    if(!root) return null;
     var tbody = root.querySelector('tbody');
     var catWrap = root.querySelector('.board-cats');
     var input = root.querySelector('.board-search input');
@@ -485,12 +602,17 @@ a{color:inherit;text-decoration:none}
     var cat = 'all', q = '';
     var PER = 10, page = 1;   /* 한 쪽 10건 — 학교 게시판의 일반적인 분량 */
 
-    var counts = { all:list.length, acad:0, sch:0, recruit:0, etc:0 };
-    list.forEach(function(x){ counts[classify(x.title)]++; });
-    catWrap.innerHTML = CATS.map(function(c){
-      return '<button type="button" class="bcat" data-cat="'+c.id+'" aria-pressed="'+(cat===c.id)+'">'
-        + esc(c.label)+' <span class="cnt">'+counts[c.id]+'</span></button>';
-    }).join('');
+    /* 분류 칩의 개수는 지금 보고 있는 목록에서 다시 센다 —
+       학부와 대학원을 한 화면에서 갈아 끼우므로 목록이 바뀔 때마다 함께 바뀌어야 한다. */
+    function paintCats(){
+      var counts = { all:list.length, acad:0, sch:0, recruit:0, etc:0 };
+      list.forEach(function(x){ counts[classify(x.title)]++; });
+      catWrap.innerHTML = CATS.map(function(c){
+        return '<button type="button" class="bcat" data-cat="'+c.id+'" aria-pressed="'+(cat===c.id)+'">'
+          + esc(c.label)+' <span class="cnt">'+counts[c.id]+'</span></button>';
+      }).join('');
+    }
+    paintCats();
 
     function rowHtml(x){
       var pinned = (x.no === '공지');
@@ -585,9 +707,32 @@ a{color:inherit;text-decoration:none}
     });
     render();
     RELANG.push(render);   /* 한/영 전환 때 상태 줄 문장을 다시 찍는다 */
+    /* 바깥에서 목록을 갈아 끼운다 — 검색어·분류·쪽은 처음으로 되돌린다.
+       대학원으로 옮겼는데 「장학 3건」이라는 학부 기준 필터가 남아 있으면 잘못 읽힌다. */
+    return function swap(next){
+      list = next; cat = 'all'; q = ''; page = 1;
+      if(input) input.value = '';
+      paintCats(); render();
+    };
   }
-  buildBoard('ug', D.noticesUG);
-  buildBoard('grad', D.noticesGrad);
+  /* ── 공지사항 — 학부·대학원을 한 게시판에서 갈아 끼운다 ── */
+  (function(){
+    var swap = buildBoard('notice', D.noticesUG);
+    if(!swap) return;
+    var seg = document.querySelector('.nseg');
+    var ug = document.getElementById('nsegUG'), gr = document.getElementById('nsegGR');
+    if(ug) ug.textContent = D.noticesUG.length;
+    if(gr) gr.textContent = D.noticesGrad.length;
+    if(!seg) return;
+    seg.addEventListener('click', function(e){
+      var b = e.target.closest('.nseg-b'); if(!b) return;
+      if(b.getAttribute('aria-selected') === 'true') return;
+      seg.querySelectorAll('.nseg-b').forEach(function(x){
+        x.setAttribute('aria-selected', String(x === b));
+      });
+      swap(b.dataset.scope === 'grad' ? D.noticesGrad : D.noticesUG);
+    });
+  })();
 
   /* ── 뉴스 · 연구 성과 (대표 1 + 사이드 목록 + 하단 목록) ── */
   (function(){
@@ -620,8 +765,59 @@ a{color:inherit;text-decoration:none}
     return '<a class="nlink" href="'+esc(x.url)+'" target="_blank" rel="noopener">'
       + '<span class="t">'+esc(x.title)+'</span><span class="d">'+esc(x.date)+'</span></a>';
   }
-  document.getElementById('semRows').innerHTML = D.seminars.map(linkRow).join('');
-  document.getElementById('evtRows').innerHTML = D.events.map(linkRow).join('');
+  /* 쪽 넘김 그리기 — 위 공지 게시판의 것과 같은 모양.
+     이 목록들은 검색·분류가 없으니 「그리는 일」만 떼어 따로 둔다. */
+  var CHEV2 = {
+    prev: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>',
+    next: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>',
+    first: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 5l-7 7 7 7"/><path d="M11 5l-7 7 7 7"/></svg>',
+    last: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5l7 7-7 7"/><path d="M13 5l7 7-7 7"/></svg>'
+  };
+  function drawPager(el, page, pages){
+    if(pages <= 1){ el.innerHTML=''; el.hidden = true; return; }
+    el.hidden = false;
+    var WIN = 10;
+    var from = Math.max(1, Math.min(page - Math.floor(WIN/2), pages - WIN + 1));
+    var to = Math.min(pages, from + WIN - 1);
+    function btn(pp,label,cls,aria){
+      return '<button type="button" class="'+cls+'" data-p="'+pp+'"'
+        + (aria ? ' aria-label="'+aria+'"' : '')
+        + (cls.indexOf('cur')>=0 ? ' aria-current="page"' : '') + '>'+label+'</button>';
+    }
+    var h = '';
+    if(page > 1){ h += btn(1, CHEV2.first, 'pg-arw', '첫 페이지'); h += btn(page-1, CHEV2.prev, 'pg-arw', '이전 페이지'); }
+    for(var i=from;i<=to;i++) h += btn(i, String(i), i===page ? 'cur' : '', i+'페이지');
+    if(page < pages){ h += btn(page+1, CHEV2.next, 'pg-arw', '다음 페이지'); h += btn(pages, CHEV2.last, 'pg-arw', '마지막 페이지'); }
+    el.innerHTML = h;
+  }
+  /* 쪽을 넘기면 그 목록의 맨 위가 보이게 올린다 — 아래쪽에 시선이 남으면 바뀐 걸 못 느낀다.
+     --ys-stick 은 이미 px 문자열이고 앵커 여유 12px 을 품고 있다(rem 으로 오해하지 말 것). */
+  function scrollToTopOf(el){
+    var bars = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--ys-stick')) || 122;
+    var top = el.getBoundingClientRect().top + (window.pageYOffset||0) - bars;
+    try{ window.scrollTo({top:Math.max(0,top), behavior:'smooth'}); }catch(_e){ window.scrollTo(0, Math.max(0,top)); }
+  }
+  /* 세미나 20건 · 행사 10건 — 한 번에 다 늘어놓으면 두 칸의 키가 크게 어긋난다.
+     아래 표 목록들과 같은 분량(10건)으로 끊고 같은 모양의 쪽 넘김을 붙인다. */
+  function pagedList(id, list){
+    var el = document.getElementById(id); if(!el || !list.length) return;
+    var rows = list.map(linkRow);
+    var PER = 10, page = 1, pages = Math.max(1, Math.ceil(rows.length / PER));
+    var pagerEl = el.parentNode.querySelector('.pager');
+    function draw(){
+      el.innerHTML = rows.slice((page-1)*PER, page*PER).join('');
+      if(pagerEl) drawPager(pagerEl, page, pages);
+    }
+    if(pagerEl) pagerEl.addEventListener('click', function(e){
+      var b = e.target.closest('button'); if(!b) return;
+      var pp = parseInt(b.getAttribute('data-p'), 10);
+      if(!pp || pp === page) return;
+      page = pp; draw(); scrollToTopOf(el.parentNode);
+    });
+    draw();
+  }
+  pagedList('semRows', D.seminars);
+  pagedList('evtRows', D.events);
   /* 개수 배지도 숫자와 붙어 있어 사전이 못 잡는다 — 항목이 늘어도 따라오도록 여기서 만든다 */
   function paintCounts(){
     var en = isEn();
@@ -635,7 +831,7 @@ a{color:inherit;text-decoration:none}
   function clipSvg(){ return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.4 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>'; }
   function boardRows(id, list, cols){
     var el = document.getElementById(id); if(!el || !list || !list.length) return;
-    el.innerHTML = list.map(function(x){
+    var rowsHtml = list.map(function(x){
       var extra = cols === 'att' ? '<td class="c-att">'+(x.att ? clipSvg() : '')+'</td>' : '';
       var badge = '';
       if(cols === 'job'){
@@ -650,14 +846,235 @@ a{color:inherit;text-decoration:none}
         + '<td class="c-writer">기계공학부</td>'
         + '<td class="c-date">'+esc(x.date)+'</td>'
         + '</tr>';
-    }).join('');
+    });
+    /* 한 쪽 10건 — 위 공지 게시판과 같은 분량으로 맞춘다 */
+    var PER = 10, page = 1, pages = Math.max(1, Math.ceil(rowsHtml.length / PER));
+    var sec = el.closest('section');
+    var pagerEl = sec ? sec.querySelector('.pager') : null;
+    var statusEl = sec ? sec.querySelector('.board-status') : null;
+    function draw(){
+      el.innerHTML = rowsHtml.slice((page-1)*PER, page*PER).join('');
+      if(statusEl){
+        statusEl.textContent = isEn()
+          ? (list.length + ' items · page ' + page + '/' + pages)
+          : ('전체 ' + list.length + '건 · ' + page + '/' + pages + ' 쪽');
+      }
+      if(pagerEl) drawPager(pagerEl, page, pages);
+    }
+    if(pagerEl) pagerEl.addEventListener('click', function(e){
+      var b = e.target.closest('button'); if(!b) return;
+      var pp = parseInt(b.getAttribute('data-p'), 10);
+      if(!pp || pp === page) return;
+      page = pp; draw(); scrollToTopOf(sec || el);
+    });
+    draw();
+    RELANG.push(draw);
   }
   boardRows('thesisRows', D.thesisReview, 'plain');
   boardRows('archiveRows', D.archive, 'att');
   boardRows('jobsRows', D.jobs, 'job');
+
+  /* ═══ 학사 일정 달력 ═══
+     일정을 새로 짓지 않는다. 이미 받아 둔 공식 게시판 글의 **제목에 적힌 날짜**만 읽는다.
+       [260424] 가태권                     → 2026-04-24
+       [4/13(월)] Nature Forum …            → 그 해 4월 13일
+       [학부 세미나]5/8(금) 심상준 …          → 그 해 5월 8일
+       [7/1~7/29] 여름학기 강연 시리즈        → 7월 1일부터 29일까지
+     제목에 날짜가 없으면 그 글은 달력에 올리지 않는다 —
+     게시일(등록일)을 일정 날짜인 척 쓰면 없는 사실을 만드는 셈이다. */
+  (function(){
+    var grid = document.getElementById('calGrid');
+    if(!grid) return;
+    var ymEl = document.getElementById('calYm');
+    var listEl = document.getElementById('calList');
+    var cntEl = document.getElementById('calCount');
+    var headEl = document.getElementById('calSideH');
+    var legEl = document.getElementById('calLegend');
+    var prevB = document.getElementById('calPrev'), nextB = document.getElementById('calNext');
+
+    var KIND = {
+      sem:    { ko:'세미나',    en:'Seminar', c:'var(--navy)' },
+      evt:    { ko:'행사',      en:'Event',   c:'var(--accent)' },
+      thesis: { ko:'학위논문심사', en:'Defense', c:'var(--dim,#6b7688)' }
+    };
+
+    function pad(n){ return (n<10?'0':'')+n; }
+    function key(y,m,d){ return y+'-'+pad(m)+'-'+pad(d); }
+
+    /* 제목에서 일정 날짜를 캔다. 못 캐면 null 을 돌려 그 글을 버린다. */
+    function pick(title, posted){
+      var py = +String(posted).slice(0,4) || 0;
+      var pm = +String(posted).slice(5,7) || 0;
+      var m;
+      /* [260424] — 연·월·일이 다 들어 있어 게시일이 필요 없다 */
+      if((m = /\[(\d{2})(\d{2})(\d{2})\]/.exec(title))){
+        var yy = 2000 + (+m[1]);
+        return { s:key(yy, +m[2], +m[3]), e:key(yy, +m[2], +m[3]) };
+      }
+      /* 연도가 없는 표기는 게시일의 해를 쓴다. 12월에 올린 1월 일정이면 한 해를 더한다 */
+      function yearFor(mo){ return (pm >= 11 && mo <= 2) ? py + 1 : py; }
+      /* [7/1~7/29] · 7/1~7/29 — 여러 날에 걸친 일정 */
+      if((m = /(\d{1,2})\/(\d{1,2})\s*[~〜–—-]\s*(\d{1,2})\/(\d{1,2})/.exec(title))){
+        return { s:key(yearFor(+m[1]), +m[1], +m[2]), e:key(yearFor(+m[3]), +m[3], +m[4]) };
+      }
+      /* 5/29(금) · [4/13(월)] · ]5/8(금) — 하루짜리 */
+      if((m = /(\d{1,2})\/(\d{1,2})\s*\(/.exec(title))){
+        return { s:key(yearFor(+m[1]), +m[1], +m[2]), e:key(yearFor(+m[1]), +m[1], +m[2]) };
+      }
+      return null;
+    }
+
+    var EV = [];
+    [['sem', D.seminars], ['evt', D.events], ['thesis', D.thesisReview]].forEach(function(pair){
+      (pair[1] || []).forEach(function(x){
+        var d = pick(x.title, x.date);
+        if(!d) return;
+        EV.push({ k:pair[0], s:d.s, e:d.e, title:x.title, url:x.url, posted:x.date });
+      });
+    });
+    if(!EV.length){ grid.closest('section').hidden = true; return; }
+    EV.sort(function(a,b){ return a.s < b.s ? -1 : a.s > b.s ? 1 : 0; });
+
+    /* 어느 날에 무엇이 있는지 미리 펴 둔다 — 여러 날짜리는 걸친 날마다 넣는다 */
+    var BY = {};
+    EV.forEach(function(ev){
+      var a = ev.s.split('-'), b = ev.e.split('-');
+      var cur = new Date(+a[0], +a[1]-1, +a[2]), end = new Date(+b[0], +b[1]-1, +b[2]);
+      if(end < cur) end = cur;
+      var guard = 0;
+      while(cur <= end && guard++ < 400){
+        var k = key(cur.getFullYear(), cur.getMonth()+1, cur.getDate());
+        (BY[k] = BY[k] || []).push(ev);
+        cur.setDate(cur.getDate() + 1);
+      }
+    });
+
+    var days = Object.keys(BY).sort();
+    var last = days[days.length-1].split('-');
+    /* 첫 화면은 「일정이 가장 많은 달」로 연다.
+       가장 최근 달로 열었더니 한 건짜리 달이 걸려 달력이 비어 보였다.
+       어느 달이든 화살표로 오갈 수 있으니, 처음 보이는 한 화면을 채우는 쪽을 택한다. */
+    var perMonth = {};
+    /* 일정의 「시작한 달」로 센다. 걸친 날짜 수로 세면 여름학기 강연 시리즈 하나가
+       한 달을 통째로 채워, 실제 일정이 둘뿐인 달이 가장 바쁜 달로 뽑힌다. */
+    EV.forEach(function(ev){
+      var ym = ev.s.slice(0,7);
+      perMonth[ym] = (perMonth[ym] || 0) + 1;
+    });
+    var best = Object.keys(perMonth).sort(function(a,b){
+      return perMonth[b] - perMonth[a] || (a < b ? 1 : -1);   /* 같으면 나중 달 */
+    })[0].split('-');
+    var view = { y:+best[0], m:+best[1] };
+    var firstDay = days[0].split('-');
+    var minYM = (+firstDay[0])*12 + (+firstDay[1]);
+    var maxYM = (+last[0])*12 + (+last[1]);
+    var sel = null;   /* 고른 날. null 이면 그 달 전체 */
+
+    function ymNum(){ return view.y*12 + view.m; }
+
+    function paintLegend(){
+      legEl.innerHTML = Object.keys(KIND).map(function(k){
+        return '<b style="--k-c:'+KIND[k].c+'"><i aria-hidden="true"></i>'+esc(isEn()?KIND[k].en:KIND[k].ko)+'</b>';
+      }).join('');
+    }
+
+    function rowHtml(ev){
+      var a = ev.s.split('-'), b = ev.e.split('-');
+      var d = (a[1]|0)+'/'+(a[2]|0) + (ev.s !== ev.e ? '–'+((b[1]|0)+'/'+(b[2]|0)) : '');
+      return '<a class="cal-e" style="--k-c:'+KIND[ev.k].c+'" href="'+esc(ev.url)+'" target="_blank" rel="noopener">'
+        + '<span class="cal-e-d">'+esc(d)+'</span>'
+        + '<span class="cal-e-k">'+esc(isEn()?KIND[ev.k].en:KIND[ev.k].ko)+'</span>'
+        + '<span class="cal-e-t">'+esc(ev.title)+'</span>'
+        + '</a>';
+    }
+
+    function paintSide(){
+      var items, label;
+      if(sel && BY[sel]){
+        items = BY[sel];
+        var p = sel.split('-');
+        label = isEn() ? ((p[1]|0)+'/'+(p[2]|0)) : ((p[1]|0)+'월 '+(p[2]|0)+'일');
+      } else {
+        var pre = view.y+'-'+pad(view.m)+'-';
+        var seen = {};
+        items = [];
+        Object.keys(BY).forEach(function(k){
+          if(k.indexOf(pre) !== 0) return;
+          BY[k].forEach(function(ev){
+            var id = ev.k+'|'+ev.s+'|'+ev.title;
+            if(seen[id]) return; seen[id] = 1; items.push(ev);
+          });
+        });
+        items.sort(function(x,y){ return x.s < y.s ? -1 : x.s > y.s ? 1 : 0; });
+        label = isEn() ? 'This month' : '이 달의 일정';
+      }
+      headEl.childNodes[0].nodeValue = label;
+      cntEl.textContent = items.length + (isEn() ? ' items' : '건');
+      listEl.innerHTML = items.length
+        ? items.map(rowHtml).join('')
+        : '<p class="cal-empty">'+(isEn()?'No scheduled items.':'등록된 일정이 없습니다.')+'</p>';
+    }
+
+    function paint(){
+      ymEl.innerHTML = view.y + '<span class="mo">' + pad(view.m) + '</span>';
+      prevB.disabled = ymNum() <= minYM;
+      nextB.disabled = ymNum() >= maxYM;
+
+      var first = new Date(view.y, view.m-1, 1);
+      var lead = first.getDay();                       /* 그 달 1일의 요일(일=0) */
+      var len = new Date(view.y, view.m, 0).getDate();  /* 그 달의 마지막 날 */
+      var prevLen = new Date(view.y, view.m-1, 0).getDate();
+      var cells = Math.ceil((lead + len) / 7) * 7;
+      var h = '';
+      for(var i = 0; i < cells; i++){
+        var dnum = i - lead + 1, out = false, y = view.y, mo = view.m;
+        if(dnum < 1){ out = true; dnum = prevLen + dnum; mo = view.m-1; if(mo < 1){ mo = 12; y--; } }
+        else if(dnum > len){ out = true; dnum = dnum - len; mo = view.m+1; if(mo > 12){ mo = 1; y++; } }
+        var k = key(y, mo, dnum);
+        var evs = out ? null : BY[k];
+        var sun = (i % 7) === 0;
+        var cls = 'cal-d' + (out ? ' is-out' : '') + (sun ? ' is-sun' : '')
+                + (evs ? ' has' : '') + (sel === k ? ' on' : '');
+        var dots = '';
+        if(evs){
+          var kinds = {}; evs.forEach(function(e){ kinds[e.k] = 1; });
+          dots = '<span class="cal-dots">' + Object.keys(kinds).map(function(kk){
+            return '<i style="--k-c:'+KIND[kk].c+'"></i>'; }).join('') + '</span>';
+          /* 여러 날에 걸친 일정이 하나라도 있으면 바닥에 띠를 그어 「이어짐」을 보인다 */
+          if(evs.some(function(e){ return e.s !== e.e; })){
+            dots += '<span class="span" style="--k-c:'+KIND[evs[0].k].c+'"></span>';
+          }
+        }
+        h += (evs ? '<button type="button" ' : '<div ')
+          + 'class="'+cls+'" data-k="'+k+'" role="gridcell"'
+          + (evs ? ' aria-label="'+esc(mo+'월 '+dnum+'일 일정 '+evs.length+'건')+'"' : '')
+          + '><span class="n">'+dnum+'</span>'+dots
+          + (evs ? '</button>' : '</div>');
+      }
+      grid.innerHTML = h;
+      paintSide();
+    }
+
+    grid.addEventListener('click', function(e){
+      var b = e.target.closest('.cal-d.has'); if(!b) return;
+      var k = b.getAttribute('data-k');
+      sel = (sel === k) ? null : k;   /* 한 번 더 누르면 그 달 전체로 돌아온다 */
+      paint();
+    });
+    prevB.addEventListener('click', function(){
+      if(prevB.disabled) return;
+      view.m--; if(view.m < 1){ view.m = 12; view.y--; } sel = null; paint();
+    });
+    nextB.addEventListener('click', function(){
+      if(nextB.disabled) return;
+      view.m++; if(view.m > 12){ view.m = 1; view.y++; } sel = null; paint();
+    });
+    paintLegend(); paint();
+    RELANG.push(function(){ paintLegend(); paint(); });
+  })();
 })();
 </script>
-<script src="assets/nav.js?v=109"></script>
+<script src="assets/nav.js?v=111"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--num);font-size:.72rem;letter-spacing:.12em;color:var(--dimmer)">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

@@ -2001,8 +2001,13 @@ html[lang="en"] .lab-en-only{display:none}
       rows.push({ n:name, d:j.date, u:j.url });
     });
     if(!rows.length) return;
+    /* 우리 사이트 안(소식 › 취업 정보)의 그 공고 자리로 보낸다.
+       바깥 게시판으로 내보내면 읽는 사람이 우리 화면을 떠난다.
+       ?job=<번호> 는 소식 화면이 받아 그 줄이 있는 쪽으로 넘기고 잠깐 비춰 준다. */
     list.innerHTML = rows.map(function(r){
-      return '<li class="al-org"><a href="' + esc(r.u) + '" target="_blank" rel="noopener">'
+      var m = /articleNo=(\d+)/.exec(String(r.u || ''));
+      var href = m ? ('G-news.html?job=' + m[1] + '#jobs') : 'G-news.html#jobs';
+      return '<li class="al-org"><a href="' + esc(href) + '">'
         + '<span class="nm">' + esc(r.n) + '</span>'
         + '<span class="dt">' + esc(r.d) + '</span></a></li>';
     }).join('');

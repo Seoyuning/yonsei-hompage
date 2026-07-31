@@ -308,15 +308,21 @@ img{display:block;max-width:100%}
 .fx-t{position:absolute;inset:0;opacity:0;visibility:hidden;transform:translateY(16px);
   transition:opacity .5s ease,transform .62s cubic-bezier(.16,1,.3,1),visibility .5s}
 .fx-t.is-on{position:relative;opacity:1;visibility:visible;transform:none}
-.fx-n{margin:0;font-family:var(--mono);font-size:.76rem;font-weight:700;letter-spacing:.18em;
-  color:var(--dim)}
-.fx-n b{color:var(--navy);font-weight:700}
-.fx-n span{margin-left:.4rem;font-weight:500}
-/* flim 처럼 「크되 얇게」 — 굵기로 누르지 않고 크기로 민다 */
-.fx-ko{margin:.7rem 0 0;font-family:var(--kr);font-weight:600;letter-spacing:-.045em;
-  line-height:.98;font-size:clamp(2.6rem,1.3rem + 5.6vw,5.4rem);color:var(--ink)}
-.fx-en{margin:.85rem 0 0;font-family:var(--mono);font-size:.8rem;font-weight:500;
+/* 분야 이름 — 이 화면의 주인공이다. 위에 있던 작은 라벨(RESEARCH AREA)과
+   번호(01 / 06)는 걷었다. 곁글이 많을수록 이름이 작아 보인다.
+   가운뎃점에서 두 줄로 나눠 덩어리를 키운다. flim 처럼 「크되 얇게」 —
+   굵기로 누르지 않고 크기로 민다. */
+.fx-ko{margin:0;font-family:var(--kr);font-weight:600;letter-spacing:-.05em;
+  line-height:.9;font-size:clamp(3rem,1.4rem + 7vw,6.6rem);color:var(--ink)}
+.fx-ko span{display:block}
+.fx-en{margin:1.1rem 0 0;font-family:var(--mono);font-size:.8rem;font-weight:500;
   letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+/* 영문으로 바꾸면 두 줄로 쪼갠 한글 이름은 사전이 통째로 못 찾는다.
+   그때는 한글 줄을 감추고 영문명을 대신 크게 세운다. */
+html[lang="en"] .fx-ko{display:none}
+html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:600;
+  letter-spacing:-.04em;line-height:1;text-transform:none;color:var(--ink);
+  font-size:clamp(2.2rem,1.2rem + 4vw,4.2rem)}
 .fx-d{margin:1.1rem 0 0;max-width:32rem;font-family:var(--kr);
   font-size:clamp(.9rem,.86rem + .2vw,1rem);font-weight:500;line-height:1.75;
   color:var(--muted);letter-spacing:-.01em}
@@ -370,7 +376,7 @@ img{display:block;max-width:100%}
   .fx-t{position:relative!important;opacity:1!important;visibility:visible!important;
     transform:none!important;padding-bottom:1.6rem}
   .fx-t + .fx-t{border-top:1px solid var(--line);padding-top:1.6rem}
-  .fx-ko{font-size:clamp(2rem,1.2rem + 4.4vw,3rem)}
+  .fx-ko{font-size:clamp(2.2rem,1.3rem + 5vw,3.4rem)}
   .fx-dots{display:none}
   .fx-right{order:-1;height:auto;aspect-ratio:16/10;border-radius:8px;clip-path:none}
   .fx-s{position:relative;opacity:1;visibility:visible}
@@ -601,50 +607,43 @@ img{display:block;max-width:100%}
 <!-- 여섯 연구 분야 — 화면은 고정된 채 분야만 바뀐다(참고: flim.ai).
      왼쪽에 분야 이름을 크게, 오른쪽에 그 분야 사진을 화면 밖까지 흘린다.
      스크롤을 내리면 좌우가 같이 다음 분야로 넘어간다. -->
-<section class="fx-scene" id="twAreas" data-no-rv aria-labelledby="h-research">
+<section class="fx-scene" id="twAreas" data-no-rv aria-label="연구 분야">
   <div class="fx-pin">
     <div class="fx-grid">
       <div class="fx-left">
-        <p class="kick" id="h-research">Research Area</p>
         <div class="fx-stack">
         <div class="fx-t is-on" data-i="0">
-          <p class="fx-n"><b>01</b><span>/ 06</span></p>
-          <h3 class="fx-ko">역학·소재</h3>
+          <h3 class="fx-ko"><span>역학</span><span>소재</span></h3>
           <p class="fx-en">Mechanics & Materials</p>
           <p class="fx-d">금속·복합재·연성재료가 힘을 받아 어떻게 변형하고 파손되는지 실험과 시뮬레이션으로 규명합니다.</p>
           <a class="fx-go" href="G-research.html#solid">연구실 6곳 <i aria-hidden="true">→</i></a>
         </div>
         <div class="fx-t" data-i="1">
-          <p class="fx-n"><b>02</b><span>/ 06</span></p>
-          <h3 class="fx-ko">에너지·열유체</h3>
+          <h3 class="fx-ko"><span>에너지</span><span>열유체</span></h3>
           <p class="fx-en">Energy / Thermal-Fluid</p>
           <p class="fx-d">난류·미세유동과 연소·열전달을 해석해 연료전지·수소·배터리처럼 에너지를 다루는 기술을 연구합니다.</p>
           <a class="fx-go" href="G-research.html#thermal">연구실 7곳 <i aria-hidden="true">→</i></a>
         </div>
         <div class="fx-t" data-i="2">
-          <p class="fx-n"><b>03</b><span>/ 06</span></p>
-          <h3 class="fx-ko">로보틱스·제어</h3>
+          <h3 class="fx-ko"><span>로보틱스</span><span>제어</span></h3>
           <p class="fx-en">Robotics & Control</p>
           <p class="fx-d">로봇과 자율 시스템이 스스로 감지하고 정밀하게 움직이도록 제어와 메카트로닉스를 연구합니다.</p>
           <a class="fx-go" href="G-research.html#dynamics">연구실 4곳 <i aria-hidden="true">→</i></a>
         </div>
         <div class="fx-t" data-i="3">
-          <p class="fx-n"><b>04</b><span>/ 06</span></p>
-          <h3 class="fx-ko">설계·제조</h3>
+          <h3 class="fx-ko"><span>설계</span><span>제조</span></h3>
           <p class="fx-en">Design & Manufacturing</p>
           <p class="fx-d">전산 최적설계로 형상을 찾고 정밀·극한 가공으로 구현합니다. 반도체 장비·전기차 같은 첨단 제조를 다룹니다.</p>
           <a class="fx-go" href="G-research.html#manufacturing">연구실 6곳 <i aria-hidden="true">→</i></a>
         </div>
         <div class="fx-t" data-i="4">
-          <p class="fx-n"><b>05</b><span>/ 06</span></p>
-          <h3 class="fx-ko">마이크로·나노</h3>
+          <h3 class="fx-ko"><span>마이크로</span><span>나노</span></h3>
           <p class="fx-en">Micro / Nano Systems</p>
           <p class="fx-d">MEMS와 박막·미세가공, 나노 소자·센서로 눈에 보이지 않는 스케일의 구조와 현상을 다룹니다.</p>
           <a class="fx-go" href="G-research.html#micro">연구실 5곳 <i aria-hidden="true">→</i></a>
         </div>
         <div class="fx-t" data-i="5">
-          <p class="fx-n"><b>06</b><span>/ 06</span></p>
-          <h3 class="fx-ko">바이오·포토닉스</h3>
+          <h3 class="fx-ko"><span>바이오</span><span>포토닉스</span></h3>
           <p class="fx-en">Bio & Photonics</p>
           <p class="fx-d">광학·이미징과 바이오칩, 생체역학을 결합해 질병 진단과 의료 광학·바이오 센싱을 연구합니다.</p>
           <a class="fx-go" href="G-research.html#optics">연구실 5곳 <i aria-hidden="true">→</i></a>

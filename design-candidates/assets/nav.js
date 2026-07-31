@@ -313,7 +313,37 @@
       '.yft-col li a{display:block;padding:.42rem 0;font-size:.8rem}' +
       '.yft-ext a{padding:.5rem .85rem}' +
       '.yft-base{padding:1.1rem .9rem calc(1.1rem + env(safe-area-inset-bottom));line-height:1.7}' +
-    '}'
+    '}',
+    /* ── 로딩 판 ──
+       화면을 덮지 않는다. 상단 바(z-50)와 지금 보고 있는 쪽은 그대로 두고,
+       가운데에 흰 판 하나만 뜬다. 그래서 z-index 는 상단 바보다 낮은 44,
+       바탕은 투명, pointer-events 도 끈다.
+       쪽을 옮길 때 브라우저는 새 쪽이 그려질 때까지 지금 쪽을 계속 보여 준다 —
+       그 틈에 이 판이 떠 있어 「넘어가는 중」이 눈에 보인다. */
+    '.yld{position:fixed;inset:0;z-index:44;display:grid;place-items:center;pointer-events:none;' +
+      'opacity:0;visibility:hidden;transition:opacity .22s ease,visibility 0s .22s;font-family:' + KR + '}',
+    /* 켤 때는 즉시 — 쪽을 옮기는 틈이 0.2초쯤일 때가 많아, 켜는 데 0.22초를 쓰면
+       판이 다 뜨기도 전에 새 쪽이 그려져 아무것도 안 보인다. 끌 때만 부드럽게. */
+    '.yld.on{opacity:1;visibility:visible;transition:none}',
+    /* 흰 판 — 모서리를 굴리지 않는다(이 지면의 어법). 그림자 하나로 떠 있음만 보인다 */
+    '.yld-in{display:grid;justify-items:center;gap:1.2rem;background:#fff;' +
+      'padding:clamp(1.8rem,4vw,2.6rem) clamp(2.4rem,6vw,3.6rem);' +
+      'box-shadow:0 22px 54px rgba(9,17,34,.22)}',
+    '.yld-bird{position:relative;width:clamp(5.5rem,11vw,7.5rem);aspect-ratio:1/1;' +
+      'animation:yldBob 1.1s ease-in-out infinite alternate}',
+    /* 조각 그림은 흰빛 선화라 흰 판 위에서는 거의 안 보인다 — 눌러서 먹색으로 만든다 */
+    '.yld-bird img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;' +
+      'transform-origin:50% 50%;filter:brightness(.34) saturate(1.35)}',
+    /* 어깨를 축으로 — 가운데를 축으로 돌리면 날개가 통째로 도는 바람개비가 된다 */
+    '.yld-bird .w-l{transform-origin:46% 46%;animation:yldFlapL .62s ease-in-out infinite alternate}',
+    '.yld-bird .w-r{transform-origin:68% 47%;animation:yldFlapR .62s ease-in-out infinite alternate}',
+    '@keyframes yldFlapL{from{transform:rotate(-9deg)}to{transform:rotate(16deg)}}',
+    '@keyframes yldFlapR{from{transform:rotate(9deg)}to{transform:rotate(-16deg)}}',
+    '@keyframes yldBob{from{transform:translateY(-3px)}to{transform:translateY(3px)}}',
+    '.yld-t{font-family:' + MONO + ';font-size:.72rem;font-weight:600;letter-spacing:.28em;' +
+      'text-transform:uppercase;color:' + DIM + ';margin:0;animation:yldPulse 1.4s ease-in-out infinite}',
+    '@keyframes yldPulse{0%,100%{opacity:.45}50%{opacity:1}}',
+    '@media (prefers-reduced-motion:reduce){.yld-bird,.yld-bird .w-l,.yld-bird .w-r,.yld-t{animation:none}}',
   ].join('');
   var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
 
@@ -872,6 +902,79 @@
     };
   }
 
+
+  /* ── 로딩 판 ──
+     쪽을 옮기는 사이 브라우저는 새 쪽이 그려질 때까지 지금 쪽을 그대로 보여 준다.
+     그 틈(보통 0.2~1초)이 비어 있으면 「눌렀는데 아무 일도 안 일어난다」로 읽힌다.
+     이 판을 그 틈에 띄운다 — 상단 바도 배경도 그대로 두고 가운데 흰 판만 뜬다.
+     새 쪽에서는 첫 그림이 끝날 때까지(load) 잠깐 더 떠 있다가 사라진다. */
+  var LOAD_IMGS = ['tail', 'lw', 'rw', 'body', 'talons', 'head'];
+  var yld = null;
+  function loaderEl() {
+    if (yld) return yld;
+    yld = document.createElement('div');
+    yld.className = 'yld';
+    yld.setAttribute('role', 'status');
+    yld.setAttribute('aria-label', '불러오는 중');
+    yld.innerHTML = '<div class="yld-in"><div class="yld-bird" aria-hidden="true">' +
+      LOAD_IMGS.map(function (n) {
+        var cls = n === 'lw' ? ' class="w-l"' : n === 'rw' ? ' class="w-r"' : '';
+        return '<img' + cls + ' src="assets/loader/e-' + n + '.png?v=1" alt="" />';
+      }).join('') +
+      '</div><p class="yld-t">로딩중</p></div>';
+    document.body.appendChild(yld);
+    return yld;
+  }
+  var loaderTimer = null;
+  function showLoader() {
+    var el = loaderEl();
+    /* 한 프레임 뒤에 켠다 — 방금 만든 요소에 바로 클래스를 붙이면 전환이 걸리지 않는다 */
+    requestAnimationFrame(function () { el.classList.add('on'); });
+    clearTimeout(loaderTimer);
+    /* 옮겨 가지 못하는 링크(내려받기·취소)에서 판이 남지 않게 */
+    loaderTimer = setTimeout(hideLoader, 8000);
+  }
+  function hideLoader() {
+    clearTimeout(loaderTimer);
+    if (yld) yld.classList.remove('on');
+  }
+
+  function setupLoader() {
+    /* ① 첫 걸음 — 이 창에서 이 사이트를 처음 여는 순간에만. 900ms 는 채운다
+          (눈 깜짝할 새 사라지면 「고장난 깜빡임」으로 읽힌다). */
+    var first = false;
+    try { first = sessionStorage.getItem('ysme-seen') !== '1'; } catch (e) {}
+    if (first && document.readyState !== 'complete') {
+      showLoader();
+      /* load 를 기다리지 않는다 — 히어로 사진·분야 사진·뉴스 썸네일이 다 와야 load 이고,
+         그때까지 기다리면 판이 몇 초씩 떠 있어 오히려 느려 보인다.
+         글과 뼈대는 이미 그려진 시점이므로 짧게 보여 주고 비킨다. */
+      setTimeout(hideLoader, 900);
+    }
+    try { sessionStorage.setItem('ysme-seen', '1'); } catch (e) {}
+
+    /* ② 쪽 옮김 — 같은 사이트 안의 보통 링크만. 새 창·내려받기·앵커는 두고 본다 */
+    document.addEventListener('click', function (e) {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+      if (!a) return;
+      if (a.target && a.target !== '_self') return;
+      if (a.hasAttribute('download')) return;
+      var href = a.getAttribute('href') || '';
+      if (!href || href.charAt(0) === '#' || /^(mailto:|tel:|javascript:)/i.test(href)) return;
+      var u;
+      try { u = new URL(a.href, location.href); } catch (_e) { return; }
+      if (u.origin !== location.origin) return;
+      /* 같은 쪽 안의 앵커 이동은 넘어가는 것이 아니다 */
+      if (u.pathname === location.pathname && u.search === location.search) return;
+      showLoader();
+    }, true);
+
+    /* ③ 뒤로 가기로 되돌아오면(bfcache) 판이 켜진 채 남아 있을 수 있다 */
+    addEventListener('pageshow', function (ev) { if (ev.persisted) hideLoader(); });
+    addEventListener('pagehide', hideLoader);
+  }
+
   function mount() {
     var old = document.querySelector('.hud-top'); if (old) old.remove();
     var ph = document.querySelector('.ynav-ph'); if (ph) ph.remove();
@@ -879,6 +982,7 @@
     buildSubnav();
     buildFooter();
     setupReveal();
+    setupLoader();
 
 
     /* ── 메가 메뉴 여닫기 ──

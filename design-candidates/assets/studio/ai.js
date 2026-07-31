@@ -910,7 +910,8 @@
       var idx = idxOf(ch);
       if (idx == null) { Y.toast('대상 eid 를 알 수 없습니다.', 'warn'); return; }
       if (!Y.engine.info(idx)) { Y.toast('이 페이지에서 대상 요소를 찾지 못했습니다.', 'warn'); return; }
-      if (Y.hud && Y.hud.revealIdx) Y.hud.revealIdx(idx);
+      /* 골라 둔 채로 남긴다 — 무엇을 고칠 자리인지 계속 보이게 */
+      if (Y.hud && Y.hud.revealIdx) Y.hud.revealIdx(idx, { select: true, label: OPS[ch.op] || ch.op });
       return;
     }
     var page = pageOf(ch);
@@ -1305,7 +1306,7 @@
     }
   }
 
-  /** 그 곳으로 데려간다 — 같은 페이지면 요소를 비추고, 다른 페이지면 그 페이지로 옮긴다 */
+  /** 그 곳으로 데려간다 — 같은 페이지면 요소를 골라 비추고, 다른 페이지면 그 페이지로 옮긴다 */
   function goToHit(ch, path, hit) {
     if (path !== U.pagePath()) {
       if (!safePage(path)) { Y.toast('이동할 페이지 경로가 올바르지 않습니다: ' + path, 'error'); return; }
@@ -1317,11 +1318,30 @@
       return;
     }
     var idx = idxAtOffset(hit.at);
-    if (idx == null || !Y.engine.info(idx)) {
+    var info = idx == null ? null : Y.engine.info(idx);
+    if (!info) {
       Y.toast('그 자리를 화면에서 찾지 못했습니다(줄 ' + hit.line + '). 원문에는 그대로 있습니다.', 'warn');
       return;
     }
-    if (Y.hud && Y.hud.revealIdx) Y.hud.revealIdx(idx);
+    /* <title>·<meta>·<script> 는 화면에 그려지지 않는다. 스크롤해 봐야 아무 일도
+       일어나지 않으므로, 옮기는 시늉 대신 어떤 자리인지 말해 준다. */
+    var lv = info.live;
+    var r = (lv && lv.getBoundingClientRect) ? lv.getBoundingClientRect() : null;
+    if (!r || (!r.width && !r.height)) {
+      Y.toast('줄 ' + hit.line + ' — 화면에 그려지지 않는 자리입니다' +
+        (hit.label ? '(' + hit.label + ')' : '') +
+        '. 검색·공유 미리보기·번역 사전에 쓰이며, 바꾸면 파일에는 그대로 반영됩니다.', 'warn', 6000);
+      return;
+    }
+
+    /* 고른 상태로 남겨 둔다 — 무엇을 고칠 자리인지 테두리가 계속 보이고,
+       그대로 「편집」을 켜면 바로 그 칸을 고칠 수 있다. 곳 목록은 그대로 둔다. */
+    if (Y.hud && Y.hud.revealIdx) {
+      Y.hud.revealIdx(idx, { select: true, label: '줄 ' + hit.line + ' · ' + (HIT_KIND[hit.kind] || hit.kind) });
+    }
+    if (info.runtime) {
+      Y.toast('이 글자는 화면에서 런타임이 다시 그리는 자리입니다. 파일에는 정상으로 반영됩니다.', 'warn');
+    }
   }
 
   function renderItem(ch, i) {

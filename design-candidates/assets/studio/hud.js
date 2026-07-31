@@ -791,7 +791,7 @@
     return (box && box !== liveEl) ? box : null;   // 컨테이너 자신은 파일 소유가 맞다
   }
 
-  function applySelection(idx, clicked, isSelf) {
+  function applySelection(idx, clicked, isSelf, keepPanel) {
     var self = isSelf !== false;
     var box = listBoxOf(clicked || (Y.engine.info(idx) || {}).live);
     if (box) {
@@ -810,8 +810,9 @@
       self: self
     };
     placeSel();
+    /* keepPanel — 「이동」처럼 보고 있던 목록을 잃으면 안 되는 경우에는 패널을 바꾸지 않는다 */
     if (curPanel === 'inspect') renderInspect(panels.inspect.host);
-    else openPanel('inspect');
+    else if (!keepPanel) openPanel('inspect');
     Y.bus.emit('hud:select', { idx: idx, self: sel.self });
   }
 
@@ -841,19 +842,41 @@
     }
   }
 
-  function revealIdx(idx) {
+  /**
+   * 그 요소로 데려간다.
+   * opts.select — 선택까지 한다(테두리가 남아 무엇을 고칠지 눈에 계속 보인다).
+   *               보고 있던 패널은 그대로 둔다 — 「이동」 뒤에 곳 목록이 사라지면 안 된다.
+   * opts.label  — 표시 상자에 붙일 이름표(무엇을 찾았는지 화면에서 바로 읽히게).
+   * opts.hold   — 표시 상자를 몇 ms 띄울지.
+   *
+   * 오른쪽 패널이 화면의 한 자락을 덮으므로, 화면 한가운데가 아니라 **패널을 뺀
+   * 나머지 폭의 가운데**로 올린다. 그러지 않으면 "이동했는데 안 보인다"가 된다.
+   */
+  function revealIdx(idx, opts) {
+    opts = opts || {};
     var info = Y.engine.info(idx);
     var lv = info && info.live;
-    if (!lv || !inDoc(lv)) { Y.toast('화면에서 그 요소를 찾을 수 없습니다.', 'warn'); return; }
+    if (!lv || !inDoc(lv)) { Y.toast('화면에서 그 요소를 찾을 수 없습니다.', 'warn'); return false; }
+
     scrollTo(lv);
+    if (opts.select) applySelection(idx, null, true, true);
+
     ensureLayer(lv.ownerDocument);
     tgtEl = lv;
-    place(tgtBox, lv, null);
+    place(tgtBox, lv, opts.label == null ? null : opts.label);
+
+    /* 애니메이션을 처음부터 다시 — 연달아 누르면 같은 자리에서도 한 번 더 번쩍여야 한다 */
+    if (tgtBox) {
+      tgtBox.classList.remove('is-hit');
+      void tgtBox.offsetWidth;
+      tgtBox.classList.add('is-hit');
+    }
     if (tgtTimer) clearTimeout(tgtTimer);
     tgtTimer = setTimeout(function () {
       tgtEl = null;
-      if (tgtBox) tgtBox.style.display = 'none';
-    }, 3000);
+      if (tgtBox) { tgtBox.style.display = 'none'; tgtBox.classList.remove('is-hit'); }
+    }, opts.hold || 6000);
+    return true;
   }
 
   /* ══════════════════════════════════════════════════════════

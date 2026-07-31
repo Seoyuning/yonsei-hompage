@@ -29,7 +29,7 @@
 <link rel="stylesheet" href="assets/fonts.css?v=1" />
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d21" />
-<link rel="preload" as="script" href="assets/nav.js?v=112" />
+<link rel="preload" as="script" href="assets/nav.js?v=113" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    교수진 디렉토리 — 아이보리 배경 · 네이비 제목 · 헤어라인 · 연회색 행
@@ -227,6 +227,14 @@ a{color:inherit;text-decoration:none}
 .dir{max-width:1232px;margin:0 auto;padding:1.4rem clamp(1.2rem,.6rem + 2vw,2.6rem) 3rem;
   display:grid;grid-template-columns:minmax(0,1fr) clamp(9rem,13vw,12rem);
   column-gap:clamp(1.6rem,3vw,3rem);align-items:start}
+/* 넓은 화면에서는 이 구간만 오른쪽으로 통을 넓힌다 — 선택 바가 본문 격자(1232px) 끝에
+   서면 그 오른쪽으로 페이지 여백이 한 뼘 더 남아, 화면 끝과 바 사이가 비어 보였다.
+   왼쪽 선은 그대로 1232px 격자에 맞춘다(카드가 위 제목·버튼과 같은 지점에서 시작해야 한다). */
+@media (min-width:1081px){
+  .dir{max-width:none;margin:0;
+    padding-left:max(clamp(1.2rem,.6rem + 2vw,2.6rem), calc(50vw - 616px));
+    padding-right:clamp(1.2rem,.6rem + 2vw,2.6rem)}
+}
 /* 카드 쪽. min-width:0 이 없으면 긴 이름 하나가 칸을 밀어 선택 바를 화면 밖으로 낸다 */
 .dir-main{grid-column:1;grid-row:1;min-width:0}
 /* 명예·퇴임 명단에는 분야 데이터가 없어 선택 바를 접는다 — 그때는 명단이 폭을 다 쓴다 */
@@ -354,7 +362,7 @@ a{color:inherit;text-decoration:none}
    가로 폭이 같으니 이름·영문명·분야가 모두 한 줄인 데스크톱에서는 저절로 아랫단이 맞는다. */
 /* 테두리가 생겼으니 글자를 안쪽으로 들인다 */
 .pbody{grid-column:2;grid-row:1;
-  padding:.8rem .95rem .55rem;display:flex;flex-direction:column;gap:.22rem}
+  padding:.72rem 3rem .55rem .95rem;display:flex;flex-direction:column;gap:.22rem}
 .pname{display:flex;align-items:baseline;gap:.45rem;flex-wrap:wrap}
 .pname .ko{font-family:var(--kr);font-weight:800;font-size:1.1rem;letter-spacing:-.015em;
   line-height:1.25;color:#111318}
@@ -368,10 +376,22 @@ html[lang="en"] .ppos{display:none}
 /* 연구분야 — 분야 배지 + 라벨 + 분야명 한 줄.
    flex-wrap — 2열이 되는 좁은 화면에서 「동역학·제어」가 한 줄에 안 들어가면
    칸을 밀어내지 말고 아랫줄로 내려간다(가로 넘침 방지) */
-.pfieldline{display:flex;align-items:center;flex-wrap:wrap;gap:.1rem .4rem;margin-top:.3rem;
-  min-width:0;font-family:var(--kr);font-size:.79rem;font-weight:600;color:var(--sub);letter-spacing:-.005em}
+/* 맨 윗줄로 올라왔다 — 이름보다 먼저 읽히되 이름을 누르지 않게 작고 담담하게 둔다.
+   「연구분야 :」 라벨은 뺐다. 배지와 자리만으로 무엇인지 이미 읽힌다. */
+.pfieldline{display:flex;align-items:center;flex-wrap:wrap;gap:.1rem .4rem;margin:0 0 .12rem;
+  min-width:0;font-family:var(--kr);font-size:.76rem;font-weight:600;color:var(--sub);letter-spacing:-.005em}
 .pfieldline .lb{font-weight:500;color:var(--label)}
-/* 맨 아래 두 칸 — 칠 없이 헤어라인으로만 나눈 줄(메인 .pc-btns 그대로).
+/* 오른쪽 위 홈 단추 — 둥근 실선 안에 집 아이콘 하나. 그 교수의 홈페이지로 나간다.
+   카드 오른쪽 위가 비어 있던 자리다. 절대 배치라 아래 글줄을 밀지 않는다. */
+.phome{position:absolute;top:.6rem;right:.6rem;z-index:2;
+  width:1.85rem;height:1.85rem;display:grid;place-items:center;border-radius:50%;
+  border:1px solid var(--line);background:#fff;color:var(--muted);
+  transition:color .18s,border-color .18s,transform .18s}
+.phome svg{width:13px;height:13px;display:block}
+.phome:hover{color:var(--navy);border-color:var(--navy);transform:translateY(-1px)}
+.phome:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){ .phome{transition:none} .phome:hover{transform:none} }
+/* 맨 아래 칸 — 칠 없이 헤어라인으로만 나눈 줄(메인 .pc-btns 그대로).
    칸 수는 내용에 맞춰 나눈다 — 공식 프로필도 메일도 없는 사람은 「자세히」한 칸뿐인데,
    두 칸으로 고정하면 오른쪽이 빈 채로 남는다. */
 .pbtns{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;
@@ -1081,24 +1101,26 @@ html[lang="en"] .ppos{display:none}
     var accent = 'var('+cvar+')';
 
     /* 사진(없으면 onerror로 이니셜 폴백 표시) */
-    var photo = '<img src="assets/faculty/'+esc(p.id)+'.jpg" alt="'+esc(p.ko)+' '+esc(p.rank)+'"'
+    var photo = '<img src="assets/faculty/'+esc(p.id)+'.jpg" alt="'+esc(p.ko)+'"'
       + ' loading="lazy" onerror="this.style.display=\'none\';var f=this.parentNode.querySelector(\'.pfallback\');if(f)f.style.display=\'grid\';">'
       + '<span class="pfallback" aria-hidden="true" style="display:none">'+esc(p.initial)+'</span>';
 
     /* 사진을 프로필 링크로 감싸기(있으면) */
     var photoOpen = p.detail
-      ? '<a class="pphoto" href="'+esc(p.detail)+'" target="_blank" rel="noopener" aria-label="'+esc(p.ko)+' '+esc(p.rank)+' 프로필 (새 창)">'
-      : '<a class="pphoto" href="#'+esc(p.id)+'" aria-label="'+esc(p.ko)+' '+esc(p.rank)+'">';
+      ? '<a class="pphoto" href="'+esc(p.detail)+'" target="_blank" rel="noopener" aria-label="'+esc(p.ko)+' 프로필 (새 창)">'
+      : '<a class="pphoto" href="#'+esc(p.id)+'" aria-label="'+esc(p.ko)+'">';
 
     /* 이름 아래 보조 라인 = 영문명(항상 일관 · 연구분야와 상충 없음) */
     var pos = p.en ? '<p class="ppos">'+esc(p.en)+'</p>' : '';
 
-    /* 우측 원형 버튼: 홈(프로필/메일) · 상세 펼침(+) */
-    var homeHref = p.detail || (p.email ? 'mailto:'+p.email : '');
+    /* 카드 오른쪽 위 둥근 실선 안의 집 아이콘 — 그 교수의 홈페이지로 나간다.
+       연구실 홈페이지가 있으면 그쪽(서른셋 중 서른하나), 없으면 학부 공식 프로필. */
+    var homeHref = lab.site || p.detail || '';
+    var homeWhat = lab.site ? '연구실 홈페이지' : '학부 공식 프로필';
     var homeBtn = homeHref
-      ? '<a class="pbtn home" href="'+esc(homeHref)+'"'+(p.detail?' target="_blank" rel="noopener"':'')
-        + ' aria-label="'+esc(p.ko)+' '+(p.detail?'프로필':'이메일')+'" title="'+(p.detail?'프로필 · 홈페이지':'이메일')+'">'
-        + ICON_HOME + '<span class="lb">'+(p.detail?'프로필':'메일')+'</span></a>'
+      ? '<a class="phome" href="'+esc(homeHref)+'" target="_blank" rel="noopener"'
+        + ' aria-label="'+esc(p.ko)+' '+homeWhat+' (새 창)" title="'+homeWhat+'">'
+        + ICON_HOME + '</a>'
       : '';
     var moreBtn = '<button type="button" class="pbtn more" aria-expanded="false"'
       + ' aria-label="'+esc(p.ko)+' 상세 정보 펼치기" title="상세 정보">'
@@ -1107,8 +1129,7 @@ html[lang="en"] .ppos{display:none}
     /* 상세(+ 토글) 행 — 이메일 · 사무실 · 연락처 · 프로필 */
     /* 직위는 카드 표면이 아니라 여기(자세히 보기)에서 보여 준다 */
     var det = '';
-    if(p.rank) det += '<span class="il">'+ICON_RANK+'<span class="it">'+esc(p.rank)+'</span></span>';
-    if(p.email) det += '<a class="il" href="mailto:'+esc(p.email)+'">'+ICON_MAIL+'<span class="it">'+esc(p.email)+'</span></a>';
+        if(p.email) det += '<a class="il" href="mailto:'+esc(p.email)+'">'+ICON_MAIL+'<span class="it">'+esc(p.email)+'</span></a>';
     if(p.office) det += '<span class="il">'+ICON_PIN+'<span class="it">'+esc(officeKo(p.office))+'</span></span>';
     if(p.phone) det += '<span class="il">'+ICON_TEL+'<span class="it">'+esc(p.phone)+'</span></span>';
     if(lab.ko) det += '<span class="il">'+ICON_LAB+'<span class="it">'+esc(lab.ko)+'</span></span>';
@@ -1116,13 +1137,15 @@ html[lang="en"] .ppos{display:none}
     return '<article class="pcard" id="'+esc(p.id)+'" style="--card-c:'+accent+'">'
       + photoOpen + photo + '</a>'
       + '<div class="pbody">'
+        /* 맨 윗줄은 연구 분야 — 이 화면을 훑는 사람은 「누가 어느 분야인가」를 먼저 찾는다.
+           「연구분야 :」 라벨은 뺐다. 배지와 자리만으로 무엇인지 이미 읽힌다. */
+        + '<p class="pfieldline">'+fieldBadge(p)+esc(cl.ko||'')+'</p>'
         + '<p class="pname"><span class="ko">'+esc(p.ko)+'</span>'
           + (p.role ? '<span class="rk">'+esc(p.role)+'</span>' : '') + '</p>'
         + pos
-        + '<p class="pfieldline">'+fieldBadge(p)
-          + '<span class="lb">연구분야 :</span> '+esc(cl.ko||'')+'</p>'
       + '</div>'
-      + '<div class="pbtns">'+homeBtn+moreBtn+'</div>'
+      + homeBtn
+      + '<div class="pbtns">'+moreBtn+'</div>'
       /* role="group" — 예전엔 떠오르는 판이라 role="dialog" 였다. 지금은 제자리에서
          펴는 줄 묶음이라 dialog 라고 알리면 스크린리더가 초점을 가두려 든다. */
       + '<div class="pdetail" role="group" aria-label="'+esc(p.ko)+' 상세 정보">'
@@ -1329,7 +1352,7 @@ html[lang="en"] .ppos{display:none}
   }
 })();
 </script>
-<script src="assets/nav.js?v=112"></script>
+<script src="assets/nav.js?v=113"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--num);font-size:.72rem;letter-spacing:.12em;color:var(--dimmer)">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="../admin/index.html" style="color:inherit;text-decoration:none">관리자</a>
 </footer>

@@ -325,11 +325,13 @@
     /* 켤 때는 즉시 — 쪽을 옮기는 틈이 0.2초쯤일 때가 많아, 켜는 데 0.22초를 쓰면
        판이 다 뜨기도 전에 새 쪽이 그려져 아무것도 안 보인다. 끌 때만 부드럽게. */
     '.yld.on{opacity:1;visibility:visible;transition:none}',
-    /* 흰 판 — 모서리를 굴리지 않는다(이 지면의 어법). 그림자 하나로 떠 있음만 보인다 */
-    '.yld-in{display:grid;justify-items:center;gap:1.2rem;background:#fff;' +
-      'padding:clamp(1.8rem,4vw,2.6rem) clamp(2.4rem,6vw,3.6rem);' +
-      'box-shadow:0 22px 54px rgba(9,17,34,.22)}',
-    '.yld-bird{position:relative;width:clamp(5.5rem,11vw,7.5rem);aspect-ratio:1/1;' +
+    /* 흰 원 — 이 지면은 각진 모서리를 쓰지만, 이건 지면의 구획이 아니라 잠깐 떴다 사라지는
+       표시다. 원이라야 「지금 도는 중」으로 읽힌다. 글자는 원 밖 아래에 둔다 —
+       원 안에 다 넣으려면 원이 커져 화면을 덮어 버린다. */
+    '.yld-in{display:grid;justify-items:center;gap:.9rem}',
+    '.yld-disc{width:clamp(9rem,17vw,11.5rem);aspect-ratio:1/1;border-radius:50%;background:#fff;' +
+      'display:grid;place-items:center;box-shadow:0 22px 54px rgba(9,17,34,.22)}',
+    '.yld-bird{position:relative;width:64%;aspect-ratio:1/1;' +
       'animation:yldBob 1.1s ease-in-out infinite alternate}',
     /* 조각 그림은 흰빛 선화라 흰 판 위에서는 거의 안 보인다 — 눌러서 먹색으로 만든다 */
     '.yld-bird img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;' +
@@ -916,12 +918,12 @@
     yld.className = 'yld';
     yld.setAttribute('role', 'status');
     yld.setAttribute('aria-label', '불러오는 중');
-    yld.innerHTML = '<div class="yld-in"><div class="yld-bird" aria-hidden="true">' +
+    yld.innerHTML = '<div class="yld-in"><div class="yld-disc"><div class="yld-bird" aria-hidden="true">' +
       LOAD_IMGS.map(function (n) {
         var cls = n === 'lw' ? ' class="w-l"' : n === 'rw' ? ' class="w-r"' : '';
         return '<img' + cls + ' src="assets/loader/e-' + n + '.png?v=1" alt="" />';
       }).join('') +
-      '</div><p class="yld-t">로딩중</p></div>';
+      '</div></div><p class="yld-t">로딩중</p></div>';
     document.body.appendChild(yld);
     return yld;
   }
@@ -967,6 +969,17 @@
       if (u.origin !== location.origin) return;
       /* 같은 쪽 안의 앵커 이동은 넘어가는 것이 아니다 */
       if (u.pathname === location.pathname && u.search === location.search) return;
+      /* 열려 있던 메뉴는 먼저 닫는다 — 메가 메뉴(z-59)·모바일 메뉴(z-70)가 로딩 판(z-44)
+         위에 남으면, 메뉴 뒤에서 독수리가 날갯짓하는 우스운 화면이 된다.
+         어차피 곧 다른 쪽으로 넘어가므로 닫는 편이 자연스럽다. */
+      nav.classList.remove('mega-on');
+      var ovlEl = document.getElementById('ynvOvl');
+      if (ovlEl && ovlEl.classList.contains('open')) {
+        /* 오버레이가 잠가 둔 스크롤을 제 손으로 풀게 한다 — 여기서 직접 지우면
+           원래 overflow 값이 있던 쪽에서 그 값을 잃는다 */
+        var cl = ovlEl.parentNode ? ovlEl.parentNode.querySelector('.ynv-ovl-close') : null;
+        if (cl) cl.click(); else ovlEl.classList.remove('open');
+      }
       showLoader();
     }, true);
 

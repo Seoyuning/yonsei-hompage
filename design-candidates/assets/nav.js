@@ -20,18 +20,21 @@
     '.ynav-ph{display:none!important}',
     '.ynv{position:fixed;top:0;left:0;right:0;z-index:50;font-family:' + KR + '}',
     '.ynv-w{max-width:1232px;margin:0 auto;padding:0 clamp(1.2rem,.6rem + 2vw,2.6rem)}',
-    /* 유틸 바 */
-    '.ynv-top{background:' + INK + ';color:#c6d2e6;font-size:.74rem;overflow:hidden;max-height:2.3rem;' +
-      'transition:max-height .4s ' + E + ',opacity .3s ease}',
-    '.ynv-top .ynv-w{max-width:none;display:flex;align-items:center;justify-content:flex-end;' +
-      'gap:1.4rem;padding:.42rem clamp(1.2rem,2.6vw,3rem)}',
-    '.ynv-top a{color:#c6d2e6;text-decoration:none;transition:color .15s}',
-    '.ynv-top a:hover{color:#fff}',
-    '.ynv.min .ynv-top{max-height:0;opacity:0}',
-    '.ynv-lang{display:flex;gap:.1rem;margin-left:.5rem;border:1px solid rgba(255,255,255,.28);border-radius:99px;padding:.12rem}',
-    '.ynv-lang button{font-family:' + MONO + ';font-size:.72rem;font-weight:700;letter-spacing:.08em;color:#c6d2e6;' +
-      'background:none;border:0;border-radius:99px;padding:.16rem .62rem;cursor:pointer;transition:background .12s,color .12s}',
-    '.ynv-lang button.on{background:#fff;color:' + NAVYD + '}',
+    /* 한/영 — 예전엔 위쪽 검은 유틸 바에 있었다. 그 바(연세대·공과대학·현행 홈)를
+       통째로 걷고, 메뉴를 가운데로 보낸 뒤 남는 오른쪽 자리를 이것이 받는다.
+       각진 모서리·헤어라인 — 알약 배지는 이 지면의 어법이 아니다. */
+    '.ynv-lang{flex:0 0 auto;display:flex;border:1px solid ' + LINE + ';border-radius:0}',
+    '.ynv-lang button{font-family:' + MONO + ';font-size:.72rem;font-weight:600;letter-spacing:.08em;' +
+      'color:' + MUTED + ';background:none;border:0;border-radius:0;padding:.34rem .66rem;cursor:pointer;' +
+      'transition:background .16s,color .16s}',
+    '.ynv-lang button + button{border-left:1px solid ' + LINE + '}',
+    '.ynv-lang button:hover{color:' + NAVY + '}',
+    '.ynv-lang button.on{background:' + NAVY + ';color:#fff}',
+    '.ynv.over .ynv-lang{border-color:rgba(255,255,255,.4)}',
+    '.ynv.over .ynv-lang button{color:rgba(255,255,255,.8)}',
+    '.ynv.over .ynv-lang button + button{border-left-color:rgba(255,255,255,.4)}',
+    '.ynv.over .ynv-lang button:hover{color:#fff}',
+    '.ynv.over .ynv-lang button.on{background:#fff;color:' + NAVYD + '}',
     /* 흰 헤더 */
     '.ynv-hdr{background:rgba(255,255,255,.9);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);' +
       'border-bottom:1px solid ' + LINE + ';transition:background .32s ease,border-color .32s ease}',
@@ -49,13 +52,15 @@
     '.ynv.over .ynv-burger span{background:#fff}',
     /* 상단 바만 본문 폭(1232px)을 벗어나 화면 끝까지 쓴다 — 학부 이름은 왼쪽 끝,
        메뉴는 오른쪽 끝에 붙는다. 가운데로 모여 있으면 바가 떠 보인다. */
-    '.ynv-hdr .ynv-w{max-width:none;display:flex;align-items:center;justify-content:space-between;' +
-      'gap:1.5rem;padding:.85rem clamp(1.2rem,2.6vw,3rem)}',
+    '.ynv-hdr .ynv-w{max-width:none;display:flex;align-items:center;' +
+      'gap:clamp(1rem,2vw,2rem);padding:.85rem clamp(1.2rem,2.6vw,3rem)}',
     '.ynv-brand{display:flex;align-items:center;gap:.7rem;min-width:0;text-decoration:none}',
     '.ynv-brand img{height:2.75rem;width:auto;display:block}',
     '.ynv-brand .bko{font-weight:800;font-size:1.24rem;letter-spacing:-.01em;color:' + NAVY + ';line-height:1.25}',
     '.ynv-brand .ben{display:block;font-size:.72rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:' + DIM + '}',
-    '.ynv-menu{display:flex;gap:clamp(2rem,3.8vw,3.6rem);font-weight:600;font-size:.98rem;white-space:nowrap}',
+    /* 메뉴를 가운데로 — 그래야 아래 메가 칸을 항목 바로 밑에 세울 자리가 나온다 */
+    '.ynv-menu{flex:1 1 auto;display:flex;justify-content:center;gap:clamp(1.6rem,4.4vw,4.4rem);' +
+      'font-weight:600;font-size:.98rem;white-space:nowrap}',
     '.ynv-i{position:relative}',
     '.ynv-i>a{position:relative;display:inline-block;padding:.55rem 0;color:' + INK + ';text-decoration:none;transition:color .2s}',
     '.ynv-i>a::after{content:"";position:absolute;left:0;right:0;bottom:.2rem;height:2px;background:' + NAVY + ';' +
@@ -73,16 +78,19 @@
       'opacity:0;visibility:hidden;transform:translateY(-6px);' +
       'transition:opacity .34s ' + E + ',transform .44s ' + E + ',visibility .34s}',
     '.ynv.mega-on .ynv-mega{opacity:1;visibility:visible;transform:none}',
-    '.ynv-mega-in{max-width:1232px;margin:0 auto;padding:clamp(1.6rem,3vh,2.4rem) clamp(1.2rem,.6rem + 2vw,2.6rem) clamp(1.8rem,3.4vh,2.6rem);' +
-      'display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:0}',
-    '.ynv-mc{padding:0 clamp(.5rem,1vw,1rem);min-width:0}',
-    '.ynv-mc + .ynv-mc{border-left:1px solid ' + LINE + '}',
-    '.ynv-mc:first-child{padding-left:0}.ynv-mc:last-child{padding-right:0}',
+    /* 칸의 왼쪽 끝과 폭은 JS 가 위 메뉴 항목을 재어 넣는다(fitMega) —
+       「연구」 칸이 「연구」 글자 바로 밑에서 시작한다. 참고 사이트는 이게 어긋나 있다.
+       칸 사이 세로줄은 두지 않는다: 칸이 항목에 딱 붙으면 그 줄이 글 시작점을 가른다.
+       대신 칸 머리의 밑줄이 하나씩 그어져 구분을 만든다. */
+    '.ynv-mega-in{max-width:none;padding:clamp(1.6rem,3vh,2.4rem) clamp(1.2rem,2.6vw,3rem) clamp(1.8rem,3.4vh,2.6rem) 0;' +
+      'display:grid;gap:0}',
+    '.ynv-mc{padding-right:clamp(.55rem,1.1vw,1rem);min-width:0}',
     '.ynv-mc > b{display:block;font-family:' + KR + ';font-size:.92rem;font-weight:800;' +
       'letter-spacing:-.02em;color:' + INK + ';padding-bottom:.7rem;' +
       'border-bottom:1px solid #111318;margin-bottom:.75rem;' +
       'transition:color .2s}',
     '.ynv-mc a{position:relative;display:block;font-family:' + KR + ';font-size:.83rem;font-weight:600;' +
+      'white-space:normal;word-break:keep-all;' +
       'letter-spacing:-.01em;color:' + MUTED + ';text-decoration:none;padding:.42rem 0 .42rem .55rem;' +
       'opacity:0;transform:translateY(6px);' +
       'transition:opacity .5s ease,transform .55s ' + E + ',color .16s}',
@@ -97,7 +105,7 @@
     '.ynv-mega.has-hi .ynv-mc:not(.hi) > b{color:' + DIM + '}',
     '.ynv-mega.has-hi .ynv-mc:not(.hi) a{color:' + DIM + '}',
     '.ynv-mc.hi > b{color:' + NAVY + '}',
-    '@media(max-width:920px){.ynv-mega{display:none}}',
+    '@media(max-width:1040px){.ynv-mega{display:none}}',
     '[id]{scroll-margin-top:5rem}',
     'body.has-ysub [id]{scroll-margin-top:var(--ys-stick,7.6rem)}',
     /* breadcrumb 링크 */
@@ -232,13 +240,10 @@
     /* 휴대폰 주내비라 손가락 크기(≈44px)로 — 줄 간격이 곧 탭 영역이다 */
     '.ynv-ovl-sub{display:block;font-family:' + KR + ';font-size:.95rem;color:' + MUTED + ';' +
       'padding:.66rem 0 .66rem 1.1rem;text-decoration:none}',
-    '@media(max-width:920px){.ynv-menu{display:none}.ynv-burger{display:inline-flex}}',
+    '@media(max-width:1040px){.ynv-menu{display:none}.ynv-burger{display:inline-flex}}',
     '@media(min-width:921px){.ynv-ovl{display:none!important}}',
     /* 휴대폰 — 유틸 바가 두 줄로 접히고 링크가 손가락보다 작았다 */
     '@media(max-width:640px){' +
-      '.ynv-top{max-height:2.6rem}' +
-      '.ynv-top .ynv-w{gap:.85rem;padding:0 .9rem;flex-wrap:nowrap;white-space:nowrap}' +
-      '.ynv-top a{display:inline-flex;align-items:center;min-height:2.4rem;font-size:.72rem}' +
       '.ynv-lang{margin-left:.15rem}' +
       '.ynv-lang button{padding:.3rem .6rem;min-height:1.9rem}' +
       '.ynv-hdr .ynv-w{gap:.8rem;padding:.6rem .9rem}' +
@@ -248,7 +253,7 @@
       '.ytop{right:.9rem;bottom:calc(.9rem + env(safe-area-inset-bottom));width:2.7rem;height:2.7rem}' +
     '}',
     /* 아주 좁은 화면(360 이하) — 영문 병기를 접어 브랜드 한 줄 유지 */
-    '@media(max-width:360px){.ynv-brand .ben{display:none}.ynv-top .ynv-w{gap:.6rem}}',
+    '@media(max-width:360px){.ynv-brand .ben{display:none}}',
     /* 서브페이지 히어로 윗여백은 이 고정 헤더를 비키려고 둔 값이라 여기서 맞춘다.
        (페이지 인라인 CSS 뒤에 주입되므로 이 규칙이 이긴다)
        휴대폰 헤더는 ~94px인데 데스크톱 기준 152px이 그대로 걸려 제목 위가 텅 비었다 */
@@ -257,7 +262,7 @@
       '.phero{min-height:0}' +
       '.phero .phero-lead{font-size:.92rem;line-height:1.68}' +
     '}',
-    '@media(prefers-reduced-motion:reduce){.ynv-top,.ynv-mega,.ynv-mc a,.ynv-i>a::after{transition:none}}',
+    '@media(prefers-reduced-motion:reduce){.ynv-mega,.ynv-mc a,.ynv-i>a::after{transition:none}}',
     /* ── 사이트맵 정보 푸터 (파란 CTA·간이 푸터 대체) ── */
     '.yft{background:' + INK + ';color:#c6d2e6;font-family:' + KR + '}',
     '.yft-w{max-width:80rem;margin:0 auto;padding:clamp(2.6rem,1.8rem + 2.5vw,4rem) clamp(1.2rem,4vw,2.4rem) 2.2rem;' +
@@ -344,16 +349,11 @@
   var nav = document.createElement('div');
   nav.className = 'ynv' + (document.querySelector('.hero') ? ' over' : '');
   nav.innerHTML =
-    '<div class="ynv-top"><div class="ynv-w">' +
-      '<a href="https://www.yonsei.ac.kr" target="_blank" rel="noopener">연세대학교</a>' +
-      '<a href="https://engineering.yonsei.ac.kr" target="_blank" rel="noopener">공과대학</a>' +
-      '<a href="https://me.yonsei.ac.kr" target="_blank" rel="noopener">기계공학부 현행 홈</a>' +
+    '<header class="ynv-hdr"><div class="ynv-w">' + brand +
+      '<nav class="ynv-menu" aria-label="주메뉴">' + menuHtml + '</nav>' +
       '<div class="ynv-lang" role="group" aria-label="언어 선택">' +
         '<button type="button" id="ynvKo" class="on" data-no-i18n>한국어</button>' +
         '<button type="button" id="ynvEn" data-no-i18n>ENG</button></div>' +
-    '</div></div>' +
-    '<header class="ynv-hdr"><div class="ynv-w">' + brand +
-      '<nav class="ynv-menu" aria-label="주메뉴">' + menuHtml + '</nav>' +
       '<button class="ynv-burger" type="button" aria-label="메뉴 열기" aria-expanded="false" aria-controls="ynvOvl"><span></span><span></span><span></span></button>' +
     '</div>' + megaHtml + '</header>';
 
@@ -863,9 +863,32 @@
     var menuEl = nav.querySelector('.ynv-menu');
     if (mega && menuEl) {
       var mt = 0;
+      /* 칸을 항목 바로 밑에 세운다 — 항목의 왼쪽 끝을 재어 격자 열 폭으로 옮긴다.
+         마지막 칸은 오른쪽 여백까지 받는다. 글꼴이 늦게 오면 항목 폭이 바뀌므로
+         글꼴이 준비된 뒤 한 번 더 잰다. */
+      function fitMega() {
+        var its = [].slice.call(menuEl.querySelectorAll('.ynv-i'));
+        var inn = mega.querySelector('.ynv-mega-in');
+        if (!its.length || !inn) return;
+        var m = mega.getBoundingClientRect();
+        if (m.width < 10) return;
+        var xs = its.map(function (it) { return it.getBoundingClientRect().left - m.left; });
+        var pad = parseFloat(getComputedStyle(inn).paddingRight) || 24;
+        var ws = xs.map(function (x, i) {
+          if (i + 1 < xs.length) return xs[i + 1] - x;
+          /* 마지막 칸은 남은 자리를 다 먹으면 혼자 넓어진다 — 이웃 폭에 맞춘다 */
+          var prev = xs.length > 1 ? xs[xs.length - 1] - xs[xs.length - 2] : 160;
+          return Math.max(140, Math.min(m.width - pad - x, prev * 1.15));
+        });
+        inn.style.paddingLeft = Math.max(0, xs[0]) + 'px';
+        inn.style.gridTemplateColumns = ws.map(function (w) { return w + 'px'; }).join(' ');
+      }
+      fitMega();
+      addEventListener('resize', fitMega, { passive: true });
+      try { if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitMega); } catch (e) {}
       function megaOpen(on) {
         clearTimeout(mt);
-        if (on) { nav.classList.add('mega-on'); return; }
+        if (on) { fitMega(); nav.classList.add('mega-on'); return; }
         mt = setTimeout(function () {
           nav.classList.remove('mega-on');
           mega.classList.remove('has-hi');

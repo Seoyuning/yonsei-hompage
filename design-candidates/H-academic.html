@@ -300,14 +300,17 @@ main{position:relative;z-index:2;background:var(--paper)}
    sticky 요소도 절대 배치 자식의 기준 상자가 되므로 아래 ::before 는 그대로 앉는다. */
 .is-say .tw-pin{background:#fff}
 /* 문장 뒤에 마스코트 독수리를 옅게 깐다 — 흰 바탕에 글자만 떠 있어 화면이 허전했다.
-   그림 파일이 이미 우리 네이비 선화라 색을 따로 입히지 않고 투명도만 낮춘다.
+   그림 파일은 네이비 선화라 grayscale 로 색만 걷어 회색으로 만든다 —
+   마스크로 한 색을 칠하면 선과 면이 한 덩이가 되어 그림이 뭉개진다.
+   filter 는 여기서 한 번만 칠하고 끝난다(값이 바뀌지 않으니 프레임마다 다시 칠할 일이 없다).
    글자보다 크게 잡아 날개와 꼬리가 문장 위아래로 삐져나오게 두면 「배경」으로 읽힌다.
-   .07 — 꺼진 낱말(rgba(26,61,117,.16))보다 옅어야 글자가 먼저 읽힌다. */
+   .085 — 꺼진 낱말(rgba(26,61,117,.16))보다 옅어야 글자가 먼저 읽힌다.
+   네이비일 때(.07)보다 조금 올렸다. 회색은 같은 투명도에서 더 옅어 보인다. */
 .is-say .tw-pin::before{content:"";position:absolute;z-index:0;pointer-events:none;
   left:50%;top:50%;transform:translate(-50%,-50%);
   width:min(64vw,760px);aspect-ratio:1/1;
   background:url("assets/me-eagle.png") center/contain no-repeat;
-  opacity:.07}
+  filter:grayscale(1);opacity:.085}
 /* 글은 반드시 그림 위에 — 층을 잡지 않으면 배경이 글자를 덮는 자리가 생긴다 */
 .tw-say{position:relative;z-index:1;width:100%;max-width:1180px;margin:0 auto;padding:0 clamp(1.2rem,.6rem + 2vw,2.6rem);
   font-family:var(--kr);font-weight:800;letter-spacing:-.03em;line-height:1.32;

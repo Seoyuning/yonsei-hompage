@@ -23,16 +23,19 @@
     /* 한/영 — 예전엔 위쪽 검은 유틸 바에 있었다. 그 바(연세대·공과대학·현행 홈)를
        통째로 걷고, 메뉴를 가운데로 보낸 뒤 남는 오른쪽 자리를 이것이 받는다.
        각진 모서리·헤어라인 — 알약 배지는 이 지면의 어법이 아니다. */
-    '.ynv-lang{flex:0 0 auto;display:flex;border:1px solid ' + LINE + ';border-radius:0}',
+    '.ynv-lang{flex:1 1 0;display:flex;justify-content:flex-end}',
+    '.ynv-lang > button:first-child{border-left:1px solid ' + LINE + '}',
+    '.ynv-lang > button{border-top:1px solid ' + LINE + ';border-bottom:1px solid ' + LINE + ';' +
+      'border-right:1px solid ' + LINE + '}',
     '.ynv-lang button{font-family:' + MONO + ';font-size:.72rem;font-weight:600;letter-spacing:.08em;' +
       'color:' + MUTED + ';background:none;border:0;border-radius:0;padding:.34rem .66rem;cursor:pointer;' +
       'transition:background .16s,color .16s}',
     '.ynv-lang button + button{border-left:1px solid ' + LINE + '}',
     '.ynv-lang button:hover{color:' + NAVY + '}',
     '.ynv-lang button.on{background:' + NAVY + ';color:#fff}',
-    '.ynv.over .ynv-lang{border-color:rgba(255,255,255,.4)}',
+    '.ynv.over .ynv-lang > button{border-color:rgba(255,255,255,.42)}',
     '.ynv.over .ynv-lang button{color:rgba(255,255,255,.8)}',
-    '.ynv.over .ynv-lang button + button{border-left-color:rgba(255,255,255,.4)}',
+    '.ynv.over .ynv-lang button + button{border-left-color:rgba(255,255,255,.42)}',
     '.ynv.over .ynv-lang button:hover{color:#fff}',
     '.ynv.over .ynv-lang button.on{background:#fff;color:' + NAVYD + '}',
     /* 흰 헤더 */
@@ -54,12 +57,14 @@
        메뉴는 오른쪽 끝에 붙는다. 가운데로 모여 있으면 바가 떠 보인다. */
     '.ynv-hdr .ynv-w{max-width:none;display:flex;align-items:center;' +
       'gap:clamp(1rem,2vw,2rem);padding:.85rem clamp(1.2rem,2.6vw,3rem)}',
-    '.ynv-brand{display:flex;align-items:center;gap:.7rem;min-width:0;text-decoration:none}',
+    /* 로고와 한/영 칸을 같은 폭(flex:1)으로 둔다 — 그래야 가운데 메뉴가
+       남은 자리의 가운데가 아니라 화면의 정중앙에 선다. */
+    '.ynv-brand{flex:1 1 0;display:flex;align-items:center;gap:.7rem;min-width:0;text-decoration:none}',
     '.ynv-brand img{height:2.75rem;width:auto;display:block}',
     '.ynv-brand .bko{font-weight:800;font-size:1.24rem;letter-spacing:-.01em;color:' + NAVY + ';line-height:1.25}',
     '.ynv-brand .ben{display:block;font-size:.72rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:' + DIM + '}',
     /* 메뉴를 가운데로 — 그래야 아래 메가 칸을 항목 바로 밑에 세울 자리가 나온다 */
-    '.ynv-menu{flex:1 1 auto;display:flex;justify-content:center;gap:clamp(1.6rem,4.4vw,4.4rem);' +
+    '.ynv-menu{flex:0 0 auto;display:flex;justify-content:center;gap:clamp(1.6rem,4.4vw,4.4rem);' +
       'font-weight:600;font-size:.98rem;white-space:nowrap}',
     '.ynv-i{position:relative}',
     '.ynv-i>a{position:relative;display:inline-block;padding:.55rem 0;color:' + INK + ';text-decoration:none;transition:color .2s}',
@@ -72,7 +77,9 @@
        다만 그쪽은 칸이 위 항목과 어긋나 있어, 우리는 본문과 같은 1232px 격자에
        일곱 칸을 고르게 세운다 — 페이지의 모든 줄과 같은 축이다.
        칸 사이는 헤어라인, 칸 머리 아래 먹줄, 올려 둔 칸만 진해진다. */
-    '.ynv-mega{position:absolute;left:0;right:0;top:100%;background:#fff;' +
+    '.ynv-mega{position:absolute;left:0;right:0;top:100%;' +
+      'background:rgba(255,255,255,.88);-webkit-backdrop-filter:blur(16px) saturate(1.4);' +
+      'backdrop-filter:blur(16px) saturate(1.4);' +
       'border-top:2px solid ' + NAVY + ';border-bottom:1px solid ' + LINE + ';' +
       'box-shadow:0 18px 34px rgba(15,27,48,.10);z-index:59;' +
       'opacity:0;visibility:hidden;transform:translateY(-6px);' +
@@ -84,7 +91,8 @@
        대신 칸 머리의 밑줄이 하나씩 그어져 구분을 만든다. */
     '.ynv-mega-in{max-width:none;padding:clamp(1.6rem,3vh,2.4rem) clamp(1.2rem,2.6vw,3rem) clamp(1.8rem,3.4vh,2.6rem) 0;' +
       'display:grid;gap:0}',
-    '.ynv-mc{padding-right:clamp(.55rem,1.1vw,1rem);min-width:0}',
+    '.ynv-mc{padding:0 clamp(.55rem,1.1vw,1rem) 0 .7rem;min-width:0}',
+    '.ynv-mc + .ynv-mc{border-left:1px solid ' + LINE + '}',
     '.ynv-mc > b{display:block;font-family:' + KR + ';font-size:.92rem;font-weight:800;' +
       'letter-spacing:-.02em;color:' + INK + ';padding-bottom:.7rem;' +
       'border-bottom:1px solid #111318;margin-bottom:.75rem;' +
@@ -880,7 +888,10 @@
           var prev = xs.length > 1 ? xs[xs.length - 1] - xs[xs.length - 2] : 160;
           return Math.max(140, Math.min(m.width - pad - x, prev * 1.15));
         });
-        inn.style.paddingLeft = Math.max(0, xs[0]) + 'px';
+        /* 칸마다 왼쪽 여백 .7rem 이 있으니 격자를 그만큼 앞당긴다 —
+           그래야 실선은 항목보다 조금 앞에 서고 글자는 항목에 정확히 맞는다. */
+        var GUT = 11;
+        inn.style.paddingLeft = Math.max(0, xs[0] - GUT) + 'px';
         inn.style.gridTemplateColumns = ws.map(function (w) { return w + 'px'; }).join(' ');
       }
       fitMega();

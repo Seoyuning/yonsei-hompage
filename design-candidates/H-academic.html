@@ -262,8 +262,10 @@ main{position:relative;z-index:2;background:var(--paper)}
 .brow:hover .bt{color:var(--accent-d)}
 /* 아랫줄 — 딱지와 날짜를 한 묶음으로. 제목이 길어도 이 줄은 흔들리지 않는다 */
 .brow .bmeta{display:flex;align-items:center;gap:.55rem;min-width:0}
-.bcat{flex:none;font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;
+.bcat{display:inline-block;flex:none;font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;
   color:var(--accent-d);border:1px solid rgba(138,166,212,.5);padding:.14rem .45rem;border-radius:.2rem}
+/* 제목 앞에 붙을 때 — 글줄 높이에 맞춰 살짝 띄운다 */
+.bt .bcat{margin-right:.55rem;padding:.08rem .4rem;transform:translateY(-.09em)}
 /* 제목은 두 줄까지 보여 준다 — 한 줄로 자르면 어느 공지인지 알 수 없는 제목이 많다 */
 .bt{min-width:0;font-size:.98rem;font-weight:600;color:#e2e6ec;line-height:1.5;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
@@ -672,7 +674,8 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
   .bmain{display:contents}
   .brow.has-day .bd{display:inline}
   .brow .bmeta{display:contents}
-  .bcat{display:none}
+  /* 딱지는 제목 앞에 작게 붙인다(사용자) — 한 줄 안에서 자리만 차지하지 않게 줄인다 */
+  .bt .bcat{display:inline-block;font-size:.58rem;letter-spacing:.1em;padding:.06rem .3rem;margin-right:.4rem}
   .sm-feat{padding:.85rem .9rem;gap:.45rem}
   .sf-t{font-size:.95rem}
   .bt{white-space:nowrap;display:block;-webkit-line-clamp:unset;overflow:hidden;text-overflow:ellipsis;
@@ -1075,11 +1078,12 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
       var href = an ? 'G-news.html?post=' + an : 'G-news.html';
       var d = String(n.d);
       /* 줄마다 날짜가 주인공 — 일(日)을 크게, 연·월은 그 아래 작게(도면 치수처럼) */
+      /* 학부/대학원 딱지는 제목 앞에 붙인다 — 딱지만 아랫줄에 남는 게 어색했다(사용자) */
       return '<a class="brow has-day" href="' + esc(href) + '">' +
         '<span class="bday" aria-hidden="true"><b>' + esc(d.slice(8, 10)) + '</b><i>' + esc(d.slice(0, 7)) + '</i></span>' +
-        '<span class="bmain"><span class="bt">' + esc(n.t) + '</span>' +
-        '<span class="bmeta"><span class="bcat">' + T(n.k === 'ug' ? 'catUG' : 'catGrad') + '</span>' +
-        '<span class="bd">' + esc(d.slice(2)) + '</span></span></span>' +
+        '<span class="bmain"><span class="bt"><span class="bcat">' + T(n.k === 'ug' ? 'catUG' : 'catGrad') + '</span>' +
+        esc(n.t) + '</span>' +
+        '<span class="bd">' + esc(d.slice(2)) + '</span></span>' +
         '<span class="bgo" aria-hidden="true">→</span></a>';
     }).join('');
   }

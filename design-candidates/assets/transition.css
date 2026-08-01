@@ -78,6 +78,10 @@
     -webkit-backdrop-filter: none !important;
             backdrop-filter: none !important;
   }
+  /* 좁은 폭에서 한국어 단어가 중간에서 꺾이지 않게 한다.
+     keep-all 은 낱말 사이에서만 줄을 바꾼다. 대신 URL·메일처럼 띄어쓰기 없는
+     긴 영문 토막이 칸을 뚫고 나갈 수 있어 break-word 를 안전판으로 같이 둔다. */
+  body { word-break: keep-all; overflow-wrap: break-word; }
 }
 
 /* 움직임 최소화 선호 시 — 무한 반복 장식은 아예 세운다.

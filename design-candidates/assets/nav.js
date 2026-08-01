@@ -784,17 +784,35 @@
            transform 을 이겨 버린다 — 독수리가 옆으로 미끄러지지 못한 이유가 이것이었다.
            그런 자리에는 마크업에 data-no-rv 를 달아 두면 여기서 통째로 비켜 간다. */
         if (block.closest && block.closest('[data-no-rv]')) return;
-        var kids = block.children ? [].filter.call(block.children, function (k) { return k.nodeType === 1; }) : [];
-        var disp = '';
-        try { disp = getComputedStyle(block).display; } catch (e) {}
-        var isGrid = disp.indexOf('grid') >= 0 || disp.indexOf('flex') >= 0;
-        if (isGrid && kids.length >= 2 && kids.length <= 12) {
-          kids.forEach(function (k, i) { if (!k.querySelector || !k.querySelector(STICKY)) picks.push([k, i]); });
-        } else {
-          picks.push([block, bi]);
-        }
+        pickBlock(block, bi, 0);
       });
     });
+    /* 블록 하나가 몇 화면 높이면 「꼭대기가 보이는 순간」 안의 내용 전부가 켜져 버려,
+       내려가며 만나는 아랫부분(연구 비전의 공대 비전·교육목표 등)은 움직임 없이 서 있었다
+       (사용자 지적). 글이 많은 통짜 블록은 한 단계 더 들어가 자식을 제 단위로 삼는다.
+       대제목을 품은 블록(sec-head·인용구)은 낱말 가림막과 한 몸이라 쪼개지 않는다. */
+    function pickBlock(block, bi, depth) {
+      var kids = block.children ? [].filter.call(block.children, function (k) { return k.nodeType === 1; }) : [];
+      var disp = '';
+      try { disp = getComputedStyle(block).display; } catch (e) {}
+      var isGrid = disp.indexOf('grid') >= 0 || disp.indexOf('flex') >= 0;
+      if (isGrid && kids.length >= 2 && kids.length <= 12) {
+        kids.forEach(function (k, i) { if (!k.querySelector || !k.querySelector(STICKY)) picks.push([k, i]); });
+        return;
+      }
+      var hasTitle = false;
+      try { hasTitle = !!(block.querySelector && block.querySelector('.sec-title, .staff-head > h2, .al-head > h2, .vision-tag')); } catch (e) {}
+      if (depth < 2 && !hasTitle && kids.length >= 2 && kids.length <= 12 &&
+          String(block.textContent || '').trim().length > 350) {
+        kids.forEach(function (k, i) {
+          if (k.querySelector && k.querySelector(STICKY)) return;
+          if (k.matches && k.matches(STICKY)) return;
+          pickBlock(k, i, depth + 1);
+        });
+        return;
+      }
+      picks.push([block, bi]);
+    }
     if (!picks.length) return;
 
     /* 대제목 — 블록에 실려 같이 뜨기만 하던 것을, 제 몫의 움직임을 갖게 한다.
@@ -880,13 +898,34 @@
     var ioWorks = false;
     var io = new IntersectionObserver(function (entries) {
       ioWorks = true;
+      var vh = window.innerHeight || document.documentElement.clientHeight;
       entries.forEach(function (e) {
         if (!e.isIntersecting) return;
+        /* 사진이 오기 전의 임시 배치에서 「화면 안」으로 잘못 잡히는 수가 있다 —
+           그 뒤 배치가 늘어나 실제로는 화면 아래인데 이미 켜져 있어,
+           내려가서 만날 때 움직임이 없었다(입학 카드). 켜기 직전에 지금 위치를
+           다시 재고, 아직 아래면 켜지 않은 채 계속 기다린다. */
+        if (e.target.getBoundingClientRect().top > vh * 1.02) return;
         e.target.classList.add('rv-in');
         io.unobserve(e.target);
       });
     }, { rootMargin: '0px 0px -12% 0px', threshold: 0.01 });
     picks.forEach(function (pair) { io.observe(pair[0]); });
+
+    /* 사진이 다 오면 배치가 늘어난다 — 이른 배치에서 「화면 안」으로 잘못 켜진 것 중
+       지금 화면 아래에 있는 것은 도로 꺼서 다시 기다리게 한다. 화면 밖이라 깜빡임이 없다. */
+    addEventListener('load', function () {
+      var vh = window.innerHeight || document.documentElement.clientHeight;
+      picks.forEach(function (pair) {
+        var el = pair[0];
+        if (!el.classList.contains('rv-in')) return;
+        if (!el.offsetParent) return;                       /* 숨은 탭은 건드리지 않는다 */
+        if (el.getBoundingClientRect().top > vh) {
+          el.classList.remove('rv-in');
+          io.observe(el);
+        }
+      });
+    });
 
     /* 안전망 1 — IO 가 안 오면 스크롤·리사이즈 때 직접 위치를 재서 띄운다(rAF 안 씀) */
     function sweep() {

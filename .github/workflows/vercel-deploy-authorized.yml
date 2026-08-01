@@ -40,6 +40,13 @@ jobs:
           # 트리거 커밋에 사용할 인가 이메일(작성자/커미터)
           TRIGGER_NAME: "권창한"
           TRIGGER_EMAIL: "thf5662@gmail.com"
+          # ── 빈 커밋 없이 배포를 깨우는 길 ──
+          # Vercel 대시보드 → Project Settings → Git → Deploy Hooks 에서
+          # main 브랜치 훅을 만들고, 그 URL 을 저장소 Secret `VERCEL_DEPLOY_HOOK`
+          # 으로 등록하면 아래 트리거 커밋 대신 이 훅만 부른다.
+          # → 「chore(auto): Vercel 배포 트리거」 커밋이 더는 이력에 쌓이지 않는다.
+          #   (Secret 등록은 admin 권한 필요 — todo0157)
+          DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
         run: |
           set -euo pipefail
 
@@ -48,6 +55,16 @@ jobs:
           tip_author="$(git log -1 --format='%an')"
           tip_subject="$(git log -1 --format='%s')"
           echo "tip: ${tip_sha} by ${tip_author} <${tip_email}> — ${tip_subject}"
+
+          # 0) Deploy Hook 이 있으면 커밋을 만들지 않고 훅으로만 배포를 깨운다
+          if [ -n "${DEPLOY_HOOK:-}" ]; then
+            code="$(curl -s -o /dev/null -w '%{http_code}' -X POST "${DEPLOY_HOOK}")"
+            if [ "${code}" = "200" ] || [ "${code}" = "201" ]; then
+              echo "🚀 Deploy Hook 호출 완료(HTTP ${code}) — 빈 커밋 없이 배포 시작."
+              exit 0
+            fi
+            echo "⚠️ Deploy Hook 실패(HTTP ${code}) — 예전 방식(트리거 커밋)으로 넘어간다."
+          fi
 
           # 1) 이미 인가 이메일이면 그대로 Vercel 이 자동배포함 → 아무 작업 안 함
           IFS=',' read -ra allow <<< "${AUTHORIZED_EMAILS}"

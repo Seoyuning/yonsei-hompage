@@ -1,6 +1,6 @@
 # 연세대학교 기계공학부 홈페이지 — 우리만의 특징 정리
 
-> 팀 DATUM · 관제(콘솔) 디자인 사이트(design-candidates/)의 차별화 포인트 모음.
+> 팀 Gear-Up · 관제(콘솔) 디자인 사이트(design-candidates/)의 차별화 포인트 모음.
 > 공모전 발표·설명 자료로 활용. (라이브: https://yonsei-me-homepage.vercel.app/H-academic.html)
 
 ## 1. 첫인상 — 실제로 돌아가는 3D 기계

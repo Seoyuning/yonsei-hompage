@@ -6499,7 +6499,7 @@ window.YSME = {
    "thumb": "https://me.yonsei.ac.kr/_attach/image/2026/07/thumb_enXYiiGZOzifGPHUwqYn0.JPG"
   },
   {
-   "title": "Lattice Boltzmann Methodology for Single-Phase and Multiphase Nanoparticle Modeling, Springer, 도서 출간",
+   "title": "도서 출간 — Lattice Boltzmann Methodology for Single-Phase and Multiphase Nanoparticle Modeling (Springer)",
    "date": "2026.06.01",
    "url": "https://me.yonsei.ac.kr/me/community/news.do?mode=view&articleNo=475403&article.offset=0&articleLimit=10",
    "thumb": "https://me.yonsei.ac.kr/_attach/image/2026/07/thumb_eRdjpjFFqzOyQJWAaiaZ0.png"

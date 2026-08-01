@@ -341,10 +341,16 @@
     '.yld-bird img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;' +
       'transform-origin:50% 50%;filter:brightness(.34) saturate(1.35)}',
     /* 어깨를 축으로 — 가운데를 축으로 돌리면 날개가 통째로 도는 바람개비가 된다 */
-    '.yld-bird .w-l{transform-origin:46% 46%;animation:yldFlapL .62s ease-in-out infinite alternate}',
-    '.yld-bird .w-r{transform-origin:68% 47%;animation:yldFlapR .62s ease-in-out infinite alternate}',
-    '@keyframes yldFlapL{from{transform:rotate(-9deg)}to{transform:rotate(16deg)}}',
-    '@keyframes yldFlapR{from{transform:rotate(9deg)}to{transform:rotate(-16deg)}}',
+    /* 휴대폰에서 날갯짓이 안 보였다 — 판이 뜨는 짧은 순간에 본체(bob)와 날개(flap)가
+       한 요소 트리에서 함께 돌면 합성기가 본체만 먼저 태우고 날개는 본렌더 대기열에 남는다.
+       날개를 각자 합성층으로 승격(will-change)하고, 흔들림을 키우고 빠르게 해
+       0.5초만 보여도 「펄럭인다」로 읽히게 한다. */
+    '.yld-bird .w-l{transform-origin:46% 46%;will-change:transform;' +
+      'animation:yldFlapL .46s ease-in-out infinite alternate}',
+    '.yld-bird .w-r{transform-origin:68% 47%;will-change:transform;' +
+      'animation:yldFlapR .46s ease-in-out infinite alternate}',
+    '@keyframes yldFlapL{from{transform:rotate(-13deg)}to{transform:rotate(22deg)}}',
+    '@keyframes yldFlapR{from{transform:rotate(13deg)}to{transform:rotate(-22deg)}}',
     '@keyframes yldBob{from{transform:translateY(-3px)}to{transform:translateY(3px)}}',
     '.yld-t{font-family:' + MONO + ';font-size:.72rem;font-weight:600;letter-spacing:.28em;' +
       'text-transform:uppercase;color:' + DIM + ';margin:0;animation:yldPulse 1.4s ease-in-out infinite}',

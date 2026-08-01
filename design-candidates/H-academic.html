@@ -583,7 +583,11 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
   transform:scaleX(0);transform-origin:left;pointer-events:none}
 /* 인스타그램 릴스 — 자동 흐름 트랙(호버 시 정지) */
 .ig-wrap{overflow:hidden}
-.ig-track{display:flex;width:max-content;animation:igm 55s linear infinite}
+/* 임베드 10개가 자리를 잡는 동안(각자 몇 번씩 높이를 다시 잼) 트랙까지 움직이면
+   그 재계산이 겹쳐 뚝뚝 끊겼다 — 다 실릴 때까지 세워 두었다가 그때 흐르기 시작한다 */
+.ig-track{display:flex;width:max-content;animation:igm 55s linear infinite;
+  animation-play-state:paused}
+.ig-track.is-live{animation-play-state:running}
 .ig-set{display:flex;gap:1.2rem;padding-right:1.2rem}
 .ig-set blockquote{border-radius:.4rem;overflow:hidden;box-shadow:0 10px 28px rgba(15,27,48,.08)}
 @keyframes igm{to{transform:translateX(-50%)}}
@@ -895,6 +899,20 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
     sc.async = true; sc.src = 'https://www.instagram.com/embed.js';
     sc.onload = function(){ if(window.instgrm) window.instgrm.Embeds.process(); };
     document.body.appendChild(sc);
+    /* 임베드가 전부 iframe 으로 바뀐 뒤에야 흐름을 켠다(로드 중 렉 방지).
+       바깥 연결이 막힌 자리(심사장 등)를 위해 8초 뒤에는 그냥 켠다. */
+    var track = document.querySelector('.ig-track');
+    if(!track) return;
+    var need = document.querySelectorAll('.ig-strip blockquote.instagram-media').length || 1;
+    var t0 = Date.now();
+    (function watch(){
+      var got = document.querySelectorAll('.ig-strip iframe').length;
+      if(got >= need || Date.now() - t0 > 8000){
+        setTimeout(function(){ track.classList.add('is-live'); }, 600);
+        return;
+      }
+      setTimeout(watch, 350);
+    })();
   }
   if(!('IntersectionObserver' in window)){ addEventListener('load', load); return; }
   var io = new IntersectionObserver(function(es){

@@ -110,7 +110,7 @@ a{color:inherit;text-decoration:none}
     붙는 줄 자체가 없어졌으므로 그 되돌림 규칙도 함께 지운다.)
    아래 테두리는 두지 않는다 — 신분 버튼이 제 헤어라인 테두리를 가지고 있어 겹쳐 보인다. */
 .filterbar{position:relative;background:#ffffff;
-  padding:.9rem 0 clamp(.8rem,1.6vh,1.4rem);
+  padding:.9rem 0 .55rem;
   scroll-margin-top:var(--ys-stick,7.6rem)}
 .filterbar .kseg{margin-bottom:0}
 /* 위 형제바(.ysub-w, nav.js)와 같은 상자를 써야 「전임교수」가 「교수진」과 같은 지점에서 시작한다.
@@ -224,15 +224,19 @@ a{color:inherit;text-decoration:none}
    격자로 칸을 떼어 주는 것이 핵심이다 — 자리가 처음부터 따로라 카드를 덮을 수 없다.
    align-items:start — 선택 바가 제 높이만 차지하고 격자 칸(=행 전체 높이) 안에서
    sticky 로 내려온다. stretch 로 두면 칸을 꽉 채워 버려 붙을 여지가 없어진다. */
-.dir{max-width:1232px;margin:0 auto;padding:1.4rem clamp(1.2rem,.6rem + 2vw,2.6rem) 3rem;
+.dir{max-width:1232px;margin:0 auto;padding:.4rem clamp(1.2rem,.6rem + 2vw,2.6rem) 3rem;
   display:grid;grid-template-columns:minmax(0,1fr) clamp(9rem,13vw,12rem);
   column-gap:clamp(1.6rem,3vw,3rem);align-items:start}
 /* 넓은 화면에서는 이 구간만 오른쪽으로 통을 넓힌다 — 선택 바가 본문 격자(1232px) 끝에
    서면 그 오른쪽으로 페이지 여백이 한 뼘 더 남아, 화면 끝과 바 사이가 비어 보였다.
    왼쪽 선은 그대로 1232px 격자에 맞춘다(카드가 위 제목·버튼과 같은 지점에서 시작해야 한다). */
 @media (min-width:1081px){
+  /* calc(50vw - 616px) 는 1232px 「상자」의 왼끝이지 그 안 글줄의 왼끝이 아니다 —
+     안쪽 여백만큼 카드가 제목보다 왼쪽으로 튀어나와 축이 어긋나 보였다(사용자).
+     상자 왼끝 + 안쪽 여백 = 제목 글줄과 같은 자리. */
   .dir{max-width:none;margin:0;
-    padding-left:max(clamp(1.2rem,.6rem + 2vw,2.6rem), calc(50vw - 616px));
+    padding-left:max(clamp(1.2rem,.6rem + 2vw,2.6rem),
+      calc(50vw - 616px + clamp(1.2rem,.6rem + 2vw,2.6rem)));
     padding-right:clamp(1.2rem,.6rem + 2vw,2.6rem)}
 }
 /* 카드 쪽. min-width:0 이 없으면 긴 이름 하나가 칸을 밀어 선택 바를 화면 밖으로 낸다 */
@@ -241,7 +245,8 @@ a{color:inherit;text-decoration:none}
 .dir.is-solo{grid-template-columns:minmax(0,1fr)}
 /* 분야 사이를 넉넉히 — 여섯 덩이가 붙어 있으면 어디서 분야가 바뀌는지 안 보인다 */
 .fgroup{padding:clamp(2.6rem,1.8rem + 3vw,4.4rem) 0 clamp(3.2rem,2rem + 4vw,5.2rem)}
-.fgroup:first-child{padding-top:clamp(1.2rem,.9rem + 1.4vw,2rem)}
+/* 첫 분야는 버튼 바로 아래에서 시작한다 — 버튼과 첫 라벨 사이 빈 띠가 어색했다(사용자) */
+.fgroup:first-child{padding-top:.4rem}
 /* 그룹 사이에 따로 구분선을 긋지 않는다 — 바로 아래 분야 머리의 먹색 가로줄이 그 일을 한다.
    둘 다 두면 1rem 남짓 떨어진 가로줄 두 개 사이에 빈 띠가 생긴다(.filterbar 와 같은 판단). */
 
@@ -486,8 +491,8 @@ html[lang="en"] .ppos{display:none}
 .staff{max-width:1232px;margin:0 auto;
   padding:1rem clamp(1.2rem,.6rem + 2vw,2.6rem) 3.6rem;
   scroll-margin-top:var(--ys-stick,7.6rem);border-top:1px solid var(--line-soft)}
-.fac-head{max-width:1232px;margin:0 auto clamp(1.4rem,2.6vh,2.2rem);
-  padding:clamp(2.2rem,4vh,3.4rem) clamp(1.2rem,.6rem + 2vw,2.6rem) 0}
+.fac-head{max-width:1232px;margin:0 auto 1rem;
+  padding:clamp(1.5rem,2.6vh,2.2rem) clamp(1.2rem,.6rem + 2vw,2.6rem) 0}
 .fac-head h2{font-size:clamp(1.6rem,1.15rem + 2vw,2.4rem);font-weight:800;color:#111318;letter-spacing:-.01em}
 .staff-head{padding-top:2rem;margin-bottom:1.6rem}
 /* ── 섹션 머리 (대학원 페이지에서 시작해 전 페이지 공통) ──

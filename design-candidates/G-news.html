@@ -263,11 +263,26 @@ a{color:inherit;text-decoration:none}
 /* 본문을 읽는 동안엔 학부/대학원 갈림 버튼도 치운다 — 그 버튼은 게시판 상자 밖
    형제라 위 규칙에 안 걸렸다. 본문 화면의 주인공은 본문이다(사용자). */
 #notice:has(.board.is-post) .nseg{display:none}
-.post-back{display:inline-flex;align-items:center;gap:.45rem;margin-bottom:clamp(1.4rem,3vw,2.2rem);
-  font-family:var(--kr);font-size:.82rem;font-weight:600;color:var(--sub);
-  background:none;border:0;padding:.4rem 0;cursor:pointer;transition:color .16s,gap .16s}
-.post-back:hover{color:var(--navy);gap:.7rem}
+/* 본문에서는 구간 대제목(NOTICES/공지사항)도 걷는다 — 본문이 주인공(사용자) */
+#notice:has(.board.is-post) .sec-head{display:none}
+#sched.is-post .sec-head{display:none}
+/* 세미나·행사 본문 — 두 목록(duo)을 치우고 본문만 남긴다(공지와 같은 방식) */
+#sched.is-post .duo{display:none}
+#sched.is-post .post{display:block}
+/* 세미나 개요(▣ 주제·연사·일시…)는 본문과 결이 달라 옅은 판으로 가른다.
+   굵은 색줄 대신 이 사이트의 상자 문법(1px 헤어라인)을 그대로 쓴다. */
+.post-brief{background:var(--row,#f6f8fb);border:1px solid var(--line,#e3e7ee);
+  padding:1rem 1.2rem;margin:0 0 1.4rem}
+.post-brief p{margin:0}
+/* 제목 줄 — 제목은 왼쪽, 「목록으로」는 오른쪽 끝의 네모 단추(사용자) */
+.post-head{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;
+  margin-bottom:.4rem}
+.post-back{flex:none;font-family:var(--kr);font-size:.84rem;font-weight:700;color:var(--navy);
+  background:#fff;border:1px solid var(--line);padding:.5rem .95rem;cursor:pointer;
+  transition:background .15s,color .15s,border-color .15s}
+.post-back:hover{background:var(--navy);border-color:var(--navy);color:#fff}
 .post-back:focus-visible{outline:2px solid var(--navy);outline-offset:3px}
+@media(max-width:560px){.post-back{padding:.42rem .7rem;font-size:.8rem}}
 .post-h{font-family:var(--kr);font-weight:800;letter-spacing:-.02em;color:var(--ink);
   font-size:clamp(1.3rem,1.05rem + 1.3vw,2rem);line-height:1.35;margin:0}
 .post-meta{display:flex;flex-wrap:wrap;gap:.3rem 1.6rem;margin:clamp(.9rem,2vw,1.3rem) 0 0;
@@ -522,6 +537,8 @@ a{color:inherit;text-decoration:none}
         <nav class="pager" aria-label="행사 목록 페이지"></nav>
       </div>
     </div>
+    <!-- 세미나·행사 본문 — 공지처럼 사이트 안에서 편다 -->
+    <div class="post" id="schedPost"></div>
   </section>
 
   <!-- 학사 일정 — 세미나 · 행사 · 학위논문심사를 한 달력에 모아 본다 -->
@@ -683,8 +700,8 @@ a{color:inherit;text-decoration:none}
     var att = x.attName
       ? '<p class="post-att"><b>첨부</b>' + esc(x.attName) + '</p>'
       : (x.att ? '<p class="post-att"><b>첨부</b>첨부 파일이 있습니다 (원문에서 내려받을 수 있습니다)</p>' : '');
-    return '<button type="button" class="post-back">← 목록으로</button>'
-      + '<h3 class="post-h">' + esc(x.title) + '</h3>'
+    return '<div class="post-head"><h3 class="post-h">' + esc(x.title) + '</h3>'
+      + '<button type="button" class="post-back">목록으로</button></div>'
       + '<p class="post-meta">'
         + '<span><b>작성일</b><span class="v">' + esc(x.date) + '</span></span>'
         + '<span><b>작성자</b>기계공학부</span>'
@@ -914,8 +931,10 @@ a{color:inherit;text-decoration:none}
   })();
 
   /* ── 세미나 · 행사 ── */
-  function linkRow(x){
-    return '<a class="nlink" href="'+esc(x.url)+'" target="_blank" rel="noopener">'
+  /* 공지처럼 사이트 안에서 본문을 편다 — 바깥 새 창이 아니라 ?sem=/?evt= 로 */
+  function linkRow(x, kind){
+    return '<a class="nlink" href="G-news.html?'+kind+'='+encodeURIComponent(x.no)+'#sched"'
+      + ' data-sched="'+kind+':'+esc(String(x.no))+'">'
       + '<span class="t">'+esc(x.title)+'</span><span class="d">'+esc(x.date)+'</span></a>';
   }
   /* 쪽 넘김 그리기 — 위 공지 게시판의 것과 같은 모양.
@@ -952,9 +971,9 @@ a{color:inherit;text-decoration:none}
   }
   /* 세미나 20건 · 행사 10건 — 한 번에 다 늘어놓으면 두 칸의 키가 크게 어긋난다.
      아래 표 목록들과 같은 분량(10건)으로 끊고 같은 모양의 쪽 넘김을 붙인다. */
-  function pagedList(id, list){
+  function pagedList(id, list, kind){
     var el = document.getElementById(id); if(!el || !list.length) return;
-    var rows = list.map(linkRow);
+    var rows = list.map(function(x){ return linkRow(x, kind); });
     var PER = 10, page = 1, pages = Math.max(1, Math.ceil(rows.length / PER));
     var pagerEl = el.parentNode.querySelector('.pager');
     function draw(){
@@ -969,8 +988,74 @@ a{color:inherit;text-decoration:none}
     });
     draw();
   }
-  pagedList('semRows', D.seminars);
-  pagedList('evtRows', D.events);
+  pagedList('semRows', D.seminars, 'sem');
+  pagedList('evtRows', D.events, 'evt');
+
+  /* ── 세미나·행사 본문 — 공지의 본문 보기와 같은 문법 ── */
+  (function(){
+    var sec = document.getElementById('sched');
+    var box = document.getElementById('schedPost');
+    if(!sec || !box) return;
+    function findItem(kind, no){
+      var list = kind === 'sem' ? D.seminars : D.events;
+      for(var i = 0; i < list.length; i++) if(String(list[i].no) === String(no)) return list[i];
+      return null;
+    }
+    function schedHtml(x, kind){
+      var brief = x.meta ? '<div class="post-body post-brief">' + paraHtml(x.meta) + '</div>' : '';
+      var body = x.body
+        ? '<div class="post-body">' + paraHtml(x.body) + '</div>'
+        : '<p class="post-note">이 글의 안내문은 <b>첨부 파일과 이미지</b>로 되어 있어 '
+          + '이 화면에 옮겨 싣지 않았습니다. 아래 원문에서 확인해 주세요.</p>';
+      var att = x.attName
+        ? '<p class="post-att"><b>첨부</b>' + esc(x.attName) + '</p>'
+        : (x.att ? '<p class="post-att"><b>첨부</b>첨부 파일이 있습니다 (원문에서 내려받을 수 있습니다)</p>' : '');
+      return '<div class="post-head"><h3 class="post-h">' + esc(x.title) + '</h3>'
+        + '<button type="button" class="post-back">목록으로</button></div>'
+        + '<p class="post-meta">'
+          + '<span><b>작성일</b><span class="v">' + esc(x.date) + '</span></span>'
+          + '<span><b>작성자</b>기계공학부</span>'
+          + '<span><b>분류</b>' + (kind === 'sem' ? '세미나' : '행사') + '</span>'
+        + '</p>'
+        + brief + body + att
+        + (x.url ? '<p class="post-src">원문 — <a href="' + esc(x.url) + '" target="_blank" rel="noopener">'
+            + '학부 공식 게시판에서 보기 <span aria-hidden="true">↗</span></a></p>' : '');
+    }
+    function open(x, kind, push){
+      box.innerHTML = schedHtml(x, kind);
+      sec.classList.add('is-post');
+      if(push){ try{ history.pushState({ sched: kind + ':' + x.no }, '',
+        'G-news.html?' + kind + '=' + encodeURIComponent(x.no) + '#sched'); }catch(e){} }
+      scrollToTopOf(sec);
+      var bk = box.querySelector('.post-back');
+      if(bk) bk.focus({ preventScroll:true });
+    }
+    function close(push){
+      sec.classList.remove('is-post');
+      box.innerHTML = '';
+      if(push){ try{ history.pushState({}, '', 'G-news.html#sched'); }catch(e){} }
+    }
+    sec.addEventListener('click', function(e){
+      var a = e.target.closest ? e.target.closest('a[data-sched]') : null;
+      if(a){
+        if(e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
+        var p = a.getAttribute('data-sched').split(':');
+        var x = findItem(p[0], p.slice(1).join(':'));
+        if(x){ e.preventDefault(); open(x, p[0], true); }
+        return;
+      }
+      if(e.target.closest && e.target.closest('.post-back')) close(true);
+    });
+    function fromUrl(push){
+      var q = new URLSearchParams(location.search);
+      var kind = q.has('sem') ? 'sem' : (q.has('evt') ? 'evt' : null);
+      if(!kind){ if(sec.classList.contains('is-post')) close(false); return; }
+      var x = findItem(kind, q.get(kind));
+      if(x) open(x, kind, !!push);
+    }
+    addEventListener('popstate', function(){ fromUrl(false); });
+    fromUrl(false);   /* ?sem=/?evt= 를 달고 들어온 경우 — 처음부터 그 글을 편다 */
+  })();
   /* 개수 배지도 숫자와 붙어 있어 사전이 못 잡는다 — 항목이 늘어도 따라오도록 여기서 만든다 */
   function paintCounts(){
     var en = isEn();

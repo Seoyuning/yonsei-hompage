@@ -269,6 +269,33 @@ main{position:relative;z-index:2;background:var(--paper)}
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
   transition:color .12s}
 .bd{flex:none;font-family:var(--num);font-size:.72rem;letter-spacing:.06em;color:#7f8fad;font-variant-numeric:tabular-nums}
+/* ── 공지 줄의 날짜 블록 — 일(日)을 크게, 연·월은 아래 작게. 도면 치수의 결 ── */
+.brow.has-day{grid-template-columns:auto minmax(0,1fr) auto;gap:1.05rem;align-items:center}
+.bday{display:grid;justify-items:center;align-content:center;min-width:3.1rem;
+  padding-right:1.05rem;border-right:1px solid rgba(255,255,255,.13)}
+.bday b{font-family:var(--num);font-size:1.72rem;font-weight:700;line-height:1;color:#fff;
+  font-variant-numeric:tabular-nums;transition:color .15s}
+.bday i{font-style:normal;font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;
+  color:#7f8fad;margin-top:.32rem}
+.brow:hover .bday b{color:var(--accent-d)}
+.bmain{min-width:0;display:grid;gap:.4rem}
+.brow.has-day .bd{display:none}   /* 날짜 블록이 이미 말한다 — 겹말 제거 */
+.bgo{color:#7f8fad;font-family:var(--num);opacity:0;transform:translateX(-6px);
+  transition:opacity .18s,transform .18s,color .18s}
+.brow:hover .bgo{opacity:1;transform:none;color:var(--accent-d)}
+/* ── 세미나 대표 카드 — 최신 한 건은 연사·일시·장소까지 ── */
+.sm-feat{display:grid;gap:.6rem;padding:1.15rem 1.2rem;margin-bottom:.3rem;
+  border:1px solid rgba(255,255,255,.2);transition:border-color .18s,background .18s}
+.sm-feat:hover{border-color:var(--accent-d);background:rgba(138,166,212,.08)}
+.sf-kick{font-family:var(--mono);font-size:.64rem;font-weight:600;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--accent-d)}
+.sf-t{font-size:clamp(1.02rem,.9rem + .6vw,1.28rem);font-weight:700;line-height:1.45;color:#fff;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sf-rows{display:grid;gap:.32rem}
+.sf-rows>span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  font-size:.82rem;color:#c7d3e8;line-height:1.5}
+.sf-rows b{font-family:var(--mono);font-size:.62rem;font-weight:600;letter-spacing:.14em;
+  color:#7f8fad;margin-right:.55rem}
 @media(max-width:840px){.board-band .wrap{grid-template-columns:1fr}}
 
 /* ── 연구 분야 — XL 행 + 네이비 와이프 ── */
@@ -640,9 +667,14 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
   .crow{padding-top:1.4rem;padding-bottom:1.4rem}
   /* 공지·세미나 — 휴대폰에선 줄 하나에 [제목 … 날짜]만(사용자).
      두 줄짜리는 화면을 너무 먹었다. 딱지는 걷고 제목은 말줄임표로 자른다 */
-  .brow{grid-template-columns:minmax(0,1fr) auto;gap:.6rem;align-items:center;padding:.55rem 0}
+  .brow,.brow.has-day{grid-template-columns:minmax(0,1fr) auto;gap:.6rem;align-items:center;padding:.55rem 0}
+  .bday,.bgo{display:none}
+  .bmain{display:contents}
+  .brow.has-day .bd{display:inline}
   .brow .bmeta{display:contents}
   .bcat{display:none}
+  .sm-feat{padding:.85rem .9rem;gap:.45rem}
+  .sf-t{font-size:.95rem}
   .bt{white-space:nowrap;display:block;-webkit-line-clamp:unset;overflow:hidden;text-overflow:ellipsis;
     font-size:.9rem;line-height:1.4}
   .bd{margin:0}
@@ -940,6 +972,7 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
       stFaculty: '전임 교수', stAreas: '연구 분야', stFounded: '설립',
       newsTitle: '연구 소식', moreAll: '전체 보기 →',
       ntTitle: '공지사항', tabAll: '전체', tabUG: '학부', tabGrad: '대학원',
+      sfWho: '연사', sfWhen: '일시', sfWhere: '장소',
       smTitle: '세미나', moreShort: '전체 →',
       areasTitle: '연구 분야', moreLabs: '연구실 목록 →',
       peopleTitle: '교수진', morePeople: '교수진 전체 →',
@@ -964,6 +997,7 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
       stFaculty: 'Faculty', stAreas: 'Research Areas', stFounded: 'Founded',
       newsTitle: 'Research News', moreAll: 'View all →',
       ntTitle: 'Notices', tabAll: 'All', tabUG: 'Undergrad', tabGrad: 'Graduate',
+      sfWho: 'Speaker', sfWhen: 'Date · Time', sfWhere: 'Venue',
       smTitle: 'Seminars', moreShort: 'All →',
       areasTitle: 'Research Areas', moreLabs: 'All laboratories →',
       peopleTitle: 'Faculty', morePeople: 'All faculty →',
@@ -1036,10 +1070,17 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
        메인은 「무엇이 있는지」만 보이면 되고, 나머지는 「전체 →」가 받는다. */
     var rows = (ntKey === 'all' ? notices : notices.filter(function (n) { return n.k === ntKey; })).slice(0, 5);
     ntList.innerHTML = rows.map(function (n) {
-      return '<a class="brow" href="' + esc(n.u || 'G-news.html') + '" target="_blank" rel="noopener">' +
-        '<span class="bt">' + esc(n.t) + '</span>' +
+      /* 소식 페이지의 본문 보기로 바로 잇는다 — 원문 새 창이 아니라 우리 화면 */
+      var an = (/articleNo=(\d+)/.exec(String(n.u || '')) || [])[1];
+      var href = an ? 'G-news.html?post=' + an : 'G-news.html';
+      var d = String(n.d);
+      /* 줄마다 날짜가 주인공 — 일(日)을 크게, 연·월은 그 아래 작게(도면 치수처럼) */
+      return '<a class="brow has-day" href="' + esc(href) + '">' +
+        '<span class="bday" aria-hidden="true"><b>' + esc(d.slice(8, 10)) + '</b><i>' + esc(d.slice(0, 7)) + '</i></span>' +
+        '<span class="bmain"><span class="bt">' + esc(n.t) + '</span>' +
         '<span class="bmeta"><span class="bcat">' + T(n.k === 'ug' ? 'catUG' : 'catGrad') + '</span>' +
-        '<span class="bd">' + esc(String(n.d).slice(2)) + '</span></span></a>';
+        '<span class="bd">' + esc(d.slice(2)) + '</span></span></span>' +
+        '<span class="bgo" aria-hidden="true">→</span></a>';
     }).join('');
   }
   var tabs = document.getElementById('ntTabs');
@@ -1052,16 +1093,36 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
     drawNt();
   });
 
-  /* ── 세미나 ── */
+  /* ── 세미나 — 최신 한 건은 연사·일시·장소까지 보이는 표 카드, 나머지는 줄 ──
+     공지와 같은 줄 반복이라 단조롭다는 지적(사용자). 두 칸의 결을 가른다. */
+  function smMeta(n) {
+    var out = {};
+    String(n.meta || '').split('\n').forEach(function (line) {
+      var m = /▣\s*([가-힣\s]+?)\s*:\s*(.+)/.exec(line);
+      if (m) out[m[1].replace(/\s+/g, '')] = m[2].trim();
+    });
+    return out;
+  }
   function renderSm() {
     var sm = document.getElementById('smList');
     if (!sm || !D.seminars || !D.seminars.length) return;
-    sm.innerHTML = D.seminars.slice().sort(byDate).slice(0, 5).map(function (n) {
+    var list = D.seminars.slice().sort(byDate).slice(0, 4);
+    var f = list[0], meta = smMeta(f), ft = String(f.title).replace(/^\[[^\]]*\]\s*/, '');
+    var who = meta['연사'] ? esc(meta['연사']) + (meta['소속'] ? ' · ' + esc(meta['소속']) : '') : '';
+    var h = '<a class="sm-feat" href="G-news.html?sem=' + encodeURIComponent(f.no) + '#sched">' +
+      '<span class="sf-kick">Latest Seminar</span>' +
+      '<span class="sf-t">' + esc(ft) + '</span><span class="sf-rows">' +
+      (who ? '<span><b data-i18n="sfWho">연사</b>' + who + '</span>' : '') +
+      (meta['일시'] ? '<span><b data-i18n="sfWhen">일시</b>' + esc(meta['일시']) + '</span>' : '') +
+      (meta['장소'] ? '<span><b data-i18n="sfWhere">장소</b>' + esc(meta['장소']) + '</span>' : '') +
+      '</span></a>';
+    h += list.slice(1).map(function (n) {
       var t = String(n.title).replace(/^\[[^\]]*\]\s*/, '');
-      return '<a class="brow" href="' + esc(n.url || 'G-news.html') + '" target="_blank" rel="noopener">' +
+      return '<a class="brow" href="G-news.html?sem=' + encodeURIComponent(n.no) + '#sched">' +
         '<span class="bt">' + esc(t) + '</span>' +
         '<span class="bmeta"><span class="bd">' + esc(String(n.date).slice(2)) + '</span></span></a>';
     }).join('');
+    sm.innerHTML = h;
   }
 
   /* ── 연구 분야 — 관제 번호 행(01~06) + 연구실 수 게이지 바 ── */

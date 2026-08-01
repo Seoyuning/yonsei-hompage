@@ -180,12 +180,14 @@ main{position:relative;z-index:2;background:var(--paper)}
   .st + .st::before{transform:scaleY(1);transition:none}
 }
 @media(max-width:640px){
-  .stats .wrap{grid-template-columns:1fr;gap:0;row-gap:0}
-  .st{padding:1.1rem 0}
-  /* 세로로 쌓이면 가름선이 「웬 실선」으로 보인다(사용자) — 세로선·가로선 다 걷는다 */
-  .st + .st{border-left:0;border-top:0}
+  /* 세로로 쌓으니 띠 하나가 화면을 통째로 먹었다(사용자) — PC 처럼 셋을 가로 한 줄에 */
+  .stats .wrap{grid-template-columns:repeat(3,1fr);gap:0}
+  .st{padding:.2rem .7rem .2rem 0;gap:.28rem}
+  .st + .st{border-left:0;border-top:0;padding-left:.7rem}
   .st + .st::before{display:none}
-  .st .sk{font-size:.72rem;letter-spacing:.16em}
+  .st .sk{font-size:.54rem;letter-spacing:.09em}
+  .st b{font-size:1.62rem}
+  .st > span:last-child{font-size:.72rem}
 }
 
 /* ── 공통 섹션 — 에디토리얼: 아웃라인 인덱스 + 거대 타이틀 ── */
@@ -620,7 +622,7 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
 }
 @media(max-width:640px){
   .sec{padding-top:3.4rem;padding-bottom:3.4rem}
-  .stats .wrap{padding-top:2.4rem;padding-bottom:2.4rem}
+  .stats .wrap{padding-top:1.5rem;padding-bottom:1.5rem}
   .board-band .wrap{padding-top:2.8rem;padding-bottom:2.8rem}
   .quick .wrap{padding-top:2.9rem;padding-bottom:2.9rem}
   .mq{padding-top:2.6rem;padding-bottom:1.2rem}
@@ -634,14 +636,14 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
   .crow{padding-top:1.4rem;padding-bottom:1.4rem}
   /* 공지·세미나 — 휴대폰에선 줄 하나에 [제목 … 날짜]만(사용자).
      두 줄짜리는 화면을 너무 먹었다. 딱지는 걷고 제목은 말줄임표로 자른다 */
-  .brow{grid-template-columns:minmax(0,1fr) auto;gap:.6rem;align-items:center;padding:.78rem 0}
+  .brow{grid-template-columns:minmax(0,1fr) auto;gap:.6rem;align-items:center;padding:.55rem 0}
   .brow .bmeta{display:contents}
   .bcat{display:none}
   .bt{white-space:nowrap;display:block;-webkit-line-clamp:unset;overflow:hidden;text-overflow:ellipsis;
     font-size:.9rem;line-height:1.4}
   .bd{margin:0}
-  /* 학부/대학원 단추 — 44px 손가락 규격이 여기선 너무 컸다(사용자) */
-  .bhead .tab{padding:.3rem .62rem;min-height:34px;font-size:.66rem}
+  /* 학부/대학원 단추 — 정사각형처럼 보일 만큼 컸다(사용자). 위아래를 누른다 */
+  .bhead .tab{padding:.18rem .55rem;min-height:26px;font-size:.64rem;line-height:1}
   .ql{padding-top:1.15rem;padding-bottom:1.15rem}
   /* 인스타 릴스 — 휴대폰에서도 왼쪽으로 흐른다(사용자 요청).
      처음엔 배터리를 아끼려 세워 뒀는데, 서 있으니 멈춘 화면처럼 읽혔다.

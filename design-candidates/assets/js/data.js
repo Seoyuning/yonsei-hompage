@@ -130,7 +130,7 @@ window.YSME = {
    "labId": "cmm",
    "initial": "강",
    "email": "kwkang75@yonsei.ac.kr",
-   "office": "Engineering Building #1, Room 589",
+   "office": "제1공학관 589호",
    "phone": "02)2123-2825",
    "titleEn": "Associate Professor",
    "detail": "https://me.yonsei.ac.kr/faculty/name_search.do?mode=view&userId=H6IAceQ75BsxdEuXLJXMoA%3D%3D&sosokcd=0000405"
@@ -145,7 +145,7 @@ window.YSME = {
    "initial": "강",
    "featured": true,
    "email": "snlkang@yonsei.ac.kr",
-   "office": "Engineering Building #3, Room C324",
+   "office": "제3공학관 C324호",
    "phone": "02)2123-2829",
    "titleEn": "Professor",
    "detail": "https://me.yonsei.ac.kr/faculty/name_search.do?mode=view&userId=b1GY5tMdKXn9pcopgnOXuA%3D%3D&sosokcd="
@@ -159,7 +159,7 @@ window.YSME = {
    "labId": "optiq",
    "initial": "김",
    "email": "kks@yonsei.ac.kr",
-   "office": "Engineering Building #3, Room C317",
+   "office": "제3공학관 C317호",
    "phone": "02)2123-5815",
    "titleEn": "Professor",
    "detail": "https://me.yonsei.ac.kr/faculty/name_search.do?mode=view&userId=vf2yly2lcmm7EMPsUS2Fvw%3D%3D&sosokcd="
@@ -174,7 +174,7 @@ window.YSME = {
    "initial": "김",
    "featured": true,
    "email": "kimde@yonsei.ac.kr",
-   "office": "Engineering Building #1, Room N202",
+   "office": "제1공학관 N202호",
    "phone": "02)2123-2822",
    "titleEn": "Professor",
    "detail": "https://me.yonsei.ac.kr/faculty/name_search.do?mode=view&userId=Oc%2BnXOyFIPnaS%2F2tcn0VsQ%3D%3D&sosokcd="
@@ -188,7 +188,7 @@ window.YSME = {
    "labId": "max",
    "initial": "김",
    "email": "seokkim@yonsei.ac.kr",
-   "office": "Engineering Building #3, Room C314",
+   "office": "제3공학관 C314호",
    "phone": "02)2123-4463",
    "titleEn": "Associate Professor",
    "detail": ""
@@ -202,7 +202,7 @@ window.YSME = {
    "labId": "noel",
    "initial": "김",
    "email": "yjkim40@yonsei.ac.kr",
-   "office": "Engineering Building #3, Room C316",
+   "office": "제3공학관 C316호",
    "phone": "02)2123-6852",
    "titleEn": "Professor",
    "detail": "https://me.yonsei.ac.kr/faculty/name_search.do?mode=view&userId=M%2FhpSLUqHMFmyYRpueciEw%3D%3D&sosokcd="
@@ -216,7 +216,7 @@ window.YSME = {
    "labId": "mems",
    "initial": "김",
    "email": "yjk@yonsei.ac.kr",
-   "office": "Engineering Building #1, Room A585",
+   "office": "제1공학관 A585호",
    "phone": "02)2123-2844",
    "titleEn": "Professor",
    "detail": "https://me.yonsei.ac.kr/faculty/name_search.do?mode=view&userId=rF3EfB2KwpYgW%2F3mA9hWYQ%3D%3D&sosokcd="
@@ -232,7 +232,7 @@ window.YSME = {
    "initial": "김",
    "featured": true,
    "email": "woochul@yonsei.ac.kr",
-   "office": "Engineering Building #3, Room C428",
+   "office": "제3공학관 C428호",
    "phone": "02)2123-5816",
    "titleEn": "Professor / 학부장",
    "detail": "https://me.yonsei.ac.kr/faculty/name_search.do?mode=view&userId=MS4QfqRPzaZ5YDrwsETFUA%3D%3D&sosokcd="
@@ -261,7 +261,7 @@ window.YSME = {
    "labId": "nanotrans",
    "initial": "김",
    "email": "kimjb@yonsei.ac.kr",
-   "office": "Engineering Building #3, Room C427",
+   "office": "제3공학관 C427호",
    "phone": "02)2123-2812",
    "titleEn": "Professor",
    "detail": "https://me.yonsei.ac.kr/faculty/name_search.do?mode=view&userId=1RE2La5mkxWHrR7NkNGulA%3D%3D&sosokcd=0000405"
@@ -275,7 +275,7 @@ window.YSME = {
    "labId": "idml",
    "initial": "김",
    "email": "hjk@yonsei.ac.kr",
-   "office": "Engineering Building #1, Room N206",
+   "office": "제1공학관 N206호",
    "phone": "02)2123-2819",
    "titleEn": "Associate Professor",
    "detail": "https://me.yonsei.ac.kr/faculty/name_search.do?mode=view&userId=pAo4Dx2KA2dkOviAVvwsLQ%3D%3D&sosokcd=0000405"
@@ -289,7 +289,7 @@ window.YSME = {
    "labId": "bes",
    "initial": "류",
    "email": "whryu@yonsei.ac.kr",
-   "office": "Engineering Building #3, Room C326",
+   "office": "제3공학관 C326호",
    "phone": "02)2123-5821",
    "titleEn": "Professor",
    "detail": "https://me.yonsei.ac.kr/faculty/name_search.do?mode=view&userId=FbTFwqvmJtakGUouowJkLQ%3D%3D&sosokcd="
@@ -303,7 +303,7 @@ window.YSME = {
    "labId": "csai",
    "initial": "민",
    "email": "kmin.min@yonsei.ac.kr",
-   "office": "Engineering Building #1, Room N201",
+   "office": "제1공학관 N201호",
    "phone": "02)2123-4464",
    "titleEn": "Associate Professor",
    "detail": ""
@@ -333,7 +333,7 @@ window.YSME = {
    "featured": true,
    "storyPage": "professor.html?id=park-nocheol",
    "email": "pnch@yonsei.ac.kr",
-   "office": "Engineering Building #1, Room N311",
+   "office": "제1공학관 N311호",
    "phone": "02)2123-4530",
    "titleEn": "Professor",
    "detail": "https://me.yonsei.ac.kr/faculty/name_search.do?mode=view&userId=0fw0kb%2Brd1T%2BAnxOWIWCMg%3D%3D&sosokcd="
@@ -347,7 +347,7 @@ window.YSME = {
    "labId": "ice",
    "initial": "송",
    "email": "soonhosong@yonsei.ac.kr",
-   "office": "Engineering Building #3, Room C318",
+   "office": "제3공학관 C318호",
    "phone": "02)2123-2811",
    "titleEn": "Professor",
    "detail": "https://me.yonsei.ac.kr/faculty/name_search.do?mode=view&userId=EMeDFsg7ezICnj1V655kTw%3D%3D&sosokcd="
@@ -361,7 +361,7 @@ window.YSME = {
    "labId": "hcair",
    "initial": "신",
    "email": "dj.shin@yonsei.ac.kr",
-   "office": "Engineering Building #3, Room 426",
+   "office": "제3공학관 426호",
    "phone": "02)2123-2826",
    "titleEn": "Professor",
    "detail": ""
@@ -375,7 +375,7 @@ window.YSME = {
    "labId": "mss",
    "initial": "양",
    "email": "hsyang@yonsei.ac.kr",
-   "office": "Engineering Building#1,Room A584",
+   "office": "제1공학관 A584호",
    "phone": "02)2123-2824",
    "titleEn": "Professor",
    "detail": "https://me.yonsei.ac.kr/faculty/name_search.do?mode=view&userId=unA5vq9t8ID%2BONEoTLKWKQ%3D%3D&sosokcd=0000405"
@@ -389,7 +389,7 @@ window.YSME = {
    "labId": "ssd",
    "initial": "유",
    "email": "yoojh@yonsei.ac.kr",
-   "office": "Engineering Building #3, Room C322",
+   "office": "제3공학관 C322호",
    "phone": "02)2123-2859",
    "titleEn": "Professor",
    "detail": "https://me.yonsei.ac.kr/faculty/name_search.do?mode=view&userId=J7LH67wjoKs7HqFmJNWRwg%3D%3D&sosokcd="
@@ -403,7 +403,7 @@ window.YSME = {
    "labId": "mfgmecha",
    "initial": "윤",
    "email": "junyoung.yoon@yonsei.ac.kr",
-   "office": "Engineering Building #1, Room N205",
+   "office": "제1공학관 N205호",
    "phone": "02)2123-2817",
    "titleEn": "Associate Professor",
    "detail": ""
@@ -417,7 +417,7 @@ window.YSME = {
    "labId": "httd",
    "initial": "이",
    "email": "nk.lee@yonsei.ac.kr",
-   "office": "Engineering Building #1, Room N207",
+   "office": "제1공학관 N207호",
    "phone": "",
    "titleEn": "Assistant Professor",
    "detail": "https://me.yonsei.ac.kr/faculty/name_search.do?mode=view&userId=wLefcjV8lUCv2Zzs9J5RAQ%3D%3D&sosokcd=0000405"
@@ -431,7 +431,7 @@ window.YSME = {
    "labId": "mpdo",
    "initial": "이",
    "email": "jleej@yonsei.ac.kr",
-   "office": "Engineering Building #3, Room C323",
+   "office": "제3공학관 C323호",
    "phone": "02)2123-4474",
    "titleEn": "Professor",
    "detail": "https://me.yonsei.ac.kr/faculty/name_search.do?mode=view&userId=AXk7pPArre7tC15Fk0psVg%3D%3D&sosokcd="
@@ -445,7 +445,7 @@ window.YSME = {
    "labId": "msfd",
    "initial": "이",
    "email": "joonlee@yonsei.ac.kr",
-   "office": "Eng 3, 327. 3공학관 327호",
+   "office": "제3공학관 327호",
    "phone": "02)2123-5820",
    "titleEn": "Professor",
    "detail": "https://me.yonsei.ac.kr/faculty/name_search.do?mode=view&userId=b2q9%2FrsniLTpqoJPWYQWVA%3D%3D&sosokcd="
@@ -473,7 +473,7 @@ window.YSME = {
    "labId": "biomech",
    "initial": "이",
    "email": "hyungsuk@yonsei.ac.kr",
-   "office": "Engineering Building #1, Room A588",
+   "office": "제1공학관 A588호",
    "phone": "02)2123-5824",
    "titleEn": "Professor",
    "detail": "https://me.yonsei.ac.kr/faculty/name_search.do?mode=view&userId=bk0aGPYdMJPO%2FVyfZRhrHg%3D%3D&sosokcd=0000405"
@@ -487,7 +487,7 @@ window.YSME = {
    "labId": "micromech",
    "initial": "장",
    "email": "jyh@yonsei.ac.kr",
-   "office": "Engineering Building #1, Room A591",
+   "office": "제1공학관 A591호",
    "phone": "02)2123-5812, 032)749-3122",
    "titleEn": "Professor",
    "detail": "https://me.yonsei.ac.kr/faculty/name_search.do?mode=view&userId=DotpS%2BViSxK%2FWL4BBUofsA%3D%3D&sosokcd="
@@ -501,7 +501,7 @@ window.YSME = {
    "labId": "nemd",
    "initial": "전",
    "email": "scj@yonsei.ac.kr",
-   "office": "Engineering Building #1, Room A587",
+   "office": "제1공학관 A587호",
    "phone": "02)2123-5817",
    "titleEn": "Professor",
    "detail": "https://me.yonsei.ac.kr/faculty/name_search.do?mode=view&userId=wTKcmb%2F8b6Ols1dO%2B8bByg%3D%3D&sosokcd="
@@ -516,7 +516,7 @@ window.YSME = {
    "initial": "전",
    "featured": true,
    "email": "hjchun@yonsei.ac.kr",
-   "office": "Engineering Building #3, Room C325",
+   "office": "제3공학관 C325호",
    "phone": "02)2123-4827",
    "titleEn": "Professor",
    "detail": "https://me.yonsei.ac.kr/faculty/name_search.do?mode=view&userId=e5X28rITIomg0i%2BF34C3pg%3D%3D&sosokcd="
@@ -530,7 +530,7 @@ window.YSME = {
    "labId": "biochip",
    "initial": "정",
    "email": "uridle7@yonsei.ac.kr",
-   "office": "Engineering Building #1, Room A592",
+   "office": "제1공학관 A592호",
    "phone": "02)2123-5814",
    "titleEn": "Professor",
    "detail": "https://me.yonsei.ac.kr/faculty/name_search.do?mode=view&userId=eIbW20vagt1HuZYo4nBWjg%3D%3D&sosokcd="
@@ -545,7 +545,7 @@ window.YSME = {
    "initial": "주",
    "featured": true,
    "email": "cjoo@yonsei.ac.kr",
-   "office": "Engineering Building C 328",
+   "office": "공학관 C328호",
    "phone": "02)2123-5822",
    "titleEn": "Professor",
    "detail": "https://me.yonsei.ac.kr/faculty/name_search.do?mode=view&userId=bhaCBRF5otdK3WVWoRHYiw%3D%3D&sosokcd=0000405"
@@ -573,7 +573,7 @@ window.YSME = {
    "labId": "hais",
    "initial": "현",
    "email": "hyun.jaesang@yonsei.ac.kr",
-   "office": "Engineering Building #3, Room C315",
+   "office": "제3공학관 C315호",
    "phone": "02)2123-2818",
    "titleEn": "Assistant Professor",
    "detail": "https://me.yonsei.ac.kr/faculty/name_search.do?mode=view&userId=foH0i4BlWWcsEx6j%2B0Dwqg%3D%3D&sosokcd=0000405"

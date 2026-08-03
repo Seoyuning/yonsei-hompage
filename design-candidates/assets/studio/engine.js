@@ -105,7 +105,17 @@
 
   var engine = Y.engine = {
     /* ── 상태 ── */
-    setHeadSha: function (sha) { headSha = sha || headSha; },
+    /* 세션에도 함께 적는다 — 게시 뒤 페이지를 이동하면 boot 가 세션의 headSha 로
+       기준점을 되돌리는데, 메모리에만 갱신하면 직전에 내가 게시한 커밋과
+       「다른 사람이 먼저 게시했다」는 충돌 오탐이 난다. */
+    setHeadSha: function (sha) {
+      headSha = sha || headSha;
+      if (!sha) return;
+      try {
+        var s = Y.session.get();
+        if (s && s.headSha !== sha) { s.headSha = sha; Y.session.set(s); }
+      } catch (e) {}
+    },
     headSha: function () { return headSha; },
     current: function () { return buf; },
     path: function () { return buf && buf.path; },

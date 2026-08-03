@@ -38,6 +38,7 @@
   var mounted = false;
   var root = null, stackEl = null, statusEl = null;
   var panelEl = null, panelTitleEl = null, panelBodyEl = null;
+  var pubFootEl = null, pubFootCntEl = null, pubBarEl = null;
   var panels = {}, panelIds = [], curPanel = null;
   var editing = false;
   var sel = null;                      // {idx, live, clicked, self}
@@ -64,6 +65,7 @@
     pub: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 17.6V5.4"/><path d="M7.2 10.2L12 5.4l4.8 4.8"/><path d="M5 19.6h14"/></svg>',
     post: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2.4"/><path d="M8 9.2h8M8 13h8M8 16.4h4.6"/></svg>',
     photo: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2.4"/><circle cx="9.2" cy="9.4" r="1.6"/><path d="M4.6 16.6l4.4-4.2 3.4 3.2 3-2.8 4 3.8"/></svg>',
+    git: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="7" cy="6" r="2.2"/><circle cx="7" cy="18" r="2.2"/><circle cx="17" cy="8.5" r="2.2"/><path d="M7 8.2v7.6"/><path d="M17 10.7c0 3.2-3.6 3.8-10 4.6"/></svg>',
     x: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>',
     eye: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.8 12S6.6 6.4 12 6.4 21.2 12 21.2 12 17.4 17.6 12 17.6 2.8 12 2.8 12z"/><circle cx="12" cy="12" r="2.6"/></svg>'
   };
@@ -171,7 +173,9 @@
     { key: 'ai', label: 'AI', icon: 'ai', kind: 'panel', panel: 'ai', name: 'AI 수정' },
     { key: 'mobile', label: '모바일', icon: 'mob', kind: 'mobile', name: '모바일 모드' },
     { key: 'i18n', label: '한·영', icon: 'lang', kind: 'panel', panel: 'lang', name: '한/영 편집' },
-    { key: 'publish', label: '게시', icon: 'pub', kind: 'publish', name: '게시' }
+    /* 게시 버튼은 패널 하단 고정 푸터로 옮겼다(글을 쓰는 자리에서 바로 게시).
+       빈 자리에는 게시가 어느 저장소로 커밋되는지 보는 「깃헙 관리」를 둔다. */
+    { key: 'github', label: '깃헙', icon: 'git', kind: 'panel', panel: 'github', name: '깃헙 관리' }
   ];
 
   function mount() {
@@ -212,7 +216,28 @@
     panelBodyEl = mk('div', 'ys-panel-body');
     panelEl.appendChild(head);
     panelEl.appendChild(panelBodyEl);
+
+    /* 패널 하단 고정 게시 버튼 — 글을 쓰는 사이드바 그 자리에서 게시까지 끝낸다.
+       (예전에는 화면 오른쪽 버튼 스택 맨 아래라 등록 버튼과 헷갈렸다.) */
+    var foot = mk('div', 'ys-panel-foot');
+    pubFootEl = mk('button', 'ys-pubfoot');
+    pubFootEl.title = '게시 (Ctrl+Shift+P)';
+    pubFootEl.appendChild(ico('pub'));
+    pubFootEl.appendChild(mk('span', 'ys-pubfoot-t', '게시'));
+    pubFootCntEl = mk('span', 'ys-pubfoot-c', '');
+    pubFootEl.appendChild(pubFootCntEl);
+    pubFootEl.addEventListener('click', function () { publish(); });
+    foot.appendChild(pubFootEl);
+    panelEl.appendChild(foot);
     root.appendChild(panelEl);
+
+    /* 화면 하단 가운데 게시 버튼 — 패널 없이 화면에서 바로 고친 요소·문구도
+       「게시」를 눌러야 나간다는 걸 버튼 자체로 알린다. 미게시 초안이 있고
+       패널이 닫혀 있을 때만 뜬다(패널이 열리면 패널 푸터가 그 역할). */
+    pubBarEl = mk('button', 'ys-pubbar');
+    pubBarEl.title = '게시 (Ctrl+Shift+P)';
+    pubBarEl.addEventListener('click', function () { publish(); });
+    root.appendChild(pubBarEl);
 
     D.body.appendChild(root);
 
@@ -325,6 +350,20 @@
   }
 
   function renderStatus() {
+    if (pubFootCntEl) {
+      pubFootCntEl.textContent = status.drafts ? '미게시 초안 ' + status.drafts + '건' : '변경 없음';
+      pubFootEl.classList.toggle('is-dirty', !!status.drafts);
+    }
+    if (pubBarEl) {
+      var showBar = !!status.drafts && !curPanel;
+      if (showBar) {
+        pubBarEl.innerHTML = '';
+        pubBarEl.appendChild(ico('pub'));
+        pubBarEl.appendChild(mk('span', null, '게시'));
+        pubBarEl.appendChild(mk('span', 'ys-pubbar-c', '미게시 초안 ' + status.drafts + '건'));
+      }
+      pubBarEl.classList.toggle('is-on', showBar);
+    }
     if (!statusEl) return;
     statusEl.innerHTML = '';
     var items = [
@@ -410,6 +449,7 @@
     root.classList.add('is-panel');
     panelBodyEl.scrollTop = 0;
     syncButtons();
+    renderStatus();                      // 하단 게시 버튼 — 패널 푸터와 겹치지 않게
     try { if (p.onOpen) p.onOpen(); } catch (e) {}
   }
 
@@ -421,6 +461,7 @@
     panelEl.setAttribute('aria-hidden', 'true');
     root.classList.remove('is-panel');
     syncButtons();
+    renderStatus();
     try { if (p && p.onClose) p.onClose(); } catch (e) {}
   }
 

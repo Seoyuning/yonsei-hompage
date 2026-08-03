@@ -220,6 +220,72 @@
   padding: .85rem .95rem 3rem;
 }
 
+/* 패널 하단 고정 게시 버튼 — 어떤 패널이 열려 있든 항상 맨 아래 */
+.ys-panel-foot {
+  flex: 0 0 auto;
+  padding: .6rem .95rem;
+  border-top: 1px solid var(--ys-line-2);
+  background: #fff;
+}
+.ys-pubfoot {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .45rem;
+  padding: .62rem .8rem;
+  border: 1px solid var(--ys-navy);
+  border-radius: 10px;
+  background: var(--ys-navy);
+  color: #fff;
+  font-size: .85rem;
+  font-weight: 800;
+  letter-spacing: -.01em;
+  transition: background .14s, border-color .14s;
+}
+.ys-pubfoot:hover { background: var(--ys-navy-2); border-color: var(--ys-navy-2); }
+.ys-pubfoot .ys-ic svg { width: 15px; height: 15px; }
+.ys-pubfoot-c {
+  font-size: .68rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, .62);
+}
+.ys-pubfoot.is-dirty .ys-pubfoot-c { color: #ffd66e; }
+
+/* 화면 하단 가운데 게시 버튼 — 인라인 편집 초안이 있고 패널이 닫혀 있을 때만 */
+.ys-pubbar {
+  position: fixed;
+  left: 50%;
+  bottom: 1.15rem;
+  transform: translate(-50%, .9rem);
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+  padding: .58rem 1.05rem;
+  border: 1px solid var(--ys-navy);
+  border-radius: 999px;
+  background: var(--ys-navy);
+  color: #fff;
+  font-size: .84rem;
+  font-weight: 800;
+  letter-spacing: -.01em;
+  box-shadow: 0 10px 26px rgba(10, 26, 51, .30);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .18s, transform .18s, visibility 0s .18s;
+}
+.ys-pubbar.is-on {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate(-50%, 0);
+  transition: opacity .18s, transform .18s, visibility 0s;
+}
+.ys-pubbar:hover { background: var(--ys-navy-2); border-color: var(--ys-navy-2); }
+.ys-pubbar .ys-ic svg { width: 14px; height: 14px; }
+.ys-pubbar-c { font-size: .68rem; font-weight: 600; color: #ffd66e; }
+
 /* ══ 5. 패널 내부 부품 ══ */
 .ys-sec {
   padding-bottom: .85rem;

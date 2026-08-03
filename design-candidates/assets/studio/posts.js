@@ -27,22 +27,28 @@
   ];
 
   var FIELD = {
-    no: { label: '번호', hint: '"공지"로 두면 목록 맨 위에 고정 표시됩니다.' },
+    no: { label: '번호', hint: '맨 위 번호의 다음이 저절로 들어갑니다. "공지"로 바꾸면 목록 맨 위에 고정됩니다.' },
     title: { label: '제목', long: true, required: true },
     date: { label: '날짜', hint: 'YYYY.MM.DD' },
-    url: { label: '링크', hint: '원문 주소(비우면 목록 페이지로 연결됩니다).' },
-    /* 파일을 올리는 칸이 아니다 — 목록에 클립 표시를 붙일지 정하는 표시일 뿐이다.
-       파일 자체는 원문 게시판(url)에 있다. 오해가 잦아 이름에 못 박았다. */
-    att: { label: '첨부 표시', hint: '켜면 목록에 클립 표시가 붙습니다. 파일을 올리는 칸이 아닙니다 — 파일은 위 「링크」의 원문에 둡니다.' },
-    attName: { label: '첨부 파일명', hint: '본문 아래에 그대로 보여 줍니다. 여러 개면 쉼표로 구분.' },
+    url: { label: '원문 링크', hint: '학교 게시판 원문 주소. 없으면 비워 둡니다.' },
+    /* 첨부는 한 묶음이다 — 켜면 파일 올리기와 이름 칸이 함께 열린다 */
+    att: { label: '첨부 파일', hint: '켜면 파일을 올릴 수 있습니다.', group: 'att' },
+    attName: { label: '첨부 이름만 표시', hint: '파일을 올리지 않고 이름만 보여 줄 때 씁니다(여러 개면 쉼표). 내려받기는 원문에서.', group: 'att' },
     thumb: { label: '썸네일 주소', hint: '이미지 URL. 비우면 글자만 나옵니다.' },
-    body: { label: '본문', long: true, hint: '우리 사이트 안에서 펴 보일 글. 빈 줄 하나로 문단을 나눕니다. 비우면 「원문에서 보라」고 안내합니다.' },
-    bodyKind: { label: '본문 형태', hint: 'text = 위 본문을 그대로 보여 줌 · file = 원문이 사진·PDF뿐이라 안내만 함' },
-    meta: { label: '머리 정보', long: true, hint: '세미나·행사에서 연사·일시·장소처럼 본문 위에 따로 세울 줄.' },
+    body: { label: '본문', long: true, para: true, tall: true,
+      hint: '엔터 두 번(빈 줄)으로 문단이 나뉩니다. 비우면 「원문에서 보라」고 안내만 나갑니다.' },
+    /* 본문 형태(text/file)는 본문이 있으면 text, 없으면 file 로 저절로 정한다 —
+       직접 고르게 했더니 다들 헷갈려 했다. */
+    bodyKind: { auto: true },
+    meta: { label: '머리 정보', long: true, para: true, hint: '세미나·행사에서 연사·일시·장소처럼 본문 위에 따로 세울 줄.' },
     place: { label: '장소' },
     time: { label: '시간' },
     speaker: { label: '연사' }
   };
+
+  /* 입력 칸을 읽는 차례대로 세운다 — data.js 의 키 순서는 기계의 사정이다.
+     목록에 없는 키는 뒤에 원래 순서대로 붙는다. */
+  var ORDER = ['title', 'date', 'no', 'body', 'meta', 'speaker', 'time', 'place', 'url', 'att', 'attName', 'thumb'];
 
   var STYLE_ID = 'ys-post-style';
   var QUEUE_KEY = 'ysme-alert-queue';
@@ -105,7 +111,8 @@
 
   function defaultFor(coll, key, kind) {
     if (key === 'date') return today();
-    if (key === 'no') return kindOf(coll).pin ? '공지' : nextNo(coll);
+    /* 공지 게시판도 다음 번호가 기본 — 고정글로 만들 때만 "공지"로 바꾼다 */
+    if (key === 'no') return nextNo(coll);
     if (kind === 'bool') return false;
     return '';
   }
@@ -135,7 +142,20 @@
       'background:#0d5c3a;border-radius:999px;padding:.08rem .34rem;margin-right:.25rem}',
       '.ys-post-del{flex:none;font-size:.72rem;border:1px solid var(--ys-line);background:#fff;',
       'color:#b3261e;border-radius:6px;padding:.22rem .4rem;cursor:pointer}',
-      '.ys-post-del:hover{background:#fdeceb}'
+      '.ys-post-del:hover{background:#fdeceb}',
+      /* 본문 — 글답게 넓고 성기게. 쓰는 만큼 아래로 자란다(autoGrow) */
+      '.ys-post .ys-ta.is-tall{min-height:10.5rem;font-size:.84rem;line-height:1.75;resize:vertical}',
+      /* 첨부 묶음 — 켜야 열리는 한 칸 */
+      '.ys-post-attg{border:1px solid var(--ys-line);border-radius:10px;background:var(--ys-tint);',
+      'padding:.6rem .65rem;display:flex;flex-direction:column;gap:.5rem}',
+      '.ys-post-upc{display:flex;align-items:center;gap:.45rem;background:#fff;border:1px solid var(--ys-line);',
+      'border-radius:8px;padding:.34rem .5rem;font-size:.75rem;min-width:0}',
+      '.ys-post-upc>span{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;',
+      'color:var(--ys-ink)}',
+      '.ys-post-upc>em{flex:none;font-style:normal;font-size:.68rem;color:var(--ys-dim)}',
+      '.ys-post-upc>button{flex:none;width:1.3rem;height:1.3rem;border:0;background:none;color:#b3261e;',
+      'font-size:.85rem;line-height:1;cursor:pointer;border-radius:5px}',
+      '.ys-post-upc>button:hover{background:#fdeceb}'
     ].join('');
     var st = doc.createElement('style');
     st.id = STYLE_ID;
@@ -144,17 +164,150 @@
     (doc.head || doc.documentElement).appendChild(st);
   }
 
+  /* ── 첨부 파일 올리기 ──
+     파일은 base64 초안으로 담겼다가 「게시」 때 data.js 와 같은 커밋에 실려
+     assets/files/ 아래로 올라간다(서버 publish.js 가 base64 blob 커밋을 지원).
+     경로는 ASCII 로 만들고(서버 경로 규칙), 한글 원래 이름은 attName 과
+     내려받기 이름(download 속성)으로만 쓴다. */
+  var UP_EXT = ['pdf', 'hwp', 'hwpx', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'png', 'jpg', 'jpeg'];
+  var UP_MAX_ONE = 2.5 * 1024 * 1024;   // 파일 하나
+  var UP_MAX_ALL = 3 * 1024 * 1024;     // 한 글 합계 — Vercel 요청 본문(4.5MB) 안
+  var upFiles = [];                     // [{name, ext, b64, bytes, path?}]
+  var upListEl = null, attNameWrap = null, attChk = null;
+
+  function upTotal() {
+    var t = 0;
+    for (var i = 0; i < upFiles.length; i++) t += upFiles[i].bytes;
+    return t;
+  }
+  function kb(n) { return n >= 1048576 ? (n / 1048576).toFixed(1) + 'MB' : Math.max(1, Math.round(n / 1024)) + 'KB'; }
+
+  function readAsB64(file) {
+    return new Promise(function (res, rej) {
+      var r = new FileReader();
+      r.onload = function () {
+        var s = String(r.result || ''), at = s.indexOf(',');
+        at >= 0 ? res(s.slice(at + 1)) : rej(new Error('파일을 읽지 못했습니다.'));
+      };
+      r.onerror = function () { rej(new Error('파일을 읽지 못했습니다.')); };
+      r.readAsDataURL(file);
+    });
+  }
+
+  function takeFiles(list) {
+    var jobs = Promise.resolve();
+    Array.prototype.forEach.call(list || [], function (file) {
+      jobs = jobs.then(function () {
+        var ext = String(file.name.split('.').pop() || '').toLowerCase();
+        if (UP_EXT.indexOf(ext) < 0) {
+          Y.toast('올릴 수 없는 형식입니다: ' + file.name + ' (.' + ext + ')', 'warn');
+          return;
+        }
+        if (file.size > UP_MAX_ONE) {
+          Y.toast(file.name + ' 은(는) ' + kb(file.size) + ' — 2.5MB 를 넘습니다. 원문 링크로 안내해 주세요.', 'warn', 5200);
+          return;
+        }
+        if (upTotal() + file.size > UP_MAX_ALL) {
+          Y.toast('첨부 합계가 3MB 를 넘습니다. 큰 파일은 원문 링크로 안내해 주세요.', 'warn', 5200);
+          return;
+        }
+        return readAsB64(file).then(function (b64) {
+          upFiles.push({ name: file.name, ext: ext, b64: b64, bytes: file.size });
+          if (attChk) attChk.checked = true;
+          renderChips();
+        }, function (e) { Y.toast(e.message, 'error'); });
+      });
+    });
+    return jobs;
+  }
+
+  function renderChips() {
+    if (!upListEl) return;
+    upListEl.innerHTML = '';
+    for (var i = 0; i < upFiles.length; i++) {
+      (function (idx) {
+        var f = upFiles[idx];
+        var chip = mk('div', 'ys-post-upc');
+        chip.appendChild(mk('span', null, f.name));
+        chip.appendChild(mk('em', null, kb(f.bytes)));
+        var x = mk('button', null, '×');
+        x.setAttribute('aria-label', f.name + ' 빼기');
+        x.addEventListener('click', function () { upFiles.splice(idx, 1); renderChips(); });
+        chip.appendChild(x);
+        upListEl.appendChild(chip);
+      })(i);
+    }
+    /* 파일을 올렸으면 이름은 파일에서 나온다 — 직접 쓰는 칸은 접는다 */
+    if (attNameWrap) attNameWrap.style.display = upFiles.length ? 'none' : '';
+  }
+
+  /* 등록이 끝난 뒤 올린 파일을 base64 초안으로 담는다 — 「게시」 때
+     data.js 와 한 커밋에 실린다. 돌아오는 값은 담은 파일 수. */
+  function stageAttachments() {
+    if (!upFiles.length) return Promise.resolve(0);
+    var list = upFiles.slice(), chain = Promise.resolve();
+    list.forEach(function (f) {
+      chain = chain.then(function () {
+        return Y.store.put('drafts', {
+          path: f.path, src: f.b64, origSrc: '', encoding: 'base64', bin: 1,
+          bytes: f.bytes, note: '첨부 — ' + f.name, ts: Date.now(), author: Y.session.author()
+        }).then(function () {
+          Y.bus.emit('draft:change', { path: f.path, dirty: true });
+        });
+      });
+    });
+    return chain.then(function () { return list.length; });
+  }
+
+  function buildUpload(group) {
+    var act = mk('div', 'ys-post-act');
+    var pick = mk('button', 'ys-act', '파일 올리기…');
+    var inp = mk('input');
+    inp.type = 'file';
+    inp.multiple = true;
+    inp.accept = UP_EXT.map(function (e) { return '.' + e; }).join(',');
+    inp.style.display = 'none';
+    pick.addEventListener('click', function () { inp.click(); });
+    inp.addEventListener('change', function () { takeFiles(inp.files); inp.value = ''; });
+    act.appendChild(pick);
+    group.appendChild(act);
+    group.appendChild(inp);
+    upListEl = mk('div', 'ys-post-upl');
+    group.appendChild(upListEl);
+    group.appendChild(mk('p', 'ys-hint',
+      '올린 파일은 「게시」 때 함께 올라가, 글에서 바로 내려받게 됩니다. ' +
+      '하나 2.5MB · 한 글 합계 3MB까지 — 더 크면 원문 링크로 안내하세요.'));
+  }
+
   /* ── 입력 폼 ── */
+  function autoGrow(ta) {
+    function fit() {
+      ta.style.height = 'auto';
+      ta.style.height = Math.min(ta.scrollHeight + 2, 560) + 'px';
+    }
+    ta.addEventListener('input', fit);
+    setTimeout(fit, 0);
+  }
+
   function buildForm(body) {
     var shape = Y.datamap.shapeOf(curColl);
     inputs = [];
+    upFiles = [];
+    upListEl = null; attNameWrap = null; attChk = null;
     if (!shape.length) {
       body.appendChild(mk('p', 'ys-warn', '이 목록의 항목 모양을 읽지 못했습니다(기존 항목이 없습니다).'));
       return;
     }
+    shape = shape.slice().sort(function (a, b) {
+      var ia = ORDER.indexOf(a.key), ib = ORDER.indexOf(b.key);
+      return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
+    });
+
+    var attGroup = null;
     for (var i = 0; i < shape.length; i++) {
       var key = shape[i].key, kind = shape[i].kind;
       var meta = FIELD[key] || { label: key };
+      if (meta.auto) { inputs.push({ key: key, kind: kind, meta: meta, auto: true }); continue; }
       var wrap = mk('div', 'ys-post-f' + (kind === 'bool' ? ' ys-post-chk' : ''));
       var lab = mk('span', null, meta.label);
       if (meta.required) lab.appendChild(mk('i', 'ys-req', '*'));
@@ -167,11 +320,12 @@
         wrap.appendChild(inp);
         wrap.appendChild(lab);
       } else if (meta.long) {
-        inp = mk('textarea', 'ys-ta');
-        inp.rows = 3;
+        inp = mk('textarea', 'ys-ta' + (meta.tall ? ' is-tall' : ''));
+        inp.rows = meta.tall ? 8 : 3;
         inp.value = String(defaultFor(curColl, key, kind));
         wrap.appendChild(lab);
         wrap.appendChild(inp);
+        autoGrow(inp);
       } else {
         inp = mk('input', 'ys-in');
         inp.type = 'text';
@@ -179,17 +333,43 @@
         wrap.appendChild(lab);
         wrap.appendChild(inp);
       }
-      body.appendChild(wrap);
+
+      /* 첨부 묶음 — att 체크가 열고 닫는 상자에 파일 올리기·이름 칸을 함께 담는다 */
+      if (key === 'att' && kind === 'bool') {
+        body.appendChild(wrap);
+        attChk = inp;
+        attGroup = mk('div', 'ys-post-attg');
+        attGroup.style.display = inp.checked ? '' : 'none';
+        buildUpload(attGroup);
+        body.appendChild(attGroup);
+        (function (chk, grp) {
+          chk.addEventListener('change', function () { grp.style.display = chk.checked ? '' : 'none'; });
+        })(inp, attGroup);
+      } else if (meta.group === 'att' && attGroup) {
+        if (key === 'attName') attNameWrap = wrap;
+        attGroup.appendChild(wrap);
+      } else {
+        body.appendChild(wrap);
+      }
       inputs.push({ key: key, kind: kind, inp: inp, meta: meta });
     }
   }
 
   function readForm() {
-    var obj = {}, errs = [];
+    var obj = {}, errs = [], hasBodyKind = false;
     for (var i = 0; i < inputs.length; i++) {
       var f = inputs[i], v;
+      if (f.auto) { if (f.key === 'bodyKind') hasBodyKind = true; continue; }
       if (f.kind === 'bool') { obj[f.key] = !!f.inp.checked; continue; }
-      v = String(f.inp.value == null ? '' : f.inp.value).replace(/\s+/g, ' ').trim();
+      var raw = String(f.inp.value == null ? '' : f.inp.value);
+      if (f.meta.para) {
+        /* 본문·머리 정보 — 문단(빈 줄)을 살린다. 예전엔 모든 공백을 한 칸으로
+           뭉개 등록한 글이 통짜 한 덩어리로 게시됐다. */
+        v = raw.replace(/\r\n?/g, '\n').replace(/[ \t]+\n/g, '\n')
+               .replace(/\n{3,}/g, '\n\n').replace(/[ \t]{2,}/g, ' ').trim();
+      } else {
+        v = raw.replace(/\s+/g, ' ').trim();
+      }
       if (f.meta.required && !v) errs.push(f.meta.label + '을(를) 입력하세요.');
       if (f.key === 'date' && v && !/^\d{4}\.\d{2}\.\d{2}$/.test(v)) {
         errs.push('날짜는 2026.07.26 처럼 YYYY.MM.DD 형식으로 넣어 주세요.');
@@ -206,6 +386,27 @@
       }
       obj[f.key] = v;
     }
+
+    /* 올린 파일 — 게시 경로를 여기서 정해 두고(등록 때 초안으로 담는다),
+       attFiles 는 「경로>표시이름」을 | 로 이어 이름과 파일이 절대 어긋나지 않게 한다.
+       (attName 쉼표 나누기는 못 쓴다 — 파일 이름 자체에 쉼표가 흔하다.) */
+    if (upFiles.length) {
+      var stamp = Date.now().toString(36);
+      var names = [], pairs = [];
+      for (var j = 0; j < upFiles.length; j++) {
+        upFiles[j].path = 'assets/files/' + stamp + '-' + (j + 1) + '.' + upFiles[j].ext;
+        var nm = upFiles[j].name.replace(/[|>]/g, ' ').trim();
+        names.push(nm);
+        pairs.push(upFiles[j].path + '>' + nm);
+      }
+      obj.att = true;
+      obj.attName = names.join(', ');
+      obj.attFiles = pairs.join('|');
+    }
+
+    /* 본문 형태 — 본문이 있으면 그대로 보여 주고(text), 없으면 안내만(file) */
+    if (hasBodyKind) obj.bodyKind = obj.body ? 'text' : 'file';
+
     return { obj: obj, errs: errs };
   }
 
@@ -322,9 +523,12 @@
         err.textContent = '';
         add.disabled = true;
         Y.datamap.addItem(curColl, r.obj, true).then(function () {
+          return stageAttachments();
+        }).then(function (nAtt) {
           add.disabled = false;
           queueAlert(curColl, r.obj);
-          Y.toast(kindOf(curColl).label + ' 1건을 등록했습니다. 「게시」를 눌러야 사이트에 나갑니다.' +
+          Y.toast(kindOf(curColl).label + ' 1건을 등록했습니다' +
+            (nAtt ? ' (첨부 ' + nAtt + '개 포함)' : '') + '. 「게시」를 눌러야 사이트에 나갑니다.' +
             (curColl === 'noticesUG' || curColl === 'noticesGrad' ? ' 게시되면 구독자에게 메일 알림이 나갑니다.' : ''));
           rebuild();
         }, function (e) {

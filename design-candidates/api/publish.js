@@ -27,7 +27,9 @@
    Vercel 요청 본문 상한(약 4.5MB) 때문에 큰 바이너리는 한 번에 여러 개 올리지 않는다.
 */
 
-var WRITE_EXT = ['html', 'htm', 'css', 'js', 'json', 'svg', 'png', 'jpg', 'jpeg', 'webp', 'avif', 'ico', 'txt', 'md'];
+var WRITE_EXT = ['html', 'htm', 'css', 'js', 'json', 'svg', 'png', 'jpg', 'jpeg', 'webp', 'avif', 'ico', 'txt', 'md',
+  // 공지 첨부 파일 — posts 패널이 assets/files/ 아래로 올린다
+  'pdf', 'hwp', 'hwpx', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip'];
 var CHECKPOINT_PATH = '_studio/checkpoints.json';
 
 module.exports = async (req, res) => {
@@ -57,6 +59,40 @@ module.exports = async (req, res) => {
     res.status(401).json({ error: '공용 암호가 올바르지 않습니다.' });
     return;
   }
+
+  /* ── 깃헙 연결 덮어쓰기 ──
+     인수인계 뒤 학부가 자기 저장소로 게시하도록, 관리 화면(ghset)에서 정한
+     연결을 Redis 에 두고 환경변수보다 먼저 쓴다. Redis 가 없으면 env 그대로. */
+  var R_URL = env.UPSTASH_REDIS_REST_URL || env.KV_REST_API_URL || '';
+  var R_TOK = env.UPSTASH_REDIS_REST_TOKEN || env.KV_REST_API_TOKEN || '';
+  var GHCFG_KEY = 'ysme:ghcfg';
+  async function redis(cmd) {
+    if (!R_URL || !R_TOK) return null;
+    try {
+      var r = await fetch(R_URL, {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + R_TOK, 'Content-Type': 'application/json' },
+        body: JSON.stringify(cmd)
+      });
+      var d = await r.json().catch(function () { return null; });
+      return r.ok ? d : null;
+    } catch (e) { return null; }
+  }
+  var GHC = null;
+  if (R_URL && R_TOK) {
+    var rawCfg = await redis(['GET', GHCFG_KEY]);
+    if (rawCfg && typeof rawCfg.result === 'string') {
+      try { GHC = JSON.parse(rawCfg.result); } catch (e) { GHC = null; }
+    }
+  }
+  if (GHC && GHC.owner && GHC.repo) {
+    GH_OWNER = String(GHC.owner);
+    GH_REPO = String(GHC.repo);
+    GH_BRANCH = String(GHC.branch || 'main');
+    if (GHC.base != null) BASE = String(GHC.base).replace(/^\/+|\/+$/g, '');
+    if (GHC.token) GH_TOKEN = String(GHC.token);
+  }
+  var GH_SOURCE = (GHC && GHC.owner && GHC.repo) ? 'custom' : 'env';
 
   var REPO = '/repos/' + GH_OWNER + '/' + GH_REPO;
 
@@ -100,6 +136,21 @@ module.exports = async (req, res) => {
     return { sha: r.data && r.data.object && r.data.object.sha };
   }
 
+  /* base..head 사이가 전부 자동배포 트리거 커밋(빈 커밋)인가 —
+     하나라도 확인이 안 되면 false 로 두어 정상 충돌 처리로 물러난다. */
+  async function onlyTriggerCommits(base, head) {
+    if (!/^[0-9a-f]{7,40}$/i.test(base)) return false;
+    var r = await ghJson(REPO + '/compare/' + encodeURIComponent(base) + '...' + encodeURIComponent(head));
+    if (!r.ok || !r.data || r.data.status !== 'ahead') return false;
+    var cs = r.data.commits || [];
+    if (!cs.length || cs.length > 20) return false;
+    for (var i = 0; i < cs.length; i++) {
+      var m = (cs[i] && cs[i].commit && cs[i].commit.message) || '';
+      if (m.indexOf('[auto-deploy-trigger]') < 0) return false;
+    }
+    return true;
+  }
+
   async function readFileAt(sitePath, ref) {
     var enc = encodePath(repoPathOf(sitePath));
     var r = await ghJson(REPO + '/contents/' + enc + '?ref=' + encodeURIComponent(ref));
@@ -125,7 +176,89 @@ module.exports = async (req, res) => {
     if (action === 'auth') {
       var h0 = await headSha();
       if (h0.error) { res.status(h0.status || 502).json({ error: h0.error }); return; }
-      res.status(200).json({ ok: true, branch: GH_BRANCH, basePath: BASE, headSha: h0.sha });
+      res.status(200).json({
+        ok: true, branch: GH_BRANCH, basePath: BASE, headSha: h0.sha,
+        // 깃헙 관리 패널이 「어디에 커밋되는가」를 보여 주는 데 쓴다 — 토큰은 내려가지 않는다
+        repo: GH_OWNER + '/' + GH_REPO,
+        repoUrl: 'https://github.com/' + GH_OWNER + '/' + GH_REPO,
+        source: GH_SOURCE,                     // env = 환경변수 · custom = 관리 화면에서 설정
+        canStore: !!(R_URL && R_TOK),          // 화면에서 연결을 바꿀 수 있는가(Redis 유무)
+        tokenSet: !!(GHC && GHC.token)         // 직접 설정에 자체 토큰이 있는가
+      });
+      return;
+    }
+
+    /* ── ghset / ghreset : 게시가 커밋될 깃헙 연결을 화면에서 바꾼다 ──
+       검증(저장소 존재·push 권한·브랜치 존재)에 성공해야만 저장한다.
+       토큰을 비우면 기존 토큰(직접 설정분 또는 환경변수)을 그대로 쓴다.
+       응답에 토큰은 절대 싣지 않는다. */
+    if (action === 'ghset' || action === 'ghreset') {
+      if (!R_URL || !R_TOK) {
+        res.status(400).json({ error: '서버에 설정 저장소(Upstash Redis)가 연결되어 있지 않아 화면에서는 바꿀 수 없습니다. Vercel 환경변수(GH_OWNER·GH_REPO·GH_BRANCH·GH_TOKEN)로 변경하세요.' });
+        return;
+      }
+      if (action === 'ghreset') {
+        await redis(['DEL', GHCFG_KEY]);
+        res.status(200).json({
+          ok: true, source: 'env',
+          repo: env.GH_OWNER + '/' + env.GH_REPO,
+          repoUrl: 'https://github.com/' + env.GH_OWNER + '/' + env.GH_REPO,
+          branch: env.GH_BRANCH || 'main',
+          basePath: String(env.GH_BASEPATH || '').replace(/^\/+|\/+$/g, '')
+        });
+        return;
+      }
+      var nOwner = String(body.owner || '').trim();
+      var nRepo = String(body.repo || '').trim();
+      var nBranch = String(body.branch || 'main').trim();
+      var nBase = String(body.basePath == null ? BASE : body.basePath).trim().replace(/^\/+|\/+$/g, '');
+      var nToken = String(body.token || '').trim();
+      if (!/^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$/.test(nOwner)) { res.status(400).json({ error: '소유자(owner) 이름이 올바르지 않습니다.' }); return; }
+      if (!/^[A-Za-z0-9._-]{1,100}$/.test(nRepo)) { res.status(400).json({ error: '저장소 이름이 올바르지 않습니다.' }); return; }
+      if (!/^[A-Za-z0-9._/-]{1,80}$/.test(nBranch) || /\.\./.test(nBranch)) { res.status(400).json({ error: '브랜치 이름이 올바르지 않습니다.' }); return; }
+      if (nBase && (!/^[A-Za-z0-9._/-]{1,120}$/.test(nBase) || /\.\./.test(nBase))) { res.status(400).json({ error: '사이트 폴더 경로가 올바르지 않습니다.' }); return; }
+      if (nToken && !/^[A-Za-z0-9_]{20,255}$/.test(nToken)) { res.status(400).json({ error: '토큰 형식이 올바르지 않습니다.' }); return; }
+      var useToken = nToken || (GHC && GHC.token) || env.GH_TOKEN;
+      function ghAs(p) {
+        return fetch('https://api.github.com' + p, {
+          headers: {
+            'Authorization': 'Bearer ' + useToken,
+            'Accept': 'application/vnd.github+json',
+            'X-GitHub-Api-Version': '2022-11-28',
+            'User-Agent': 'ysme-studio'
+          }
+        });
+      }
+      var vr = await ghAs('/repos/' + nOwner + '/' + nRepo);
+      if (!vr.ok) {
+        res.status(400).json({ error: '저장소를 찾을 수 없거나 이 토큰으로 접근할 수 없습니다 (' + vr.status + '). 소유자·저장소 이름과 토큰 권한을 확인하세요.' });
+        return;
+      }
+      var vd = await vr.json().catch(function () { return {}; });
+      if (!vd.permissions || !vd.permissions.push) {
+        res.status(400).json({ error: '이 토큰에는 해당 저장소 쓰기(push) 권한이 없습니다. Contents: Read/Write 권한의 토큰을 쓰세요.' });
+        return;
+      }
+      var br0 = await ghAs('/repos/' + nOwner + '/' + nRepo + '/git/ref/heads/' + encodeURIComponent(nBranch));
+      if (!br0.ok) {
+        res.status(400).json({ error: '브랜치를 찾을 수 없습니다: ' + nBranch });
+        return;
+      }
+      var bd0 = await br0.json().catch(function () { return {}; });
+      var saved = {
+        owner: nOwner, repo: nRepo, branch: nBranch, base: nBase,
+        token: nToken || (GHC && GHC.token) || ''
+      };
+      var sr = await redis(['SET', GHCFG_KEY, JSON.stringify(saved)]);
+      if (!sr) { res.status(502).json({ error: '설정을 저장하지 못했습니다. 잠시 후 다시 시도하세요.' }); return; }
+      res.status(200).json({
+        ok: true, source: 'custom',
+        repo: nOwner + '/' + nRepo,
+        repoUrl: 'https://github.com/' + nOwner + '/' + nRepo,
+        branch: nBranch, basePath: nBase,
+        headSha: bd0 && bd0.object && bd0.object.sha,
+        tokenSet: !!saved.token
+      });
       return;
     }
 
@@ -242,11 +375,16 @@ module.exports = async (req, res) => {
       var h2 = await headSha();
       if (h2.error) { res.status(h2.status || 502).json({ error: h2.error }); return; }
       if (body.baseSha && String(body.baseSha) !== h2.sha) {
-        res.status(409).json({
-          conflict: true, headSha: h2.sha,
-          error: '다른 사람이 먼저 게시했습니다. 최신본을 확인한 뒤 다시 시도하세요.'
-        });
-        return;
+        /* 자동배포 워크플로가 얹는 빈 [auto-deploy-trigger] 커밋만 끼어 있으면
+           실제 파일 변경은 없다 — 사람 커밋이 하나라도 섞였을 때만 충돌로 세운다. */
+        var benign = await onlyTriggerCommits(String(body.baseSha), h2.sha);
+        if (!benign) {
+          res.status(409).json({
+            conflict: true, headSha: h2.sha,
+            error: '다른 사람이 먼저 게시했습니다. 최신본을 확인한 뒤 다시 시도하세요.'
+          });
+          return;
+        }
       }
 
       // 2) 기준 커밋의 tree

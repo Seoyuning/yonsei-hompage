@@ -304,6 +304,11 @@ a{color:inherit;text-decoration:none}
   font-size:.84rem;color:var(--muted);display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem .8rem}
 .post-att b{font-family:var(--mono);font-size:.68rem;font-weight:600;letter-spacing:.14em;
   text-transform:uppercase;color:var(--label)}
+/* 편집기에서 올린 첨부 — 우리 사이트에서 바로 내려받는 링크 */
+.post-att-fs{display:flex;flex-direction:column;gap:.35rem;min-width:0}
+.post-att-f{color:var(--sub);text-decoration:underline;text-decoration-color:var(--line);
+  text-underline-offset:3px;overflow-wrap:anywhere}
+.post-att-f:hover{color:var(--navy);text-decoration-color:var(--accent)}
 .post-src{margin-top:1.6rem;font-size:.8rem;color:var(--muted)}
 .post-src a{color:var(--sub);text-decoration:underline;text-decoration-color:var(--line);
   text-underline-offset:3px}
@@ -713,6 +718,24 @@ a{color:inherit;text-decoration:none}
       return '<p>' + esc(p).replace(/\n/g,'<br />') + '</p>';
     }).join('');
   }
+  /* 첨부 줄 — 편집기에서 파일을 함께 올린 글(attFiles: "경로>이름|경로>이름")은
+     우리 사이트에서 바로 내려받는 링크로, 이름만 있는 글은 예전처럼 글자로 보여 준다. */
+  function attLine(x){
+    if(x.attFiles){
+      var links = String(x.attFiles).split('|').map(function(pair){
+        var at = pair.indexOf('>');
+        var p = at < 0 ? pair : pair.slice(0, at);
+        var n = at < 0 ? pair.split('/').pop() : pair.slice(at + 1);
+        if(!p) return '';
+        return '<a class="post-att-f" href="' + esc(p) + '" download="' + esc(n) + '">'
+          + esc(n) + ' <span aria-hidden="true">↓</span></a>';
+      }).join('');
+      if(links) return '<p class="post-att"><b>첨부</b><span class="post-att-fs">' + links + '</span></p>';
+    }
+    return x.attName
+      ? '<p class="post-att"><b>첨부</b>' + esc(x.attName) + '</p>'
+      : (x.att ? '<p class="post-att"><b>첨부</b>첨부 파일이 있습니다 (원문에서 내려받을 수 있습니다)</p>' : '');
+  }
   function postHtml(x){
     var cid = classify(x.title);
     var body;
@@ -722,9 +745,7 @@ a{color:inherit;text-decoration:none}
       body = '<p class="post-note">이 공지의 안내문은 <b>첨부 파일과 이미지</b>로 되어 있어 '
            + '이 화면에 옮겨 싣지 않았습니다. 아래 원문에서 확인해 주세요.</p>';
     }
-    var att = x.attName
-      ? '<p class="post-att"><b>첨부</b>' + esc(x.attName) + '</p>'
-      : (x.att ? '<p class="post-att"><b>첨부</b>첨부 파일이 있습니다 (원문에서 내려받을 수 있습니다)</p>' : '');
+    var att = attLine(x);
     return '<div class="post-head"><h3 class="post-h">' + esc(x.title) + '</h3>'
       + '<button type="button" class="post-back">목록으로</button></div>'
       + '<p class="post-meta">'
@@ -1032,9 +1053,7 @@ a{color:inherit;text-decoration:none}
         ? '<div class="post-body">' + paraHtml(x.body) + '</div>'
         : '<p class="post-note">이 글의 안내문은 <b>첨부 파일과 이미지</b>로 되어 있어 '
           + '이 화면에 옮겨 싣지 않았습니다. 아래 원문에서 확인해 주세요.</p>';
-      var att = x.attName
-        ? '<p class="post-att"><b>첨부</b>' + esc(x.attName) + '</p>'
-        : (x.att ? '<p class="post-att"><b>첨부</b>첨부 파일이 있습니다 (원문에서 내려받을 수 있습니다)</p>' : '');
+      var att = attLine(x);
       return '<div class="post-head"><h3 class="post-h">' + esc(x.title) + '</h3>'
         + '<button type="button" class="post-back">목록으로</button></div>'
         + '<p class="post-meta">'

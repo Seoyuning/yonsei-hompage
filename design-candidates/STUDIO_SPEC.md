@@ -40,8 +40,9 @@ design-candidates/
 │     │                       (텍스트·보이는 속성값·스크립트 문자열 / 태그·class·href·주석 제외)
 │     ├─ datamap.js           data.js 소유 판별 + JSON 소스 오프셋 편집 · 배열 항목 추가/삭제
 │     ├─ pagedict.js          홈 인라인 `var I18N` 사전의 소스 오프셋 편집
-│     ├─ posts.js             공지·뉴스·세미나·행사 등록 패널 + 게시 후 메일 알림 큐 (§11)
+│     ├─ posts.js             공지·뉴스·세미나·행사 등록 패널 + 첨부 파일 업로드 + 메일 알림 큐 (§11)
 │     ├─ photos.js            머리 사진(히어로) 패널 — 업로드·세로 초점·미리보기 (§4.5)
+│     ├─ github.js            깃헙 관리 패널 — 연결 확인·최근 커밋·게시 대상 저장소 변경(ghset)
 │     ├─ diff.js              LCS 라인 디프
 │     ├─ hud.js               플로팅 버튼 · 상태바 · 인스펙터
 │     ├─ versions.js          이름+시각 시점 저장 · 목록 · 디프 · 복원
@@ -55,6 +56,9 @@ design-candidates/
 
 **불변식**: `assets/studio/` 와 `api/` 는 사이트 방문자 경험에 어떤 영향도 주지 않는다.
 `nav.js` 로더는 세션/쿼리 플래그가 없으면 **아무것도 로드하지 않는다**.
+예외 하나 — 푸터의 「관리자」 링크 클릭은 페이지를 다시 부르지 않고(스크롤 유지) 그 자리에서
+독수리 날갯짓 로딩 오버레이를 띄운 뒤 boot.js 를 붙이고, 게이트/도구(.ys-gate/.ys-root)가
+화면에 오르면 오버레이를 걷는다. 링크를 누르기 전에는 여전히 아무것도 로드하지 않는다.
 
 ## 2. 서버 계약 — `POST /api/publish`
 
@@ -65,16 +69,25 @@ env: `GH_TOKEN` `GH_OWNER` `GH_REPO` `GH_BRANCH`(기본 main) `GH_BASEPATH`(= `d
 
 | action | 요청 | 응답 |
 |---|---|---|
-| `auth` | – | `{ ok:true, branch, headSha }` |
+| `auth` | – | `{ ok:true, branch, basePath, headSha, repo, repoUrl, source, canStore, tokenSet }` |
 | `list` | – | `{ pages:[{path,name}], assets:[{path,name}], headSha }` — 서버에서 basePrefix 필터 |
 | `read` | `{path, ref?}` | `{ content, blobSha, ref }` — `ref` 미지정 시 브랜치 HEAD |
 | `commit` | `{message, files:[{path,content,encoding?}], deletions?, author, baseSha?}` | `{ ok:true, commit:{sha,html_url}, headSha, files:[path] }` · `baseSha`≠HEAD → **409** `{conflict:true, headSha}` |
 | `history` | `{path?, limit?}` | `{ commits:[{sha,message,author,date,url}] }` |
 | `checkpoints` | – | `{ items:[Checkpoint] }` (없으면 `[]`) |
+| `ghset` | `{owner, repo, branch?, basePath?, token?}` | `{ ok:true, source:'custom', repo, repoUrl, branch, basePath, headSha, tokenSet }` — 저장 전에 저장소 존재·push 권한·브랜치 존재를 검증. 토큰을 비우면 기존 토큰 유지 |
+| `ghreset` | – | `{ ok:true, source:'env', ... }` — 직접 설정을 지우고 환경변수로 복귀 |
 
 - `commit` 은 **Git Trees API** 사용: blobs → tree(base=현재 tree) → commit → ref 갱신. 파일 N개 = 커밋 1개.
+- **충돌 완화**: `baseSha`≠HEAD 라도 그 사이 커밋이 전부 `[auto-deploy-trigger]`(빈 트리거 커밋)뿐이면
+  충돌로 세우지 않고 진행한다. 클라이언트도 게시 성공 시 headSha 를 **세션에 저장**해
+  페이지 이동 뒤 자기 게시와 충돌 오탐이 나지 않게 한다(engine.setHeadSha).
+- **깃헙 연결 덮어쓰기**: `ghset` 이 저장한 연결은 Upstash Redis `ysme:ghcfg` 에 남고,
+  모든 액션에서 환경변수보다 먼저 쓴다(토큰 미지정 시 env 토큰 재사용). Redis 미연결이면
+  `ghset` 은 400 — 환경변수로만 변경 가능. 응답에 토큰 값은 절대 싣지 않는다.
 - 경로 검증: `..` 금지, `^[A-Za-z0-9](?:[A-Za-z0-9._/-]*)$`, 쓰기 허용 확장자
-  `html css js json svg png jpg jpeg webp avif ico txt md`. 위반 → 400.
+  `html css js json svg png jpg jpeg webp avif ico txt md`
+  `pdf hwp hwpx doc docx xls xlsx ppt pptx zip`(공지 첨부). 위반 → 400.
 - `Checkpoint` = `{ id, name, note, ts, author, commitSha, files:[path] }`.
   체크포인트 생성은 별도 액션이 없다 — `_studio/checkpoints.json` 을 **같은 `commit` 에 포함**시킨다.
 
@@ -192,6 +205,15 @@ JS 생성물의 텍스트는 화면에서 직접 고칠 수 없다(고쳐도 다
 - 삽입/삭제 후 즉시 재파싱해 깨지면 원문으로 되돌린다(초안 오염 방지).
 - 등록 폼의 입력칸은 `shapeOf(coll)` — **기존 첫 항목의 실제 필드**에서 만든다.
   데이터 모양이 바뀌어도 폼이 따라가고, 존재하지 않는 필드를 만들지 않는다.
+  화면에는 읽는 차례(제목→날짜→번호→본문→…→첨부)로 다시 세운다.
+- **번호**는 목록 최고 번호+1 이 저절로 들어간다. "공지"로 바꾸면 맨 위 고정.
+- **본문·머리 정보는 문단(빈 줄)을 보존**해 저장한다(그 외 필드는 공백 정규화).
+  `bodyKind` 는 입력칸이 없다 — 본문이 있으면 `text`, 없으면 `file` 로 저절로 정한다.
+- **첨부 파일 업로드**: 「첨부 파일」을 켜면 파일을 올릴 수 있다(하나 2.5MB·글당 3MB).
+  파일은 base64 초안으로 담겨 「게시」 때 data.js 와 **같은 커밋**으로
+  `assets/files/<stamp>-<i>.<ext>` 에 올라간다(경로는 ASCII — 서버 경로 규칙).
+  항목에는 `attName`(원래 이름들) + `attFiles`(`경로>이름|경로>이름`)가 남고,
+  G-news 상세가 `attFiles` 를 내려받기 링크로 그린다(`download` 속성에 원래 이름).
 - 불변식: **항목 1개 추가 → diff 는 그 항목 줄만. 추가 후 삭제 → 바이트 동일 복귀.**
   (`_studio/tools/test-posts.js` 가 실제 `data.js` 로 검사)
 
@@ -274,8 +296,11 @@ JS 생성물의 텍스트는 화면에서 직접 고칠 수 없다(고쳐도 다
 | `AI 수정` | 키 등록 → 요청 → 변경안 토글 목록 → 항목별 점프·디프·승인 |
 | `모바일` | 모바일 렌더 모드 토글 |
 | `한/영` | 편집 대상 언어 전환 |
-| `게시` | 초안 전체를 1커밋으로 배포 (변경 파일 수·요약 확인 후) |
+| `깃헙` | 깃헙 관리 패널 — 연결 카드·연결 다시 확인(기준점 재동기)·최근 커밋·게시 대상 저장소 변경 |
 
+- **게시 버튼은 스택에 없다.** ① 사이드 패널이 열려 있으면 패널 **하단 고정 푸터**의
+  「게시 · 미게시 초안 N건」, ② 패널이 닫혀 있고 초안이 있으면 **화면 하단 가운데**
+  알약형 「게시」 버튼이 뜬다. 동작은 동일: 초안 전체를 1커밋으로 배포(파일 수·요약 확인 후).
 - 상태바: 현재 페이지 · 미저장 초안 수 · 세션 편집자 · 마지막 게시 시각.
 - 편집 모드에서 링크 클릭은 **막지 않는다**. 페이지 이동 시 초안은 IndexedDB 에 남아 다음 페이지에서 이어진다.
 - 단축키: `Ctrl+S` 초안 저장, `Ctrl+Shift+P` 게시, `Ctrl+Z/Y` undo/redo, `Esc` 선택 해제, `E` 편집 토글.

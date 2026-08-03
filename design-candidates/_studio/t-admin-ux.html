@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>t-admin-ux — 스튜디오 관리 UX 하니스</title>
+<style>
+  body { font: 13px/1.5 -apple-system, sans-serif; margin: 1rem; padding-bottom: 30rem; }
+  #log b { color: #0a7c42; } #log i { color: #b3261e; font-style: normal; }
+  #log p { margin: .15rem 0; }
+</style>
+</head>
+<body>
+<h1>스튜디오 관리 UX 하니스</h1>
+<p>실제 core.js·hud.js·posts.js·github.js 를 올리고 net·datamap·engine 만 스텁. 결과는 아래와 콘솔.</p>
+<div id="log"></div>
+
+<script src="../assets/studio/core.js"></script>
+<script>
+(function () {
+  var Y = window.YStudio;
+  Y.session.set({ passcode: 'test', author: '테스트', headSha: 'aaaa111aaaa111aaaa111aaaa111aaaa111aaaa1', ts: Date.now() });
+
+  Y.engine = {
+    flush: function () { return Promise.resolve(); },
+    headSha: function () { return 'aaaa111aaaa111aaaa111aaaa111aaaa111aaaa1'; },
+    setHeadSha: function (s) { window.__setHead = s; },
+    path: function () { return 'G-news.html'; },
+    mapped: function () { return true; },
+    markPublished: function () { return Promise.resolve(); },
+    liveDoc: function () { return document; },
+    liveWin: function () { return window; },
+    map: function () { return null; },
+    current: function () { return null; },
+    dirty: function () { return false; }
+  };
+
+  Y.net = {
+    auth: function () {
+      return Promise.resolve({
+        ok: true, branch: 'main', basePath: 'design-candidates',
+        headSha: '5de2897bbbb222bbbb222bbbb222bbbb222bbbb2',
+        repo: 'todo0157/yonsei-me-homepage-competition',
+        repoUrl: 'https://github.com/todo0157/yonsei-me-homepage-competition',
+        source: 'env', canStore: true, tokenSet: false
+      });
+    },
+    call: function (action, payload) {
+      if (action === 'ghset') {
+        window.__ghset = payload;
+        return Promise.resolve({
+          ok: true, source: 'custom', repo: payload.owner + '/' + payload.repo,
+          repoUrl: 'https://github.com/' + payload.owner + '/' + payload.repo,
+          branch: payload.branch, basePath: payload.basePath,
+          headSha: 'c0ffee1c0ffee1c0ffee1c0ffee1c0ffee1c0ff', tokenSet: !!payload.token
+        });
+      }
+      if (action === 'ghreset') { window.__ghreset = true; return Promise.resolve({ ok: true, source: 'env' }); }
+      return Promise.reject(new Error('unknown ' + action));
+    },
+    history: function () {
+      return Promise.resolve({ commits: [
+        { sha: '5de2897ffffffff', message: 'YSME 게시: assets/js/data.js (qwer1234)', author: 'qwer1234', date: new Date(Date.now() - 360000).toISOString(), html_url: 'https://github.com/x/c/1' },
+        { sha: '91bef3dffffffff', message: 'chore(auto): Vercel 배포 트리거 [auto-deploy-trigger]', author: '권창한', date: new Date(Date.now() - 400000).toISOString(), html_url: 'https://github.com/x/c/2' },
+        { sha: '63d08d1ffffffff', message: '구독 확인 — 신청 폼 대신 전용 화면', author: 'Seoyuning', date: new Date(Date.now() - 4000000).toISOString(), html_url: 'https://github.com/x/c/3' }
+      ] });
+    },
+    commit: function () { return Promise.reject(new Error('하니스에서는 게시하지 않습니다')); }
+  };
+
+  var SHAPE = [
+    { key: 'no', kind: 'string' }, { key: 'title', kind: 'string' }, { key: 'date', kind: 'string' },
+    { key: 'url', kind: 'string' }, { key: 'att', kind: 'bool' }, { key: 'bodyKind', kind: 'string' },
+    { key: 'attName', kind: 'string' }, { key: 'body', kind: 'string' }
+  ];
+  Y.datamap = {
+    load: function () { return Promise.resolve(); },
+    shapeOf: function () { return SHAPE.slice(); },
+    items: function () {
+      return [
+        { index: 0, item: { no: '공지', title: '기존 공지 예시', date: '2026.08.01', att: true }, pending: false },
+        { index: 1, item: { no: 730, title: '번호 있는 글', date: '2026.07.15' }, pending: false }
+      ];
+    },
+    addItem: function (coll, obj) { window.__added = { coll: coll, obj: obj }; return Promise.resolve(0); },
+    removeItem: function () { return Promise.resolve(); }
+  };
+})();
+</script>
+<script src="../assets/studio/hud.js"></script>
+<script src="../assets/studio/posts.js"></script>
+<script src="../assets/studio/github.js"></script>
+<script>
+(function () {
+  var Y = window.YStudio;
+  var logEl = document.getElementById('log');
+  var results = [];
+  function t(name, ok, detail) {
+    results.push({ name: name, ok: !!ok });
+    var p = document.createElement('p');
+    p.innerHTML = (ok ? '<b>PASS</b> ' : '<i>FAIL</i> ') + name + (detail ? ' — ' + detail : '');
+    logEl.appendChild(p);
+    console.log((ok ? 'PASS ' : 'FAIL ') + name + (detail ? ' — ' + detail : ''));
+  }
+  function q(s, r) { return (r || document).querySelector(s); }
+  function qa(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+  window.__run = (async function () {
+    await sleep(300);                       // 패널 등록(150ms 폴링) 대기
+    /* 지난 실행이 남긴 초안 비우기 — IndexedDB 는 새로고침을 넘어 산다 */
+    var old = await Y.store.all('drafts');
+    await Promise.all((old || []).map(function (d) { return Y.store.del('drafts', d.path); }));
+    Y.hud.mount();
+    await sleep(120);
+
+    /* 1. 스택 — 게시 없음 · 깃헙 있음, 패널 푸터에 게시 */
+    var labels = qa('.ys-stack .ys-btn .ys-btn-tx').map(function (n) { return n.textContent; });
+    t('스택에 게시 버튼 없음', labels.indexOf('게시') < 0, labels.join('/'));
+    t('스택에 깃헙 버튼 있음', labels.indexOf('깃헙') >= 0);
+    t('패널 푸터 게시 버튼', !!q('.ys-panel-foot .ys-pubfoot'));
+
+    /* 2. 글등록 패널 — 차례·본문 큰 칸·본문형태 없음·첨부 묶음 */
+    Y.hud.openPanel('post');
+    await sleep(250);
+    var panel = q('[data-ys-panel="post"]');
+    var fLabels = qa('.ys-post-f > span', panel).map(function (n) { return n.firstChild ? n.firstChild.textContent : n.textContent; });
+    /* fLabels[0]은 게시판 고르기(분류) — 입력 칸 차례는 그 다음부터 본다 */
+    t('입력 차례 제목→날짜→…→본문', fLabels.slice(1, 5).join('/') === '제목/날짜/번호/본문', fLabels.join('/'));
+    t('본문 큰 칸(is-tall)', !!q('.ys-ta.is-tall', panel));
+    t('본문 형태 칸 없음', fLabels.join('/').indexOf('본문 형태') < 0);
+    var attChk = q('.ys-post-chk input', panel);
+    var attGrp = q('.ys-post-attg', panel);
+    t('첨부 묶음 존재·처음엔 접힘', attGrp && attGrp.style.display === 'none');
+
+    /* 3. 첨부 켜고 파일 올리기 */
+    attChk.click();
+    t('첨부 켜면 묶음 열림', attGrp.style.display !== 'none');
+    var fileInp = q('input[type="file"]', panel);
+    var dt = new DataTransfer();
+    dt.items.add(new File([new Uint8Array(2048)], '테스트 안내문, 최종.pdf', { type: 'application/pdf' }));
+    dt.items.add(new File([new Uint8Array(1024)], '참가 신청서.hwp'));
+    fileInp.files = dt.files;
+    fileInp.dispatchEvent(new Event('change'));
+    await sleep(300);
+    var chips = qa('.ys-post-upc', panel);
+    t('파일 2개 칩 표시', chips.length === 2, chips.length + '개');
+    var nameWrap = qa('.ys-post-attg .ys-post-f', panel).filter(function (w) {
+      return w.textContent.indexOf('첨부 이름만') >= 0;
+    })[0];
+    t('파일 올리면 이름 칸 접힘', nameWrap && nameWrap.style.display === 'none');
+
+    /* 4. 등록 — 문단 보존·bodyKind 자동·attFiles 짝 */
+    var tas = qa('.ys-ta', panel);
+    var titleTa = tas[0], bodyTa = q('.ys-ta.is-tall', panel);
+    titleTa.value = '하니스 테스트 공지';
+    bodyTa.value = '첫 문단입니다.\n\n둘째 문단입니다.\n셋째 줄.';
+    var addBtn = qa('.ys-post-act .ys-act', panel).filter(function (b) { return b.textContent === '등록'; })[0];
+    addBtn.click();
+    await sleep(350);
+    var A = window.__added && window.__added.obj;
+    t('등록 호출됨', !!A);
+    if (A) {
+      t('본문 문단 보존', A.body === '첫 문단입니다.\n\n둘째 문단입니다.\n셋째 줄.', JSON.stringify(A.body));
+      t('bodyKind 자동 text', A.bodyKind === 'text', A.bodyKind);
+      t('att 자동 켜짐', A.att === true);
+      t('attName = 원래 이름', A.attName === '테스트 안내문, 최종.pdf, 참가 신청서.hwp', A.attName);
+      var okAf = /^assets\/files\/[a-z0-9]+-1\.pdf>테스트 안내문, 최종\.pdf\|assets\/files\/[a-z0-9]+-2\.hwp>참가 신청서\.hwp$/.test(A.attFiles || '');
+      t('attFiles 경로>이름|… 형식', okAf, A.attFiles);
+    }
+    var drafts = await Y.store.all('drafts');
+    var staged = (drafts || []).filter(function (d) { return d.encoding === 'base64' && /^assets\/files\//.test(d.path); });
+    t('첨부 base64 초안 2건', staged.length === 2, staged.map(function (d) { return d.path; }).join(', '));
+    await sleep(400);
+    var cnt = q('.ys-pubfoot-c');
+    t('푸터에 초안 개수 표시', /미게시 초안 \d+건/.test(cnt.textContent), cnt.textContent);
+
+    /* 5. 본문 없으면 bodyKind=file */
+    window.__added = null;
+    var tas2 = qa('.ys-ta', q('[data-ys-panel="post"]'));
+    tas2[0].value = '본문 없는 공지';
+    var addBtn2 = qa('.ys-post-act .ys-act', q('[data-ys-panel="post"]')).filter(function (b) { return b.textContent === '등록'; })[0];
+    addBtn2.click();
+    await sleep(300);
+    t('본문 없으면 bodyKind=file', window.__added && window.__added.obj.bodyKind === 'file',
+      window.__added && window.__added.obj.bodyKind);
+
+    /* 6. 번호 자동 다음번호 — 최고 번호 730 → 기본값 731 */
+    var noWrap = qa('.ys-post-f', q('[data-ys-panel="post"]')).filter(function (w) {
+      var s = w.querySelector('span');
+      return s && s.firstChild && s.firstChild.textContent === '번호';
+    })[0];
+    t('번호 기본값 = 다음 번호(731)', noWrap && noWrap.querySelector('input').value === '731',
+      noWrap && noWrap.querySelector('input').value);
+
+    /* 7. 화면 하단 게시 버튼 — 패널 열림=숨김 · 닫힘+초안=표시 · 클릭=게시 모달 */
+    var bar = q('.ys-pubbar');
+    t('패널 열려 있으면 하단 게시 숨김', bar && !bar.classList.contains('is-on'));
+    Y.hud.closePanel();
+    await sleep(150);
+    t('패널 닫고 초안 있으면 하단 게시 표시', bar.classList.contains('is-on') && /미게시 초안 \d+건/.test(bar.textContent), bar.textContent);
+    bar.click();
+    await sleep(400);
+    var pubModal = q('.ys-modal');
+    t('하단 게시 → 게시 모달(첨부 초안 목록)', pubModal && pubModal.textContent.indexOf('assets/files/') >= 0);
+    var cancelB = qa('.ys-modal-f button', pubModal).filter(function (b) { return !b.classList.contains('is-pri'); })[0];
+    if (cancelB) cancelB.click();
+    await sleep(150);
+
+    /* 8. 깃헙 관리 패널 */
+    Y.hud.openPanel('github');
+    await sleep(350);
+    var gh = q('[data-ys-panel="github"]');
+    t('저장소 이름·링크', !!qa('.ys-gh-lnk', gh).filter(function (a) { return a.textContent.indexOf('todo0157/') === 0; }).length);
+    var histTexts = qa('.ys-gh-c-m', gh).map(function (n) { return n.textContent; }).join(' | ');
+    t('이력에 트리거 커밋 제외', histTexts.indexOf('auto-deploy-trigger') < 0 && histTexts.indexOf('YSME 게시') >= 0, histTexts);
+    var chkBtn = qa('.ys-gh-act .ys-act', gh)[0];
+    chkBtn.click();
+    await sleep(250);
+    t('연결 다시 확인 → 기준점 갱신', window.__setHead === '5de2897bbbb222bbbb222bbbb222bbbb222bbbb2', String(window.__setHead).slice(0, 7));
+
+    /* 9. 연결 바꾸기 — 폼 열기 → 저장 → confirm → ghset 호출·화면 갱신 */
+    var openBtn = qa('.ys-act', gh).filter(function (b) { return b.textContent.indexOf('다른 저장소로 바꾸기') >= 0; })[0];
+    t('연결 바꾸기 버튼 있음', !!openBtn);
+    openBtn.click();
+    var form = q('.ys-gh-form', gh);
+    t('폼 열림(소유자·토큰 칸)', form && form.style.display !== 'none' && qa('input', form).length >= 5);
+    var ins = qa('input', form);
+    ins[0].value = 'yonsei-me-dept'; ins[1].value = 'me-homepage'; ins[2].value = 'main';
+    ins[3].value = ''; ins[4].value = 'ghp_TESTTESTTESTTESTTEST0001';
+    var saveBtn = qa('.ys-act.is-pri', form)[0];
+    saveBtn.click();
+    await sleep(200);
+    var cfm = q('.ys-modal');
+    t('바꾸기 전 확인 모달', cfm && cfm.textContent.indexOf('yonsei-me-dept/me-homepage') >= 0);
+    var okB = qa('.ys-modal-f .is-pri', cfm)[0];
+    okB.click();
+    await sleep(300);
+    t('ghset 호출값', window.__ghset && window.__ghset.owner === 'yonsei-me-dept'
+      && window.__ghset.repo === 'me-homepage' && window.__ghset.token === 'ghp_TESTTESTTESTTESTTEST0001',
+      JSON.stringify(window.__ghset || null).replace(/ghp_[A-Z0-9]+/, 'ghp_…'));
+    t('새 기준점 반영', window.__setHead === 'c0ffee1c0ffee1c0ffee1c0ffee1c0ffee1c0ff', String(window.__setHead).slice(0, 7));
+    var gh2 = q('[data-ys-panel="github"]');
+    t('카드가 새 저장소 표시', gh2.textContent.indexOf('yonsei-me-dept/me-homepage') >= 0);
+    t('출처 = 직접 설정', gh2.textContent.indexOf('관리 화면에서 직접 설정') >= 0);
+
+    /* 10. 기본으로 되돌리기 */
+    var resetBtn = qa('.ys-act', gh2).filter(function (b) { return b.textContent.indexOf('기본(환경변수)') >= 0; })[0];
+    t('되돌리기 버튼 있음(직접 설정일 때)', !!resetBtn);
+    if (resetBtn) {
+      resetBtn.click();
+      await sleep(200);
+      var cfm2 = q('.ys-modal');
+      var okB2 = cfm2 && qa('.ys-modal-f .is-pri', cfm2)[0];
+      if (okB2) okB2.click();
+      await sleep(300);
+      t('ghreset 호출·env 복귀', window.__ghreset === true && q('[data-ys-panel="github"]').textContent.indexOf('todo0157/') >= 0);
+    }
+
+    var fail = results.filter(function (r) { return !r.ok; }).length;
+    var sum = 'TOTAL ' + results.length + ' · FAIL ' + fail;
+    console.log(sum);
+    var h = document.createElement('h2');
+    h.textContent = sum;
+    logEl.appendChild(h);
+    return sum;
+  })();
+})();
+</script>
+</body>
+</html>

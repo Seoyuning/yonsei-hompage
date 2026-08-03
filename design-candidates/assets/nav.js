@@ -1262,4 +1262,94 @@
     if (!on && /[?&]studio=1(&|$)/.test(location.search)) on = true;
     if (on) add('studio/boot.js', 'data-ysme-studio');
   } catch (e3) {}
+
+  /* (3) 관리자 링크 가로채기 — 페이지를 다시 부르지 않고 그 자리에서 스튜디오를 깨운다.
+     다시 부르면 화면이 맨 위로 튀고, 도구가 뜰 때까지 아무 표시가 없다는 게 문제였다.
+     대신 독수리 날갯짓 로딩을 띄우고, 게이트나 도구 막대(.ys-gate/.ys-root)가
+     실제로 화면에 올라오면 걷는다. */
+  function eagleOverlay() {
+    var Z = 2147483035;                    // 게이트(+40)보다 아래, 사이트 UI 전부보다 위
+    var el = document.createElement('div');
+    el.className = 'ys-eload';
+    el.setAttribute('data-ys-ui', '');     // i18n·편집 도구가 건드리지 않게
+    el.setAttribute('role', 'status');
+    el.setAttribute('aria-label', '관리자 도구를 여는 중');
+    el.innerHTML =
+      '<style>' +
+      '.ys-eload{position:fixed;top:0;left:0;right:0;bottom:0;z-index:' + Z + ';display:flex;' +
+        'flex-direction:column;align-items:center;justify-content:center;gap:.4rem;' +
+        'background:rgba(9,18,34,.78);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);' +
+        'opacity:0;transition:opacity .28s ease}' +
+      '.ys-eload.is-on{opacity:1}' +
+      '.ys-eload svg{width:8.5rem;height:auto;overflow:visible;' +
+        'animation:ysel-bob 1.15s ease-in-out infinite alternate}' +
+      '.ys-eload .ysel-wl{transform-origin:53px 40px;animation:ysel-fl .5s ease-in-out infinite alternate}' +
+      '.ys-eload .ysel-wr{transform-origin:67px 40px;animation:ysel-fr .5s ease-in-out infinite alternate}' +
+      '@keyframes ysel-fl{from{transform:rotate(22deg)}to{transform:rotate(-16deg)}}' +
+      '@keyframes ysel-fr{from{transform:rotate(-22deg)}to{transform:rotate(16deg)}}' +
+      '@keyframes ysel-bob{from{transform:translateY(-5px)}to{transform:translateY(6px)}}' +
+      '.ys-eload-t{margin:.9rem 0 0;font:700 .95rem/1.5 "Apple SD Gothic Neo","Pretendard",system-ui,sans-serif;' +
+        'color:#fff;letter-spacing:-.01em}' +
+      '.ys-eload-t i{display:inline-block;width:.22em;height:.22em;border-radius:50%;background:#fff;' +
+        'margin-left:.28em;vertical-align:.06em;animation:ysel-dot 1.2s ease-in-out infinite}' +
+      '.ys-eload-t i:nth-child(2){animation-delay:.2s}' +
+      '.ys-eload-t i:nth-child(3){animation-delay:.4s}' +
+      '@keyframes ysel-dot{0%,60%,100%{opacity:.25}30%{opacity:1}}' +
+      '.ys-eload-s{margin:0;font:400 .74rem/1.5 "Apple SD Gothic Neo","Pretendard",system-ui,sans-serif;' +
+        'color:rgba(255,255,255,.55)}' +
+      '@media (prefers-reduced-motion:reduce){.ys-eload svg,.ys-eload .ysel-wl,.ys-eload .ysel-wr,' +
+        '.ys-eload-t i{animation:none}}' +
+      '</style>' +
+      '<svg viewBox="0 0 120 80" fill="#fff" aria-hidden="true">' +
+        /* 왼 날개 — 어깨(53,40)를 축으로 퍼덕인다. 아래 가장자리는 깃털 갈래 */
+        '<g class="ysel-wl"><path d="M53 37 C41 24 25 19 5 24 C13 30 19 33 25 36 ' +
+          'C19 38 13 40 8 44 L20 44 C16 47 13 50 11 54 L26 50 C24 53 23 56 23 59 ' +
+          'L38 51 C43 48 49 45 53 44 Z"/></g>' +
+        /* 오른 날개 — 같은 모양을 좌우로 뒤집는다 */
+        '<g class="ysel-wr"><path d="M67 37 C79 24 95 19 115 24 C107 30 101 33 95 36 ' +
+          'C101 38 107 40 112 44 L100 44 C104 47 107 50 109 54 L94 50 C96 53 97 56 97 59 ' +
+          'L82 51 C77 48 71 45 67 44 Z"/></g>' +
+        /* 몸통·머리·부리·꼬리 */
+        '<circle cx="60" cy="27" r="5.6"/>' +
+        '<path d="M60 31 L57.4 34.6 L60 37 L62.6 34.6 Z"/>' +
+        '<path d="M60 33 C55 36 52.5 41 52.5 47 C52.5 54 56 60 60 63 C64 60 67.5 54 67.5 47 ' +
+          'C67.5 41 65 36 60 33 Z"/>' +
+        '<path d="M56.5 61 L54.5 72 L58 68.5 L60 74 L62 68.5 L65.5 72 L63.5 61 Z"/>' +
+      '</svg>' +
+      '<p class="ys-eload-t">관리자 도구를 여는 중<i></i><i></i><i></i></p>' +
+      '<p class="ys-eload-s">처음 열 때는 몇 초 걸릴 수 있습니다</p>';
+    (document.body || document.documentElement).appendChild(el);
+    requestAnimationFrame(function () { el.classList.add('is-on'); });
+    return el;
+  }
+  function dropOverlay(el) {
+    if (!el || !el.parentNode) return;
+    el.classList.remove('is-on');
+    setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 320);
+  }
+  try {
+    document.addEventListener('click', function (e) {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      var a = e.target && e.target.closest ? e.target.closest('a[href*="studio=1"]') : null;
+      if (!a) return;
+      var Ys = window.YStudio;
+      if (Ys && Ys.boot) {
+        /* 이미 부팅됐다(도구가 떠 있으면 이동만 막는다). 종료 후 재진입 등
+           화면에 아무것도 없는 경우는 원래 링크대로 이동시켜 처음부터 다시 연다. */
+        if (document.querySelector('.ys-gate, .ys-root')) e.preventDefault();
+        return;
+      }
+      e.preventDefault();
+      var ov = eagleOverlay();
+      add('studio/boot.js', 'data-ysme-studio');
+      var t0 = Date.now();
+      (function tick() {
+        var up = document.querySelector('.ys-gate, .ys-root');
+        var Y2 = window.YStudio;
+        var dead = Y2 && Y2.boot && Y2.boot.state === 'dead';
+        if (up || dead || Date.now() - t0 > 25000) { dropOverlay(ov); return; }
+        setTimeout(tick, 120);
+      })();
+    });
+  } catch (e4) {}
 })();

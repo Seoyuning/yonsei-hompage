@@ -49,7 +49,9 @@ h1{font-family:"Pretendard Variable","Pretendard","Apple SD Gothic Neo",system-u
   text-transform:uppercase;color:rgba(255,255,255,.72);margin-bottom:.55rem}
 .phero h1{font-size:clamp(1.7rem,1.2rem + 2.4vw,2.9rem);font-weight:800;line-height:1.16;color:#fff}
 
-.section{padding:clamp(2.6rem,2rem + 2.4vw,4rem) 0 clamp(3.4rem,3rem + 2.4vw,5rem)}
+/* 세로만 longhand 로 — 축약(padding:위 0 아래)을 쓰면 좌우가 0 이 되어
+   .wrap 의 좌우 여백을 통째로 지워 버린다(모바일에서 폼이 화면 끝까지 붙던 원인) */
+.section{padding-top:clamp(2.6rem,2rem + 2.4vw,4rem);padding-bottom:clamp(3.4rem,3rem + 2.4vw,5rem)}
 /* 완료 화면 — 확인 링크를 타고 온 사람에게는 신청 폼이 아니라 「끝났다」가 보여야 한다.
    (배너만 얹었더니 아래 신청 칸 때문에 "된 건가?" 하는 혼동이 실제로 있었다) */
 .fin{display:none}

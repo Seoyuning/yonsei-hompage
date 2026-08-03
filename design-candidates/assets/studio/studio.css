@@ -86,18 +86,22 @@
   pointer-events: none;
 }
 
-/* ══ 2. 상태바 ══ */
+/* ══ 2. 상태바 — 우측 하단, 종료 버튼(스택 맨 아래) 왼쪽.
+   내용은 둘뿐이다: 편집자 이름 · 게시할 게 있는가. ══ */
 .ys-status {
+  position: fixed;
+  right: calc(1.05rem + 3.6rem + .5rem);   /* 루트 여백 + 버튼 스택 폭 + 간격 */
+  bottom: 1.05rem;
   display: flex;
   align-items: center;
   gap: .34rem;
-  max-width: calc(100vw - 2.2rem);
-  padding: .3rem .72rem;
+  max-width: calc(100vw - 7rem);
+  padding: .38rem .8rem;
   border: 1px solid #e3e9f3;
   border-radius: 999px;
   background: #fff;
   box-shadow: var(--ys-sh);
-  font-size: .68rem;
+  font-size: .7rem;
   font-weight: 600;
   color: var(--ys-muted);
   white-space: nowrap;
@@ -106,9 +110,43 @@
 }
 .ys-st-i { flex: 0 1 auto; overflow: hidden; text-overflow: ellipsis; }
 .ys-st-i.is-page { color: var(--ys-navy); font-weight: 800; }
-.ys-st-i.is-dirty { color: var(--ys-danger); font-weight: 800; }
+.ys-st-i.is-dirty { color: var(--ys-danger); font-weight: 800; text-decoration: underline; text-underline-offset: 2px; }
 .ys-st-i.is-edit { color: var(--ys-navy-2); font-weight: 800; }
 .ys-dot { color: #c2cbdb; flex: 0 0 auto; }
+
+/* ══ 2-b. 상단 편집 메뉴 — 편집 모드일 때만 화면 위 가운데 ══ */
+.ys-topmenu {
+  position: fixed;
+  top: .85rem;
+  left: 50%;
+  transform: translate(-50%, -180%);
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  padding: .34rem .45rem .34rem .85rem;
+  border: 1px solid #e3e9f3;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: var(--ys-sh);
+  font-size: .72rem;
+  font-weight: 600;
+  color: var(--ys-muted);
+  white-space: nowrap;
+  transition: transform .22s cubic-bezier(.16, 1, .3, 1);
+}
+.ys-root.is-editing .ys-topmenu { transform: translate(-50%, 0); }
+.ys-tm-k { font-weight: 800; color: var(--ys-navy-2); }
+.ys-tm-i { font-weight: 800; color: var(--ys-navy); }
+.ys-tm-b {
+  border: 1px solid #e3e9f3;
+  background: #fff;
+  border-radius: 999px;
+  padding: .24rem .62rem;
+  font-size: .7rem;
+  font-weight: 700;
+  color: var(--ys-muted);
+}
+.ys-tm-b:hover { background: var(--ys-tint); color: var(--ys-navy); }
 
 /* ══ 3. 버튼 스택 ══ */
 .ys-stack {
@@ -718,7 +756,8 @@
   .ys-root.is-panel .ys-stack,
   .ys-root.is-panel .ys-status { display: none; }
   .ys-btn { width: 3.3rem; font-size: .64rem; }
-  .ys-status { font-size: .64rem; }
+  .ys-status { font-size: .64rem; right: calc(.8rem + 3.3rem + .45rem); bottom: .8rem; }
+  .ys-topmenu { max-width: calc(100vw - 1rem); overflow-x: auto; }
   .ys-f { align-items: flex-start; flex-direction: column; gap: .22rem; }
   .ys-f-l { flex: 0 0 auto; }
   .ys-in, .ys-select, .ys-num, .ys-seg { width: 100%; }

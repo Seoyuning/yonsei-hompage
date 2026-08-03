@@ -39,6 +39,7 @@
   var root = null, stackEl = null, statusEl = null;
   var panelEl = null, panelTitleEl = null, panelBodyEl = null;
   var pubFootEl = null, pubFootCntEl = null, pubBarEl = null;
+  var topMenuEl = null, topPageEl = null, topLangEl = null;
   var panels = {}, panelIds = [], curPanel = null;
   var editing = false;
   var sel = null;                      // {idx, live, clicked, self}
@@ -241,6 +242,21 @@
     pubBarEl.addEventListener('click', function () { publish(); });
     root.appendChild(pubBarEl);
 
+    /* 상단 편집 메뉴 — 편집 모드를 켜면 화면 위 가운데에 뜬다.
+       지금 어느 페이지를 고치는지(한글 이름)와 한/영을 여기서 본다. */
+    topMenuEl = mk('div', 'ys-topmenu');
+    topMenuEl.appendChild(mk('span', 'ys-tm-k', '편집 중'));
+    topPageEl = mk('span', 'ys-tm-i', '');
+    topMenuEl.appendChild(topPageEl);
+    topLangEl = mk('button', 'ys-tm-b', '');
+    topLangEl.title = '한/영 편집 패널 열기';
+    topLangEl.addEventListener('click', function () { openPanel('lang'); });
+    topMenuEl.appendChild(topLangEl);
+    var tmOff = mk('button', 'ys-tm-b', '편집 끝내기 (E)');
+    tmOff.addEventListener('click', function () { setEditing(false); });
+    topMenuEl.appendChild(tmOff);
+    root.appendChild(topMenuEl);
+
     D.body.appendChild(root);
 
     /* 인스펙터는 HUD 자신이 등록한다 */
@@ -329,7 +345,8 @@
       if ((tries || 0) < 3) setTimeout(function () { nudgeSiteTop((tries || 0) + 1); }, 400);
       return;
     }
-    var h = (stackEl ? stackEl.offsetHeight : 0) + (statusEl ? statusEl.offsetHeight : 0) + 34;
+    /* 상태바는 이제 스택 옆(왼쪽)이라 높이에 넣지 않는다 */
+    var h = (stackEl ? stackEl.offsetHeight : 0) + 34;
     t.classList.add('ys-nudge');
     t.style.setProperty('--ys-lift', h + 'px');
   }
@@ -345,6 +362,18 @@
       try { v = localStorage.getItem('ysme-lang') || 'ko'; } catch (e) { v = 'ko'; }
     }
     return String(v).toLowerCase() === 'en' ? 'EN' : 'KO';
+  }
+
+  /* 파일 이름 대신 사람이 아는 페이지 이름 — 상단 편집 메뉴에 쓴다 */
+  var PAGE_KO = {
+    'h-academic.html': '메인', 'index.html': '메인',
+    'g-about.html': '학부소개', 'g-people.html': '구성원', 'g-research.html': '연구',
+    'g-academics.html': '학사', 'g-graduate.html': '대학원', 'g-news.html': '소식',
+    'g-admissions.html': '입학', 'subscribe.html': '공지 구독'
+  };
+  function pageKo(p) {
+    var f = String(p || '').toLowerCase().split('/').pop().split('?')[0].split('#')[0];
+    return PAGE_KO[f] || (f || '이 페이지');
   }
 
   function setStatus(patch) {
@@ -367,20 +396,22 @@
       }
       pubBarEl.classList.toggle('is-on', showBar);
     }
+    /* 상단 편집 메뉴 — 페이지 한글 이름·한/영 (편집 모드일 때만 보인다) */
+    if (topPageEl) topPageEl.textContent = pageKo(status.page || U.pagePath());
+    if (topLangEl) topLangEl.textContent = '한/영 · ' + langLabel(status.lang);
+    /* 우측 하단 상태바 — 편집자 이름과 「게시할 게 있는가」만 */
     if (!statusEl) return;
     statusEl.innerHTML = '';
-    var items = [
-      { t: status.page || U.pagePath(), c: 'is-page' },
-      { t: status.drafts ? '미저장 ' + status.drafts + '건' : '초안 없음', c: status.drafts ? 'is-dirty' : '' },
-      { t: status.author || Y.session.author(), c: '' },
-      { t: (status.mode || '보기') + ' 모드', c: editing ? 'is-edit' : '' },
-      { t: langLabel(status.lang), c: '' }
-    ];
-    if (status.saved) items.push({ t: '게시 ' + status.saved, c: '' });
-    for (var i = 0; i < items.length; i++) {
-      if (i) statusEl.appendChild(mk('span', 'ys-dot', '·'));
-      statusEl.appendChild(mk('span', 'ys-st-i' + (items[i].c ? ' ' + items[i].c : ''), items[i].t));
+    statusEl.appendChild(mk('span', 'ys-st-i', status.author || Y.session.author()));
+    statusEl.appendChild(mk('span', 'ys-dot', '·'));
+    var dirty = mk('span', 'ys-st-i' + (status.drafts ? ' is-dirty' : ''),
+      status.drafts ? '게시할 초안 ' + status.drafts + '건' : '게시할 것 없음');
+    if (status.drafts) {
+      dirty.title = '게시 (Ctrl+Shift+P)';
+      dirty.style.cursor = 'pointer';
+      dirty.addEventListener('click', function () { publish(); });
     }
+    statusEl.appendChild(dirty);
   }
 
   var refreshDraftsSoon = U.debounce(function () { refreshDrafts(); }, 250);

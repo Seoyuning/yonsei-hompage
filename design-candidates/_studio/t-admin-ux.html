@@ -321,6 +321,28 @@
     if (exCancel) exCancel.click();
     await sleep(150);
 
+    /* 12. 우측 하단 상태바 — 이름 + 게시 여부만 */
+    var stBar = q('.ys-status');
+    t('상태바 = 이름·게시 여부', stBar && stBar.textContent.indexOf('테스트') >= 0 && /게시할/.test(stBar.textContent),
+      stBar && stBar.textContent);
+    t('상태바에 파일명·모드 없음', stBar && stBar.textContent.indexOf('.html') < 0 && stBar.textContent.indexOf('모드') < 0);
+
+    /* 13. 상단 편집 메뉴 — 편집 켜면 한글 페이지 이름·한/영 */
+    Y.hud.setStatus({ page: 'G-news.html' });
+    Y.hud.setEditing(true);
+    await sleep(150);
+    var tm = q('.ys-topmenu');
+    var rootEl2 = q('.ys-root');
+    t('편집 켜면 상단 메뉴(소식·한/영)', rootEl2.classList.contains('is-editing')
+      && tm.textContent.indexOf('소식') >= 0 && tm.textContent.indexOf('한/영') >= 0, tm.textContent);
+    Y.hud.setStatus({ page: 'H-academic.html' });
+    t('페이지 한글 이름 매핑(메인)', q('.ys-tm-i').textContent === '메인', q('.ys-tm-i').textContent);
+    var offB = qa('.ys-tm-b', tm).filter(function (b) { return b.textContent.indexOf('편집 끝내기') >= 0; })[0];
+    t('편집 끝내기 버튼 있음', !!offB);
+    offB.click();
+    await sleep(120);
+    t('끝내기 → 편집 모드 해제', !rootEl2.classList.contains('is-editing'));
+
     var fail = results.filter(function (r) { return !r.ok; }).length;
     var sum = 'TOTAL ' + results.length + ' · FAIL ' + fail;
     console.log(sum);

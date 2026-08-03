@@ -406,31 +406,36 @@
   /* ── 6. UI ── */
   function ensureStyle() {
     if (document.getElementById(STYLE_ID)) return;
+    /* 사이트(스튜디오) 디자인 토큰을 그대로 쓴다 — 별도 색·글꼴을 만들지 않는다 */
     var css = [
-      '.ys-dm{display:flex;flex-direction:column;gap:.5rem;font:400 .82rem/1.5 "Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif}',
-      '.ys-dm-head{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap}',
-      '.ys-dm-tag{font:700 .68rem/1 inherit;letter-spacing:.06em;text-transform:uppercase;',
-      'background:#12294f;color:#fff;border-radius:.28rem;padding:.24rem .38rem}',
-      '.ys-dm-path{color:#4a5a74}',
-      '.ys-dm-note{color:#5b6b85;font-size:.76rem;margin:0}',
+      '.ys-dm{display:flex;flex-direction:column;gap:.55rem;font:inherit}',
+      '.ys-dm-head{display:flex;align-items:center;gap:.45rem;flex-wrap:wrap}',
+      '.ys-dm-path{font-size:.8rem;font-weight:800;color:var(--ys-navy,#12294f)}',
+      '.ys-dm-note{color:var(--ys-muted,#5b6b85);font-size:.76rem;margin:0}',
       '.ys-dm-item{display:flex;align-items:center;justify-content:space-between;gap:.4rem;',
-      'border-top:1px solid #dfe5ef;padding-top:.4rem}',
-      '.ys-dm-f{display:flex;flex-direction:column;gap:.16rem}',
-      '.ys-dm-f>span{font-size:.72rem;color:#5b6b85}',
-      '.ys-dm-f input,.ys-dm-f textarea,.ys-dm-filter{font:400 .82rem/1.45 inherit;color:#0d1b2f;',
-      'border:1px solid #c6d0e0;border-radius:.34rem;padding:.34rem .44rem;background:#fff;width:100%;box-sizing:border-box}',
-      '.ys-dm-f textarea{min-height:4.4rem;resize:vertical}',
-      '.ys-dm-f.is-hit>span{color:#0d5c3a;font-weight:700}',
-      '.ys-dm-act{display:flex;gap:.35rem;flex-wrap:wrap}',
-      '.ys-dm-btn{font:600 .78rem/1 inherit;cursor:pointer;border:1px solid #c6d0e0;background:#eef2f9;',
-      'color:#12294f;border-radius:.34rem;padding:.4rem .56rem}',
-      '.ys-dm-btn:hover{background:#fff}',
-      '.ys-dm-btn.is-primary{background:#12294f;border-color:#12294f;color:#fff}',
+      'border-top:1px solid var(--ys-line,#dfe5ef);padding-top:.45rem}',
+      '.ys-dm-item>b{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;',
+      'font-size:.78rem;color:var(--ys-ink,#0d1b2f)}',
+      '.ys-dm-f{display:flex;flex-direction:column;gap:.18rem}',
+      '.ys-dm-f>span{font-size:.7rem;font-weight:700;color:var(--ys-muted,#5b6b85)}',
+      '.ys-dm-f input,.ys-dm-f textarea,.ys-dm-filter{font:inherit;font-size:.82rem;line-height:1.5;',
+      'color:var(--ys-ink,#0d1b2f);border:1px solid var(--ys-line,#c6d0e0);border-radius:.4rem;',
+      'padding:.4rem .5rem;background:#fff;width:100%;box-sizing:border-box;overflow-wrap:anywhere}',
+      '.ys-dm-f textarea{min-height:4.6rem;resize:vertical}',
+      '.ys-dm-f.is-hit>span{color:#0d5c3a}',
+      /* 저장 줄은 입력칸과 실선으로 가른다 — 마지막 칸과 버튼이 붙어 보이던 문제 */
+      '.ys-dm-act{display:flex;gap:.4rem;flex-wrap:wrap;border-top:1px solid var(--ys-line,#dfe5ef);',
+      'padding-top:.6rem;margin-top:.15rem}',
+      '.ys-dm-btn{font:inherit;font-size:.78rem;font-weight:700;cursor:pointer;',
+      'border:1px solid var(--ys-line,#c6d0e0);background:#fff;color:var(--ys-navy,#12294f);',
+      'border-radius:.4rem;padding:.42rem .6rem}',
+      '.ys-dm-btn:hover{background:var(--ys-tint,#eef2f9)}',
+      '.ys-dm-btn.is-primary{background:var(--ys-navy,#12294f);border-color:var(--ys-navy,#12294f);color:#fff}',
       '.ys-dm-list{display:flex;flex-direction:column;gap:.16rem;max-height:16rem;overflow:auto}',
-      '.ys-dm-list h5{margin:.3rem 0 .1rem;font-size:.72rem;color:#5b6b85}',
-      '.ys-dm-pick{text-align:left;font:400 .8rem/1.4 inherit;cursor:pointer;border:0;background:transparent;',
-      'color:#12294f;padding:.22rem .3rem;border-radius:.28rem}',
-      '.ys-dm-pick:hover{background:#eef2f9}'
+      '.ys-dm-list h5{margin:.3rem 0 .1rem;font-size:.7rem;font-weight:700;color:var(--ys-muted,#5b6b85)}',
+      '.ys-dm-pick{text-align:left;font:inherit;font-size:.8rem;line-height:1.4;cursor:pointer;border:0;background:transparent;',
+      'color:var(--ys-ink,#0d1b2f);padding:.24rem .34rem;border-radius:.3rem}',
+      '.ys-dm-pick:hover{background:var(--ys-tint,#eef2f9);color:var(--ys-navy,#12294f)}'
     ].join('');
     var st = document.createElement('style');
     st.id = STYLE_ID;
@@ -447,13 +452,46 @@
     var root = d.createElement('div');
     root.className = 'ys-dm';
     root.setAttribute(Y.config.uiAttr, '');
+    /* 설명 문장 대신 이름 하나 — 공유 사실은 툴팁으로만 남긴다 */
     root.innerHTML =
-      '<div class="ys-dm-head"><span class="ys-dm-tag">목록</span>' +
+      '<div class="ys-dm-head" title="여러 페이지에 함께 나오는 목록 — 고치면 모두 반영됩니다">' +
       '<span class="ys-dm-path">' + U.esc(owner.human || humanOf(owner.containerId)) + '</span></div>' +
-      '<p class="ys-dm-note">여러 페이지가 함께 쓰는 목록입니다. 아래에서 고치면 이 목록이 나오는 모든 곳에 같이 바뀝니다.</p>' +
       '<div class="ys-dm-body"></div>';
     host.appendChild(root);
     return root.querySelector('.ys-dm-body');
+  }
+
+  /* 고른 글의 카드가 보이게 화면을 옮긴다 — 목록에서 다른 글을 고르면
+     지금 어디를 고치는지 화면이 따라와야 한다. 이름/제목 글자로 카드를 찾고,
+     (필터로 숨겨져 있는 등) 못 찾으면 목록 상자라도 가운데로 올린다. */
+  function revealItem(owner, coll, index) {
+    try {
+      var arrNode = state && state.root && state.root.props[coll];
+      var item = arrNode && arrNode.items && arrNode.items[index] ? plain(arrNode.items[index]) : null;
+      if (!item) return;
+      var doc = (Y.engine && Y.engine.liveDoc && Y.engine.liveDoc()) || document;
+      var box = doc.getElementById(owner.containerId);
+      if (!box) return;
+      var key = norm(String(item.name || item.title || item.ko || item.code || '')).slice(0, 40);
+      var hit = null;
+      if (key) {
+        var els = box.getElementsByTagName('*');
+        for (var i = 0; i < els.length; i++) {
+          if (els[i].children.length) continue;
+          if (norm(els[i].textContent || '').indexOf(key) >= 0) { hit = els[i]; break; }
+        }
+      }
+      var card = hit;
+      while (card && card.parentElement && card.parentElement !== box) card = card.parentElement;
+      var target = card || box;
+      try { target.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
+      catch (e) { target.scrollIntoView(); }
+      if (card) {
+        card.style.outline = '2px solid #12294f';
+        card.style.outlineOffset = '3px';
+        setTimeout(function () { card.style.outline = ''; card.style.outlineOffset = ''; }, 1600);
+      }
+    } catch (e) {}
   }
 
   /** 항목 선택 목록 */
@@ -524,12 +562,16 @@
     alt.className = 'ys-dm-btn';
     alt.textContent = '다른 글 고르기';
     alt.addEventListener('click', function () {
-      renderList(host, owner, function (c, i) { renderForm(host, owner, c, i, null); });
+      renderList(host, owner, function (c, i) {
+        renderForm(host, owner, c, i, null);
+        revealItem(owner, c, i);          // 고른 글의 카드가 보이게 화면을 옮긴다
+      });
     });
     head.appendChild(alt);
     body.appendChild(head);
 
-    var fs = fieldsOf(item, '', 0, []), inputs = [];
+    /* initial(교수 목록의 초성 그룹 키)은 화면 정렬용 내부 값이라 폼에 내지 않는다 */
+    var fs = fieldsOf(item, '', 0, []).filter(function (f) { return f.key !== 'initial'; }), inputs = [];
     for (var i = 0; i < fs.length; i++) {
       var f = fs[i];
       var lab = d.createElement('label');
@@ -696,7 +738,10 @@
       return ensure().then(function () {
         var found = findItem(owner.colls, clickText, itemText);
         if (found) renderForm(hostEl, pub, found.coll, found.index, found.hit);
-        else renderList(hostEl, pub, function (c, i) { renderForm(hostEl, pub, c, i, null); });
+        else renderList(hostEl, pub, function (c, i) {
+          renderForm(hostEl, pub, c, i, null);
+          revealItem(pub, c, i);
+        });
         return true;
       }, function (e) {
         hostEl.textContent = '';

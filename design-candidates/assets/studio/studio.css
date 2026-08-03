@@ -258,6 +258,28 @@
   padding: .85rem .95rem 3rem;
 }
 
+/* 목록 글 선택 시 — 바깥 틀(목록 상자) 편집은 접힌 상자 안에만 둔다 */
+.ys-frame {
+  border-top: 1px solid var(--ys-line);
+  padding-top: .55rem;
+  margin-top: .2rem;
+}
+.ys-frame-s {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  font-size: .74rem;
+  font-weight: 700;
+  color: var(--ys-muted);
+}
+.ys-frame-s::-webkit-details-marker { display: none; }
+.ys-frame-s::before { content: '▸'; font-size: .62rem; transition: transform .15s; }
+.ys-frame[open] .ys-frame-s::before { transform: rotate(90deg); }
+.ys-frame-s:hover { color: var(--ys-navy); }
+.ys-frame-b { display: flex; flex-direction: column; gap: .85rem; margin-top: .65rem; }
+
 /* 패널 하단 고정 게시 버튼 — 어떤 패널이 열려 있든 항상 맨 아래 */
 .ys-panel-foot {
   flex: 0 0 auto;
@@ -1138,15 +1160,7 @@ div.ys-vs-warn {
 }
 .ys-cmp-raw > summary:hover { color: var(--ys-navy); }
 
-/* 대부분의 사용자는 볼 일 없는 안내·설정 — 눈에 덜 띄게 */
-.ys-adv {
-  font-size: .68rem;
-  line-height: 1.5;
-  color: var(--ys-dim);
-  margin: .45rem 0 0;
-  padding-left: .5rem;
-  border-left: 2px solid var(--ys-line-2);
-}
+/* 대부분의 사용자는 볼 일 없는 설정 접기 — 눈에 덜 띄게 */
 .ys-advfold { margin-top: .35rem; }
 .ys-advfold > summary {
   cursor: pointer;

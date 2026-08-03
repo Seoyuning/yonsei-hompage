@@ -85,7 +85,6 @@
   function warnBox(txt) { return mk('p', 'ys-warn', txt); }
   function noteBox(txt) { return mk('p', 'ys-note', txt); }
   /* 대부분의 사용자는 볼 일이 없는 안내 — 눈에 덜 띄게 */
-  function advBox(txt) { return mk('p', 'ys-adv', txt); }
 
   /* ── 사람 말 이름표 ──
      쓰는 사람은 학과 조교다. 화면에 태그명·CSS 선택자·내부 번호를 내보내지 않는다. */
@@ -1071,12 +1070,9 @@
     host.appendChild(headBar(info));
 
     if (!sel.self) {
-      /* 오류가 아니라 정상 경로다 — 목록에서 온 글이므로 그 글의 원본을 바로 열어 준다.
-         빨간 경고로 보여 주면 조교 사용자는 실패한 줄 안다. */
-      var owner = (Y.datamap && Y.datamap.ownerOf) ? Y.datamap.ownerOf(sel.clicked || sel.live) : null;
-      var areaName = (owner && owner.human) || '목록';
-      host.appendChild(noteBox('여기는 ' + areaName + '에서 자동으로 그려지는 자리입니다. ' +
-        '아래에서 이 글의 내용을 바로 고칠 수 있습니다.'));
+      /* 목록(data.js)에서 그려지는 글 — 설명 문장 없이 곧바로 그 글의 편집 폼을 연다.
+         목록 상자(바깥 틀)의 배치·여백은 아래 접힌 상자에서만 — 글 편집과 섞어 두면
+         「내용 편집」과 「겉 편집」이 나란히 보여 헷갈린다. */
       var slot = mk('div', 'ys-dm');
       host.appendChild(slot);
       if (Y.datamap && typeof Y.datamap.openFor === 'function') {
@@ -1085,8 +1081,19 @@
       } else {
         slot.appendChild(hint('목록 편집 기능을 준비하는 중입니다. 잠시 후 다시 눌러 주세요.'));
       }
-      host.appendChild(advBox('아래 칸은 이 목록을 담고 있는 바깥 틀을 고치는 곳입니다. ' +
-        '글 내용이 아니라 배치·여백을 바꿀 때만 쓰세요.'));
+      var det = mk('details', 'ys-frame');
+      var sum = mk('summary', 'ys-frame-s', '목록 상자(배치·여백) 고치기');
+      det.appendChild(sum);
+      var inner = mk('div', 'ys-frame-b');
+      if (info.isLeaf) inner.appendChild(textSection(idx, info));
+      inner.appendChild(attrSection(idx, info));
+      inner.appendChild(styleSection(idx));
+      inner.appendChild(actionSection(idx, info));
+      det.appendChild(inner);
+      host.appendChild(det);
+      host.appendChild(historySection());
+      host.appendChild(shortcutNote());
+      return;
     }
 
     if (info.isLeaf) host.appendChild(textSection(idx, info));

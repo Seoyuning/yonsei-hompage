@@ -46,7 +46,8 @@
   var FIELD_LABEL = {
     no: '번호', title: '제목', date: '날짜', url: '링크', att: '첨부',
     thumb: '썸네일', name: '이름', rank: '직위', email: '이메일', tel: '전화',
-    room: '호실', lab: '연구실', cluster: '분야', desc: '설명', ko: '한국어', en: '영어'
+    room: '호실', lab: '연구실', cluster: '분야', desc: '설명', ko: '한국어', en: '영어',
+    detail: '개인 홈페이지 주소', initial: '목록 초성(정렬용)'
   };
 
   function roleOf(tag) { return ROLE[tag] || tag; }

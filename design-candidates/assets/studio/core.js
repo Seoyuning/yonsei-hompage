@@ -38,7 +38,8 @@
       cluster: '연구 분야', field: '분야', desc: '설명', summary: '요약',
       ko: '한국어', en: '영어', code: '교과목 코드', credit: '학점',
       grade: '학년', term: '학기', place: '장소', time: '시간', speaker: '연사',
-      photo: '사진', homepage: '홈페이지', keywords: '키워드', count: '개수'
+      photo: '사진', homepage: '홈페이지', keywords: '키워드', count: '개수',
+      detail: '개인 홈페이지 주소', initial: '목록 초성(정렬용)'
     },
     collOf: function (k) { return (Y.labels.coll[k] || k); },
     fieldOf: function (k) { return (Y.labels.field[k] || k); }

@@ -50,6 +50,20 @@ h1{font-family:"Pretendard Variable","Pretendard","Apple SD Gothic Neo",system-u
 .phero h1{font-size:clamp(1.7rem,1.2rem + 2.4vw,2.9rem);font-weight:800;line-height:1.16;color:#fff}
 
 .section{padding:clamp(2.6rem,2rem + 2.4vw,4rem) 0 clamp(3.4rem,3rem + 2.4vw,5rem)}
+/* 완료 화면 — 확인 링크를 타고 온 사람에게는 신청 폼이 아니라 「끝났다」가 보여야 한다.
+   (배너만 얹었더니 아래 신청 칸 때문에 "된 건가?" 하는 혼동이 실제로 있었다) */
+.fin{display:none}
+.fin.show{display:block}
+.fin .sec-kick{color:var(--navy)}
+.fin-t{font-size:clamp(1.7rem,1.2rem + 2.4vw,2.9rem);font-weight:800;letter-spacing:-.02em;color:var(--navy);
+  padding-bottom:1rem;border-bottom:1px solid var(--ink);margin-bottom:1.2rem}
+.fin-p{font-size:clamp(.92rem,.88rem + .16vw,1.02rem);color:var(--sub);line-height:1.85;max-width:40rem}
+.fin-act{display:flex;gap:1.8rem;flex-wrap:wrap;margin-top:1.8rem;align-items:baseline}
+.fin-act a{font-size:.92rem;font-weight:700;color:var(--navy)}
+.fin-act a:hover{text-decoration:underline;text-underline-offset:3px}
+.fin-note{margin-top:2.4rem;padding-top:1.1rem;border-top:1px solid var(--line);font-size:.84rem;color:var(--faint)}
+.fin-note a{font-weight:600;color:var(--sub)}
+.fin-note a:hover{color:var(--navy);text-decoration:underline;text-underline-offset:3px}
 /* 확인·해지 뒤 되돌아온 상태 — 왼쪽 네이비 기둥이 「지금 상태」 표시다 */
 .state{display:none;border:1px solid var(--line);border-left:3px solid var(--navy);
   padding:1rem 1.2rem;margin-bottom:clamp(1.8rem,1.4rem + 1.4vw,2.6rem)}
@@ -118,14 +132,28 @@ h1{font-family:"Pretendard Variable","Pretendard","Apple SD Gothic Neo",system-u
 
   <main class="wrap section">
 
-    <div class="state" id="stDone" role="status">
-      <b>구독이 시작되었습니다</b>
-      <p>학부·대학원 새 공지가 올라오면 이 주소로 알려 드립니다. 메일 하단의 링크로 언제든 해지할 수 있습니다.</p>
+    <!-- 확인 링크로 온 사람에게 보이는 완료 화면 — 신청 폼은 감춘다 -->
+    <div class="fin" id="finDone" role="status">
+      <p class="sec-kick" data-no-i18n>Subscription Confirmed</p>
+      <h2 class="fin-t">구독이 시작되었습니다</h2>
+      <p class="fin-p">확인이 끝났습니다. 이제 학부·대학원 새 공지가 홈페이지에 올라오면
+        등록하신 메일 주소로 바로 알려 드립니다. 모든 알림 메일 하단의 링크로 언제든 해지할 수 있습니다.</p>
+      <div class="fin-act">
+        <a href="G-news.html">소식 페이지 보러 가기 →</a>
+        <a href="H-academic.html">← 홈으로</a>
+      </div>
+      <p class="fin-note"><a href="subscribe.html">다른 주소로도 신청하기 →</a></p>
     </div>
-    <div class="state" id="stBye" role="status">
-      <b>구독을 해지했습니다</b>
-      <p>더 이상 알림 메일이 가지 않습니다. 필요하면 아래에서 다시 신청할 수 있습니다.</p>
+    <div class="fin" id="finBye" role="status">
+      <p class="sec-kick" data-no-i18n>Unsubscribed</p>
+      <h2 class="fin-t">구독을 해지했습니다</h2>
+      <p class="fin-p">더 이상 알림 메일이 가지 않습니다. 실수로 해지하셨다면 아래에서 다시 신청하면 됩니다.</p>
+      <div class="fin-act">
+        <a href="subscribe.html">다시 신청하기 →</a>
+        <a href="H-academic.html">← 홈으로</a>
+      </div>
     </div>
+
     <div class="state warn" id="stBad" role="status">
       <b>링크가 올바르지 않습니다</b>
       <p>확인 링크가 손상되었거나 주소가 잘려 열렸습니다. 아래에서 다시 신청해 주세요.</p>
@@ -167,12 +195,21 @@ h1{font-family:"Pretendard Variable","Pretendard","Apple SD Gothic Neo",system-u
 <script>
 (function () {
   'use strict';
-  /* 확인·해지 링크를 타고 되돌아온 상태 표시 */
+  /* 확인·해지 링크를 타고 되돌아온 상태 —
+     done/bye 는 전용 완료 화면으로 갈아 끼우고(신청 폼 감춤), bad/err 는 폼 위 배너로 남긴다 */
   var state = (location.search.match(/[?&]state=([a-z]+)/) || [])[1];
-  var map = { done: 'stDone', bye: 'stBye', bad: 'stBad', err: 'stErr' };
-  if (map[state]) {
-    var el = document.getElementById(map[state]);
-    if (el) el.classList.add('show');
+  if (state === 'done' || state === 'bye') {
+    document.getElementById(state === 'done' ? 'finDone' : 'finBye').classList.add('show');
+    var duo = document.querySelector('.duo');
+    if (duo) duo.style.display = 'none';
+    var back = document.querySelector('.back');
+    if (back) back.style.display = 'none';
+  } else {
+    var map = { bad: 'stBad', err: 'stErr' };
+    if (map[state]) {
+      var el = document.getElementById(map[state]);
+      if (el) el.classList.add('show');
+    }
   }
 
   var form = document.getElementById('joinForm');

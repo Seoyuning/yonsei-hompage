@@ -23,7 +23,8 @@ design-candidates/
 ├─ vercel.json                내부 경로(_studio) 비공개 + 보안 헤더
 ├─ api/
 │  ├─ publish.js              파일 I/O · 다중파일 원자 커밋 · 이력 · 체크포인트
-│  └─ ai.js                   Gemini/Claude 프록시 (키 미저장)
+│  ├─ ai.js                   Gemini/Claude 프록시 (키 미저장)
+│  └─ alerts.js               공지 메일 알림 — 구독(이중 확인)·해지·발송 (§11)
 ├─ assets/
 │  ├─ nav.js                  (수정) 스튜디오 로더 블록 추가
 │  ├─ i18n.js                 (신규) 방문자용 한/영 적용 런타임
@@ -39,7 +40,8 @@ design-candidates/
 │     │                       (텍스트·보이는 속성값·스크립트 문자열 / 태그·class·href·주석 제외)
 │     ├─ datamap.js           data.js 소유 판별 + JSON 소스 오프셋 편집 · 배열 항목 추가/삭제
 │     ├─ pagedict.js          홈 인라인 `var I18N` 사전의 소스 오프셋 편집
-│     ├─ posts.js             공지·뉴스·세미나·행사 등록 패널
+│     ├─ posts.js             공지·뉴스·세미나·행사 등록 패널 + 게시 후 메일 알림 큐 (§11)
+│     ├─ photos.js            머리 사진(히어로) 패널 — 업로드·세로 초점·미리보기 (§4.5)
 │     ├─ diff.js              LCS 라인 디프
 │     ├─ hud.js               플로팅 버튼 · 상태바 · 인스펙터
 │     ├─ versions.js          이름+시각 시점 저장 · 목록 · 디프 · 복원
@@ -47,6 +49,7 @@ design-candidates/
 │     ├─ i18n-edit.js         한/영 편집 모드
 │     ├─ mobile.js            모바일 렌더 모드
 │     └─ studio.css           오버레이 스타일 (전 선택자 `.ys-` 접두)
+├─ subscribe.html             공지 메일 알림 신청 페이지 (학사 일정 QR 의 목적지)
 └─ _studio/checkpoints.json   이름 붙인 시점 매니페스트 (웹 비공개)
 ```
 
@@ -200,6 +203,26 @@ JS 생성물의 텍스트는 화면에서 직접 고칠 수 없다(고쳐도 다
 | 세미나 | `seminars` | 홈 세미나 · G-news |
 | 행사 | `events` | G-news 행사 목록 |
 
+### 4.5 머리 사진(히어로) 교체 (photos.js)
+
+히어로는 각 페이지 `<style>` 의 `background:url("assets/hero-….jpg[?v=N]") center P%/cover`
+선언이 원본이다. 패널은 여덟 페이지를 훑어 사진별 카드로 모은다
+(학사·대학원처럼 **한 파일을 두 페이지가 공유**하면 한 카드 — 함께 바뀐다고 밝힌다).
+
+- **바꾸기** — 업로드한 사진을 브라우저에서 줄여(최대 2560px, JPEG 품질 .85→.72→.6,
+  한 장 base64 ≈2.1MB 상한) `drafts` 에 `{path: assets/hero-….jpg, src: base64,
+  encoding:'base64', origSrc:''}` 로 담는다. **파일 이름은 유지** — 예전 사진은 Git 이력에
+  남는다. 동시에 참조하는 모든 페이지의 `?v=` 을 (최대값+1)로 올려 방문자 캐시를 깬다.
+- **세로 초점** — `center P%` 의 P 만 오프셋 치환. 슬라이더를 움직이는 동안은 미리보기만,
+  손을 떼면 patchPage 로 초안에 쓴다.
+- **미리보기** — 현재 페이지가 그 사진을 쓰면 `data-ys-ui` 오버레이 `<style>` 로
+  `.phero,.hero-bg` 의 background-image/position 만 덮는다(원문·라이브 DOM 불변).
+- **되돌리기** — 사진 초안 삭제 + 각 페이지 초안의 `origSrc` 에서 원래 `?v=`·`P%` 토큰을
+  읽어 복원. 복원 결과가 origSrc 와 같으면 patchPage 가 그 페이지 초안을 지운다.
+- **게시 경로** — hud·versions 가 초안 레코드의 `encoding` 을 commit `files[]` 로 전달
+  (서버는 이미 base64 blob 지원). `describeDraft` 는 base64 초안을 「사진 교체 (nKB)」로
+  요약한다. 시점 **복원은 텍스트 전용**이라 사진은 복원 대상이 아니다(기존 규칙 유지).
+
 ## 5. i18n (한/영)
 
 - **한국어 = 파일의 진실.** HTML 은 항상 한국어를 담는다.
@@ -246,6 +269,7 @@ JS 생성물의 텍스트는 화면에서 직접 고칠 수 없다(고쳐도 다
 |---|---|
 | `편집` | 선택·편집 모드 on/off (off 면 방문자처럼 링크·탭·모달이 정상 동작) |
 | `글등록` | 공지·뉴스·세미나·행사 등록/삭제 (data.js 배열) — §4.4 |
+| `머리 사진` | 히어로 사진 교체·세로 초점 (사진별 카드) — §4.5 |
 | `버전 관리` | 이름+시각 시점 저장 / 목록 / 디프 / 복원 |
 | `AI 수정` | 키 등록 → 요청 → 변경안 토글 목록 → 항목별 점프·디프·승인 |
 | `모바일` | 모바일 렌더 모드 토글 |
@@ -354,3 +378,32 @@ AI 는 **무엇을 무엇으로** 만 정하고, 빠짐없이 찾는 일은 `rep
     "다른 데서 고치세요" 로 끝나는 안내는 실패로 본다.
 12. **글 등록**: 분류를 골라 제목·날짜만 넣어도 등록되고, 초안 `data.js` 가 구문 오류 없이
     평가되며, 삭제하면 바이트 동일하게 돌아온다.
+
+## 11. 공지 메일 알림 (QR 구독 · `/api/alerts`)
+
+소식 › 학사 일정의 **QR** 를 찍으면 `subscribe.html` 이 열린다. 이메일을 넣으면
+확인 메일이 가고, 메일 속 「구독 시작하기」를 눌러야 구독이 확정된다(이중 확인).
+스튜디오에서 **학부/대학원 공지**를 등록하고 「게시」가 성공하면 구독자 전원에게
+새 공지 메일이 나간다. 해지 링크는 모든 메일 하단에 붙는다.
+
+```
+POST { op:'join', email }                              → { ok }   확인 메일 발송
+GET  ?op=ok|bye&e=<b64url(email)>&t=<hmac 32자>        → 302 subscribe.html?state=…
+POST { op:'notify', passcode, items:[{kind,title,date,url}] } → { ok, total, sent, failed }
+```
+
+- **저장소** — Upstash Redis(Vercel Marketplace). 구독자는 `ysme:subs` 집합 하나.
+  링크 토큰은 저장하지 않는다 — `HMAC(ALERTS_SECRET, email)` 로 매번 셈한다(무상태).
+- **발송** — `RESEND_API_KEY` 가 있으면 Resend REST, 없으면 SMTP(`SMTP_USER/PASS`,
+  기본 smtp.gmail.com:465 — 의존성 없는 자체 클라이언트, 본문 base64 MIME).
+  Resend 는 도메인 인증 전엔 본인 계정 주소로만 발송되므로 **데모는 Gmail 앱 비밀번호**가 맞다.
+- **남용 방지** — IP 당 1분 5회 · 같은 주소 5분 쿨다운 · 한 번의 notify 상한 500명 ·
+  notify 는 게시 암호(`PUBLISH_PASSCODE`) 검증(상수시간 비교).
+- **스튜디오 연동(posts.js)** — 학부/대학원 공지 등록 시 sessionStorage 큐
+  (`ysme-alert-queue`)에 쌓고, `publish:done` 이벤트에서 **이번 커밋에 data.js 가
+  포함됐고 그 안에 제목이 아직 남아 있는 글만** 추려 notify 를 부른다
+  (등록 후 버린 글이 메일로 나가지 않는다). 실패하면 큐를 남겨 다음 게시 때
+  재시도하고, 서버 미설정(500)이면 큐를 비우고 경고 토스트 한 번으로 끝낸다.
+- **QR** — 배포 주소를 담은 정적 SVG(네이비 단일 path). 생성·디코드 검증과
+  검사 하니스: `_studio/tools/t-alerts-api.mjs`(서버 24검사) · `_studio/t-alerts.html`(연동 9검사).
+- 환경변수 목록과 준비 절차는 `ALERTS-SETUP.md`.

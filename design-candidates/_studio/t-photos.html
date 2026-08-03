@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>YSME Studio — 머리 사진 패널 검사</title>
+<style>
+  body { font: 13px/1.65 ui-monospace, Consolas, monospace; padding: 1rem 1.2rem; color: #16202e; }
+  pre { white-space: pre-wrap; margin: 0; }
+  .fail { color: #b3261e; font-weight: 700; }
+  #verdict { margin-top: 1rem; padding: .6rem .9rem; border-radius: .5rem; font-weight: 700; }
+  #verdict.pass { background: #e6f4ea; color: #0a6b39; }
+  #verdict.fail { background: #fce8e6; color: #b3261e; }
+</style>
+</head>
+<body>
+<h1>photos.js — 훑기 · 담기 · 초점 · 되돌리기</h1>
+<div id="out"><pre>실행 중…</pre></div>
+<img id="ysBlocker" src="/hang" alt="" style="display:none" />
+
+<script src="../assets/studio/core.js"></script>
+<script src="../assets/studio/source.js"></script>
+<script src="../assets/studio/align.js"></script>
+<script src="../assets/studio/engine.js"></script>
+<script>
+/* 진짜 engine.patchPage/pageSrc 를 쓰되, 서버(net)만 페이지 원문 fetch 로 갈아끼운다.
+   초안은 진짜 IndexedDB(drafts) — 시작 전에 비운다. 배포되지 않는다(.vercelignore). */
+(function () {
+  'use strict';
+  var Y = window.YStudio;
+  var PAGES = ['H-academic.html', 'G-about.html', 'G-people.html', 'G-research.html',
+               'G-academics.html', 'G-graduate.html', 'G-news.html', 'G-admissions.html'];
+  var FIX = {};
+  var lines = [], fails = 0, out = document.getElementById('out');
+  function log(ok, msg) { lines.push((ok ? '  ok   ' : ' FAIL  ') + msg); if (!ok) fails++; paint(); }
+  function info(msg) { lines.push('       ' + msg); paint(); }
+  function paint(done) {
+    var esc = lines.join('\n').replace(/&/g, '&amp;').replace(/</g, '&lt;');
+    var html = '<pre>' + esc.replace(/^ FAIL .*$/gm, function (m) { return '<span class="fail">' + m + '</span>'; }) + '</pre>';
+    if (done) html += '<div id="verdict" class="' + (fails ? 'fail' : 'pass') + '">' +
+      (fails ? 'FAILED — 실패 ' + fails + '건' : 'PASSED — 실패 0건') + '</div>';
+    out.innerHTML = html;
+  }
+  function finish() {
+    paint(true);
+    var b = document.getElementById('ysBlocker');
+    if (b) b.remove();
+  }
+
+  /* net 을 픽스처로 대체 — engine.pageSrc/patchPage 가 이걸 쓴다 */
+  Y.net = { read: function (p) {
+    if (FIX[p] == null) return Promise.reject(new Error('픽스처 없음: ' + p));
+    return Promise.resolve({ content: FIX[p] });
+  } };
+  try { sessionStorage.setItem(Y.config.sessionKey, JSON.stringify({ passcode: 'x', author: '검사기' })); } catch (e) {}
+
+  function makeJpeg() {
+    return new Promise(function (res) {
+      var cv = document.createElement('canvas');
+      cv.width = 3000; cv.height = 1600;
+      var ctx = cv.getContext('2d');
+      var g = ctx.createLinearGradient(0, 0, 3000, 1600);
+      g.addColorStop(0, '#1a3d75'); g.addColorStop(1, '#A56F63');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, 3000, 1600);
+      cv.toBlob(function (bl) { res(new File([bl], 't.jpg', { type: 'image/jpeg' })); }, 'image/jpeg', .92);
+    });
+  }
+
+  Promise.all(PAGES.map(function (p) {
+    return fetch('../' + p, { cache: 'no-store' }).then(function (r) {
+      if (!r.ok) throw new Error(p + ' HTTP ' + r.status);
+      return r.text().then(function (t) { FIX[p] = t; });
+    });
+  })).then(function () {
+    return Y.store.clear('drafts');
+  }).then(function () {
+    var s = document.createElement('script');
+    s.src = '../assets/studio/photos.js';
+    document.head.appendChild(s);
+    return new Promise(function (res) { s.onload = res; });
+  }).then(function () {
+    return Y.photos.scan();
+  }).then(function (heroes) {
+    log(heroes.length === 7, '훑기: 사진 묶음 7개 (실제 ' + heroes.length + ')');
+    var shared = null, about = null, people = null;
+    heroes.forEach(function (h) {
+      if (h.img === 'assets/hero-academics.jpg') shared = h;
+      if (h.img === 'assets/hero-about.jpg') about = h;
+      if (h.img === 'assets/hero-people.jpg') people = h;
+    });
+    log(!!shared && shared.pages.length === 2, '공유 사진: hero-academics 를 두 페이지가 쓴다');
+    log(!!people && people.pages[0].ver === 2, '기존 ?v=2 를 읽는다 (hero-people)');
+    log(!!about && about.pages[0].pos === 42, '초점 42% 를 읽는다 (hero-about)');
+    var main = heroes.filter(function (h) { return h.img === 'assets/hero-orbital.jpg'; })[0];
+    log(!!main && main.pages[0].pos === 38, '메인 히어로(.hero-bg) 38% 를 읽는다');
+
+    /* ── 담기 ── */
+    return makeJpeg().then(function (file) {
+      return Y.photos.stage(about, file);
+    }).then(function () {
+      return Y.store.get('drafts', 'assets/hero-about.jpg');
+    }).then(function (rec) {
+      log(!!rec && rec.encoding === 'base64' && rec.src.length > 1000, '사진 초안: base64 로 담겼다 (' + (rec ? Math.round(rec.src.length * 3 / 4 / 1024) + 'KB' : '없음') + ')');
+      log(!!rec && rec.origSrc === '', '사진 초안: origSrc 빈 값 → 게시 목록에 잡힌다');
+      return Y.engine.pageSrc('G-about.html');
+    }).then(function (src) {
+      log(src.indexOf('url("assets/hero-about.jpg?v=2")') >= 0, '버전 올림: G-about 이 ?v=2 를 참조한다');
+      /* ── 초점 ── */
+      return Y.photos.heroes().filter(function (h) { return h.img === 'assets/hero-about.jpg'; })[0];
+    }).then(function (h) {
+      return window.YStudio.photos._applyPos ? null : h;
+    }).then(function (h) {
+      /* applyPos 는 내부 함수 — 카드 없이도 같은 경로를 밟도록 patch 로 직접 검사한다 */
+      return Y.engine.pageSrc('G-about.html').then(function (before) {
+        var hero = Y.photos.heroes().filter(function (x) { return x.img === 'assets/hero-about.jpg'; })[0];
+        hero.pages[0].pos = 30;
+        return Y.engine.patchPage('G-about.html', function (s2) {
+          return s2.replace(/(url\("assets\/hero-about\.jpg(?:\?v=\d+)?"\)\s*center\s+)[\d.]+%/, '$130%');
+        });
+      }).then(function () { return Y.engine.pageSrc('G-about.html'); });
+    }).then(function (src) {
+      log(/url\("assets\/hero-about\.jpg\?v=2"\)\s*center\s+30%/.test(src), '초점: center 30% 로 바뀐다');
+      /* ── 공유 사진의 버전 동시 올림 ── */
+      var sh = Y.photos.heroes().filter(function (x) { return x.img === 'assets/hero-academics.jpg'; })[0];
+      return makeJpeg().then(function (f2) { return Y.photos.stage(sh, f2); });
+    }).then(function () {
+      return Promise.all([Y.engine.pageSrc('G-academics.html'), Y.engine.pageSrc('G-graduate.html')]);
+    }).then(function (r) {
+      log(r[0].indexOf('hero-academics.jpg?v=2') >= 0 && r[1].indexOf('hero-academics.jpg?v=2') >= 0,
+        '공유 사진: 학사·대학원 두 페이지의 버전이 함께 오른다');
+      /* ── 되돌리기 ── */
+      var ab = Y.photos.heroes().filter(function (x) { return x.img === 'assets/hero-about.jpg'; })[0];
+      return Y.photos.revert(ab);
+    }).then(function () {
+      return Promise.all([Y.engine.pageSrc('G-about.html'), Y.store.get('drafts', 'assets/hero-about.jpg'), Y.store.get('drafts', 'G-about.html')]);
+    }).then(function (r) {
+      log(r[0] === FIX['G-about.html'], '되돌리기: G-about 원문이 바이트 단위로 복귀한다');
+      log(!r[1], '되돌리기: 사진 초안이 지워진다');
+      log(!r[2], '되돌리기: 페이지 초안도 지워진다(원문과 같아짐)');
+    });
+  }).then(function () {
+    return Y.store.clear('drafts');           // 뒷정리 — 실제 편집 세션의 초안함을 더럽히지 않는다
+  }).then(finish, function (e) {
+    log(false, '검사 실행 오류: ' + (e && e.message));
+    Y.store.clear('drafts').then(finish, finish);
+  });
+})();
+</script>
+</body>
+</html>

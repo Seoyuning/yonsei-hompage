@@ -280,7 +280,7 @@
       state.drafts = drafts;
       var files = [], paths = [], i;
       for (i = 0; i < drafts.length; i++) {
-        files.push({ path: drafts[i].path, content: drafts[i].src });
+        files.push({ path: drafts[i].path, content: drafts[i].src, encoding: drafts[i].encoding || undefined });
         paths.push(drafts[i].path);
       }
       return Y.net.checkpoints().then(function (r) {

@@ -63,6 +63,7 @@
     lang: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.2"/><path d="M3.8 12h16.4"/><path d="M12 3.8c2.6 2.6 2.6 13 0 16.4-2.6-3.4-2.6-13.8 0-16.4z"/></svg>',
     pub: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 17.6V5.4"/><path d="M7.2 10.2L12 5.4l4.8 4.8"/><path d="M5 19.6h14"/></svg>',
     post: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2.4"/><path d="M8 9.2h8M8 13h8M8 16.4h4.6"/></svg>',
+    photo: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2.4"/><circle cx="9.2" cy="9.4" r="1.6"/><path d="M4.6 16.6l4.4-4.2 3.4 3.2 3-2.8 4 3.8"/></svg>',
     x: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>',
     eye: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.8 12S6.6 6.4 12 6.4 21.2 12 21.2 12 17.4 17.6 12 17.6 2.8 12 2.8 12z"/><circle cx="12" cy="12" r="2.6"/></svg>'
   };
@@ -165,6 +166,7 @@
   var STACK = [
     { key: 'edit', label: '편집', icon: 'edit', kind: 'toggle', name: '편집 모드' },
     { key: 'post', label: '글등록', icon: 'post', kind: 'panel', panel: 'post', name: '공지·소식 등록' },
+    { key: 'photos', label: '사진', icon: 'photo', kind: 'panel', panel: 'photos', name: '머리 사진' },
     { key: 'versions', label: '버전', icon: 'hist', kind: 'panel', panel: 'versions', name: '버전 관리' },
     { key: 'ai', label: 'AI', icon: 'ai', kind: 'panel', panel: 'ai', name: 'AI 수정' },
     { key: 'mobile', label: '모바일', icon: 'mob', kind: 'mobile', name: '모바일 모드' },
@@ -1585,6 +1587,11 @@
 
   /** 초안 하나를 사람 말로 요약한다 — "글 13건" · 못 미더우면 줄 수로 물러선다. */
   function describeDraft(d) {
+    /* 사진 초안(base64)은 글자 비교가 무의미하다 — 용량으로 말한다 */
+    if (d.encoding === 'base64') {
+      var bytes = d.bytes || Math.round(String(d.src || '').length * 3 / 4);
+      return (d.note || '사진 교체') + ' (' + Math.max(1, Math.round(bytes / 1024)) + 'KB)';
+    }
     var orig = d.origSrc == null ? '' : d.origSrc;
     if (Y.changes && Y.changes.of) {
       try {
@@ -1632,7 +1639,9 @@
   function doCommit(recs, message) {
     publishing = true;
     var files = [], i;
-    for (i = 0; i < recs.length; i++) files.push({ path: recs[i].path, content: recs[i].src });
+    for (i = 0; i < recs.length; i++) {
+      files.push({ path: recs[i].path, content: recs[i].src, encoding: recs[i].encoding || undefined });
+    }
     var stop = busy('게시 중… ' + files.length + '개 파일');
     Y.net.commit({
       message: message || undefined,
@@ -1673,7 +1682,11 @@
           a.style.cssText = 'color:#fff;text-decoration:underline;margin-left:.5rem';
           t.appendChild(a);
         }
-        Y.bus.emit('publish:done', { sha: sha, url: url, files: files.length });
+        Y.bus.emit('publish:done', {
+          sha: sha, url: url, files: files.length,
+          // 어떤 파일이 나갔는지 — 공지 메일 알림(posts)이 data.js 포함 여부를 본다
+          paths: files.map(function (f) { return f.path; })
+        });
       });
     }, function (err) {
       stop();

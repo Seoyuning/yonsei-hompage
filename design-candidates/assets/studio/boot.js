@@ -49,7 +49,8 @@
     { name: 'i18n-edit', req: false },
     { name: 'mobile', req: false },
     { name: 'datamap', req: false },
-    { name: 'posts', req: false }
+    { name: 'posts', req: false },
+    { name: 'photos', req: false }          // 머리 사진(히어로) 패널 — engine·hud 만 있으면 된다
   ];
 
   var loaded = [], failed = [], coreDead = false;

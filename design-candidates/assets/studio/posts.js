@@ -45,7 +45,33 @@
   };
 
   var STYLE_ID = 'ys-post-style';
+  var QUEUE_KEY = 'ysme-alert-queue';
   var host = null, curColl = KINDS[0].coll, inputs = null, listEl = null;
+
+  /* ── 공지 메일 알림 큐 ──
+     학부·대학원 공지를 등록하면 여기 쌓아 두고, 「게시」가 실제로 성공한 뒤에야
+     구독자에게 메일을 보낸다(api/alerts). 게시 전에 글을 버릴 수 있으므로
+     발송 직전에 data.js 에 아직 남아 있는 제목만 추려 보낸다. */
+  function alertQueue() {
+    try { return JSON.parse(sessionStorage.getItem(QUEUE_KEY)) || []; } catch (e) { return []; }
+  }
+  function setAlertQueue(list) {
+    try {
+      if (list && list.length) sessionStorage.setItem(QUEUE_KEY, JSON.stringify(list.slice(-20)));
+      else sessionStorage.removeItem(QUEUE_KEY);
+    } catch (e) {}
+  }
+  function queueAlert(coll, obj) {
+    if (coll !== 'noticesUG' && coll !== 'noticesGrad') return;
+    var list = alertQueue();
+    list.push({
+      kind: coll === 'noticesGrad' ? 'grad' : 'ug',
+      title: String(obj.title || ''),
+      date: String(obj.date || ''),
+      url: String(obj.url || '')
+    });
+    setAlertQueue(list);
+  }
 
   function d() { return (host && host.ownerDocument) || document; }
   function mk(tag, cls, txt) {
@@ -297,7 +323,9 @@
         add.disabled = true;
         Y.datamap.addItem(curColl, r.obj, true).then(function () {
           add.disabled = false;
-          Y.toast(kindOf(curColl).label + ' 1건을 등록했습니다. 「게시」를 눌러야 사이트에 나갑니다.');
+          queueAlert(curColl, r.obj);
+          Y.toast(kindOf(curColl).label + ' 1건을 등록했습니다. 「게시」를 눌러야 사이트에 나갑니다.' +
+            (curColl === 'noticesUG' || curColl === 'noticesGrad' ? ' 게시되면 구독자에게 메일 알림이 나갑니다.' : ''));
           rebuild();
         }, function (e) {
           add.disabled = false;
@@ -331,11 +359,60 @@
   }
   registerPanel();
 
+  /* ── 게시 완료 → 구독자 메일 발송 ──
+     data.js 가 이번 커밋에 실제로 포함됐을 때만, 그리고 그 안에 아직 제목이
+     남아 있는 공지만 보낸다(등록 후 버린 글이 메일로 나가는 일을 막는다). */
+  function flushAlerts(ev) {
+    var queue = alertQueue();
+    if (!queue.length) return Promise.resolve(null);
+    if (!ev || !ev.paths || ev.paths.indexOf('assets/js/data.js') < 0) return Promise.resolve(null);
+    return Y.datamap.load().then(function () {
+      var live = queue.filter(function (q) {
+        var rows = Y.datamap.items(q.kind === 'grad' ? 'noticesGrad' : 'noticesUG');
+        for (var i = 0; i < rows.length; i++) {
+          if (rows[i].item && String(rows[i].item.title) === q.title) return true;
+        }
+        return false;
+      });
+      if (!live.length) { setAlertQueue([]); return null; }
+      return fetch(Y.config.api + '/alerts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ op: 'notify', passcode: Y.session.passcode(), items: live })
+      }).then(function (r) {
+        return r.json().catch(function () { return {}; }).then(function (d) { return { status: r.status, d: d }; });
+      }).then(function (r) {
+        if (r.d && r.d.ok) {
+          setAlertQueue([]);
+          Y.toast(r.d.total
+            ? '메일 알림 — 구독자 ' + r.d.total + '명에게 새 공지를 보냈습니다' + (r.d.failed ? ' (실패 ' + r.d.failed + ')' : '') + '.'
+            : '메일 알림 — 아직 구독자가 없어 보낼 곳이 없습니다.');
+        } else if (r.status === 500) {
+          // 서버에 발송 설정이 없다 — 큐를 들고 있어 봐야 같은 결과라 비운다
+          setAlertQueue([]);
+          Y.toast('메일 알림 서버 설정이 아직 없어 이번 공지는 메일로 나가지 않았습니다.', 'warn');
+        } else {
+          Y.toast('메일 알림 발송에 실패했습니다 — 다음 게시 때 다시 시도합니다.', 'warn');
+        }
+        return r;
+      });
+    }).catch(function () {
+      Y.toast('메일 알림 발송에 실패했습니다 — 다음 게시 때 다시 시도합니다.', 'warn');
+      return null;
+    });
+  }
+  Y.bus.on('publish:done', flushAlerts);
+
   Y.posts = {
     KINDS: KINDS,
     /** 테스트·자동화용 — 폼을 거치지 않고 바로 등록한다. */
     add: function (coll, obj) { return Y.datamap.addItem(coll, obj, true); },
     remove: function (coll, index) { return Y.datamap.removeItem(coll, index); },
-    kinds: function () { return KINDS.slice(); }
+    kinds: function () { return KINDS.slice(); },
+    /** 메일 알림 큐 — 검사·자동화용 */
+    alertQueue: alertQueue,
+    setAlertQueue: setAlertQueue,
+    queueAlert: queueAlert,
+    flushAlerts: flushAlerts
   };
 })();

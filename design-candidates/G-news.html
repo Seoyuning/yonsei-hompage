@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<link rel="stylesheet" href="assets/fonts.css?v=1" />
+<link rel="stylesheet" href="assets/fonts.css?v=2" />
 <title>소식 — 연세대학교 기계공학부</title>
 <meta name="description" content="학부·대학원 공지와 뉴스·연구성과, 세미나·행사, 학위논문심사, 취업 정보." />
 <!-- 공유 미리보기(카카오톡·메신저·검색) — 이름과 사진이 여기서 정해진다 -->
@@ -23,7 +23,7 @@
 <meta name="twitter:image" content="https://yonsei-me-homepage.vercel.app/assets/og-cover.jpg" />
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d25" />
-<link rel="preload" as="script" href="assets/nav.js?v=121" />
+<link rel="preload" as="script" href="assets/nav.js?v=122" />
 <style>
 /* 소식 — 흰 배경 · 네이비 제목 · 실제 학과식 풀폭 게시판(표) 목록.
    히어로: 이미지 배너 + 중앙 정렬 타이틀 + 브레드크럼.
@@ -87,14 +87,14 @@ a{color:inherit;text-decoration:none}
   linear-gradient(180deg,rgba(18,41,79,.62) 0%,rgba(16,35,68,.50) 40%,rgba(10,22,44,.78) 100%)}
 /* 히어로 글은 본문과 같은 폭·같은 왼쪽 선에서 시작한다 — 예전에는 60rem 로
    가운데 모아 두어 본문(1320px)보다 좁았고, 그래서 위쪽만 가운데로 몰려 보였다. */
-.phero-in{position:relative;z-index:1;width:100%;max-width:1232px;margin:0 auto;text-align:left;
+.phero-in{position:relative;z-index:1;width:100%;max-width:77rem;margin:0 auto;text-align:left;
   padding:clamp(9.5rem,7rem + 4vw,11.5rem) clamp(1.2rem,.6rem + 2vw,2.6rem) clamp(2.6rem,5vh,4rem)}
 .phero h1{font-size:clamp(2.1rem,1.25rem + 3.4vw,3.9rem);font-weight:800;letter-spacing:-.01em;line-height:1.16;color:#fff}
 .phero-kick{font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.72);margin-bottom:.6rem}
 .phero .bc{margin:0 0 1.05rem;font-size:.82rem;letter-spacing:.02em;color:rgba(255,255,255,.82)}
 
 /* ── 섹션 공통 — 풀폭(끝까지) ── */
-.sec{max-width:1232px;margin:0 auto;
+.sec{max-width:77rem;margin:0 auto;
   padding:clamp(2.6rem,1.8rem + 2.5vw,3.8rem) clamp(1rem,.4rem + 1.6vw,2.4rem);
   border-bottom:1px solid var(--line-soft)}
 .sec:last-of-type{border-bottom:0}
@@ -404,6 +404,21 @@ a{color:inherit;text-decoration:none}
 .cal-e-t{font-size:.88rem;line-height:1.6;color:var(--sub);transition:color .18s;
   overflow-wrap:anywhere}
 .cal-empty{padding:1.2rem .1rem;font-size:.85rem;color:var(--muted);line-height:1.75}
+/* ── 공지 메일 알림 — 학사 일정 옆 QR 신청 ──
+   폰 카메라로 찍는 동선이 먼저다. QR 규격의 흰 여백(사방 4모듈 이상)은
+   칠이 아니라 흰 상자의 안쪽 여백으로 확보한다. 색은 네이비(--navy-d)여도 대비가 충분하다. */
+.cal-sub{display:flex;gap:1.1rem;align-items:flex-start;margin-top:1.7rem;
+  border-top:1px solid var(--line);padding-top:1.2rem}
+.cal-sub-qr{flex:none;display:block;width:7.2rem;padding:.9rem;border:1px solid var(--line);
+  background:#fff;color:var(--navy-d)}
+.cal-sub-qr svg{display:block;width:100%;height:auto}
+.cal-sub-qr:hover{border-color:var(--navy)}
+.cal-sub-tx{min-width:0}
+.cal-sub-tx h3{font-size:.98rem;border-bottom:0;padding-bottom:0;margin:0 0 .3rem}
+.cal-sub-tx p{font-size:.85rem;color:var(--sub);line-height:1.7;margin:0 0 .55rem}
+.cal-sub-tx .go{display:inline-block;font-size:.84rem;font-weight:600;color:var(--navy)}
+.cal-sub-tx .go:hover{text-decoration:underline;text-underline-offset:3px}
+@media (max-width:420px){.cal-sub{gap:.9rem}.cal-sub-qr{width:6.1rem;padding:.72rem}}
 @media (max-width:1080px){
   .cal-wrap{grid-template-columns:1fr;gap:1.8rem}
 }
@@ -568,6 +583,16 @@ a{color:inherit;text-decoration:none}
         <h3 id="calSideH">이주의 일정<span class="cnt" id="calCount"></span></h3>
         <p class="cal-range" id="calRange"></p>
         <div class="cal-list" id="calList" aria-live="polite"></div>
+        <!-- 공지 메일 알림 — QR 를 찍으면 신청 화면(subscribe.html)이 열린다.
+             QR 는 배포 주소를 담은 정적 SVG (생성·검증: _studio/tools 참고) -->
+        <div class="cal-sub">
+          <a class="cal-sub-qr" href="subscribe.html" aria-label="공지 메일 알림 신청 화면 열기"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 33 33" shape-rendering="crispEdges" aria-hidden="true" focusable="false"><path d="M0 0h7v1h-7zM8 0h3v1h-3zM13 0h2v1h-2zM16 0h5v1h-5zM23 0h1v1h-1zM26 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM8 1h1v1h-1zM10 1h4v1h-4zM16 1h1v1h-1zM18 1h1v1h-1zM23 1h2v1h-2zM26 1h1v1h-1zM32 1h1v1h-1zM0 2h1v1h-1zM2 2h3v1h-3zM6 2h1v1h-1zM9 2h2v1h-2zM12 2h1v1h-1zM17 2h1v1h-1zM19 2h2v1h-2zM24 2h1v1h-1zM26 2h1v1h-1zM28 2h3v1h-3zM32 2h1v1h-1zM0 3h1v1h-1zM2 3h3v1h-3zM6 3h1v1h-1zM8 3h1v1h-1zM10 3h3v1h-3zM14 3h3v1h-3zM19 3h1v1h-1zM22 3h1v1h-1zM24 3h1v1h-1zM26 3h1v1h-1zM28 3h3v1h-3zM32 3h1v1h-1zM0 4h1v1h-1zM2 4h3v1h-3zM6 4h1v1h-1zM9 4h1v1h-1zM11 4h2v1h-2zM14 4h1v1h-1zM17 4h1v1h-1zM20 4h2v1h-2zM24 4h1v1h-1zM26 4h1v1h-1zM28 4h3v1h-3zM32 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM18 5h2v1h-2zM22 5h1v1h-1zM26 5h1v1h-1zM32 5h1v1h-1zM0 6h7v1h-7zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h1v1h-1zM20 6h1v1h-1zM22 6h1v1h-1zM24 6h1v1h-1zM26 6h7v1h-7zM8 7h1v1h-1zM10 7h2v1h-2zM14 7h1v1h-1zM17 7h2v1h-2zM22 7h1v1h-1zM0 8h1v1h-1zM2 8h2v1h-2zM5 8h3v1h-3zM9 8h2v1h-2zM12 8h1v1h-1zM14 8h1v1h-1zM16 8h3v1h-3zM21 8h2v1h-2zM26 8h1v1h-1zM29 8h1v1h-1zM31 8h2v1h-2zM0 9h4v1h-4zM7 9h1v1h-1zM10 9h3v1h-3zM16 9h1v1h-1zM19 9h3v1h-3zM23 9h1v1h-1zM26 9h2v1h-2zM29 9h2v1h-2zM32 9h1v1h-1zM1 10h2v1h-2zM6 10h4v1h-4zM12 10h1v1h-1zM14 10h1v1h-1zM17 10h1v1h-1zM21 10h1v1h-1zM23 10h2v1h-2zM26 10h4v1h-4zM32 10h1v1h-1zM0 11h2v1h-2zM3 11h3v1h-3zM8 11h1v1h-1zM11 11h1v1h-1zM13 11h3v1h-3zM18 11h1v1h-1zM20 11h1v1h-1zM22 11h2v1h-2zM26 11h2v1h-2zM29 11h1v1h-1zM31 11h1v1h-1zM0 12h3v1h-3zM4 12h1v1h-1zM6 12h2v1h-2zM9 12h3v1h-3zM15 12h1v1h-1zM18 12h2v1h-2zM22 12h1v1h-1zM25 12h1v1h-1zM28 12h2v1h-2zM31 12h2v1h-2zM2 13h2v1h-2zM5 13h1v1h-1zM8 13h3v1h-3zM12 13h1v1h-1zM16 13h4v1h-4zM21 13h1v1h-1zM24 13h2v1h-2zM27 13h1v1h-1zM30 13h2v1h-2zM2 14h1v1h-1zM4 14h1v1h-1zM6 14h1v1h-1zM9 14h2v1h-2zM13 14h1v1h-1zM15 14h2v1h-2zM19 14h2v1h-2zM24 14h1v1h-1zM26 14h2v1h-2zM30 14h1v1h-1zM1 15h1v1h-1zM3 15h1v1h-1zM7 15h2v1h-2zM10 15h2v1h-2zM16 15h1v1h-1zM18 15h1v1h-1zM20 15h7v1h-7zM28 15h3v1h-3zM0 16h2v1h-2zM3 16h1v1h-1zM5 16h8v1h-8zM15 16h2v1h-2zM18 16h9v1h-9zM28 16h3v1h-3zM2 17h2v1h-2zM5 17h1v1h-1zM8 17h8v1h-8zM17 17h1v1h-1zM20 17h1v1h-1zM22 17h3v1h-3zM26 17h1v1h-1zM28 17h2v1h-2zM31 17h2v1h-2zM1 18h6v1h-6zM8 18h1v1h-1zM12 18h1v1h-1zM15 18h1v1h-1zM17 18h1v1h-1zM21 18h2v1h-2zM24 18h2v1h-2zM27 18h2v1h-2zM30 18h2v1h-2zM0 19h1v1h-1zM4 19h1v1h-1zM7 19h2v1h-2zM12 19h1v1h-1zM14 19h3v1h-3zM20 19h1v1h-1zM22 19h1v1h-1zM24 19h3v1h-3zM28 19h1v1h-1zM31 19h2v1h-2zM0 20h2v1h-2zM4 20h3v1h-3zM8 20h2v1h-2zM12 20h2v1h-2zM15 20h1v1h-1zM18 20h1v1h-1zM21 20h3v1h-3zM29 20h2v1h-2zM0 21h2v1h-2zM3 21h1v1h-1zM5 21h1v1h-1zM10 21h1v1h-1zM13 21h1v1h-1zM15 21h1v1h-1zM18 21h3v1h-3zM23 21h1v1h-1zM26 21h2v1h-2zM30 21h1v1h-1zM32 21h1v1h-1zM3 22h1v1h-1zM6 22h2v1h-2zM9 22h1v1h-1zM11 22h1v1h-1zM13 22h1v1h-1zM16 22h2v1h-2zM20 22h1v1h-1zM22 22h3v1h-3zM31 22h2v1h-2zM1 23h2v1h-2zM4 23h2v1h-2zM7 23h1v1h-1zM10 23h2v1h-2zM13 23h2v1h-2zM16 23h1v1h-1zM18 23h3v1h-3zM23 23h1v1h-1zM28 23h2v1h-2zM31 23h1v1h-1zM0 24h1v1h-1zM3 24h7v1h-7zM11 24h1v1h-1zM14 24h2v1h-2zM17 24h1v1h-1zM22 24h1v1h-1zM24 24h6v1h-6zM31 24h1v1h-1zM8 25h1v1h-1zM12 25h1v1h-1zM14 25h2v1h-2zM17 25h1v1h-1zM19 25h1v1h-1zM21 25h1v1h-1zM23 25h2v1h-2zM28 25h2v1h-2zM0 26h7v1h-7zM8 26h3v1h-3zM12 26h2v1h-2zM19 26h3v1h-3zM23 26h2v1h-2zM26 26h1v1h-1zM28 26h1v1h-1zM0 27h1v1h-1zM6 27h1v1h-1zM8 27h4v1h-4zM14 27h3v1h-3zM20 27h2v1h-2zM23 27h2v1h-2zM28 27h5v1h-5zM0 28h1v1h-1zM2 28h3v1h-3zM6 28h1v1h-1zM13 28h2v1h-2zM17 28h1v1h-1zM19 28h1v1h-1zM21 28h8v1h-8zM30 28h1v1h-1zM32 28h1v1h-1zM0 29h1v1h-1zM2 29h3v1h-3zM6 29h1v1h-1zM8 29h1v1h-1zM11 29h1v1h-1zM14 29h1v1h-1zM18 29h1v1h-1zM20 29h1v1h-1zM22 29h3v1h-3zM27 29h1v1h-1zM32 29h1v1h-1zM0 30h1v1h-1zM2 30h3v1h-3zM6 30h1v1h-1zM8 30h1v1h-1zM10 30h2v1h-2zM14 30h1v1h-1zM17 30h1v1h-1zM21 30h3v1h-3zM26 30h2v1h-2zM30 30h1v1h-1zM0 31h1v1h-1zM6 31h1v1h-1zM10 31h2v1h-2zM13 31h1v1h-1zM15 31h4v1h-4zM20 31h1v1h-1zM22 31h1v1h-1zM24 31h1v1h-1zM26 31h3v1h-3zM32 31h1v1h-1zM0 32h7v1h-7zM8 32h3v1h-3zM13 32h6v1h-6zM21 32h3v1h-3zM25 32h2v1h-2zM28 32h3v1h-3z" fill="currentColor"/></svg></a>
+          <div class="cal-sub-tx">
+            <h3>공지 메일 알림</h3>
+            <p>휴대폰 카메라로 QR를 찍으면 신청 화면이 열립니다. 새 공지가 올라오면 메일로 알려 드립니다.</p>
+            <a class="go" href="subscribe.html">메일로 알림 받기 →</a>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -1409,9 +1434,11 @@ a{color:inherit;text-decoration:none}
   })();
 })();
 </script>
-<script src="assets/nav.js?v=121"></script>
+<script src="assets/nav.js?v=122"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--num);font-size:.72rem;letter-spacing:.12em;color:var(--dimmer)">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="?studio=1" style="color:inherit;text-decoration:none">관리자</a>
 </footer>
+<script src="assets/vendor/lenis.min.js?v=1" defer></script>
+<script src="assets/smooth.js?v=2" defer></script>
 </body>
 </html>

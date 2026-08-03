@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>YSME Studio — 공지 메일 알림 연동 검사</title>
+<style>
+  body { font: 13px/1.65 ui-monospace, Consolas, monospace; padding: 1rem 1.2rem; color: #16202e; }
+  pre { white-space: pre-wrap; margin: 0; }
+  .fail { color: #b3261e; font-weight: 700; }
+  #verdict { margin-top: 1rem; padding: .6rem .9rem; border-radius: .5rem; font-weight: 700; }
+  #verdict.pass { background: #e6f4ea; color: #0a6b39; }
+  #verdict.fail { background: #fce8e6; color: #b3261e; }
+</style>
+</head>
+<body>
+<h1>posts.js — 알림 큐 · 게시 후 발송 · 버린 글 거르기</h1>
+<div id="out"><pre>실행 중…</pre></div>
+
+<script src="../assets/studio/core.js"></script>
+<script>
+/* posts.js 만 진짜로 싣고, 그가 기대는 datamap·hud·net 은 대역으로 갈아 끼운다.
+   fetch(/api/alerts) 도 대역 — 무엇이 어떤 본문으로 불렸는지만 본다. */
+(function () {
+  'use strict';
+  var Y = window.YStudio;
+  var lines = [], fails = 0, out = document.getElementById('out');
+  function log(ok, msg, extra) { lines.push((ok ? '  ok   ' : ' FAIL  ') + msg + (extra ? ' — ' + extra : '')); if (!ok) fails++; paint(); }
+  function paint(done) {
+    var esc = lines.join('\n').replace(/&/g, '&amp;').replace(/</g, '&lt;');
+    var html = '<pre>' + esc.replace(/^ FAIL .*$/gm, function (m) { return '<span class="fail">' + m + '</span>'; }) + '</pre>';
+    if (done) html += '<div id="verdict" class="' + (fails ? 'fail' : 'pass') + '">' +
+      (fails ? 'FAILED — 실패 ' + fails + '건' : 'PASSED — 실패 0건') + '</div>';
+    out.innerHTML = html;
+  }
+
+  /* ── 대역들 ── */
+  try { sessionStorage.setItem(Y.config.sessionKey, JSON.stringify({ passcode: 'pw!', author: '검사기' })); } catch (e) {}
+  sessionStorage.removeItem('ysme-alert-queue');
+
+  var DM_ROWS = { noticesUG: [], noticesGrad: [] };
+  Y.datamap = {
+    load: function () { return Promise.resolve(); },
+    items: function (coll) { return DM_ROWS[coll] || []; },
+    addItem: function () { return Promise.resolve(); },
+    removeItem: function () { return Promise.resolve(); }
+  };
+  Y.hud = { registerPanel: function () {} };
+
+  var calls = [];
+  var nextResp = { status: 200, body: { ok: true, total: 3, sent: 3, failed: 0 } };
+  var realFetch = window.fetch;
+  window.fetch = function (url, opts) {
+    if (String(url).indexOf('/api/alerts') < 0) return realFetch.apply(window, arguments);
+    calls.push({ url: String(url), body: JSON.parse(opts.body) });
+    if (nextResp.reject) return Promise.reject(new Error('network down'));
+    var r = nextResp;
+    return Promise.resolve({ ok: r.status === 200, status: r.status, json: function () { return Promise.resolve(r.body); } });
+  };
+
+  var s = document.createElement('script');
+  s.src = '../assets/studio/posts.js';
+  document.head.appendChild(s);
+  s.onload = function () { run().then(function () { paint(true); }); };
+
+  function run() {
+    var P = Y.posts;
+
+    /* 1. 큐 — 공지 두 종만 쌓인다 */
+    P.queueAlert('noticesUG', { title: '수강신청 안내', date: '2026.08.03', url: '' });
+    P.queueAlert('seminars', { title: '세미나는 큐에 안 쌓인다' });
+    P.queueAlert('noticesGrad', { title: '논문 심사 일정', date: '2026.08.04', url: 'https://example.org/1' });
+    log(P.alertQueue().length === 2, '큐: 학부·대학원 공지만 2건 쌓인다', String(P.alertQueue().length));
+
+    /* 2. data.js 가 안 나간 게시 — 발송하지 않고 큐 유지 */
+    return P.flushAlerts({ paths: ['G-about.html'] }).then(function () {
+      log(calls.length === 0 && P.alertQueue().length === 2, 'data.js 없는 게시엔 침묵, 큐 유지');
+
+      /* 3. 정상 게시 — 살아 있는 제목만 발송, 성공 시 큐 비움 */
+      DM_ROWS.noticesUG = [{ item: { title: '수강신청 안내' } }];
+      DM_ROWS.noticesGrad = [];   // 대학원 공지는 게시 전에 버렸다고 치자
+      return P.flushAlerts({ paths: ['assets/js/data.js', 'H-academic.html'] });
+    }).then(function () {
+      var c = calls[0];
+      log(calls.length === 1, '발송 호출은 한 번', String(calls.length));
+      log(c && c.body.op === 'notify' && c.body.passcode === 'pw!', 'op=notify + 세션 암호 첨부');
+      log(c && c.body.items.length === 1 && c.body.items[0].title === '수강신청 안내' && c.body.items[0].kind === 'ug',
+        '버린 글은 거르고 살아 있는 학부 공지만', JSON.stringify(c && c.body.items));
+      log(P.alertQueue().length === 0, '성공하면 큐가 빈다');
+
+      /* 4. 네트워크 실패 — 큐 유지 */
+      P.queueAlert('noticesUG', { title: '다시 보낼 공지', date: '', url: '' });
+      DM_ROWS.noticesUG = [{ item: { title: '다시 보낼 공지' } }];
+      nextResp = { reject: true };
+      return P.flushAlerts({ paths: ['assets/js/data.js'] });
+    }).then(function () {
+      log(P.alertQueue().length === 1, '실패하면 큐가 남아 다음 게시 때 재시도');
+
+      /* 5. 서버 미설정(500) — 큐를 비운다(반복 경고 방지) */
+      nextResp = { status: 500, body: { error: '설정 안 됨' } };
+      return P.flushAlerts({ paths: ['assets/js/data.js'] });
+    }).then(function () {
+      log(P.alertQueue().length === 0, '서버 미설정(500)이면 큐를 비운다');
+      sessionStorage.removeItem('ysme-alert-queue');
+      sessionStorage.removeItem(Y.config.sessionKey);
+    }).catch(function (e) {
+      log(false, '검사 실행 오류: ' + (e && e.message));
+    });
+  }
+})();
+</script>
+</body>
+</html>

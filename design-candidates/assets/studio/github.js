@@ -178,6 +178,9 @@
       });
     });
     act.appendChild(chk);
+    /* 연결 추가는 위쪽 버튼 줄에 둔다 — 목록 밑에 묻으면 못 찾는다 */
+    var addBtn = mk('button', 'ys-act', '깃헙 연결 추가…');
+    act.appendChild(addBtn);
     if (repoUrl) {
       var open = mk('button', 'ys-act', '커밋 이력 열기 ↗');
       open.addEventListener('click', function () {
@@ -188,19 +191,19 @@
     }
     root.appendChild(act);
 
-    root.appendChild(mk('h4', 'ys-sec-t', '최근 커밋'));
-    var hist = mk('div', 'ys-gh-hist');
-    hist.setAttribute('data-gh-hist', '');
-    hist.appendChild(mk('p', 'ys-hint', '이력을 불러오는 중…'));
-    root.appendChild(hist);
-
-    /* ── 깃헙 연결 — 등록해 둔 연결 목록 + 추가 ── */
+    /* ── 깃헙 연결 — 등록해 둔 연결 목록 + 추가 폼 (최근 커밋보다 위) ── */
     root.appendChild(mk('h4', 'ys-sec-t', '깃헙 연결'));
     var conns = mk('div', 'ys-gh-conns');
     conns.setAttribute('data-gh-conns', '');
     conns.appendChild(mk('p', 'ys-hint', '연결 목록을 불러오는 중…'));
     root.appendChild(conns);
-    buildAddForm(root);
+    buildAddForm(root, addBtn);
+
+    root.appendChild(mk('h4', 'ys-sec-t', '최근 커밋'));
+    var hist = mk('div', 'ys-gh-hist');
+    hist.setAttribute('data-gh-hist', '');
+    hist.appendChild(mk('p', 'ys-hint', '이력을 불러오는 중…'));
+    root.appendChild(hist);
 
     root.appendChild(mk('p', 'ys-note',
       '쓰기 토큰은 서버에만 저장되고 브라우저에는 절대 내려오지 않습니다. ' +
@@ -315,16 +318,15 @@
     }
   }
 
-  /* ── 연결 추가 폼 ── */
-  function buildAddForm(root) {
-    var open = mk('button', 'ys-act', '깃헙 연결 추가…');
-    root.appendChild(open);
+  /* ── 연결 추가 폼 — 여는 버튼(trigger)은 위 버튼 줄에 있다 ── */
+  function buildAddForm(root, trigger) {
     var form = mk('div', 'ys-gh-form');
     form.style.display = 'none';
-    open.addEventListener('click', function () {
+    trigger.addEventListener('click', function () {
       var on = form.style.display === 'none';
       form.style.display = on ? '' : 'none';
-      open.textContent = on ? '접기' : '깃헙 연결 추가…';
+      trigger.classList.toggle('is-pri', on);
+      if (on) { try { form.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) {} }
     });
 
     function field(label, hint, type, value, placeholder) {

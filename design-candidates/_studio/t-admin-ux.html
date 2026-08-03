@@ -270,6 +270,11 @@
 
     /* 10. 깃헙 연결 — 목록·추가·전환·삭제 */
     var connsBox = q('[data-gh-conns]', gh);
+    var histBox0 = q('[data-gh-hist]', gh);
+    t('깃헙 연결 섹션이 최근 커밋 위', !!(connsBox && histBox0 &&
+      (connsBox.compareDocumentPosition(histBox0) & Node.DOCUMENT_POSITION_FOLLOWING)));
+    var actRow = q('.ys-gh-act', gh);
+    t('연결 추가 버튼이 위 버튼 줄에', !!qa('.ys-act', actRow).filter(function (b) { return b.textContent.indexOf('깃헙 연결 추가') >= 0; }).length);
     t('기본(환경변수) 연결 줄 + 게시 중', connsBox && connsBox.textContent.indexOf('todo0157/') >= 0
       && !!connsBox.querySelector('.ys-gh-live'));
     var addBtn2 = qa('.ys-act', gh).filter(function (b) { return b.textContent.indexOf('깃헙 연결 추가') >= 0; })[0];

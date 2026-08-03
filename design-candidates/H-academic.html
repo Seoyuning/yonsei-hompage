@@ -1669,9 +1669,9 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
   } else start();
 })();
 
-/* 지표 띠 퇴장 — 스크롤에 맞춰 글자 칸들이 오른쪽으로 흘러나가며 사라진다.
-   띠 상단이 화면 위쪽 45% 선을 지나면서 왼쪽 칸부터 차례로 밀려 나가고,
-   판 가장자리가 화면을 나가기 전에 글자가 먼저 비워진다(빈 판만 마저 퇴장).
+/* 지표 띠 퇴장 — 스크롤에 맞춰 글자들이 오른쪽으로 흘러나가며 사라진다.
+   띠 상단이 화면 위쪽 45% 선을 지나면 세 칸(33·6·1958)이 한 몸으로 함께
+   밀려 나가고, 판 가장자리가 화면을 나가기 전에 글자가 먼저 비워진다.
    스크롤 진행률에 묶여 있어 되돌리면 그 자리로 돌아온다. 판은 계속 불투명. */
 (function () {
   'use strict';
@@ -1687,12 +1687,14 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
     var zone = vh * 0.45;
     var p = (zone - st.getBoundingClientRect().top) / zone;   // 0(선 도달) → 1(화면 상단)
     if (p < 0) p = 0; else if (p > 1) p = 1;
-    for (var i = 0; i < cols.length; i++) {
-      var q = (p - i * 0.14) / 0.6;                           // 칸마다 0.14 늦게, 0.6 동안
-      if (q < 0) q = 0; else if (q > 1) q = 1;
-      var e = q * q * (3 - 2 * q);                            // 살살 나갔다 살살 멎는 곡선
-      cols[i].style.transform = e ? 'translateX(' + (e * 180).toFixed(1) + 'px)' : '';
-      cols[i].style.opacity = e ? String((1 - e).toFixed(3)) : '';
+    var q = p / 0.85;                                         // 판이 다 나가기 조금 전에 끝낸다
+    if (q > 1) q = 1;
+    var e = q * q * (3 - 2 * q);                              // 살살 나갔다 살살 멎는 곡선
+    var tf = e ? 'translateX(' + (e * 180).toFixed(1) + 'px)' : '';
+    var op = e ? String((1 - e).toFixed(3)) : '';
+    for (var i = 0; i < cols.length; i++) {                   // 세 칸이 한 몸으로 움직인다
+      cols[i].style.transform = tf;
+      cols[i].style.opacity = op;
     }
   }
   addEventListener('scroll', function () {

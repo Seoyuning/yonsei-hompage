@@ -914,11 +914,21 @@ a{color:inherit;text-decoration:none}
       var x = id ? findPost(id) : null;
       if(x) showPost(x, false); else showList(false);
     });
-    /* 주소에 ?post= 를 달고 들어온 경우 — 처음부터 그 글을 편다 */
+    /* 주소에 ?post= 를 달고 들어온 경우 — 처음부터 그 글을 펴고,
+       상세가 화면 최상단(고정 메뉴 바로 아래)에 붙은 채로 시작한다.
+       서브탭(--ys-stick)과 히어로 그림이 늦게 자리 잡으므로 몇 번 다시
+       맞춘다 — 즉시 이동이라 화면이 튀어 보이지는 않는다. */
     (function(){
       var id = new URLSearchParams(location.search).get('post');
       var x = id ? findPost(id) : null;
-      if(x){ postEl.innerHTML = postHtml(x); root.classList.add('is-post'); }
+      if(!x) return;
+      postEl.innerHTML = postHtml(x);
+      root.classList.add('is-post');
+      var sec = root.closest('section') || root;
+      var jump = function(){ scrollToTopOf(sec, true); };
+      jump();
+      [80, 250, 600].forEach(function(d){ setTimeout(jump, d); });
+      addEventListener('load', function(){ setTimeout(jump, 60); });
     })();
 
     render();
@@ -1010,10 +1020,13 @@ a{color:inherit;text-decoration:none}
   }
   /* 쪽을 넘기면 그 목록의 맨 위가 보이게 올린다 — 아래쪽에 시선이 남으면 바뀐 걸 못 느낀다.
      --ys-stick 은 이미 px 문자열이고 앵커 여유 12px 을 품고 있다(rem 으로 오해하지 말 것). */
-  function scrollToTopOf(el){
+  function scrollToTopOf(el, instant){
     var bars = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--ys-stick')) || 122;
-    var top = el.getBoundingClientRect().top + (window.pageYOffset||0) - bars;
-    try{ window.scrollTo({top:Math.max(0,top), behavior:'smooth'}); }catch(_e){ window.scrollTo(0, Math.max(0,top)); }
+    var top = Math.max(0, el.getBoundingClientRect().top + (window.pageYOffset||0) - bars);
+    /* instant — 주소로 바로 들어온 경우: 히어로에서 미끄러져 내려가는 게 아니라
+       처음부터 그 자리에서 시작한 것처럼 보여야 한다 */
+    if(instant){ try{ window.scrollTo({top:top, behavior:'instant'}); }catch(_e){ window.scrollTo(0, top); } return; }
+    try{ window.scrollTo({top:top, behavior:'smooth'}); }catch(_e){ window.scrollTo(0, top); }
   }
   /* 세미나 20건 · 행사 10건 — 한 번에 다 늘어놓으면 두 칸의 키가 크게 어긋난다.
      아래 표 목록들과 같은 분량(10건)으로 끊고 같은 모양의 쪽 넘김을 붙인다. */

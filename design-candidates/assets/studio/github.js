@@ -51,8 +51,11 @@
       '.ys-gh-c{display:flex;flex-direction:column;gap:.12rem;padding:.4rem .1rem;border-top:1px solid var(--ys-line)}',
       '.ys-gh-c-m{font-size:.76rem;line-height:1.45;color:var(--ys-ink);overflow:hidden;text-overflow:ellipsis;',
       'display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}',
-      '.ys-gh-c-i{font-size:.68rem;color:var(--ys-dim);display:flex;gap:.4rem;align-items:baseline}',
+      '.ys-gh-c-i{font-size:.68rem;color:var(--ys-dim);display:flex;gap:.4rem;align-items:baseline;flex-wrap:wrap}',
       '.ys-gh-c-i a{color:var(--ys-muted)}',
+      '.ys-gh-rv{margin-left:auto;font-size:.66rem;border:1px solid var(--ys-line);background:#fff;',
+      'color:#b3261e;border-radius:6px;padding:.14rem .4rem;cursor:pointer}',
+      '.ys-gh-rv:hover{background:#fdeceb}',
       '.ys-gh-form{display:flex;flex-direction:column;gap:.55rem;border:1px solid var(--ys-line);',
       'border-radius:10px;padding:.7rem .75rem}',
       '.ys-gh-f{display:flex;flex-direction:column;gap:.22rem}',
@@ -288,17 +291,53 @@
       return;
     }
     for (var i = 0; i < rows.length; i++) {
-      var c = rows[i];
-      var el = mk('div', 'ys-gh-c');
-      el.appendChild(mk('span', 'ys-gh-c-m', firstLine(c.message)));
-      var meta = mk('span', 'ys-gh-c-i');
-      var when = '';
-      if (c.date) { try { when = U.ago(new Date(c.date).getTime()); } catch (e) { when = ''; } }
-      meta.appendChild(d().createTextNode([c.author || '', when].filter(Boolean).join(' · ')));
-      if (c.html_url) meta.appendChild(ext(c.html_url, '보기 ↗', ''));
-      el.appendChild(meta);
-      hist.appendChild(el);
+      (function (c) {
+        var el = mk('div', 'ys-gh-c');
+        el.appendChild(mk('span', 'ys-gh-c-m', firstLine(c.message)));
+        var meta = mk('span', 'ys-gh-c-i');
+        var when = '';
+        if (c.date) { try { when = U.ago(new Date(c.date).getTime()); } catch (e) { when = ''; } }
+        meta.appendChild(d().createTextNode([c.author || '', when].filter(Boolean).join(' · ')));
+        if (c.html_url) meta.appendChild(ext(c.html_url, '보기 ↗', ''));
+        if (c.sha) {
+          var rv = mk('button', 'ys-gh-rv', '이 게시 되돌리기');
+          rv.addEventListener('click', function () { revertCommit(c); });
+          meta.appendChild(rv);
+        }
+        el.appendChild(meta);
+        hist.appendChild(el);
+      })(rows[i]);
     }
+  }
+
+  /* ── 게시 취소 — 그 커밋이 바꾼 파일을 직전 상태로 되돌리는 새 커밋 ── */
+  function revertCommit(c) {
+    Y.hud.confirm(
+      '「' + firstLine(c.message) + '」 게시를 취소합니다.\n\n' +
+      '이 게시가 바꾼 파일을 게시 직전 상태로 되돌리는 새 커밋을 만듭니다. ' +
+      '이후 게시에서 같은 파일을 또 고쳤다면 그 변경도 함께 되돌아갑니다. ' +
+      '미저장 초안은 버려집니다. 계속할까요?'
+    ).then(function (ok) {
+      if (!ok) return;
+      var stop = Y.hud.busy('게시를 취소하는 중…');
+      Y.net.call('revert', {
+        sha: c.sha,
+        baseSha: (Y.engine && Y.engine.headSha && Y.engine.headSha()) || undefined,
+        author: Y.session.author()
+      }).then(function (r) {
+        stop();
+        if (r && r.headSha && Y.engine) Y.engine.setHeadSha(r.headSha);
+        var n = (r && r.files && r.files.length) || 0;
+        Y.toast('게시를 취소했습니다' + (n ? ' (파일 ' + n + '개 되돌림)' : '') + '. 화면을 다시 불러옵니다…');
+        var wipe = Y.store && Y.store.clear ? Y.store.clear('drafts').catch(function () {}) : Promise.resolve();
+        wipe.then(function () {
+          setTimeout(function () { try { location.reload(); } catch (e) {} }, 1200);
+        });
+      }, function (err) {
+        stop();
+        Y.toast((err && err.message) || '게시를 취소하지 못했습니다.', 'error', 6500);
+      });
+    });
   }
 
   /* ── HUD 등록 ── */

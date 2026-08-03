@@ -243,6 +243,19 @@
     t('카드가 새 저장소 표시', gh2.textContent.indexOf('yonsei-me-dept/me-homepage') >= 0);
     t('출처 = 직접 설정', gh2.textContent.indexOf('관리 화면에서 직접 설정') >= 0);
 
+    /* 9-b. 게시 취소 — 커밋 줄의 되돌리기 버튼 → 확인 모달(취소로 닫음) */
+    var rvBtns = qa('.ys-gh-rv', q('[data-ys-panel="github"]'));
+    t('커밋마다 게시 취소 버튼', rvBtns.length >= 2, rvBtns.length + '개');
+    if (rvBtns[0]) {
+      rvBtns[0].click();
+      await sleep(200);
+      var rvCfm = q('.ys-modal');
+      t('게시 취소 확인 모달', rvCfm && rvCfm.textContent.indexOf('게시를 취소합니다') >= 0);
+      var rvCancel = rvCfm && qa('.ys-modal-f button', rvCfm).filter(function (b) { return !b.classList.contains('is-pri'); })[0];
+      if (rvCancel) rvCancel.click();
+      await sleep(150);
+    }
+
     /* 10. 기본으로 되돌리기 */
     var resetBtn = qa('.ys-act', gh2).filter(function (b) { return b.textContent.indexOf('기본(환경변수)') >= 0; })[0];
     t('되돌리기 버튼 있음(직접 설정일 때)', !!resetBtn);

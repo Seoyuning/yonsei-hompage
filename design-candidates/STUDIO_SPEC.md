@@ -75,6 +75,7 @@ env: `GH_TOKEN` `GH_OWNER` `GH_REPO` `GH_BRANCH`(기본 main) `GH_BASEPATH`(= `d
 | `commit` | `{message, files:[{path,content,encoding?}], deletions?, author, baseSha?}` | `{ ok:true, commit:{sha,html_url}, headSha, files:[path] }` · `baseSha`≠HEAD → **409** `{conflict:true, headSha}` |
 | `history` | `{path?, limit?}` | `{ commits:[{sha,message,author,date,url}] }` |
 | `checkpoints` | – | `{ items:[Checkpoint] }` (없으면 `[]`) |
+| `revert` | `{sha, baseSha?, author}` | `{ ok:true, commit:{sha,html_url}, headSha, files:[path] }` — 그 커밋이 바꾼 파일을 **부모 시점 blob sha 로 가리키는** 새 커밋(게시 취소). 병합 커밋·60파일 초과·사이트 폴더 밖 변경 → 400 |
 | `ghset` | `{owner, repo, branch?, basePath?, token?}` | `{ ok:true, source:'custom', repo, repoUrl, branch, basePath, headSha, tokenSet }` — 저장 전에 저장소 존재·push 권한·브랜치 존재를 검증. 토큰을 비우면 기존 토큰 유지 |
 | `ghreset` | – | `{ ok:true, source:'env', ... }` — 직접 설정을 지우고 환경변수로 복귀 |
 

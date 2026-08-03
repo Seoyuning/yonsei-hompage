@@ -303,6 +303,18 @@
     var s = Y.session.get();
     if (s && s.headSha) Y.engine.setHeadSha(s.headSha);
 
+    /* 게시 기준점(headSha)은 세션의 저장 시점 값이라 그 사이 게시·배포가 있었으면
+       낡아 있다 — 낡은 값으로 게시하면 자기 커밋과도 「다른 사람이 먼저 게시했다」
+       충돌이 난다. 페이지를 열 때마다 서버에서 새로 받아 세션을 스스로 고친다.
+       실패해도 부팅은 막지 않는다(401 은 net 이 session:invalid 로 알린다). */
+    return Y.net.auth().then(function (r) {
+      if (r && r.headSha) Y.engine.setHeadSha(r.headSha);
+    }, function () {}).then(function () {
+      return openPage(path);
+    });
+  }
+
+  function openPage(path) {
     return Y.engine.open(path).then(function () {
       try { Y.engine.bindLive(document, window); }
       catch (e) { note('화면 대응(align) 실패: ' + (e && e.message), 'error'); }

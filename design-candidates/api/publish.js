@@ -306,6 +306,86 @@ module.exports = async (req, res) => {
       return;
     }
 
+    /* ── revert : 게시 취소 — 커밋 하나가 바꾼 파일을 직전 상태로 되돌리는 새 커밋 ──
+       직전(부모) 시점의 blob sha 를 그대로 새 tree 에 가리킨다. 내용을 오가지 않으니
+       이미지·PDF 같은 바이너리도 안전하다. 원 커밋은 이력에 남는다(강제 되감기 아님). */
+    if (action === 'revert') {
+      var rvSha = String(body.sha || '').trim();
+      if (!/^[0-9a-f]{7,40}$/i.test(rvSha)) { res.status(400).json({ error: '되돌릴 커밋이 올바르지 않습니다.' }); return; }
+      var ci = await ghJson(REPO + '/commits/' + rvSha);
+      if (!ci.ok) { res.status(ci.status).json({ error: '커밋을 찾을 수 없습니다 (' + ci.status + ')' }); return; }
+      var cd2 = ci.data || {};
+      if (!cd2.parents || cd2.parents.length !== 1) { res.status(400).json({ error: '병합 커밋은 여기서 되돌릴 수 없습니다.' }); return; }
+      var parentSha = cd2.parents[0].sha;
+      var changed = cd2.files || [];
+      if (!changed.length) { res.status(400).json({ error: '이 커밋에는 되돌릴 파일 변경이 없습니다.' }); return; }
+      if (changed.length > 60) { res.status(400).json({ error: '바꾼 파일이 60개를 넘어 화면에서 되돌릴 수 없습니다.' }); return; }
+      var prefix2 = BASE ? BASE + '/' : '';
+      var items2 = [], names2 = [];
+      for (var ri = 0; ri < changed.length; ri++) {
+        var cf = changed[ri] || {};
+        var fp2 = String(cf.filename || '');
+        if (prefix2 && fp2.indexOf(prefix2) !== 0) {
+          res.status(400).json({ error: '사이트 폴더 밖 파일을 바꾼 커밋이라 여기서 되돌릴 수 없습니다: ' + fp2 });
+          return;
+        }
+        var pc = await ghJson(REPO + '/contents/' + encodePath(fp2) + '?ref=' + encodeURIComponent(parentSha));
+        if (pc.status === 404) {
+          items2.push({ path: fp2, mode: '100644', type: 'blob', sha: null });   // 그 게시가 새로 만든 파일 → 지운다
+        } else if (pc.ok && pc.data && pc.data.sha) {
+          items2.push({ path: fp2, mode: '100644', type: 'blob', sha: pc.data.sha });
+        } else {
+          res.status(pc.status || 502).json({ error: '직전 상태를 읽지 못했습니다: ' + fp2 });
+          return;
+        }
+        names2.push(prefix2 ? fp2.slice(prefix2.length) : fp2);
+      }
+      var h3 = await headSha();
+      if (h3.error) { res.status(h3.status || 502).json({ error: h3.error }); return; }
+      if (body.baseSha && String(body.baseSha) !== h3.sha) {
+        var benign2 = await onlyTriggerCommits(String(body.baseSha), h3.sha);
+        if (!benign2) {
+          res.status(409).json({ conflict: true, headSha: h3.sha, error: '다른 사람이 먼저 게시했습니다. 새로고침 후 다시 시도하세요.' });
+          return;
+        }
+      }
+      var cr2 = await ghJson(REPO + '/git/commits/' + h3.sha);
+      if (!cr2.ok) { res.status(cr2.status).json({ error: '기준 커밋 조회 실패 (' + cr2.status + ')' }); return; }
+      var baseTree2 = cr2.data && cr2.data.tree && cr2.data.tree.sha;
+      var tr2 = await ghJson(REPO + '/git/trees', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ base_tree: baseTree2, tree: items2 })
+      });
+      if (!tr2.ok) { res.status(tr2.status).json({ error: 'tree 생성 실패 (' + tr2.status + ')' }); return; }
+      var rvAuthor = String(body.author == null ? '' : body.author).trim() || '편집자';
+      var rvFirst = String((cd2.commit && cd2.commit.message) || '').split('\n')[0].slice(0, 80);
+      var ident2 = { name: rvAuthor, email: AUTHOR_EMAIL };
+      var mk2 = await ghJson(REPO + '/git/commits', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: '게시 취소: ' + rvFirst + ' (' + rvSha.slice(0, 7) + ', ' + rvAuthor + ')',
+          tree: tr2.data.sha, parents: [h3.sha], author: ident2, committer: ident2
+        })
+      });
+      if (!mk2.ok) { res.status(mk2.status).json({ error: '커밋 생성 실패 (' + mk2.status + ')' }); return; }
+      var up2 = await ghJson(REPO + '/git/refs/heads/' + encodeURIComponent(GH_BRANCH), {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sha: mk2.data.sha, force: false })
+      });
+      if (!up2.ok) {
+        if (up2.status === 422) res.status(409).json({ conflict: true, error: '그 사이 다른 커밋이 올라왔습니다. 다시 시도하세요.' });
+        else res.status(up2.status).json({ error: '브랜치 갱신 실패 (' + up2.status + ')' });
+        return;
+      }
+      res.status(200).json({
+        ok: true,
+        commit: { sha: mk2.data.sha, html_url: 'https://github.com/' + GH_OWNER + '/' + GH_REPO + '/commit/' + mk2.data.sha },
+        headSha: mk2.data.sha,
+        files: names2
+      });
+      return;
+    }
+
     /* ── history : 커밋 이력(경로 지정 시 그 파일만) ── */
     if (action === 'history') {
       var q = '?sha=' + encodeURIComponent(GH_BRANCH) + '&per_page=' + clampInt(body.limit, 1, 100, 30);

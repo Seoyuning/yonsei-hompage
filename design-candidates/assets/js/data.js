@@ -5912,6 +5912,16 @@ window.YSME = {
  },
  "noticesUG": [
   {
+   "title": "test",
+   "date": "2026.08.04",
+   "no": "731",
+   "body": "",
+   "url": "",
+   "att": false,
+   "attName": "",
+   "bodyKind": "file"
+  },
+  {
    "no": "공지",
    "title": "기계공학창의설계(MEU2300) 대체과목 선정",
    "date": "2026.07.29",

@@ -1159,11 +1159,16 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
       (meta['일시'] ? '<span><b data-i18n="sfWhen">일시</b>' + esc(meta['일시']) + '</span>' : '') +
       (meta['장소'] ? '<span><b data-i18n="sfWhere">장소</b>' + esc(meta['장소']) + '</span>' : '') +
       '</span></a>';
+    /* 공지 칸과 같은 결 — 제목 윗줄 + 아랫줄 날짜, 새 글(7일 안)엔 N */
     h += list.slice(1).map(function (n) {
       var t = String(n.title).replace(/^\[[^\]]*\]\s*/, '');
-      return '<a class="brow" href="G-news.html?sem=' + encodeURIComponent(n.no) + '#sched">' +
-        '<span class="bt">' + esc(t) + '</span>' +
-        '<span class="bmeta"><span class="bd">' + esc(String(n.date).slice(2)) + '</span></span></a>';
+      var d = String(n.date);
+      var pretty = d.slice(0, 4) + '. ' + (+d.slice(5, 7)) + '. ' + (+d.slice(8, 10)) + '.';
+      var fresh = (Date.now() - new Date(d.replace(/\./g, '-')).getTime()) < 7 * 864e5;
+      return '<a class="brow is-card" href="G-news.html?sem=' + encodeURIComponent(n.no) + '#sched">' +
+        '<span class="bt2">' + esc(t) +
+          (fresh ? '<i class="bnew" aria-label="새 글">N</i>' : '') + '</span>' +
+        '<span class="bsub"><time>' + esc(pretty) + '</time></span></a>';
     }).join('');
     sm.innerHTML = h;
   }

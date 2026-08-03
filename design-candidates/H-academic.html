@@ -147,7 +147,9 @@ main{position:relative;z-index:2;background:var(--paper)}
 /* 위 테두리는 두지 않는다 — 띠가 히어로(짙은 사진) 위로 올라오므로 보이지도 않는데,
    1px 실선과 44px 번짐 그림자가 겹치면 가장자리를 두 번 그리는 셈이 된다.
    위쪽 경계는 그림자가, 아래쪽 경계는 실선이 맡는다. */
-.stats{position:relative;z-index:2;background:var(--paper);
+/* overflow:hidden — 퇴장 패럴랙스 때 내용이 판보다 늦게 따라오다
+   아래 모서리 밖으로 비어져 나오지 않게 판 안에서만 움직이게 한다 */
+.stats{position:relative;z-index:2;background:var(--paper);overflow:hidden;
   border-bottom:1px solid #111318;
   box-shadow:0 -22px 44px rgba(6,14,30,.16)}
 .stats .wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:0;
@@ -1483,8 +1485,11 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
 (function () {
   'use strict';
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  /* 지표 띠(.stats)는 여기 넣지 않는다 — 고정 히어로를 덮는 불투명한 판이라
+     투명해지는 순간 뒤 사진이 비쳐 숫자가 씻긴 것처럼 보인다(퇴장은 아래
+     패럴랙스 리프트가 맡는다). */
   var secs = [].slice.call(document.querySelectorAll(
-    '.stats, main .sec, .board-band, .quick'));
+    'main .sec, .board-band, .quick'));
   if (!secs.length) return;
   secs.forEach(function (s) { s.classList.add('sfade'); });
   var ticking = false;
@@ -1662,6 +1667,28 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
       start();
     });
   } else start();
+})();
+
+/* 지표 띠 퇴장 — 판은 종이처럼 불투명하게 밀려 나가고, 안의 숫자들만 판보다
+   15% 늦게 따라 올라간다(패럴랙스 리프트). 판과 내용이 살짝 분리되며 깊이가
+   생기고, 내용은 판의 아래 모서리 안으로 자연스럽게 접혀 들어간다. */
+(function () {
+  'use strict';
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var st = document.querySelector('.stats');
+  var wrap = st && st.querySelector('.wrap');
+  if (!wrap) return;
+  var ticking = false;
+  function update() {
+    ticking = false;
+    var top = st.getBoundingClientRect().top;
+    var lift = top < 0 ? Math.min(-top * 0.15, 44) : 0;
+    wrap.style.transform = lift ? 'translateY(' + lift.toFixed(1) + 'px)' : '';
+  }
+  addEventListener('scroll', function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+  }, { passive: true });
+  update();
 })();
 
 /* ── 여섯 연구 분야 — 화면은 고정, 분야만 바뀐다 (참고: flim.ai) ──

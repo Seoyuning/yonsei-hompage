@@ -5913,6 +5913,16 @@ window.YSME = {
  "noticesUG": [
   {
    "no": "공지",
+   "title": "(테스트 공지입니다)",
+   "date": "2026.08.03",
+   "url": "",
+   "att": false,
+   "body": "테스트입니다",
+   "bodyKind": "",
+   "attName": ""
+  },
+  {
+   "no": "공지",
    "title": "기계공학창의설계(MEU2300) 대체과목 선정",
    "date": "2026.07.29",
    "url": "https://me.yonsei.ac.kr/me/community/notice.do?mode=view&articleNo=475698&article.offset=0&articleLimit=10",

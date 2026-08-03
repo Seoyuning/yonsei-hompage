@@ -230,7 +230,13 @@
         if (r && r.headSha) Y.engine.setHeadSha(r.headSha);
         closeGate();
         note(au + '님, 편집 세션을 시작합니다.');
-        mountAll();
+        /* 도구 막대가 뜰 때까지 원형 독수리 로더(nav.js 공용)를 보여 준다 */
+        var L = window.YSME_LOADER;
+        if (L) L.show('편집 도구를 여는 중');
+        Promise.resolve(mountAll()).then(
+          function () { if (L) L.hide(); },
+          function () { if (L) L.hide(); }
+        );
       }, function (err) {
         busy(false);
         var st = err && err.status;

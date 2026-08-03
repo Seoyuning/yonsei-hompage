@@ -626,15 +626,40 @@
   pointer-events: none;
 }
 .ys-busy.is-on { transform: translateX(-50%) translateY(0); }
+/* 진행 표시도 원형 독수리로 통일 — 흰 원 안에서 날갯짓, 가장자리 링이 돈다 */
 .ys-spin {
-  display: block;
-  width: .8rem;
-  height: .8rem;
-  border: 2px solid rgba(255, 255, 255, .32);
-  border-top-color: #fff;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.3rem;
+  height: 1.3rem;
+  background: #fff;
   border-radius: 50%;
-  animation: ys-spin .7s linear infinite;
+  flex: 0 0 auto;
 }
+.ys-spin::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, .3);
+  border-top-color: #fff;
+  animation: ys-spin .9s linear infinite;
+}
+.ys-spin svg {
+  width: .95rem;
+  height: auto;
+  overflow: visible;
+  fill: var(--ys-navy);
+}
+.ys-spin .ysld-wl { transform-origin: 53px 40px; animation: ys-flap-l .5s ease-in-out infinite alternate; }
+.ys-spin .ysld-wr { transform-origin: 67px 40px; animation: ys-flap-r .5s ease-in-out infinite alternate; }
+@keyframes ys-flap-l { from { transform: rotate(22deg); } to { transform: rotate(-16deg); } }
+@keyframes ys-flap-r { from { transform: rotate(-22deg); } to { transform: rotate(16deg); } }
 @keyframes ys-spin { to { transform: rotate(360deg); } }
 
 .ys-banner {
@@ -706,7 +731,8 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .ys-panel, .ys-stack, .ys-status, .ys-busy, .ys-nudge { transition: none; }
-  .ys-spin, .ys-tgt, .ys-tgt.is-hit { animation: none; }
+  .ys-spin, .ys-spin::before, .ys-spin .ysld-wl, .ys-spin .ysld-wr,
+  .ys-tgt, .ys-tgt.is-hit { animation: none; }
 }
 @media print {
   .ys-root, .ys-layer, .ys-toasts { display: none !important; }

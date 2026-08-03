@@ -147,8 +147,8 @@ main{position:relative;z-index:2;background:var(--paper)}
 /* 위 테두리는 두지 않는다 — 띠가 히어로(짙은 사진) 위로 올라오므로 보이지도 않는데,
    1px 실선과 44px 번짐 그림자가 겹치면 가장자리를 두 번 그리는 셈이 된다.
    위쪽 경계는 그림자가, 아래쪽 경계는 실선이 맡는다. */
-/* overflow:hidden — 퇴장 패럴랙스 때 내용이 판보다 늦게 따라오다
-   아래 모서리 밖으로 비어져 나오지 않게 판 안에서만 움직이게 한다 */
+/* overflow:hidden — 퇴장 때 오른쪽으로 흘러나가는 글자 칸이
+   판 모서리 밖으로 비어져 나오지 않게 판 안에서만 움직이게 한다 */
 .stats{position:relative;z-index:2;background:var(--paper);overflow:hidden;
   border-bottom:1px solid #111318;
   box-shadow:0 -22px 44px rgba(6,14,30,.16)}
@@ -1669,21 +1669,31 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
   } else start();
 })();
 
-/* 지표 띠 퇴장 — 판은 종이처럼 불투명하게 밀려 나가고, 안의 숫자들만 판보다
-   15% 늦게 따라 올라간다(패럴랙스 리프트). 판과 내용이 살짝 분리되며 깊이가
-   생기고, 내용은 판의 아래 모서리 안으로 자연스럽게 접혀 들어간다. */
+/* 지표 띠 퇴장 — 스크롤에 맞춰 글자 칸들이 오른쪽으로 흘러나가며 사라진다.
+   띠 상단이 화면 위쪽 45% 선을 지나면서 왼쪽 칸부터 차례로 밀려 나가고,
+   판 가장자리가 화면을 나가기 전에 글자가 먼저 비워진다(빈 판만 마저 퇴장).
+   스크롤 진행률에 묶여 있어 되돌리면 그 자리로 돌아온다. 판은 계속 불투명. */
 (function () {
   'use strict';
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   var st = document.querySelector('.stats');
-  var wrap = st && st.querySelector('.wrap');
-  if (!wrap) return;
+  if (!st) return;
+  var cols = [].slice.call(st.querySelectorAll('.st'));
+  if (!cols.length) return;
   var ticking = false;
   function update() {
     ticking = false;
-    var top = st.getBoundingClientRect().top;
-    var lift = top < 0 ? Math.min(-top * 0.15, 44) : 0;
-    wrap.style.transform = lift ? 'translateY(' + lift.toFixed(1) + 'px)' : '';
+    var vh = innerHeight || document.documentElement.clientHeight;
+    var zone = vh * 0.45;
+    var p = (zone - st.getBoundingClientRect().top) / zone;   // 0(선 도달) → 1(화면 상단)
+    if (p < 0) p = 0; else if (p > 1) p = 1;
+    for (var i = 0; i < cols.length; i++) {
+      var q = (p - i * 0.14) / 0.6;                           // 칸마다 0.14 늦게, 0.6 동안
+      if (q < 0) q = 0; else if (q > 1) q = 1;
+      var e = q * q * (3 - 2 * q);                            // 살살 나갔다 살살 멎는 곡선
+      cols[i].style.transform = e ? 'translateX(' + (e * 180).toFixed(1) + 'px)' : '';
+      cols[i].style.opacity = e ? String((1 - e).toFixed(3)) : '';
+    }
   }
   addEventListener('scroll', function () {
     if (!ticking) { ticking = true; requestAnimationFrame(update); }

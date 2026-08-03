@@ -26,10 +26,10 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
   media="print" onload="this.media='all'" />
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
-<link rel="stylesheet" href="assets/fonts.css?v=1" />
+<link rel="stylesheet" href="assets/fonts.css?v=2" />
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d25" />
-<link rel="preload" as="script" href="assets/nav.js?v=121" />
+<link rel="preload" as="script" href="assets/nav.js?v=122" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    교수진 디렉토리 — 아이보리 배경 · 네이비 제목 · 헤어라인 · 연회색 행
@@ -94,7 +94,7 @@ a{color:inherit;text-decoration:none}
   linear-gradient(180deg,rgba(18,41,79,.62) 0%,rgba(16,35,68,.50) 40%,rgba(10,22,44,.78) 100%)}
 /* 히어로 글은 본문과 같은 폭·같은 왼쪽 선에서 시작한다 — 예전에는 60rem 로
    가운데 모아 두어 본문(1320px)보다 좁았고, 그래서 위쪽만 가운데로 몰려 보였다. */
-.phero-in{position:relative;z-index:1;width:100%;max-width:1232px;margin:0 auto;text-align:left;
+.phero-in{position:relative;z-index:1;width:100%;max-width:77rem;margin:0 auto;text-align:left;
   padding:clamp(9.5rem,7rem + 4vw,11.5rem) clamp(1.2rem,.6rem + 2vw,2.6rem) clamp(2.6rem,5vh,4rem)}
 .phero h1{font-size:clamp(2.1rem,1.25rem + 3.4vw,3.9rem);font-weight:800;letter-spacing:-.01em;line-height:1.16;color:#fff}
 .phero-kick{font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.72);margin-bottom:.6rem}
@@ -115,7 +115,7 @@ a{color:inherit;text-decoration:none}
 .filterbar .kseg{margin-bottom:0}
 /* 위 형제바(.ysub-w, nav.js)와 같은 상자를 써야 「전임교수」가 「교수진」과 같은 지점에서 시작한다.
    폭·좌우 여백을 그쪽 값과 똑같이 맞춘다 — 한쪽만 바뀌면 다시 어긋난다. */
-.filter-wrap{max-width:1232px;margin:0 auto;padding:0 clamp(1.2rem,.6rem + 2vw,2.6rem)}
+.filter-wrap{max-width:77rem;margin:0 auto;padding:0 clamp(1.2rem,.6rem + 2vw,2.6rem)}
 @media (max-width:640px){ .filter-wrap{padding:0 .9rem} }
 /* 신분 구분(전임 / 명예·퇴임) — 「지금 어느 명단을 보고 있는가」는 이 화면에서 가장 큰
    갈림길인데, 밑줄 탭은 밑줄 하나로만 말해서 눈에 잘 걸리지 않았다. 나란한 네모 버튼
@@ -224,19 +224,20 @@ a{color:inherit;text-decoration:none}
    격자로 칸을 떼어 주는 것이 핵심이다 — 자리가 처음부터 따로라 카드를 덮을 수 없다.
    align-items:start — 선택 바가 제 높이만 차지하고 격자 칸(=행 전체 높이) 안에서
    sticky 로 내려온다. stretch 로 두면 칸을 꽉 채워 버려 붙을 여지가 없어진다. */
-.dir{max-width:1232px;margin:0 auto;padding:.4rem clamp(1.2rem,.6rem + 2vw,2.6rem) 3rem;
+.dir{max-width:77rem;margin:0 auto;padding:.4rem clamp(1.2rem,.6rem + 2vw,2.6rem) 3rem;
   display:grid;grid-template-columns:minmax(0,1fr) clamp(9rem,13vw,12rem);
   column-gap:clamp(1.6rem,3vw,3rem);align-items:start}
-/* 넓은 화면에서는 이 구간만 오른쪽으로 통을 넓힌다 — 선택 바가 본문 격자(1232px) 끝에
+/* 넓은 화면에서는 이 구간만 오른쪽으로 통을 넓힌다 — 선택 바가 본문 격자(77rem) 끝에
    서면 그 오른쪽으로 페이지 여백이 한 뼘 더 남아, 화면 끝과 바 사이가 비어 보였다.
-   왼쪽 선은 그대로 1232px 격자에 맞춘다(카드가 위 제목·버튼과 같은 지점에서 시작해야 한다). */
+   왼쪽 선은 그대로 77rem 격자에 맞춘다(카드가 위 제목·버튼과 같은 지점에서 시작해야 한다). */
 @media (min-width:1081px){
-  /* calc(50vw - 616px) 는 1232px 「상자」의 왼끝이지 그 안 글줄의 왼끝이 아니다 —
+  /* calc(50vw - 38.5rem) 는 77rem 「상자」의 왼끝이지 그 안 글줄의 왼끝이 아니다 —
      안쪽 여백만큼 카드가 제목보다 왼쪽으로 튀어나와 축이 어긋나 보였다(사용자).
-     상자 왼끝 + 안쪽 여백 = 제목 글줄과 같은 자리. */
+     상자 왼끝 + 안쪽 여백 = 제목 글줄과 같은 자리.
+     38.5rem(=컨테이너 절반)이라야 와이드 화면의 뿌리 글자 확대를 따라온다. */
   .dir{max-width:none;margin:0;
     padding-left:max(clamp(1.2rem,.6rem + 2vw,2.6rem),
-      calc(50vw - 616px + clamp(1.2rem,.6rem + 2vw,2.6rem)));
+      calc(50vw - 38.5rem + clamp(1.2rem,.6rem + 2vw,2.6rem)));
     padding-right:clamp(1.2rem,.6rem + 2vw,2.6rem)}
 }
 /* 카드 쪽. min-width:0 이 없으면 긴 이름 하나가 칸을 밀어 선택 바를 화면 밖으로 낸다 */
@@ -488,10 +489,10 @@ html[lang="en"] .ppos{display:none}
 .empty button:hover{border-color:var(--coral);color:var(--coral)}
 
 /* ── 교직원 (행정팀) 섹션 ── */
-.staff{max-width:1232px;margin:0 auto;
+.staff{max-width:77rem;margin:0 auto;
   padding:1rem clamp(1.2rem,.6rem + 2vw,2.6rem) 3.6rem;
   scroll-margin-top:var(--ys-stick,7.6rem);border-top:1px solid var(--line-soft)}
-.fac-head{max-width:1232px;margin:0 auto 1rem;
+.fac-head{max-width:77rem;margin:0 auto 1rem;
   padding:clamp(1.5rem,2.6vh,2.2rem) clamp(1.2rem,.6rem + 2vw,2.6rem) 0}
 .fac-head h2{font-size:clamp(1.6rem,1.15rem + 2vw,2.4rem);font-weight:800;color:#111318;letter-spacing:-.01em}
 .staff-head{padding-top:2rem;margin-bottom:1.6rem}
@@ -531,7 +532,7 @@ html[lang="en"] .ppos{display:none}
    교직원 섹션과 같은 폭·여백 체계를 쓰되, 새 규칙은 모두 al- 접두를 달아
    기존 .pcard / .staff-* / .fchip / .kseg* 와 겹치지 않게 한다.
    ═══════════════════════════════════════════════════════════ */
-.al{max-width:1232px;margin:0 auto;
+.al{max-width:77rem;margin:0 auto;
   padding:1rem clamp(1.2rem,.6rem + 2vw,2.6rem) 3.6rem;
   scroll-margin-top:var(--ys-stick,7.6rem);border-top:1px solid var(--line-soft)}
 .al-head{padding-top:2rem;margin-bottom:1.8rem}
@@ -1427,9 +1428,11 @@ html[lang="en"] .ppos{display:none}
   }
 })();
 </script>
-<script src="assets/nav.js?v=121"></script>
+<script src="assets/nav.js?v=122"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--num);font-size:.72rem;letter-spacing:.12em;color:var(--dimmer)">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="?studio=1" style="color:inherit;text-decoration:none">관리자</a>
 </footer>
+<script src="assets/vendor/lenis.min.js?v=1" defer></script>
+<script src="assets/smooth.js?v=2" defer></script>
 </body>
 </html>

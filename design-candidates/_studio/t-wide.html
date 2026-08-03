@@ -1,0 +1,55 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>와이드 훑기</title>
+<style>
+  html,body{margin:0;background:#26282c}
+  #bar{position:fixed;top:0;left:0;right:0;z-index:9;display:flex;gap:.6rem;align-items:center;
+    padding:.35rem .6rem;background:#111;color:#9fb2cc;font:12px/1.4 monospace}
+  #stage{position:absolute;top:28px;left:0;transform-origin:0 0}
+  iframe{border:0;background:#fff;display:block}
+</style>
+<body>
+<div id="bar">대기…</div>
+<div id="stage"><iframe id="f"></iframe></div>
+<script>
+/* ?page=H-academic.html&w=1920&h=1080 — 그 해상도 실뷰포트 iframe으로 열고
+   창 폭에 맞춰 축소해 보여 준다. 로드 후 끝까지 단계 스크롤로 등장 애니메이션을 깨우고 맨 위로 복귀.
+   window.go(y) — iframe 안을 y로 스크롤. window.info() — 문서높이·넘침 보고 */
+var q = function(k, d){ return (location.search.match(new RegExp('[?&]'+k+'=([^&]+)')) || [])[1] || d; };
+var PAGE = q('page','H-academic.html'), W = +q('w',1920), H = +q('h',1080);
+var f = document.getElementById('f'), bar = document.getElementById('bar');
+f.style.width = W+'px'; f.style.height = H+'px';
+f.src = '/' + PAGE + (PAGE.indexOf('?') > -1 ? '&' : '?') + 'cb=' + q('cb','0');
+function fit(){
+  var s = Math.min(1, (window.innerWidth) / W);
+  document.getElementById('stage').style.transform = 'scale(' + s + ')';
+  return s;
+}
+window.addEventListener('resize', fit);
+var ready = false;
+f.addEventListener('load', function(){
+  var w = f.contentWindow, d = f.contentDocument, y = 0;
+  function step(){
+    var Ht = d.documentElement.scrollHeight;
+    if (y < Ht) { y += 900; w.scrollTo(0, y); setTimeout(step, 80); return; }
+    w.scrollTo(0, 0);
+    setTimeout(function(){
+      ready = true;
+      var s = fit();
+      bar.textContent = PAGE + ' @ ' + W + '×' + H + ' · 문서 ' + d.documentElement.scrollHeight +
+        'px · scrollWidth ' + d.documentElement.scrollWidth + (d.documentElement.scrollWidth > W ? ' ← 가로 넘침!' : ' (정상)') +
+        ' · scale ' + s.toFixed(3) + ' · 준비됨';
+    }, 700);
+  }
+  step();
+});
+window.go = function(y){ f.contentWindow.scrollTo(0, y); return f.contentWindow.scrollY; };
+window.isReady = function(){ return ready; };
+window.info = function(){
+  var d = f.contentDocument;
+  return { page: PAGE, w: W, h: H,
+    docH: d.documentElement.scrollHeight, scrollW: d.documentElement.scrollWidth };
+};
+fit();
+</script>
+</body>

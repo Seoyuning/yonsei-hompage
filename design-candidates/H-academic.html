@@ -28,10 +28,10 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
   media="print" onload="this.media='all'" />
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
-<link rel="stylesheet" href="assets/fonts.css?v=1" />
+<link rel="stylesheet" href="assets/fonts.css?v=2" />
 <!-- 스크립트를 미리 받아 둔다 — 파서가 해당 줄에 닿았을 때 이미 캐시에 있어 멈춤이 짧아진다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d25" />
-<link rel="preload" as="script" href="assets/nav.js?v=121" />
+<link rel="preload" as="script" href="assets/nav.js?v=122" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    시안 H · 아카데믹 (Reference: me.kaist.ac.kr / me.snu.ac.kr)
@@ -60,7 +60,7 @@ body{font-family:var(--kr);background:var(--paper);color:var(--ink);
   -webkit-font-smoothing:antialiased;word-break:keep-all;line-height:1.6;overflow-x:hidden;overflow-x:clip}
 a{color:inherit;text-decoration:none}
 img{display:block;max-width:100%}
-.wrap{max-width:1232px;margin:0 auto;padding:0 clamp(1.2rem,.6rem + 2vw,2.6rem)}
+.wrap{max-width:77rem;margin:0 auto;padding:0 clamp(1.2rem,.6rem + 2vw,2.6rem)}
 
 /* 상단 유틸 바·헤더·드롭다운·푸터의 CSS는 여기 없다 — 그 마크업은 이 페이지가 아니라
    assets/nav.js 가 .ynv-* / .yft 로 만들고, 제 스타일도 함께 주입한다.
@@ -498,6 +498,14 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
   .fx-d{font-size:.88rem;line-height:1.62}
   .fx-dots{margin-top:1rem}
   .fx-dot{height:30px}
+}
+/* PC 와이드 — 1440 폭 기준의 사진 44vw·높이 40rem 상한은 1920+에서
+   글과 사진 사이가 뻥 뚫려 보였다. 사진 칸을 절반까지 넓히고 높이도 화면을 따라 키운다.
+   글은 그대로 왼쪽 끝 — 이 구간의 어법이다. */
+@media (min-width:1680px){
+  .fx-grid{grid-template-columns:minmax(0,1fr) minmax(0,50vw)}
+  .fx-right{height:min(78vh,50rem)}
+  .fx-d{max-width:36rem}
 }
 @media (prefers-reduced-motion:reduce){
   .fx-scene{height:auto!important}
@@ -1504,7 +1512,7 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
 })();
 </script>
 <!-- 공용 헤더·사이트맵 푸터(서브페이지와 동일) 주입 -->
-<script src="assets/nav.js?v=121"></script>
+<script src="assets/nav.js?v=122"></script>
 <script>
 /* 인트로 두 구간 — 스크롤 진행률(0~1)을 --p 로 넣고, 문장 구간은 단어를 하나씩 켠다.
    바깥 통의 높이에서 화면 한 칸을 뺀 만큼이 「진행 구간」이다. */
@@ -1740,5 +1748,7 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
 })();
 
 </script>
+<script src="assets/vendor/lenis.min.js?v=1" defer></script>
+<script src="assets/smooth.js?v=2" defer></script>
 </body>
 </html>

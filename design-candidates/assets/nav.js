@@ -19,7 +19,7 @@
     '.hud-top{display:none!important}',
     '.ynav-ph{display:none!important}',
     '.ynv{position:fixed;top:0;left:0;right:0;z-index:50;font-family:' + KR + '}',
-    '.ynv-w{max-width:1232px;margin:0 auto;padding:0 clamp(1.2rem,.6rem + 2vw,2.6rem)}',
+    '.ynv-w{max-width:77rem;margin:0 auto;padding:0 clamp(1.2rem,.6rem + 2vw,2.6rem)}',
     /* 한/영 — 예전엔 위쪽 검은 유틸 바에 있었다. 그 바(연세대·공과대학·현행 홈)를
        통째로 걷고, 메뉴를 가운데로 보낸 뒤 남는 오른쪽 자리를 이것이 받는다.
        각진 모서리·헤어라인 — 알약 배지는 이 지면의 어법이 아니다. */
@@ -131,7 +131,7 @@
        위쪽이 히어로·바·본문 세 토막으로 나뉘어 보인다(참고: yonsei-me 학부소개). */
     '.ysub{position:sticky;top:4.35rem;z-index:38;background:' + NAVYD + ';' +
       'border-bottom:1px solid rgba(255,255,255,.14)}',
-    '.ysub-w{max-width:1232px;margin:0 auto;padding:0 clamp(1.2rem,.6rem + 2vw,2.6rem);' +
+    '.ysub-w{max-width:77rem;margin:0 auto;padding:0 clamp(1.2rem,.6rem + 2vw,2.6rem);' +
       'display:flex;gap:.15rem;align-items:stretch;overflow-x:auto;scrollbar-width:none}',
     '.ysub-w::-webkit-scrollbar{display:none}',
     '.ysub-tab{flex:0 0 auto;font-family:' + KR + ';font-size:1rem;font-weight:700;color:rgba(255,255,255,.66);' +
@@ -142,7 +142,7 @@
     '.ysub-hide{display:none!important}',
     /* 소제목 바로가기 바 — 탭 바 바로 아래. 탭 바보다 한 단계 낮은 무게로 둔다 */
     '.yjump{position:sticky;top:7.5rem;z-index:37;background:#fbfbfc;border-bottom:1px solid ' + LINE + '}',
-    '.yjump-w{max-width:1232px;margin:0 auto;padding:.5rem clamp(1.2rem,.6rem + 2vw,2.6rem);' +
+    '.yjump-w{max-width:77rem;margin:0 auto;padding:.5rem clamp(1.2rem,.6rem + 2vw,2.6rem);' +
       'display:flex;gap:.15rem;align-items:center;overflow-x:auto;scrollbar-width:none}',
     '.yjump-w::-webkit-scrollbar{display:none}',
     '.yjump a{flex:0 0 auto;font-family:' + KR + ';font-size:.86rem;font-weight:600;color:' + MUTED + ';' +

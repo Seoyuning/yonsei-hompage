@@ -26,10 +26,10 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
   media="print" onload="this.media='all'" />
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
-<link rel="stylesheet" href="assets/fonts.css?v=1" />
+<link rel="stylesheet" href="assets/fonts.css?v=2" />
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d25" />
-<link rel="preload" as="script" href="assets/nav.js?v=121" />
+<link rel="preload" as="script" href="assets/nav.js?v=122" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    연구 — 연세대학교 기계공학부 (기관형 · 아이보리)
@@ -111,7 +111,7 @@ a{color:inherit;text-decoration:none}
   linear-gradient(180deg,rgba(18,41,79,.62) 0%,rgba(16,35,68,.50) 40%,rgba(10,22,44,.78) 100%)}
 /* 히어로 글은 본문과 같은 폭·같은 왼쪽 선에서 시작한다 — 예전에는 60rem 로
    가운데 모아 두어 본문(1320px)보다 좁았고, 그래서 위쪽만 가운데로 몰려 보였다. */
-.phero-in{position:relative;z-index:1;width:100%;max-width:1232px;margin:0 auto;text-align:left;
+.phero-in{position:relative;z-index:1;width:100%;max-width:77rem;margin:0 auto;text-align:left;
   padding:clamp(9.5rem,7rem + 4vw,11.5rem) clamp(1.2rem,.6rem + 2vw,2.6rem) clamp(2.6rem,5vh,4rem)}
 .phero-kick{font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.72);margin-bottom:.6rem}
 .phero h1{font-size:clamp(2.1rem,1.25rem + 3.4vw,3.9rem);font-weight:800;letter-spacing:-.01em;line-height:1.16;color:#fff}
@@ -137,7 +137,7 @@ a{color:inherit;text-decoration:none}
 /* 네 탭(연구 비전 · 연구 분야 · 연구실 목록 · 홍보영상)은 형제바로 갈아 끼우는 한 화면이다.
    탭마다 위 여백이 112 / 64 / 67 / 74px 로 달라, 탭을 옮길 때마다 본문이 위아래로 튀었다.
    네 곳 모두 같은 값(1440px 기준 45px)으로 맞춘다. */
-.vision{background:#ffffff;max-width:1232px;margin:0 auto;
+.vision{background:#ffffff;max-width:77rem;margin:0 auto;
   padding:clamp(1.9rem,1.4rem + 1.6vw,3rem) clamp(1.2rem,.6rem + 2vw,2.6rem) clamp(4rem,3rem + 5vw,7rem);
   border-bottom:1px solid var(--line-soft);scroll-margin-top:6.6rem}
 /* 비전 헤더 — 킥커만 얇게, 큰 위계는 리드 문장이 담당 */
@@ -231,7 +231,7 @@ a{color:inherit;text-decoration:none}
 @media (max-width:560px){.vis-objs{grid-template-columns:minmax(0,1fr);gap:1.1rem}}
 
 /* ── 요약: 6개 분야 (단정한 스탯 행) ── */
-.summary{max-width:1232px;margin:0 auto;
+.summary{max-width:77rem;margin:0 auto;
   padding:clamp(2.8rem,2rem + 3vw,4.2rem) clamp(1.2rem,.6rem + 2vw,2.6rem);
   border-bottom:1px solid var(--line-soft)}
 .sum-head{font-family:var(--kr);font-size:1rem;color:var(--sub);line-height:1.7;margin-bottom:1.8rem;max-width:52rem}
@@ -251,7 +251,7 @@ a{color:inherit;text-decoration:none}
 @media (max-width:400px){.stat-row{grid-template-columns:1fr}}
 
 /* ── 분야별 연구실 (카드 블록 × 6) ── */
-.clusters{max-width:1232px;margin:0 auto;
+.clusters{max-width:77rem;margin:0 auto;
   padding:clamp(1.9rem,1.4rem + 1.6vw,3rem) clamp(1.2rem,.6rem + 2vw,2.6rem) 1.6rem}
 /* ── 분야 아코디언 ──
    접힌 모습이 목록의 기본 상태다. 예전엔 [상자 + 좌측 3px 색막대 + 거대한 회색 숫자]라
@@ -394,7 +394,7 @@ a{color:inherit;text-decoration:none}
 .cta{background:var(--navy);color:#fff;
   padding:clamp(2.6rem,1.6rem + 3.5vw,4.2rem) clamp(1.4rem,.6rem + 2vw,3rem);
   display:flex;justify-content:space-between;align-items:center;gap:2rem;flex-wrap:wrap;
-  max-width:1232px;margin:clamp(3rem,2rem + 3vw,4.5rem) auto;
+  max-width:77rem;margin:clamp(3rem,2rem + 3vw,4.5rem) auto;
   margin-inline:clamp(1.2rem,.6rem + 2vw,2.6rem)}
 @media(min-width:1180px){.cta{margin-inline:auto}}
 .cta .cta-txt{max-width:34rem}
@@ -445,7 +445,7 @@ html[lang="en"] .lab-en-only{display:none}
 /* 위 여백만 절반으로 줄인다 — 이 구간은 형제 탭 바가 바로 위에 붙는데,
    제목 아래로 얇은 안내 한 줄뿐이라 예전 값(2.4~4rem)에서는 탭 바와 독수리 사이가
    빈칸으로만 채워져 보였다. 좌우·아래 값은 다른 구간과 맞춰 그대로 둔다. */
-.eagle-sec{max-width:1232px;margin:0 auto;padding:clamp(1.9rem,1.4rem + 1.6vw,3rem) clamp(1.2rem,.6rem + 2vw,2.6rem) 0}
+.eagle-sec{max-width:77rem;margin:0 auto;padding:clamp(1.9rem,1.4rem + 1.6vw,3rem) clamp(1.2rem,.6rem + 2vw,2.6rem) 0}
 /* 이 구간의 머리 아래에는 큰 덩어리가 아니라 안내 한 줄이 오므로
    공통 .sec-head 간격(1.6~2.4rem)은 과하다. 여기서만 좁혀 안내 줄을 제목에 붙인다. */
 .eagle-sec .sec-head{margin-bottom:clamp(.9rem,.7rem + .8vw,1.4rem)}
@@ -701,7 +701,7 @@ html[lang="en"] .lab-en-only{display:none}
 </style>
 <style>
 /* ═══ 6개 연구 분야 — 자세한 설명 카드 그리드 (독수리 아래, 클릭 시 확장) ═══ */
-.fields-detail{max-width:1232px;margin:0 auto;
+.fields-detail{max-width:77rem;margin:0 auto;
   padding:clamp(2.8rem,2rem + 3vw,4.6rem) clamp(1.2rem,.6rem + 2vw,2.6rem);
   border-bottom:1px solid var(--line-soft);scroll-margin-top:6.6rem}
 /* (이 화면 전용이던 가운데 정렬 헤더 .fd-head/.fd-kick/.fd-title/.fd-sub 는
@@ -812,7 +812,7 @@ html[lang="en"] .lab-en-only{display:none}
 </style>
 <style>
 /* ═══ 연구실 홍보영상 갤러리 (분야 액센트 카드 · 16:9 썸네일 + 재생 버튼) ═══ */
-.labvideos{max-width:1232px;margin:0 auto;
+.labvideos{max-width:77rem;margin:0 auto;
   padding:clamp(1.9rem,1.4rem + 1.6vw,3rem) clamp(1.2rem,.6rem + 2vw,2.6rem) clamp(2.8rem,2rem + 3vw,4.6rem);
   border-bottom:1px solid var(--line-soft);scroll-margin-top:6.6rem}
 /* 분야 그룹 헤더 — 얇은 헤어라인 + 분야색 점, 편집형 위계 */
@@ -2015,9 +2015,11 @@ html[lang="en"] .lab-en-only{display:none}
   })();
 })();
 </script>
-<script src="assets/nav.js?v=121"></script>
+<script src="assets/nav.js?v=122"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--num);font-size:.72rem;letter-spacing:.12em;color:#68727f">
   © 2026 YONSEI · ME &nbsp;·&nbsp; <a href="?studio=1" style="color:inherit;text-decoration:none">관리자</a>
 </footer>
+<script src="assets/vendor/lenis.min.js?v=1" defer></script>
+<script src="assets/smooth.js?v=2" defer></script>
 </body>
 </html>

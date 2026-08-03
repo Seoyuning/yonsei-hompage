@@ -26,10 +26,10 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
   media="print" onload="this.media='all'" />
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" /></noscript>
-<link rel="stylesheet" href="assets/fonts.css?v=1" />
+<link rel="stylesheet" href="assets/fonts.css?v=2" />
 <!-- 스크립트 미리 받기 — 파서가 해당 줄에 닿기 전에 내려받아 멈춤을 줄인다 -->
 <link rel="preload" as="script" href="assets/js/data.js?v=d25" />
-<link rel="preload" as="script" href="assets/nav.js?v=121" />
+<link rel="preload" as="script" href="assets/nav.js?v=122" />
 <style>
 /* ═══════════════════════════════════════════════════════════
    시안 G — 교육 (라이트)
@@ -106,14 +106,14 @@ a{color:inherit;text-decoration:none}
   linear-gradient(180deg,rgba(18,41,79,.62) 0%,rgba(16,35,68,.50) 40%,rgba(10,22,44,.78) 100%)}
 /* 히어로 글은 본문과 같은 폭·같은 왼쪽 선에서 시작한다 — 예전에는 60rem 로
    가운데 모아 두어 본문(1320px)보다 좁았고, 그래서 위쪽만 가운데로 몰려 보였다. */
-.phero-in{position:relative;z-index:1;width:100%;max-width:1232px;margin:0 auto;text-align:left;
+.phero-in{position:relative;z-index:1;width:100%;max-width:77rem;margin:0 auto;text-align:left;
   padding:clamp(9.5rem,7rem + 4vw,11.5rem) clamp(1.2rem,.6rem + 2vw,2.6rem) clamp(2.6rem,5vh,4rem)}
 .phero-kick{font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.72);margin-bottom:.6rem}
 .phero h1{font-size:clamp(2.1rem,1.25rem + 3.4vw,3.9rem);font-weight:800;letter-spacing:-.01em;line-height:1.16;color:#fff}
 .phero .bc{margin:0 0 1.05rem;font-size:.82rem;letter-spacing:.02em;color:rgba(255,255,255,.82)}
 
 /* ── 페이지 내 이동 칩 ── */
-.jumpnav{max-width:1232px;margin:0 auto;
+.jumpnav{max-width:77rem;margin:0 auto;
   padding:1.4rem clamp(1.2rem,.6rem + 2vw,2.6rem) 0;
   display:flex;gap:.5rem;flex-wrap:wrap}
 .jumpnav a{font-family:var(--kr);font-size:.8rem;color:var(--sub);
@@ -121,7 +121,7 @@ a{color:inherit;text-decoration:none}
 .jumpnav a:hover{border-color:var(--coral);color:var(--coral)}
 
 /* ── 섹션 공통 ── */
-.sec{max-width:1232px;margin:0 auto;
+.sec{max-width:77rem;margin:0 auto;
   padding:clamp(2.8rem,2rem + 3vw,4.5rem) clamp(1.2rem,.6rem + 2vw,2.6rem);
   border-bottom:1px solid var(--line-soft)}
 /* 표준 헤더 — [킥커 ↔ 사이드 링크(baseline)] 아래 제목·부제, 왼쪽 div 세로 스택 (G-console 계승) */
@@ -681,7 +681,7 @@ a.tf-box.is-req:hover{background:var(--navy-d,#12294f);color:#fff}
 .cta{background:var(--navy);color:#fff;
   padding:clamp(2.6rem,1.6rem + 3.5vw,4.2rem) clamp(1.4rem,.6rem + 2vw,3rem);
   display:flex;justify-content:space-between;align-items:center;gap:2rem;flex-wrap:wrap;
-  max-width:1232px;margin:clamp(3rem,2rem + 3vw,4.5rem) auto;
+  max-width:77rem;margin:clamp(3rem,2rem + 3vw,4.5rem) auto;
   margin-inline:clamp(1.2rem,.6rem + 2vw,2.6rem)}
 @media(min-width:1180px){.cta{margin-inline:auto}}
 .cta .cta-txt{max-width:34rem}
@@ -2215,9 +2215,11 @@ a.tf-box.is-req:hover{background:var(--navy-d,#12294f);color:#fff}
   });
 })();
 </script>
-<script src="assets/nav.js?v=121"></script>
+<script src="assets/nav.js?v=122"></script>
 <footer style="text-align:center;padding:2.2rem 1rem 2.6rem;font-family:var(--kr);font-size:.74rem;color:#68727f">
   © 2026 연세대학교 기계공학부 &nbsp;·&nbsp; <a href="?studio=1" style="color:inherit;text-decoration:none">관리자</a>
 </footer>
+<script src="assets/vendor/lenis.min.js?v=1" defer></script>
+<script src="assets/smooth.js?v=2" defer></script>
 </body>
 </html>

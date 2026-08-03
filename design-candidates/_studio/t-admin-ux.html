@@ -18,6 +18,7 @@
 <script>
 (function () {
   var Y = window.YStudio;
+  window.__ghConns = [];          // ghlist/ghadd/ghuse/ghdel 스텁의 연결 목록
   Y.session.set({ passcode: 'test', author: '테스트', headSha: 'aaaa111aaaa111aaaa111aaaa111aaaa111aaaa1', ts: Date.now() });
 
   Y.engine = {
@@ -45,20 +46,49 @@
       });
     },
     call: function (action, payload) {
-      if (action === 'ghset') {
-        window.__ghset = payload;
-        return Promise.resolve({
-          ok: true, source: 'custom', repo: payload.owner + '/' + payload.repo,
-          repoUrl: 'https://github.com/' + payload.owner + '/' + payload.repo,
-          branch: payload.branch, basePath: payload.basePath,
-          headSha: 'c0ffee1c0ffee1c0ffee1c0ffee1c0ffee1c0ff', tokenSet: !!payload.token
-        });
+      function pay() {
+        var active = window.__ghConns.filter(function (e) { return e.active; })[0];
+        return {
+          ok: true, canStore: true, source: active ? 'custom' : 'env',
+          envRepo: 'todo0157/yonsei-me-homepage-competition', envBranch: 'main',
+          items: window.__ghConns.map(function (e) { return Object.assign({}, e); })
+        };
       }
-      if (action === 'ghreset') { window.__ghreset = true; return Promise.resolve({ ok: true, source: 'env' }); }
+      if (action === 'ghlist') return Promise.resolve(pay());
+      if (action === 'ghadd') {
+        window.__ghadd = payload;
+        window.__ghConns.forEach(function (e) { if (payload.use) e.active = false; });
+        window.__ghConns.push({
+          id: 'id-' + (window.__ghConns.length + 1),
+          repo: payload.owner + '/' + payload.repo, branch: payload.branch,
+          basePath: payload.basePath, tokenSet: !!payload.token, active: !!payload.use
+        });
+        var p1 = pay(); p1.headSha = 'c0ffee1c0ffee1c0ffee1c0ffee1c0ffee1c0ff';
+        return Promise.resolve(p1);
+      }
+      if (action === 'ghuse') {
+        window.__ghuse = payload;
+        window.__ghConns.forEach(function (e) { e.active = e.id === payload.id; });
+        var p2 = pay(); p2.headSha = 'c0ffee1c0ffee1c0ffee1c0ffee1c0ffee1c0ff';
+        return Promise.resolve(p2);
+      }
+      if (action === 'ghdel') {
+        window.__ghdel = payload;
+        var wasActive = window.__ghConns.some(function (e) { return e.id === payload.id && e.active; });
+        window.__ghConns = window.__ghConns.filter(function (e) { return e.id !== payload.id; });
+        var p3 = pay(); p3.resetToEnv = wasActive;
+        return Promise.resolve(p3);
+      }
+      if (action === 'ghreset') {
+        window.__ghreset = true;
+        window.__ghConns.forEach(function (e) { e.active = false; });
+        return Promise.resolve(pay());
+      }
       return Promise.reject(new Error('unknown ' + action));
     },
     history: function () {
       return Promise.resolve({ commits: [
+        { sha: 'aaa9999ffffffff', message: '게시 취소: YSME 게시: assets/js/data.js (qwer1234) (5de2897, 테스트)', author: '테스트', date: new Date(Date.now() - 60000).toISOString(), html_url: 'https://github.com/x/c/0' },
         { sha: '5de2897ffffffff', message: 'YSME 게시: assets/js/data.js (qwer1234)', author: 'qwer1234', date: new Date(Date.now() - 360000).toISOString(), html_url: 'https://github.com/x/c/1' },
         { sha: '91bef3dffffffff', message: 'chore(auto): Vercel 배포 트리거 [auto-deploy-trigger]', author: '권창한', date: new Date(Date.now() - 400000).toISOString(), html_url: 'https://github.com/x/c/2' },
         { sha: '63d08d1ffffffff', message: '구독 확인 — 신청 폼 대신 전용 화면', author: 'Seoyuning', date: new Date(Date.now() - 4000000).toISOString(), html_url: 'https://github.com/x/c/3' }
@@ -218,36 +248,18 @@
     await sleep(250);
     t('연결 다시 확인 → 기준점 갱신', window.__setHead === '5de2897bbbb222bbbb222bbbb222bbbb222bbbb2', String(window.__setHead).slice(0, 7));
 
-    /* 9. 연결 바꾸기 — 폼 열기 → 저장 → confirm → ghset 호출·화면 갱신 */
-    var openBtn = qa('.ys-act', gh).filter(function (b) { return b.textContent.indexOf('다른 저장소로 바꾸기') >= 0; })[0];
-    t('연결 바꾸기 버튼 있음', !!openBtn);
-    openBtn.click();
-    var form = q('.ys-gh-form', gh);
-    t('폼 열림(소유자·토큰 칸)', form && form.style.display !== 'none' && qa('input', form).length >= 5);
-    var ins = qa('input', form);
-    ins[0].value = 'yonsei-me-dept'; ins[1].value = 'me-homepage'; ins[2].value = 'main';
-    ins[3].value = ''; ins[4].value = 'ghp_TESTTESTTESTTESTTEST0001';
-    var saveBtn = qa('.ys-act.is-pri', form)[0];
-    saveBtn.click();
-    await sleep(200);
-    var cfm = q('.ys-modal');
-    t('바꾸기 전 확인 모달', cfm && cfm.textContent.indexOf('yonsei-me-dept/me-homepage') >= 0);
-    var okB = qa('.ys-modal-f .is-pri', cfm)[0];
-    okB.click();
-    await sleep(300);
-    t('ghset 호출값', window.__ghset && window.__ghset.owner === 'yonsei-me-dept'
-      && window.__ghset.repo === 'me-homepage' && window.__ghset.token === 'ghp_TESTTESTTESTTESTTEST0001',
-      JSON.stringify(window.__ghset || null).replace(/ghp_[A-Z0-9]+/, 'ghp_…'));
-    t('새 기준점 반영', window.__setHead === 'c0ffee1c0ffee1c0ffee1c0ffee1c0ffee1c0ff', String(window.__setHead).slice(0, 7));
-    var gh2 = q('[data-ys-panel="github"]');
-    t('카드가 새 저장소 표시', gh2.textContent.indexOf('yonsei-me-dept/me-homepage') >= 0);
-    t('출처 = 직접 설정', gh2.textContent.indexOf('관리 화면에서 직접 설정') >= 0);
-
-    /* 9-b. 게시 취소 — 커밋 줄의 되돌리기 버튼 → 확인 모달(취소로 닫음) */
-    var rvBtns = qa('.ys-gh-rv', q('[data-ys-panel="github"]'));
-    t('커밋마다 게시 취소 버튼', rvBtns.length >= 2, rvBtns.length + '개');
-    if (rvBtns[0]) {
-      rvBtns[0].click();
+    /* 9. 최근 커밋 — 취소 기록·취소된 게시 구분 */
+    var rowsEls = qa('.ys-gh-c', gh);
+    var cancelRow = rowsEls.filter(function (r) { return !!r.querySelector('.ys-gh-tag.is-cancel'); })[0];
+    t('취소 기록 표식', !!cancelRow);
+    t('취소 기록 버튼 = 재게시 문구', cancelRow && /취소를 되돌리기/.test((cancelRow.querySelector('.ys-gh-rv') || {}).textContent || ''));
+    var undoneRow = rowsEls.filter(function (r) { return !!r.querySelector('.ys-gh-tag.is-undone'); })[0];
+    t('취소된 게시 표식(5de2897 줄)', undoneRow && undoneRow.textContent.indexOf('YSME 게시') >= 0);
+    t('취소된 게시엔 버튼 없음', undoneRow && !undoneRow.querySelector('.ys-gh-rv'));
+    var plainRow = rowsEls.filter(function (r) { return !r.querySelector('.ys-gh-tag') && r.querySelector('.ys-gh-rv'); })[0];
+    t('보통 게시 버튼 = 이 게시 되돌리기', plainRow && plainRow.querySelector('.ys-gh-rv').textContent === '이 게시 되돌리기');
+    if (plainRow) {
+      plainRow.querySelector('.ys-gh-rv').click();
       await sleep(200);
       var rvCfm = q('.ys-modal');
       t('게시 취소 확인 모달', rvCfm && rvCfm.textContent.indexOf('게시를 취소합니다') >= 0);
@@ -256,18 +268,52 @@
       await sleep(150);
     }
 
-    /* 10. 기본으로 되돌리기 */
-    var resetBtn = qa('.ys-act', gh2).filter(function (b) { return b.textContent.indexOf('기본(환경변수)') >= 0; })[0];
-    t('되돌리기 버튼 있음(직접 설정일 때)', !!resetBtn);
-    if (resetBtn) {
-      resetBtn.click();
-      await sleep(200);
-      var cfm2 = q('.ys-modal');
-      var okB2 = cfm2 && qa('.ys-modal-f .is-pri', cfm2)[0];
-      if (okB2) okB2.click();
-      await sleep(300);
-      t('ghreset 호출·env 복귀', window.__ghreset === true && q('[data-ys-panel="github"]').textContent.indexOf('todo0157/') >= 0);
-    }
+    /* 10. 깃헙 연결 — 목록·추가·전환·삭제 */
+    var connsBox = q('[data-gh-conns]', gh);
+    t('기본(환경변수) 연결 줄 + 게시 중', connsBox && connsBox.textContent.indexOf('todo0157/') >= 0
+      && !!connsBox.querySelector('.ys-gh-live'));
+    var addBtn2 = qa('.ys-act', gh).filter(function (b) { return b.textContent.indexOf('깃헙 연결 추가') >= 0; })[0];
+    t('연결 추가 버튼', !!addBtn2);
+    addBtn2.click();
+    var form = q('.ys-gh-form', gh);
+    t('추가 폼 열림(5칸+체크)', form && form.style.display !== 'none' && qa('input', form).length >= 6);
+    var ins = qa('input.ys-in', form);
+    ins[0].value = 'yonsei-me-dept'; ins[1].value = 'me-homepage'; ins[2].value = 'main';
+    ins[3].value = ''; ins[4].value = 'ghp_TESTTESTTESTTESTTEST0001';
+    qa('.ys-act.is-pri', form)[0].click();
+    await sleep(200);
+    var cfm = q('.ys-modal');
+    t('추가 전 확인 모달', cfm && cfm.textContent.indexOf('yonsei-me-dept/me-homepage') >= 0);
+    qa('.ys-modal-f .is-pri', cfm)[0].click();
+    await sleep(400);
+    t('ghadd 호출값(use 포함)', window.__ghadd && window.__ghadd.owner === 'yonsei-me-dept'
+      && window.__ghadd.repo === 'me-homepage' && window.__ghadd.use === true
+      && window.__ghadd.token === 'ghp_TESTTESTTESTTESTTEST0001');
+    t('새 기준점 반영', window.__setHead === 'c0ffee1c0ffee1c0ffee1c0ffee1c0ffee1c0ff', String(window.__setHead).slice(0, 7));
+    var gh2 = q('[data-ys-panel="github"]');
+    var connsBox2 = q('[data-gh-conns]', gh2);
+    var newRow = qa('.ys-gh-cn', connsBox2).filter(function (r) { return r.textContent.indexOf('yonsei-me-dept/me-homepage') >= 0; })[0];
+    t('목록에 새 연결 + 게시 중', newRow && !!newRow.querySelector('.ys-gh-live'));
+    var delBtn = newRow && newRow.querySelector('button.is-del');
+    t('연결 삭제 버튼', !!delBtn);
+    delBtn.click();
+    await sleep(200);
+    var cfm2 = q('.ys-modal');
+    t('삭제 확인(기본 복귀 경고)', cfm2 && cfm2.textContent.indexOf('기본(환경변수) 저장소로 돌아갑니다') >= 0);
+    qa('.ys-modal-f .is-pri', cfm2)[0].click();
+    await sleep(400);
+    t('ghdel 호출·목록에서 제거', !!window.__ghdel && q('[data-gh-conns]', q('[data-ys-panel="github"]')).textContent.indexOf('yonsei-me-dept') < 0);
+
+    /* 11. 편집 종료 버튼 — 확인 모달까지(실행하면 하니스가 리로드되므로 취소) */
+    var exitBtn = qa('.ys-stack .ys-btn').filter(function (b) { return b.textContent.indexOf('종료') >= 0; })[0];
+    t('스택에 종료 버튼', !!exitBtn);
+    exitBtn.click();
+    await sleep(200);
+    var exCfm = q('.ys-modal');
+    t('종료 확인 모달', exCfm && exCfm.textContent.indexOf('편집을 종료') >= 0);
+    var exCancel = exCfm && qa('.ys-modal-f button', exCfm).filter(function (b) { return !b.classList.contains('is-pri'); })[0];
+    if (exCancel) exCancel.click();
+    await sleep(150);
 
     var fail = results.filter(function (r) { return !r.ok; }).length;
     var sum = 'TOTAL ' + results.length + ' · FAIL ' + fail;

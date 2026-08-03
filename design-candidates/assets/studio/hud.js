@@ -66,6 +66,7 @@
     post: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2.4"/><path d="M8 9.2h8M8 13h8M8 16.4h4.6"/></svg>',
     photo: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2.4"/><circle cx="9.2" cy="9.4" r="1.6"/><path d="M4.6 16.6l4.4-4.2 3.4 3.2 3-2.8 4 3.8"/></svg>',
     git: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="7" cy="6" r="2.2"/><circle cx="7" cy="18" r="2.2"/><circle cx="17" cy="8.5" r="2.2"/><path d="M7 8.2v7.6"/><path d="M17 10.7c0 3.2-3.6 3.8-10 4.6"/></svg>',
+    out: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 8V5.5H5v13h9.5V16"/><path d="M10 12h10.4"/><path d="M17.2 8.6l3.4 3.4-3.4 3.4"/></svg>',
     x: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>',
     eye: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.8 12S6.6 6.4 12 6.4 21.2 12 21.2 12 17.4 17.6 12 17.6 2.8 12 2.8 12z"/><circle cx="12" cy="12" r="2.6"/></svg>'
   };
@@ -175,7 +176,8 @@
     { key: 'i18n', label: '한·영', icon: 'lang', kind: 'panel', panel: 'lang', name: '한/영 편집' },
     /* 게시 버튼은 패널 하단 고정 푸터로 옮겼다(글을 쓰는 자리에서 바로 게시).
        빈 자리에는 게시가 어느 저장소로 커밋되는지 보는 「깃헙 관리」를 둔다. */
-    { key: 'github', label: '깃헙', icon: 'git', kind: 'panel', panel: 'github', name: '깃헙 관리' }
+    { key: 'github', label: '깃헙', icon: 'git', kind: 'panel', panel: 'github', name: '깃헙 관리' },
+    { key: 'exit', label: '종료', icon: 'out', kind: 'exit', name: '편집 종료' }
   ];
 
   function mount() {
@@ -286,6 +288,7 @@
   function onStackClick(def) {
     if (def.kind === 'toggle') { setEditing(!editing); return; }
     if (def.kind === 'publish') { publish(); return; }
+    if (def.kind === 'exit') { exitStudio(); return; }
     if (def.kind === 'mobile') {
       if (Y.mobile && typeof Y.mobile.toggle === 'function') { Y.mobile.toggle(); syncButtons(); }
       else Y.toast('모바일 모드는 준비 중입니다.', 'warn');
@@ -1734,6 +1737,23 @@
       publishing = false;
       if (err && err.status === 409) { conflictModal(err); return; }
       Y.toast((err && err.message) || '게시에 실패했습니다.', 'error');
+    });
+  }
+
+  /* ── 편집 종료 — 세션을 지우고 방문자 화면으로 돌아간다 ──
+     초안(IndexedDB)은 남는다: 다음에 다시 로그인하면 이어서 편집할 수 있다. */
+  function exitStudio() {
+    confirmBox('편집을 종료하고 방문자 화면으로 돌아갑니다.\n\n' +
+      '저장하지 않은 초안은 남아 있다가 다음 편집 때 이어집니다. ' +
+      '게시하지 않은 변경은 사이트에 나가지 않습니다. 계속할까요?').then(function (ok) {
+      if (!ok) return;
+      try { Y.session.clear(); } catch (e) {}
+      try {
+        var q = location.search.replace(/([?&])studio=1(&|$)/, function (m, a, b) { return b ? a : ''; });
+        if (q === '?') q = '';
+        history.replaceState(null, '', location.pathname + q + location.hash);
+      } catch (e2) {}
+      reloadSafe();
     });
   }
 

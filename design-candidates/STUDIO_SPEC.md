@@ -78,6 +78,10 @@ env: `GH_TOKEN` `GH_OWNER` `GH_REPO` `GH_BRANCH`(기본 main) `GH_BASEPATH`(= `d
 | `revert` | `{sha, baseSha?, author}` | `{ ok:true, commit:{sha,html_url}, headSha, files:[path] }` — 그 커밋이 바꾼 파일을 **부모 시점 blob sha 로 가리키는** 새 커밋(게시 취소). 병합 커밋·60파일 초과·사이트 폴더 밖 변경 → 400 |
 | `ghset` | `{owner, repo, branch?, basePath?, token?}` | `{ ok:true, source:'custom', repo, repoUrl, branch, basePath, headSha, tokenSet }` — 저장 전에 저장소 존재·push 권한·브랜치 존재를 검증. 토큰을 비우면 기존 토큰 유지 |
 | `ghreset` | – | `{ ok:true, source:'env', ... }` — 직접 설정을 지우고 환경변수로 복귀 |
+| `ghlist` | – | `{ ok, canStore, source, activeRepo, envRepo, items:[{id,repo,branch,basePath,tokenSet,active}] }` — 등록된 연결 목록(Redis `ysme:ghlist`). 토큰 값은 절대 안 실림 |
+| `ghadd` | `{owner, repo, branch?, basePath?, token?, use?}` | ghlist 형 + `headSha` — 검증 후 목록에 등록(같은 owner/repo/branch 면 갱신, 최대 10개). `use:true` 면 바로 전환 |
+| `ghuse` | `{id}` | ghlist 형 + `headSha` — 등록된 연결로 전환(전환 전 재검증) |
+| `ghdel` | `{id}` | ghlist 형 + `resetToEnv` — 연결 삭제. 게시 중이던 연결이면 환경변수로 복귀 |
 
 - `commit` 은 **Git Trees API** 사용: blobs → tree(base=현재 tree) → commit → ref 갱신. 파일 N개 = 커밋 1개.
 - **충돌 완화**: `baseSha`≠HEAD 라도 그 사이 커밋이 전부 `[auto-deploy-trigger]`(빈 트리거 커밋)뿐이면
@@ -297,7 +301,8 @@ JS 생성물의 텍스트는 화면에서 직접 고칠 수 없다(고쳐도 다
 | `AI 수정` | 키 등록 → 요청 → 변경안 토글 목록 → 항목별 점프·디프·승인 |
 | `모바일` | 모바일 렌더 모드 토글 |
 | `한/영` | 편집 대상 언어 전환 |
-| `깃헙` | 깃헙 관리 패널 — 연결 카드·연결 다시 확인(기준점 재동기)·최근 커밋·게시 대상 저장소 변경 |
+| `깃헙` | 깃헙 관리 패널 — 연결 카드·연결 다시 확인(기준점 재동기)·최근 커밋(게시 취소/재게시, 취소 기록·취소된 게시 표식)·연결 목록(등록/전환/삭제, ghlist·ghadd·ghuse·ghdel) |
+| `종료` | 편집 종료 — 확인 후 세션을 지우고 방문자 화면으로(초안은 남아 다음 편집 때 이어짐) |
 
 - **게시 버튼은 스택에 없다.** ① 사이드 패널이 열려 있으면 패널 **하단 고정 푸터**의
   「게시 · 미게시 초안 N건」, ② 패널이 닫혀 있고 초안이 있으면 **화면 하단 가운데**

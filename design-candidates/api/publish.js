@@ -188,6 +188,155 @@ module.exports = async (req, res) => {
       return;
     }
 
+    /* ── 깃헙 연결 관리 공통 도구 ──
+       ysme:ghlist = 등록해 둔 연결 목록(토큰 포함, 서버에만), ysme:ghcfg = 지금 쓰는 연결.
+       응답에 토큰은 절대 싣지 않는다(tokenSet 불리언만). */
+    var GHLIST_KEY = 'ysme:ghlist';
+    async function readGhList() {
+      var raw = await redis(['GET', GHLIST_KEY]);
+      if (raw && typeof raw.result === 'string') {
+        try { var arr = JSON.parse(raw.result); return Array.isArray(arr) ? arr : []; } catch (e) {}
+      }
+      return [];
+    }
+    function sameConn(a, b) {
+      return a && b && a.owner === b.owner && a.repo === b.repo && (a.branch || 'main') === (b.branch || 'main');
+    }
+    async function ghListPayload() {
+      var list = await readGhList();
+      return {
+        ok: true, canStore: !!(R_URL && R_TOK), source: GH_SOURCE,
+        activeRepo: GH_OWNER + '/' + GH_REPO, activeBranch: GH_BRANCH, activeBase: BASE,
+        envRepo: env.GH_OWNER + '/' + env.GH_REPO, envBranch: env.GH_BRANCH || 'main',
+        items: list.map(function (it) {
+          return {
+            id: it.id, repo: it.owner + '/' + it.repo, branch: it.branch || 'main',
+            basePath: it.base || '', tokenSet: !!it.token,
+            active: GH_SOURCE === 'custom' && !!GHC && (GHC.id === it.id || sameConn(GHC, it))
+          };
+        })
+      };
+    }
+    /* 저장소 존재·push 권한·브랜치 존재를 검증한다. 성공 시 {headSha}. */
+    async function validateConn(o, rp, br, tok) {
+      function ghAs(p) {
+        return fetch('https://api.github.com' + p, {
+          headers: {
+            'Authorization': 'Bearer ' + tok,
+            'Accept': 'application/vnd.github+json',
+            'X-GitHub-Api-Version': '2022-11-28',
+            'User-Agent': 'ysme-studio'
+          }
+        });
+      }
+      var vr = await ghAs('/repos/' + o + '/' + rp);
+      if (!vr.ok) return { error: '저장소를 찾을 수 없거나 이 토큰으로 접근할 수 없습니다 (' + vr.status + '). 소유자·저장소 이름과 토큰 권한을 확인하세요.' };
+      var vd = await vr.json().catch(function () { return {}; });
+      if (!vd.permissions || !vd.permissions.push) return { error: '이 토큰에는 해당 저장소 쓰기(push) 권한이 없습니다. Contents: Read/Write 권한의 토큰을 쓰세요.' };
+      var br0 = await ghAs('/repos/' + o + '/' + rp + '/git/ref/heads/' + encodeURIComponent(br));
+      if (!br0.ok) return { error: '브랜치를 찾을 수 없습니다: ' + br };
+      var bd0 = await br0.json().catch(function () { return {}; });
+      return { headSha: bd0 && bd0.object && bd0.object.sha };
+    }
+    function connFields(body2) {
+      var o = String(body2.owner || '').trim();
+      var rp = String(body2.repo || '').trim();
+      var br = String(body2.branch || 'main').trim();
+      var bs = String(body2.basePath == null ? '' : body2.basePath).trim().replace(/^\/+|\/+$/g, '');
+      var tk = String(body2.token || '').trim();
+      if (!/^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$/.test(o)) return { error: '소유자(owner) 이름이 올바르지 않습니다.' };
+      if (!/^[A-Za-z0-9._-]{1,100}$/.test(rp)) return { error: '저장소 이름이 올바르지 않습니다.' };
+      if (!/^[A-Za-z0-9._/-]{1,80}$/.test(br) || /\.\./.test(br)) return { error: '브랜치 이름이 올바르지 않습니다.' };
+      if (bs && (!/^[A-Za-z0-9._/-]{1,120}$/.test(bs) || /\.\./.test(bs))) return { error: '사이트 폴더 경로가 올바르지 않습니다.' };
+      if (tk && !/^[A-Za-z0-9_]{20,255}$/.test(tk)) return { error: '토큰 형식이 올바르지 않습니다.' };
+      return { owner: o, repo: rp, branch: br, base: bs, token: tk };
+    }
+
+    /* ── ghlist : 등록된 연결 목록 ── */
+    if (action === 'ghlist') {
+      res.status(200).json(await ghListPayload());
+      return;
+    }
+
+    /* ── ghadd : 연결 등록(검증 후 저장, use:true 면 바로 전환) ── */
+    if (action === 'ghadd') {
+      if (!R_URL || !R_TOK) { res.status(400).json({ error: '서버에 설정 저장소(Upstash Redis)가 없어 연결을 등록할 수 없습니다.' }); return; }
+      var cAdd = connFields(body);
+      if (cAdd.error) { res.status(400).json({ error: cAdd.error }); return; }
+      var vAdd = await validateConn(cAdd.owner, cAdd.repo, cAdd.branch, cAdd.token || env.GH_TOKEN);
+      if (vAdd.error) { res.status(400).json({ error: vAdd.error }); return; }
+      var listA = await readGhList();
+      var entry = null;
+      for (var ai = 0; ai < listA.length; ai++) {
+        if (sameConn(listA[ai], cAdd)) { entry = listA[ai]; break; }
+      }
+      if (entry) {
+        entry.base = cAdd.base;
+        if (cAdd.token) entry.token = cAdd.token;   // 갱신 등록 — 토큰을 비우면 기존 유지
+      } else {
+        if (listA.length >= 10) { res.status(400).json({ error: '연결은 10개까지 등록할 수 있습니다. 안 쓰는 연결을 지워 주세요.' }); return; }
+        entry = {
+          id: Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6),
+          owner: cAdd.owner, repo: cAdd.repo, branch: cAdd.branch, base: cAdd.base, token: cAdd.token
+        };
+        listA.push(entry);
+      }
+      var svA = await redis(['SET', GHLIST_KEY, JSON.stringify(listA)]);
+      if (!svA) { res.status(502).json({ error: '연결을 저장하지 못했습니다. 잠시 후 다시 시도하세요.' }); return; }
+      if (body.use) {
+        await redis(['SET', GHCFG_KEY, JSON.stringify(entry)]);
+        GHC = entry; GH_SOURCE = 'custom';
+        GH_OWNER = entry.owner; GH_REPO = entry.repo; GH_BRANCH = entry.branch || 'main'; BASE = entry.base || '';
+      }
+      var pA = await ghListPayload();
+      pA.headSha = vAdd.headSha;
+      res.status(200).json(pA);
+      return;
+    }
+
+    /* ── ghuse : 등록된 연결로 전환 ── */
+    if (action === 'ghuse') {
+      if (!R_URL || !R_TOK) { res.status(400).json({ error: '서버에 설정 저장소(Upstash Redis)가 없습니다.' }); return; }
+      var listU = await readGhList();
+      var pick = null;
+      for (var ui = 0; ui < listU.length; ui++) if (listU[ui].id === String(body.id || '')) { pick = listU[ui]; break; }
+      if (!pick) { res.status(404).json({ error: '그 연결을 찾을 수 없습니다. 목록을 새로 고쳐 주세요.' }); return; }
+      var vU = await validateConn(pick.owner, pick.repo, pick.branch || 'main', pick.token || env.GH_TOKEN);
+      if (vU.error) { res.status(400).json({ error: '전환 전 검증 실패 — ' + vU.error }); return; }
+      await redis(['SET', GHCFG_KEY, JSON.stringify(pick)]);
+      GHC = pick; GH_SOURCE = 'custom';
+      GH_OWNER = pick.owner; GH_REPO = pick.repo; GH_BRANCH = pick.branch || 'main'; BASE = pick.base || '';
+      var pU = await ghListPayload();
+      pU.headSha = vU.headSha;
+      res.status(200).json(pU);
+      return;
+    }
+
+    /* ── ghdel : 등록된 연결 삭제(지금 쓰는 연결이면 기본으로 복귀) ── */
+    if (action === 'ghdel') {
+      if (!R_URL || !R_TOK) { res.status(400).json({ error: '서버에 설정 저장소(Upstash Redis)가 없습니다.' }); return; }
+      var listD = await readGhList();
+      var kept = [], dropped = null;
+      for (var di = 0; di < listD.length; di++) {
+        if (listD[di].id === String(body.id || '')) dropped = listD[di];
+        else kept.push(listD[di]);
+      }
+      if (!dropped) { res.status(404).json({ error: '그 연결을 찾을 수 없습니다.' }); return; }
+      await redis(['SET', GHLIST_KEY, JSON.stringify(kept)]);
+      var wasActive = GH_SOURCE === 'custom' && !!GHC && (GHC.id === dropped.id || sameConn(GHC, dropped));
+      if (wasActive) {
+        await redis(['DEL', GHCFG_KEY]);
+        GHC = null; GH_SOURCE = 'env';
+        GH_OWNER = env.GH_OWNER; GH_REPO = env.GH_REPO;
+        GH_BRANCH = env.GH_BRANCH || 'main';
+        BASE = String(env.GH_BASEPATH || '').replace(/^\/+|\/+$/g, '');
+      }
+      var pD = await ghListPayload();
+      pD.resetToEnv = wasActive;
+      res.status(200).json(pD);
+      return;
+    }
+
     /* ── ghset / ghreset : 게시가 커밋될 깃헙 연결을 화면에서 바꾼다 ──
        검증(저장소 존재·push 권한·브랜치 존재)에 성공해야만 저장한다.
        토큰을 비우면 기존 토큰(직접 설정분 또는 환경변수)을 그대로 쓴다.

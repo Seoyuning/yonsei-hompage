@@ -215,22 +215,36 @@ main{position:relative;z-index:2;background:var(--paper)}
   transition:color .2s,transform .45s var(--e)}
 .more:hover{color:var(--coral);transform:translateX(5px)}
 
-/* ── 연구 뉴스 — 에디토리얼 리스트 + 커서 추적 이미지 프리뷰 ── */
-.nlist{border-top:1px solid var(--ink)}
-.nrow{display:flex;align-items:baseline;gap:clamp(1rem,2.5vw,2.2rem);
-  padding:clamp(1.6rem,3.4vh,2.4rem) .2rem;border-bottom:1px solid var(--line)}
-.nrow time{flex:none;width:6.2rem;font-family:var(--num);font-size:.7rem;letter-spacing:.08em;color:var(--dim)}
-.nrow .nt2{flex:1;min-width:0;font-size:clamp(1.05rem,.85rem + 1.1vw,1.55rem);font-weight:700;
-  line-height:1.35;color:var(--ink);transition:color .2s,transform .5s var(--e)}
-.nrow i{flex:none;font-style:normal;font-family:var(--mono);color:var(--dim);
-  transition:transform .45s var(--e),color .2s}
-.nrow:hover .nt2{color:var(--coral);transform:translateX(10px)}
-.nrow:hover i{color:var(--coral);transform:translateX(6px)}
-#newsPrev{position:fixed;left:0;top:0;width:min(21rem,32vw);aspect-ratio:16/10;object-fit:cover;
-  border-radius:.35rem;box-shadow:0 24px 60px rgba(15,27,48,.35);z-index:55;pointer-events:none;
-  opacity:0;transition:opacity .3s ease}
-#newsPrev.on{opacity:1}
-@media(max-width:840px){.nrow{flex-wrap:wrap;gap:.4rem}.nrow time{width:auto}#newsPrev{display:none}}
+/* ── 연구 뉴스 — 소식 페이지(뉴스·연구 성과)와 같은 결: 대표 1건 + 최근 목록.
+   같은 세기의 큰 제목 다섯 줄은 벽처럼 읽혔다(사용자). 대표 하나만 사진과 함께
+   크게, 나머지는 작은 썸네일 목록로 접는다 — 소식 페이지 UI를 그대로 가져왔다. */
+.news-lead{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:clamp(1.4rem,1rem + 2vw,2.6rem);
+  align-items:stretch}
+.news-hero{position:relative;display:block;overflow:hidden;background:#e8edf4;min-height:15rem}
+.news-hero img{width:100%;height:100%;object-fit:cover;display:block;position:absolute;inset:0;transition:transform .5s ease}
+.news-hero:hover img{transform:scale(1.04)}
+.news-hero .cap{position:absolute;left:0;right:0;bottom:0;z-index:1;padding:2.4rem 1.5rem 1.3rem;color:#fff;
+  background:linear-gradient(180deg,rgba(10,19,38,0),rgba(9,17,34,.86))}
+.news-hero .cap .tag{display:inline-block;font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.16em;
+  text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:.5rem}
+.news-hero .cap h3{font-size:1.22rem;font-weight:700;line-height:1.4;letter-spacing:-.01em}
+.news-hero .cap .date{font-family:var(--num);font-size:.76rem;color:rgba(255,255,255,.75);margin-top:.55rem}
+.news-side{display:flex;flex-direction:column;justify-content:center}
+.news-side .side-h{font-size:.82rem;font-weight:700;color:var(--muted,#5e6b82);letter-spacing:.02em;
+  padding-bottom:.7rem;border-bottom:2px solid var(--navy);margin-bottom:.2rem}
+.nlink{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:.95rem;align-items:center;
+  padding:.95rem .3rem;border-bottom:1px solid var(--line);transition:background .12s}
+.nlink:hover{background:#f6f8fb}
+.nlink .t{font-size:.95rem;color:var(--ink);line-height:1.5;min-width:0;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nlink:hover .t{color:var(--navy)}
+.nlink .d{font-family:var(--num);font-size:.76rem;color:var(--dim);white-space:nowrap;font-variant-numeric:tabular-nums}
+.nthumb{width:64px;height:46px;border-radius:3px;overflow:hidden;flex:none;
+  background:linear-gradient(135deg,#dbe3ee,#eef2f7)}
+.nthumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s ease}
+.nlink:hover .nthumb img{transform:scale(1.06)}
+@media(max-width:840px){.news-lead{grid-template-columns:1fr}}
+@media(max-width:560px){.nthumb{width:54px;height:40px}.nlink{gap:.7rem}}
 
 /* ── 공지 · 세미나 보드 — 잉크 콘솔 패널 + 고스트 타이포 ── */
 .board-band{position:relative;overflow:hidden;
@@ -271,17 +285,18 @@ main{position:relative;z-index:2;background:var(--paper)}
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
   transition:color .12s}
 .bd{flex:none;font-family:var(--num);font-size:.72rem;letter-spacing:.06em;color:#7f8fad;font-variant-numeric:tabular-nums}
-/* ── 공지 줄의 날짜 블록 — 일(日)을 크게, 연·월은 아래 작게. 도면 치수의 결 ── */
-.brow.has-day{grid-template-columns:auto minmax(0,1fr) auto;gap:1.05rem;align-items:center}
-.bday{display:grid;justify-items:center;align-content:center;min-width:3.1rem;
-  padding-right:1.05rem;border-right:1px solid rgba(255,255,255,.13)}
-.bday b{font-family:var(--num);font-size:1.72rem;font-weight:700;line-height:1;color:#fff;
-  font-variant-numeric:tabular-nums;transition:color .15s}
-.bday i{font-style:normal;font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;
-  color:#7f8fad;margin-top:.32rem}
-.brow:hover .bday b{color:var(--accent-d)}
-.bmain{min-width:0;display:grid;gap:.4rem}
-.brow.has-day .bd{display:none}   /* 날짜 블록이 이미 말한다 — 겹말 제거 */
+/* ── 공지 줄 — 한 줄 스캔형: [MM.DD][딱지][제목]이 같은 기준선에 선다.
+   큰 날짜 숫자를 세웠더니 정보 가치가 가장 낮은 날짜가 제일 크게 소리쳤다(사용자).
+   제목이 매 줄 같은 x에서 시작해야 위에서 아래로 주르륵 훑인다. */
+.brow.is-line{grid-template-columns:auto auto minmax(0,1fr) auto;gap:.8rem;align-items:baseline;
+  padding:clamp(.95rem,1.8vh,1.25rem) 0}
+.bdt{font-family:var(--num);font-size:.78rem;letter-spacing:.05em;color:#8fa1c0;
+  font-variant-numeric:tabular-nums}
+/* 딱지 폭을 고정한다 — 학부(2자)·대학원(3자) 폭이 다르면 제목 시작점이 줄마다 어긋난다 */
+.brow.is-line .bcat{transform:none;margin:0;min-width:3.7rem;text-align:center;box-sizing:border-box}
+.brow.is-line .bt{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  font-size:.96rem}
+.brow.is-line .bgo{align-self:center}
 .bgo{color:#7f8fad;font-family:var(--num);opacity:0;transform:translateX(-6px);
   transition:opacity .18s,transform .18s,color .18s}
 .brow:hover .bgo{opacity:1;transform:none;color:var(--accent-d)}
@@ -606,15 +621,15 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
 .fade{opacity:0;transform:translateY(26px);transition:opacity .9s ease,transform 1s var(--e)}
 .fade.vis{opacity:1;transform:none}
 /* 보드·뉴스·분야 행: 컨테이너 리빌 후 좌→우 스태거 */
-.blist .brow,.clist .crow,.nlist .nrow{opacity:0;transform:translateX(-16px);
+.blist .brow,.clist .crow{opacity:0;transform:translateX(-16px);
   transition:opacity .7s ease,transform .8s var(--e)}
-.fade.vis .brow,.clist.vis .crow,.nlist.vis .nrow{opacity:1;transform:none}
-.blist .brow:nth-child(1),.clist .crow:nth-child(1),.nlist .nrow:nth-child(1){transition-delay:.05s}
-.blist .brow:nth-child(2),.clist .crow:nth-child(2),.nlist .nrow:nth-child(2){transition-delay:.13s}
-.blist .brow:nth-child(3),.clist .crow:nth-child(3),.nlist .nrow:nth-child(3){transition-delay:.21s}
-.blist .brow:nth-child(4),.clist .crow:nth-child(4),.nlist .nrow:nth-child(4){transition-delay:.29s}
-.blist .brow:nth-child(5),.clist .crow:nth-child(5),.nlist .nrow:nth-child(5){transition-delay:.37s}
-.blist .brow:nth-child(6),.clist .crow:nth-child(6),.nlist .nrow:nth-child(6){transition-delay:.45s}
+.fade.vis .brow,.clist.vis .crow{opacity:1;transform:none}
+.blist .brow:nth-child(1),.clist .crow:nth-child(1){transition-delay:.05s}
+.blist .brow:nth-child(2),.clist .crow:nth-child(2){transition-delay:.13s}
+.blist .brow:nth-child(3),.clist .crow:nth-child(3){transition-delay:.21s}
+.blist .brow:nth-child(4),.clist .crow:nth-child(4){transition-delay:.29s}
+.blist .brow:nth-child(5),.clist .crow:nth-child(5){transition-delay:.37s}
+.blist .brow:nth-child(6),.clist .crow:nth-child(6){transition-delay:.45s}
 /* 스크롤 진행 헤어라인 */
 .sprog{position:fixed;top:0;left:0;right:0;height:2px;background:var(--coral);z-index:60;
   transform:scaleX(0);transform-origin:left;pointer-events:none}
@@ -647,9 +662,8 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
   .hero-bg,.hero-kick,.hero .sub,.hero-scroll{animation:none;opacity:1}
   .fade{opacity:1;transform:none;transition:none}
   .hero h1 .ti{transform:none;transition:none}
-  .blist .brow,.clist .crow,.nlist .nrow{opacity:1;transform:none;transition:none}
+  .blist .brow,.clist .crow{opacity:1;transform:none;transition:none}
   .mq-track{animation:none}
-  #newsPrev{display:none}
 }
 
 /* ═══ 모바일 ═══
@@ -673,17 +687,14 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
   .kick{font-size:.72rem;letter-spacing:.18em;padding-bottom:.6rem;margin-bottom:.8rem}
   .sec-head .more{order:3;flex:0 0 100%;text-align:right;padding:.3rem 0}
   /* 목록 — 말줄임 대신 두 줄까지 */
-  .nrow{padding-top:1.3rem;padding-bottom:1.3rem}
   .crow{padding-top:1.4rem;padding-bottom:1.4rem}
-  /* 공지·세미나 — 휴대폰에선 줄 하나에 [제목 … 날짜]만(사용자).
-     두 줄짜리는 화면을 너무 먹었다. 딱지는 걷고 제목은 말줄임표로 자른다 */
-  .brow,.brow.has-day{grid-template-columns:minmax(0,1fr) auto;gap:.6rem;align-items:center;padding:.55rem 0}
-  .bday,.bgo{display:none}
-  .bmain{display:contents}
-  .brow.has-day .bd{display:inline}
+  /* 공지·세미나 — 휴대폰에선 줄 하나에 [MM.DD][제목]만(사용자).
+     딱지·화살표는 걷고 제목은 말줄임표로 자른다 */
+  .brow{grid-template-columns:minmax(0,1fr) auto;gap:.6rem;align-items:center;padding:.55rem 0}
+  .brow.is-line{grid-template-columns:auto minmax(0,1fr);gap:.6rem}
+  .brow.is-line .bcat,.bgo{display:none}
   .brow .bmeta{display:contents}
-  /* 딱지는 제목 앞에 작게 붙인다(사용자) — 한 줄 안에서 자리만 차지하지 않게 줄인다 */
-  .bt .bcat{display:inline-block;font-size:.58rem;letter-spacing:.1em;padding:.06rem .3rem;margin-right:.4rem}
+  .bdt{font-size:.72rem}
   .sm-feat{padding:.85rem .9rem;gap:.45rem}
   .sf-t{font-size:.95rem}
   .bt{white-space:nowrap;display:block;-webkit-line-clamp:unset;overflow:hidden;text-overflow:ellipsis;
@@ -829,13 +840,9 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
         <a class="more" href="G-news.html" data-i18n="moreAll">전체 보기 →</a>
       </div>
     </div>
-    <div class="nlist" id="newsGrid">
-      <a class="nrow" href="G-news.html"><span class="nt2">학부 뉴스 보기</span><i>→</i></a>
+    <div class="news-lead" id="newsGrid">
+      <a class="nlink" href="G-news.html#hi"><span class="t">학부 뉴스 보기</span></a>
     </div>
-    <!-- 줄에 커서를 올리면 그 기사 사진이 뜬다. 처음에는 보여 줄 사진이 없으므로
-         빈 src 대신 투명 1px 을 둔다 — src="" 는 브라우저가 현재 주소를 다시 받는다. -->
-    <img id="newsPrev" alt="" aria-hidden="true"
-      src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
   </section>
 
   <section class="board-band" aria-label="공지 및 세미나">
@@ -1051,17 +1058,28 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
     }
   }
 
-  /* ── 연구 뉴스 — 에디토리얼 리스트(호버 시 커서 추적 썸네일) ── */
+  /* ── 연구 뉴스 — 소식 페이지와 같은 「대표 1건 + 최근 목록」 구성 ── */
   function renderNews() {
     var ng = document.getElementById('newsGrid');
     if (!ng || !D.newsList || !D.newsList.length) return;
-    /* 일곱이면 구간이 한 화면을 넘어 불편했다(사용자) — 다섯만 싣고 나머지는 「전체 →」 */
-    ng.innerHTML = D.newsList.slice().sort(byDate).slice(0, 5).map(function (n) {
-      return '<a class="nrow" href="' + esc(n.url || 'G-news.html') + '" target="_blank" rel="noopener"' +
-        (n.thumb ? ' data-thumb="' + esc(n.thumb) + '"' : '') + '>' +
-        '<time>' + esc(n.date) + '</time>' +
-        '<span class="nt2">' + esc(n.title) + '</span><i aria-hidden="true">→</i></a>';
-    }).join('');
+    var list = D.newsList.slice().sort(byDate);
+    var lead = list[0], side = list.slice(1, 5);
+    function newsRow(n) {
+      var img = n.thumb
+        ? '<span class="nthumb"><img src="' + esc(n.thumb) + '" alt="" loading="lazy" onerror="this.remove()"></span>'
+        : '<span class="nthumb" aria-hidden="true"></span>';
+      return '<a class="nlink" href="' + esc(n.url || 'G-news.html') + '" target="_blank" rel="noopener">' +
+        img + '<span class="t">' + esc(n.title) + '</span><span class="d">' + esc(n.date) + '</span></a>';
+    }
+    ng.innerHTML =
+      '<a class="news-hero" href="' + esc(lead.url || 'G-news.html') + '" target="_blank" rel="noopener">' +
+        (lead.thumb ? '<img src="' + esc(lead.thumb) + '" alt="" loading="lazy" onerror="this.style.display=\'none\'">' : '') +
+        '<span class="cap"><span class="tag">Featured</span>' +
+        '<h3>' + esc(lead.title) + '</h3><span class="date">' + esc(lead.date) + '</span></span>' +
+      '</a>' +
+      '<div class="news-side"><div class="side-h">최근 소식</div>' +
+        side.map(newsRow).join('') +
+      '</div>';
   }
 
   /* ── 공지 — 학부/대학원 탭 ── */
@@ -1085,13 +1103,11 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
       var an = (/articleNo=(\d+)/.exec(String(n.u || '')) || [])[1];
       var href = an ? 'G-news.html?post=' + an : 'G-news.html';
       var d = String(n.d);
-      /* 줄마다 날짜가 주인공 — 일(日)을 크게, 연·월은 그 아래 작게(도면 치수처럼) */
-      /* 학부/대학원 딱지는 제목 앞에 붙인다 — 딱지만 아랫줄에 남는 게 어색했다(사용자) */
-      return '<a class="brow has-day" href="' + esc(href) + '">' +
-        '<span class="bday" aria-hidden="true"><b>' + esc(d.slice(8, 10)) + '</b><i>' + esc(d.slice(0, 7)) + '</i></span>' +
-        '<span class="bmain"><span class="bt"><span class="bcat">' + T(n.k === 'ug' ? 'catUG' : 'catGrad') + '</span>' +
-        esc(n.t) + '</span>' +
-        '<span class="bd">' + esc(d.slice(2)) + '</span></span>' +
+      /* 한 줄 스캔형 — 작은 날짜·딱지·제목이 같은 기준선. 제목은 한 줄 말줄임 */
+      return '<a class="brow is-line" href="' + esc(href) + '">' +
+        '<time class="bdt">' + esc(d.slice(5, 10)) + '</time>' +
+        '<span class="bcat">' + T(n.k === 'ug' ? 'catUG' : 'catGrad') + '</span>' +
+        '<span class="bt">' + esc(n.t) + '</span>' +
         '<span class="bgo" aria-hidden="true">→</span></a>';
     }).join('');
   }
@@ -1356,36 +1372,9 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
   }, { passive: true });
   update();
 
-  /* 마우스처럼 정밀한 포인터에서만 도는 것들 — 아래 뉴스 프리뷰·교수진 레일 드래그 */
+  /* 마우스처럼 정밀한 포인터에서만 도는 것들 — 교수진 레일 드래그 */
   var fine = matchMedia('(pointer: fine)').matches;
-
-  /* ── 뉴스 호버 프리뷰 — rAF 루프에서 러프(lerp) 추적 ── */
-  if (!reduce && fine) {
-    var prev2 = document.getElementById('newsPrev');
-    var nsec = document.getElementById('secNews');
-    var mx = innerWidth / 2, my = innerHeight / 2;
-    var px = mx, py = my;
-    addEventListener('pointermove', function (e) {
-      mx = e.clientX; my = e.clientY;
-    }, { passive: true });
-    /* 프리뷰: 뉴스 행 위에서 썸네일 표시 */
-    if (nsec && prev2) {
-      nsec.addEventListener('mouseover', function (e) {
-        var row = e.target.closest && e.target.closest('.nrow');
-        if (row && row.dataset.thumb) {
-          if (prev2.getAttribute('src') !== row.dataset.thumb) prev2.src = row.dataset.thumb;
-          prev2.classList.add('on');
-        } else prev2.classList.remove('on');
-      });
-      nsec.addEventListener('mouseleave', function () { prev2.classList.remove('on'); });
-      (function loop() {
-        px += (mx - px) * 0.09; py += (my - py) * 0.09;
-        prev2.style.transform =
-          'translate(' + (px + 26) + 'px,' + (py - 120) + 'px) rotate(' + ((mx - px) * 0.015) + 'deg)';
-        requestAnimationFrame(loop);
-      })();
-    }
-  }
+  /* (뉴스 호버 프리뷰는 뺐다 — 목록이 썸네일을 직접 보여 주는 구성으로 바뀌었다) */
 
   /* ── 교수진 레일 — 드래그 스크롤 ── */
   var rail = document.getElementById('pGrid');

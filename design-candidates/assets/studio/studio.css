@@ -626,14 +626,13 @@
   pointer-events: none;
 }
 .ys-busy.is-on { transform: translateX(-50%) translateY(0); }
-/* 진행 표시도 원형 독수리로 통일 — 흰 원 안에서 날갯짓, 가장자리 링이 돈다 */
+/* 진행 표시 — 쪽 옮김 로딩 판(.yld)과 같은 마스코트 독수리의 축소판.
+   흰 원 위에 부품 그림 여섯 장을 겹치고 두 날개만 어깨를 축으로 퍼덕인다
+   (각도·박자·축 좌표는 nav.js 의 .yld-bird 와 동일). */
 .ys-spin {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.3rem;
-  height: 1.3rem;
+  width: 1.35rem;
+  height: 1.35rem;
   background: #fff;
   border-radius: 50%;
   flex: 0 0 auto;
@@ -650,16 +649,20 @@
   border-top-color: #fff;
   animation: ys-spin .9s linear infinite;
 }
-.ys-spin svg {
-  width: .95rem;
-  height: auto;
-  overflow: visible;
-  fill: var(--ys-navy);
+.ys-spin img {
+  position: absolute;
+  top: 12%;
+  left: 12%;
+  width: 76%;
+  height: 76%;
+  object-fit: contain;
+  transform-origin: 50% 50%;
+  filter: brightness(.34) saturate(1.35);
 }
-.ys-spin .ysld-wl { transform-origin: 53px 40px; animation: ys-flap-l .5s ease-in-out infinite alternate; }
-.ys-spin .ysld-wr { transform-origin: 67px 40px; animation: ys-flap-r .5s ease-in-out infinite alternate; }
-@keyframes ys-flap-l { from { transform: rotate(22deg); } to { transform: rotate(-16deg); } }
-@keyframes ys-flap-r { from { transform: rotate(-22deg); } to { transform: rotate(16deg); } }
+.ys-spin .w-l { transform-origin: 46% 46%; animation: ys-flap-l .46s ease-in-out infinite alternate; }
+.ys-spin .w-r { transform-origin: 68% 47%; animation: ys-flap-r .46s ease-in-out infinite alternate; }
+@keyframes ys-flap-l { from { transform: rotate(-13deg); } to { transform: rotate(22deg); } }
+@keyframes ys-flap-r { from { transform: rotate(13deg); } to { transform: rotate(-22deg); } }
 @keyframes ys-spin { to { transform: rotate(360deg); } }
 
 .ys-banner {
@@ -731,7 +734,7 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .ys-panel, .ys-stack, .ys-status, .ys-busy, .ys-nudge { transition: none; }
-  .ys-spin, .ys-spin::before, .ys-spin .ysld-wl, .ys-spin .ysld-wr,
+  .ys-spin, .ys-spin::before, .ys-spin .w-l, .ys-spin .w-r,
   .ys-tgt, .ys-tgt.is-hit { animation: none; }
 }
 @media print {

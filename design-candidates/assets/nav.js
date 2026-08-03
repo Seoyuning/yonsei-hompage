@@ -990,6 +990,26 @@
     if (yld) yld.classList.remove('on');
   }
 
+  /* 같은 판을 다른 로딩에도 쓴다 — 관리자 열기(아래 런타임 블록)와
+     로그인 뒤 도구 준비(studio/boot.js)가 문구만 바꿔 달아 띄운다.
+     쪽 옮김용 8초 자동 숨김 대신 넉넉한 안전망만 두고, 끄는 건 부르는 쪽 몫. */
+  try {
+    window.YSME_LOADER = {
+      show: function (text) {
+        var el = loaderEl();
+        el.querySelector('.yld-t').textContent = text || '로딩중';
+        el.setAttribute('aria-label', text || '불러오는 중');
+        requestAnimationFrame(function () { el.classList.add('on'); });
+        clearTimeout(loaderTimer);
+        loaderTimer = setTimeout(hideLoader, 30000);
+      },
+      hide: function () {
+        hideLoader();
+        if (yld) yld.querySelector('.yld-t').textContent = '로딩중';
+      }
+    };
+  } catch (eL) {}
+
   function setupLoader() {
     /* ① 첫 걸음에는 띄우지 않는다.
           로딩 표시는 「지금 다른 쪽으로 넘어가는 중」이라는 뜻이라야 읽힌다.
@@ -1263,83 +1283,10 @@
     if (on) add('studio/boot.js', 'data-ysme-studio');
   } catch (e3) {}
 
-  /* (3) 공용 로딩 — 흰 원 안에서 독수리가 날갯짓하고 가장자리 링이 돈다.
-     페이지를 덮는 판이 아니라 화면 가운데 원 하나다(뒤가 옅게 비친다).
-     관리자 열기(nav)와 로그인 뒤 도구 준비(boot)가 같은 것을 쓴다 —
-     window.YSME_LOADER = { show(text), hide() } 로 공유한다. */
-  var EAGLE_SVG =
-    '<svg viewBox="0 0 120 80" aria-hidden="true">' +
-      /* 왼 날개 — 어깨(53,40)를 축으로 퍼덕인다. 아래 가장자리는 깃털 갈래 */
-      '<g class="ysld-wl"><path d="M53 37 C41 24 25 19 5 24 C13 30 19 33 25 36 ' +
-        'C19 38 13 40 8 44 L20 44 C16 47 13 50 11 54 L26 50 C24 53 23 56 23 59 ' +
-        'L38 51 C43 48 49 45 53 44 Z"/></g>' +
-      /* 오른 날개 — 같은 모양을 좌우로 뒤집는다 */
-      '<g class="ysld-wr"><path d="M67 37 C79 24 95 19 115 24 C107 30 101 33 95 36 ' +
-        'C101 38 107 40 112 44 L100 44 C104 47 107 50 109 54 L94 50 C96 53 97 56 97 59 ' +
-        'L82 51 C77 48 71 45 67 44 Z"/></g>' +
-      /* 몸통·머리·부리·꼬리 */
-      '<circle cx="60" cy="27" r="5.6"/>' +
-      '<path d="M60 31 L57.4 34.6 L60 37 L62.6 34.6 Z"/>' +
-      '<path d="M60 33 C55 36 52.5 41 52.5 47 C52.5 54 56 60 60 63 C64 60 67.5 54 67.5 47 ' +
-        'C67.5 41 65 36 60 33 Z"/>' +
-      '<path d="M56.5 61 L54.5 72 L58 68.5 L60 74 L62 68.5 L65.5 72 L63.5 61 Z"/>' +
-    '</svg>';
-  var ldEl = null, ldTxEl = null, ldOff = null;
-  function loaderShow(text) {
-    if (!ldEl) {
-      ldEl = document.createElement('div');
-      ldEl.className = 'ysld';
-      ldEl.setAttribute('data-ys-ui', '');   // i18n·편집 도구가 건드리지 않게
-      ldEl.setAttribute('role', 'status');
-      ldEl.innerHTML =
-        '<style>' +
-        '.ysld{position:fixed;top:0;left:0;right:0;bottom:0;z-index:2147483035;display:flex;' +
-          'flex-direction:column;align-items:center;justify-content:center;gap:.8rem;' +
-          'background:rgba(247,249,252,.55);-webkit-backdrop-filter:blur(2.5px);backdrop-filter:blur(2.5px);' +
-          'opacity:0;transition:opacity .22s ease}' +
-        '.ysld.is-on{opacity:1}' +
-        '.ysld-c{position:relative;width:6.6rem;height:6.6rem;border-radius:50%;background:#fff;' +
-          'box-shadow:0 12px 34px rgba(10,26,51,.20);display:flex;align-items:center;justify-content:center}' +
-        '.ysld-c::before{content:"";position:absolute;top:-6px;left:-6px;right:-6px;bottom:-6px;' +
-          'border-radius:50%;border:3px solid rgba(18,41,79,.13);border-top-color:#12294f;' +
-          'animation:ysld-turn 1.1s linear infinite}' +
-        '.ysld-c svg{width:4.1rem;height:auto;overflow:visible;fill:#12294f}' +
-        '.ysld-wl{transform-origin:53px 40px;animation:ysld-fl .5s ease-in-out infinite alternate}' +
-        '.ysld-wr{transform-origin:67px 40px;animation:ysld-fr .5s ease-in-out infinite alternate}' +
-        '@keyframes ysld-fl{from{transform:rotate(22deg)}to{transform:rotate(-16deg)}}' +
-        '@keyframes ysld-fr{from{transform:rotate(-22deg)}to{transform:rotate(16deg)}}' +
-        '@keyframes ysld-turn{to{transform:rotate(360deg)}}' +
-        '.ysld-t{margin:0;font:700 .86rem/1.5 "Apple SD Gothic Neo","Pretendard",system-ui,sans-serif;' +
-          'color:#12294f;letter-spacing:-.01em}' +
-        '.ysld-t i{display:inline-block;width:.22em;height:.22em;border-radius:50%;background:#12294f;' +
-          'margin-left:.26em;vertical-align:.06em;animation:ysld-dot 1.2s ease-in-out infinite}' +
-        '.ysld-t i:nth-child(2){animation-delay:.2s}' +
-        '.ysld-t i:nth-child(3){animation-delay:.4s}' +
-        '@keyframes ysld-dot{0%,60%,100%{opacity:.25}30%{opacity:1}}' +
-        '@media (prefers-reduced-motion:reduce){.ysld-c::before,.ysld-wl,.ysld-wr,.ysld-t i{animation:none}}' +
-        '</style>' +
-        '<div class="ysld-c">' + EAGLE_SVG + '</div>' +
-        '<p class="ysld-t"><span data-ld-tx>불러오는 중</span><i></i><i></i><i></i></p>';
-      ldTxEl = ldEl.querySelector('[data-ld-tx]');
-      (document.body || document.documentElement).appendChild(ldEl);
-    }
-    if (ldOff) { clearTimeout(ldOff); ldOff = null; }
-    ldTxEl.textContent = text || '불러오는 중';
-    ldEl.style.display = '';
-    ldEl.setAttribute('aria-label', ldTxEl.textContent);
-    requestAnimationFrame(function () { ldEl.classList.add('is-on'); });
-  }
-  function loaderHide() {
-    if (!ldEl) return;
-    ldEl.classList.remove('is-on');
-    if (ldOff) clearTimeout(ldOff);
-    ldOff = setTimeout(function () { if (ldEl) ldEl.style.display = 'none'; }, 240);
-  }
-  try { window.YSME_LOADER = { show: loaderShow, hide: loaderHide }; } catch (e5) {}
-
-  /* (4) 관리자 링크 가로채기 — 페이지를 다시 부르지 않고 그 자리에서 스튜디오를 깨운다.
+  /* (3) 관리자 링크 가로채기 — 페이지를 다시 부르지 않고 그 자리에서 스튜디오를 깨운다.
      다시 부르면 화면이 맨 위로 튀고, 도구가 뜰 때까지 아무 표시가 없다는 게 문제였다.
-     원형 로더를 띄우고, 게이트나 도구 막대(.ys-gate/.ys-root)가 올라오면 걷는다. */
+     로딩 표시는 쪽 옮김과 같은 판(window.YSME_LOADER — 흰 원 + 마스코트 독수리
+     날갯짓)을 문구만 바꿔 쓰고, 게이트나 도구 막대(.ys-gate/.ys-root)가 올라오면 걷는다. */
   try {
     document.addEventListener('click', function (e) {
       if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
@@ -1353,14 +1300,15 @@
         return;
       }
       e.preventDefault();
-      loaderShow('관리자 도구를 여는 중');
+      var L = window.YSME_LOADER;
+      if (L) L.show('관리자 도구를 여는 중');
       add('studio/boot.js', 'data-ysme-studio');
       var t0 = Date.now();
       (function tick() {
         var up = document.querySelector('.ys-gate, .ys-root');
         var Y2 = window.YStudio;
         var dead = Y2 && Y2.boot && Y2.boot.state === 'dead';
-        if (up || dead || Date.now() - t0 > 25000) { loaderHide(); return; }
+        if (up || dead || Date.now() - t0 > 25000) { if (L) L.hide(); return; }
         setTimeout(tick, 120);
       })();
     });

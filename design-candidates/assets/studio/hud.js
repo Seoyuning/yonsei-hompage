@@ -559,17 +559,14 @@
     if (!busyEl) {
       busyEl = mk('div', 'ys-busy');
       busyEl.setAttribute(UIA, '');
-      /* 진행 표시도 원형 독수리 — nav.js 공용 로더와 같은 그림(작게) */
+      /* 진행 표시도 쪽 옮김 로딩 판과 같은 마스코트 독수리(부품 그림)의 축소판.
+         경로는 studio.css 위치에서 구한다 — 하위 경로 문서(하니스 등)에서도 맞다. */
       var sp = mk('span', 'ys-spin');
-      sp.innerHTML =
-        '<svg viewBox="0 0 120 80" aria-hidden="true">' +
-        '<g class="ysld-wl"><path d="M53 37 C41 24 25 19 5 24 C13 30 19 33 25 36 C19 38 13 40 8 44 L20 44 ' +
-          'C16 47 13 50 11 54 L26 50 C24 53 23 56 23 59 L38 51 C43 48 49 45 53 44 Z"/></g>' +
-        '<g class="ysld-wr"><path d="M67 37 C79 24 95 19 115 24 C107 30 101 33 95 36 C101 38 107 40 112 44 L100 44 ' +
-          'C104 47 107 50 109 54 L94 50 C96 53 97 56 97 59 L82 51 C77 48 71 45 67 44 Z"/></g>' +
-        '<circle cx="60" cy="27" r="5.6"/><path d="M60 31 L57.4 34.6 L60 37 L62.6 34.6 Z"/>' +
-        '<path d="M60 33 C55 36 52.5 41 52.5 47 C52.5 54 56 60 60 63 C64 60 67.5 54 67.5 47 C67.5 41 65 36 60 33 Z"/>' +
-        '<path d="M56.5 61 L54.5 72 L58 68.5 L60 74 L62 68.5 L65.5 72 L63.5 61 Z"/></svg>';
+      var eagleBase = cssHref().replace(/studio\/studio\.css.*$/, 'loader/');
+      sp.innerHTML = ['tail', 'lw', 'rw', 'body', 'talons', 'head'].map(function (n) {
+        var cls = n === 'lw' ? ' class="w-l"' : n === 'rw' ? ' class="w-r"' : '';
+        return '<img' + cls + ' src="' + eagleBase + 'e-' + n + '.png?v=1" alt="">';
+      }).join('');
       busyEl.appendChild(sp);
       busyEl.appendChild(mk('span', 'ys-busy-t', ''));
       root.appendChild(busyEl);

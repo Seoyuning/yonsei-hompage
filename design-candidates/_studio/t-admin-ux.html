@@ -317,6 +317,18 @@
     ins[0].value = 'git@github.com:ssh-org/ssh-repo.git';
     ins[0].dispatchEvent(new Event('input'));
     t('SSH 주소도 인식', ins[1].value === 'ssh-org' && ins[2].value === 'ssh-repo');
+    /* 쓰기 토큰 — 「직접 입력하기 | 만드는 법」 두 갈래 */
+    var tokTabs = qa('.ys-tokt', form);
+    t('토큰 칸 두 갈래 버튼', tokTabs.length === 2 && tokTabs[0].textContent === '직접 입력하기' && tokTabs[1].textContent === '만드는 법');
+    tokTabs[1].click();
+    var howBox = q('.ys-gh-how', form);
+    var howGo = q('.ys-gh-howgo', form);
+    t('만드는 법 = 단계 안내 + 바로가기', howBox && howBox.style.display !== 'none'
+      && ins[5].style.display === 'none'
+      && /Fine-grained tokens/.test(howBox.textContent)
+      && /personal-access-tokens\/new/.test(howGo ? howGo.getAttribute('href') : ''));
+    tokTabs[0].click();
+    t('직접 입력하기로 복귀', ins[5].style.display !== 'none' && howBox.style.display === 'none');
     /* 직접 값을 넣고 변경 실행 */
     modeBtns[0].click();
     ins[1].value = 'yonsei-me-dept'; ins[2].value = 'me-homepage'; ins[3].value = 'main';

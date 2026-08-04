@@ -77,7 +77,17 @@
       '.ys-gh-urlnote.is-ok{color:#0d5c3a}',
       '.ys-gh-urlnote.is-bad{color:#b3261e}',
       '.ys-gh-mode{display:flex;flex-wrap:wrap;gap:.4rem}',
-      '.ys-gh-url,.ys-gh-fields{display:flex;flex-direction:column;gap:.55rem}'
+      '.ys-gh-url,.ys-gh-fields{display:flex;flex-direction:column;gap:.55rem}',
+      /* 쓰기 토큰 — 직접 입력 | 만드는 법 */
+      '.ys-gh-toktabs{display:flex;gap:.3rem;margin:.1rem 0 .2rem}',
+      '.ys-tokt{font-size:.66rem;font-weight:700;border:1px solid var(--ys-line);border-radius:999px;',
+      'padding:.16rem .55rem;background:#fff;color:var(--ys-muted);cursor:pointer}',
+      '.ys-tokt.is-on{background:var(--ys-navy);border-color:var(--ys-navy);color:#fff}',
+      '.ys-gh-how{border:1px solid var(--ys-line);border-radius:8px;padding:.55rem .65rem;background:#fafbfd}',
+      '.ys-gh-steps{margin:0;padding-left:1.1rem;font-size:.72rem;line-height:1.7;color:var(--ys-ink)}',
+      '.ys-gh-steps code{font-size:.9em;background:#eef1f6;border-radius:4px;padding:0 .25rem}',
+      '.ys-gh-howgo{display:inline-block;margin-top:.45rem;font-size:.72rem;font-weight:700;color:var(--ys-navy)}',
+      '.ys-gh-hownote{margin:.4rem 0 0;font-size:.66rem;line-height:1.5;color:#8a5b00}'
     ].join('');
     var st = doc.createElement('style');
     st.id = STYLE_ID;
@@ -258,8 +268,42 @@
     var fRepo = field(fieldsWrap, '저장소 이름', null, 'text', curRepo);
     var fBranch = field(fieldsWrap, '브랜치', null, 'text', info.branch || 'main');
     var fBase = field(fieldsWrap, '사이트 폴더', '저장소 안에서 사이트가 있는 폴더. 저장소 뿌리면 비웁니다.', 'text', info.basePath || '');
-    var fToken = field(fieldsWrap, '쓰기 토큰', 'Fine-grained PAT, Contents Read/Write. 비우면 이 저장소에 저장된 토큰/기본 토큰 사용.', 'password', '', '비우면 기존 토큰 사용');
+    var fToken = field(fieldsWrap, '쓰기 토큰', '비우면 이 저장소에 저장된 토큰/기본 토큰 사용.', 'password', '', '비우면 기존 토큰 사용');
     form.appendChild(fieldsWrap);
+
+    /* 쓰기 토큰 — 「직접 입력하기 | 만드는 법」 두 갈래(사용자 요청).
+       만드는 법을 고르면 입력 칸 대신 깃헙에서 토큰을 만드는 단계가 그대로 나온다. */
+    (function () {
+      var tokWrap = fToken.parentNode;
+      var tabs = mk('div', 'ys-gh-toktabs');
+      var tabIn = mk('button', 'ys-tokt is-on', '직접 입력하기');
+      var tabHow = mk('button', 'ys-tokt', '만드는 법');
+      tabs.appendChild(tabIn); tabs.appendChild(tabHow);
+      tokWrap.insertBefore(tabs, fToken);
+      var how = mk('div', 'ys-gh-how');
+      how.style.display = 'none';
+      how.innerHTML =
+        '<ol class="ys-gh-steps">'
+        + '<li>깃헙에 로그인 → 오른쪽 위 프로필 사진 → <b>Settings</b></li>'
+        + '<li>왼쪽 메뉴 맨 아래 <b>Developer settings</b></li>'
+        + '<li><b>Personal access tokens → Fine-grained tokens → Generate new token</b></li>'
+        + '<li>Repository access 는 <b>Only select repositories</b> — 게시할 저장소만 고릅니다</li>'
+        + '<li>Permissions → Repository permissions 에서 <b>Contents</b> 를 <b>Read and write</b> 로</li>'
+        + '<li><b>Generate token</b> → 나오는 <code>github_pat_…</code> 글자를 복사</li>'
+        + '<li>「직접 입력하기」로 돌아와 그대로 붙여넣습니다</li>'
+        + '</ol>'
+        + '<a class="ys-gh-howgo" href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">토큰 만들기 화면 바로 열기 ↗</a>'
+        + '<p class="ys-gh-hownote">토큰은 비밀번호와 같습니다 — 이 칸에만 붙여넣고 채팅·메모 등 다른 곳에는 남기지 마세요.</p>';
+      tokWrap.appendChild(how);
+      function tokMode(showHow) {
+        fToken.style.display = showHow ? 'none' : '';
+        how.style.display = showHow ? '' : 'none';
+        tabIn.classList.toggle('is-on', !showHow);
+        tabHow.classList.toggle('is-on', showHow);
+      }
+      tabIn.addEventListener('click', function () { tokMode(false); try { fToken.focus(); } catch (e) {} });
+      tabHow.addEventListener('click', function () { tokMode(true); });
+    })();
 
     var act = mk('div', 'ys-gh-act');
     var save = mk('button', 'ys-act is-pri', '검증하고 변경');

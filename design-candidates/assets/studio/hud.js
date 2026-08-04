@@ -38,7 +38,7 @@
   var mounted = false;
   var root = null, stackEl = null, statusEl = null;
   var panelEl = null, panelTitleEl = null, panelBodyEl = null;
-  var pubFootEl = null, pubFootCntEl = null, pubBarEl = null;
+  var pubFootEl = null, pubFootCntEl = null, pubBarEl = null, dropFootEl = null;
   var topMenuEl = null, topPageEl = null, topLangEl = null;
   var panels = {}, panelIds = [], curPanel = null;
   var editing = false;
@@ -230,6 +230,13 @@
     pubFootEl.appendChild(pubFootCntEl);
     pubFootEl.addEventListener('click', function () { publish(); });
     foot.appendChild(pubFootEl);
+    /* 게시 바로 아래 「초안 모두 삭제」 — 게시하지 않은 변경을 전부 버리고
+       마지막 게시본으로 되돌린다. 초안이 있을 때만 보인다(사용자 요청). */
+    dropFootEl = mk('button', 'ys-dropfoot', '초안 모두 삭제');
+    dropFootEl.title = '게시하지 않은 초안을 전부 삭제하고 마지막 게시 상태로 되돌립니다';
+    dropFootEl.style.display = 'none';
+    dropFootEl.addEventListener('click', discardAllDrafts);
+    foot.appendChild(dropFootEl);
     panelEl.appendChild(foot);
     root.appendChild(panelEl);
 
@@ -385,6 +392,7 @@
       pubFootCntEl.textContent = status.drafts ? '미게시 초안 ' + status.drafts + '건' : '변경 없음';
       pubFootEl.classList.toggle('is-dirty', !!status.drafts);
     }
+    if (dropFootEl) dropFootEl.style.display = status.drafts ? '' : 'none';
     if (pubBarEl) {
       var showBar = !!status.drafts && !curPanel;
       if (showBar) {
@@ -636,6 +644,29 @@
     var stop = busy('초안을 저장하고 새로고침합니다…');
     Promise.resolve(Y.engine.flush()).then(function () { stop(); location.reload(); },
       function () { stop(); location.reload(); });
+  }
+
+  /* 게시하지 않은 초안 전부 삭제 — 현재 페이지 버퍼부터 되돌려야 한다.
+     초안 기록만 지우고 새로고침하면 pagehide 의 「나가기 전 저장」이
+     아직 더러운 버퍼를 도로 초안으로 남긴다. */
+  function discardAllDrafts() {
+    Y.store.all('drafts').then(function (list) {
+      list = list || [];
+      if (!list.length) { Y.toast('삭제할 초안이 없습니다.'); return; }
+      confirmBox('게시하지 않은 초안 ' + list.length + '건을 모두 삭제할까요? '
+        + '되돌릴 수 없고, 화면은 마지막 게시 상태로 새로고침됩니다.')
+        .then(function (ok) {
+          if (!ok) return;
+          var stop = busy('초안을 삭제합니다…');
+          Promise.resolve(Y.engine.discardDraft ? Y.engine.discardDraft() : null)
+            .then(function () { return Y.store.all('drafts'); })
+            .then(function (rest) {
+              return Promise.all((rest || []).map(function (d) { return Y.store.del('drafts', d.path); }));
+            })
+            .then(function () { stop(); location.reload(); },
+              function () { stop(); Y.toast('초안을 삭제하지 못했습니다.', 'error'); });
+        });
+    });
   }
 
   /* ══════════════════════════════════════════════════════════

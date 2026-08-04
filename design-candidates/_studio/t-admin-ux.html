@@ -209,6 +209,16 @@
     await sleep(400);
     var cnt = q('.ys-pubfoot-c');
     t('푸터에 초안 개수 표시', /미게시 초안 \d+건/.test(cnt.textContent), cnt.textContent);
+    /* 게시 아래 「초안 모두 삭제」 — 초안이 있을 때만, 누르면 확인 모달(하니스는 취소) */
+    var dropB = q('.ys-dropfoot');
+    t('초안 있으면 「초안 모두 삭제」 표시', dropB && dropB.style.display !== 'none');
+    dropB.click();
+    await sleep(300);
+    var delCfm = q('.ys-modal');
+    t('삭제 확인 모달', delCfm && delCfm.textContent.indexOf('모두 삭제할까요') >= 0);
+    var delCancel = delCfm && qa('.ys-modal-f button', delCfm).filter(function (b) { return !b.classList.contains('is-pri'); })[0];
+    if (delCancel) delCancel.click();
+    await sleep(150);
 
     /* 5. 본문 없으면 bodyKind=file */
     window.__added = null;
@@ -279,21 +289,35 @@
     t('연결 변경 버튼이 위 버튼 줄에', !!changeBtn);
     changeBtn.click();
     var form = q('.ys-gh-form', gh);
-    /* 칸 차례: [0]주소 붙여넣기 [1]소유자 [2]저장소 [3]브랜치 [4]사이트 폴더 [5]토큰 */
+    var modeBtns = qa('.ys-gh-mode button', form).filter(function (b) { return b.textContent.indexOf('기본(') < 0; });
+    t('변경 폼 = 방법 버튼 둘만', form && form.style.display !== 'none'
+      && modeBtns.length === 2 && modeBtns[0].textContent === '직접 추가하기' && modeBtns[1].textContent === '링크 붙여넣기'
+      && q('.ys-gh-fields', form).style.display === 'none' && q('.ys-gh-url', form).style.display === 'none',
+      modeBtns.map(function (b) { return b.textContent; }).join('/'));
+    /* 직접 추가하기 → 현재 값이 채워진 칸 전부.
+       칸 차례: [0]주소 [1]소유자 [2]저장소 [3]브랜치 [4]사이트 폴더 [5]토큰 */
+    modeBtns[0].click();
     var ins = qa('input.ys-in', form);
-    t('변경 폼 열림·현재 값 채움', form && form.style.display !== 'none'
+    t('직접 추가 = 칸 전부·현재 값', q('.ys-gh-fields', form).style.display !== 'none'
       && ins[1].value === 'todo0157' && ins[2].value === 'yonsei-me-homepage-competition'
       && ins[4].value === 'design-candidates', ins.map(function (i) { return i.value; }).join('|'));
-    /* 깃헙 주소 붙여넣기 → 소유자·저장소·브랜치·폴더 자동 채움 */
+    /* 링크 붙여넣기 → 주소 칸만 + 붙여넣으라는 문구, 읽어 내면 그때 칸이 나타난다 */
+    modeBtns[1].click();
+    t('링크 모드 = 주소 칸만·안내 문구', q('.ys-gh-url', form).style.display !== 'none'
+      && q('.ys-gh-fields', form).style.display === 'none'
+      && /붙여넣어 주세요/.test(q('.ys-gh-urlnote', form).textContent));
     ins[0].value = 'https://github.com/paste-org/paste-repo/tree/dev/site';
     ins[0].dispatchEvent(new Event('input'));
-    t('주소 붙여넣기 → 칸 자동 채움', ins[1].value === 'paste-org' && ins[2].value === 'paste-repo'
+    t('주소 읽으면 칸 등장·자동 채움', q('.ys-gh-fields', form).style.display !== 'none'
+      && ins[1].value === 'paste-org' && ins[2].value === 'paste-repo'
       && ins[3].value === 'dev' && ins[4].value === 'site',
       [ins[1].value, ins[2].value, ins[3].value, ins[4].value].join('|'));
-    t('붙여넣기 결과 문구', /paste-org\/paste-repo/.test((q('.ys-gh-urlnote', form) || {}).textContent || ''));
+    t('읽은 결과 문구', /paste-org\/paste-repo/.test(q('.ys-gh-urlnote', form).textContent));
     ins[0].value = 'git@github.com:ssh-org/ssh-repo.git';
     ins[0].dispatchEvent(new Event('input'));
     t('SSH 주소도 인식', ins[1].value === 'ssh-org' && ins[2].value === 'ssh-repo');
+    /* 직접 값을 넣고 변경 실행 */
+    modeBtns[0].click();
     ins[1].value = 'yonsei-me-dept'; ins[2].value = 'me-homepage'; ins[3].value = 'main';
     ins[4].value = ''; ins[5].value = 'ghp_TESTTESTTESTTESTTEST0001';
     qa('.ys-act.is-pri', form).filter(function (b) { return b.textContent === '검증하고 변경'; })[0].click();

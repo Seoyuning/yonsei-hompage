@@ -75,7 +75,9 @@
       '.ys-gh-f em{font-style:normal;font-weight:400;color:var(--ys-dim)}',
       '.ys-gh-urlnote{font-size:.68rem;line-height:1.5;color:var(--ys-muted)}',
       '.ys-gh-urlnote.is-ok{color:#0d5c3a}',
-      '.ys-gh-urlnote.is-bad{color:#b3261e}'
+      '.ys-gh-urlnote.is-bad{color:#b3261e}',
+      '.ys-gh-mode{display:flex;flex-wrap:wrap;gap:.4rem}',
+      '.ys-gh-url,.ys-gh-fields{display:flex;flex-direction:column;gap:.55rem}'
     ].join('');
     var st = doc.createElement('style');
     st.id = STYLE_ID;
@@ -196,17 +198,14 @@
      지금 연결 값이 미리 채워져 있고, 저장하면 곧바로 그 저장소로 게시가 간다.
      서버는 ghadd(use:true) 를 재사용한다 — 같은 저장소로 다시 바꾸면 그때
      저장해 둔 토큰이 그대로 살아난다(토큰 칸을 비워도 된다). */
+  /* 연결 변경 — 열면 「직접 추가하기 | 링크 붙여넣기」 두 방법 버튼만 보인다(사용자 요청).
+       직접 추가하기   → 소유자·저장소·브랜치·폴더·토큰 칸 전부(현재 값 채워짐)
+       링크 붙여넣기   → 주소 칸 하나만. 주소를 읽어 내면 그때 칸들이 채워진 채 나타난다 */
   function buildChangeForm(root, trigger) {
     var form = mk('div', 'ys-gh-form');
     form.style.display = 'none';
-    trigger.addEventListener('click', function () {
-      var on = form.style.display === 'none';
-      form.style.display = on ? '' : 'none';
-      trigger.classList.toggle('is-pri', on);
-      if (on) { try { form.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) {} }
-    });
 
-    function field(label, hint, type, value, placeholder) {
+    function field(parent, label, hint, type, value, placeholder) {
       var w = mk('div', 'ys-gh-f');
       var s = mk('span', null, label);
       if (hint) s.appendChild(mk('em', null, ' · ' + hint));
@@ -218,7 +217,7 @@
       i.spellcheck = false;
       w.appendChild(s);
       w.appendChild(i);
-      form.appendChild(w);
+      parent.appendChild(w);
       return i;
     }
     /* 깃헙 주소 → 아래 칸 자동 채움(사용자 요청: 소유자·저장소를 직접 안 쳐도 되게).
@@ -237,33 +236,83 @@
     }
     var curOwner = (info.repo || '/').split('/')[0] || '';
     var curRepo = (info.repo || '/').split('/')[1] || '';
-    var fUrl = field('깃헙 주소로 채우기', '저장소 주소를 붙여넣으면 아래 칸이 채워집니다', 'text', '', 'https://github.com/소유자/저장소');
+
+    /* 방법 고르기 줄 */
+    var choice = mk('div', 'ys-gh-mode');
+    var btnManual = mk('button', 'ys-act', '직접 추가하기');
+    var btnLink = mk('button', 'ys-act', '링크 붙여넣기');
+    choice.appendChild(btnManual);
+    choice.appendChild(btnLink);
+    form.appendChild(choice);
+
+    /* 링크 붙여넣기 칸(주소 하나만) */
+    var urlWrap = mk('div', 'ys-gh-url');
+    var fUrl = field(urlWrap, '깃헙 저장소 주소', null, 'text', '', 'https://github.com/소유자/저장소');
     var urlNote = mk('div', 'ys-gh-urlnote');
-    fUrl.parentNode.appendChild(urlNote);
+    urlWrap.appendChild(urlNote);
+    form.appendChild(urlWrap);
+
+    /* 세부 칸 묶음 — 직접 추가하기, 또는 링크를 읽어 낸 뒤에 나타난다 */
+    var fieldsWrap = mk('div', 'ys-gh-fields');
+    var fOwner = field(fieldsWrap, '소유자(owner)', '깃헙 계정 또는 조직 이름', 'text', curOwner);
+    var fRepo = field(fieldsWrap, '저장소 이름', null, 'text', curRepo);
+    var fBranch = field(fieldsWrap, '브랜치', null, 'text', info.branch || 'main');
+    var fBase = field(fieldsWrap, '사이트 폴더', '저장소 안에서 사이트가 있는 폴더. 저장소 뿌리면 비웁니다.', 'text', info.basePath || '');
+    var fToken = field(fieldsWrap, '쓰기 토큰', 'Fine-grained PAT, Contents Read/Write. 비우면 이 저장소에 저장된 토큰/기본 토큰 사용.', 'password', '', '비우면 기존 토큰 사용');
+    form.appendChild(fieldsWrap);
+
+    var act = mk('div', 'ys-gh-act');
+    var save = mk('button', 'ys-act is-pri', '검증하고 변경');
+
+    var LINK_ASK = '깃헙 저장소 주소(링크)를 붙여넣어 주세요 — 소유자·저장소가 자동으로 채워집니다.';
+    function setMode(m) {
+      urlWrap.style.display = (m === 'link') ? '' : 'none';
+      fieldsWrap.style.display = (m === 'manual') ? '' : 'none';
+      act.style.display = (m === 'manual') ? '' : 'none';
+      btnManual.classList.toggle('is-pri', m === 'manual');
+      btnLink.classList.toggle('is-pri', m === 'link');
+      if (m === 'link') {
+        fUrl.value = '';
+        urlNote.textContent = LINK_ASK;
+        urlNote.className = 'ys-gh-urlnote';
+        try { fUrl.focus(); } catch (e) {}
+      }
+    }
+    setMode('choose');
+    btnManual.addEventListener('click', function () { setMode('manual'); });
+    btnLink.addEventListener('click', function () { setMode('link'); });
+
+    trigger.addEventListener('click', function () {
+      var on = form.style.display === 'none';
+      form.style.display = on ? '' : 'none';
+      trigger.classList.toggle('is-pri', on);
+      if (on) {
+        setMode('choose');
+        try { form.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) {}
+      }
+    });
+
     fUrl.addEventListener('input', function () {
       var v = fUrl.value.trim();
-      if (!v) { urlNote.textContent = ''; urlNote.className = 'ys-gh-urlnote'; return; }
+      if (!v) { urlNote.textContent = LINK_ASK; urlNote.className = 'ys-gh-urlnote'; return; }
       var p = parseGhUrl(v);
       if (!p) {
-        urlNote.textContent = '주소를 읽지 못했습니다 — 아래 칸에 직접 적어 주세요.';
+        urlNote.textContent = '주소를 읽지 못했습니다 — 다시 확인하거나 「직접 추가하기」로 적어 주세요.';
         urlNote.className = 'ys-gh-urlnote is-bad';
+        fieldsWrap.style.display = 'none';
+        act.style.display = 'none';
         return;
       }
       fOwner.value = p.owner; fRepo.value = p.repo;
       if (p.branch) fBranch.value = p.branch;
       if (p.basePath) fBase.value = p.basePath;
-      urlNote.textContent = '채웠습니다: ' + p.owner + '/' + p.repo
-        + (p.branch ? ' · ' + p.branch : '') + (p.basePath ? ' · ' + p.basePath : '');
+      urlNote.textContent = '읽었습니다: ' + p.owner + '/' + p.repo
+        + (p.branch ? ' · ' + p.branch : '') + (p.basePath ? ' · ' + p.basePath : '')
+        + ' — 아래 칸을 확인하고 변경을 누르세요.';
       urlNote.className = 'ys-gh-urlnote is-ok';
+      fieldsWrap.style.display = '';   /* 읽어 낸 뒤에야 칸이 나타난다 */
+      act.style.display = '';
     });
-    var fOwner = field('소유자(owner)', '깃헙 계정 또는 조직 이름', 'text', curOwner);
-    var fRepo = field('저장소 이름', null, 'text', curRepo);
-    var fBranch = field('브랜치', null, 'text', info.branch || 'main');
-    var fBase = field('사이트 폴더', '저장소 안에서 사이트가 있는 폴더. 저장소 뿌리면 비웁니다.', 'text', info.basePath || '');
-    var fToken = field('쓰기 토큰', 'Fine-grained PAT, Contents Read/Write. 비우면 이 저장소에 저장된 토큰/기본 토큰 사용.', 'password', '', '비우면 기존 토큰 사용');
-
-    var act = mk('div', 'ys-gh-act');
-    var save = mk('button', 'ys-act is-pri', '검증하고 변경');
     save.addEventListener('click', function () {
       var o = fOwner.value.trim(), rp = fRepo.value.trim();
       if (!o || !rp) { Y.toast('소유자와 저장소 이름을 입력하세요.', 'warn'); return; }
@@ -291,7 +340,8 @@
     });
     act.appendChild(save);
 
-    /* 기본(환경변수) 저장소로 되돌리기 — 직접 바꾼 연결을 쓰는 중일 때만 */
+    /* 기본(환경변수) 저장소로 되돌리기 — 직접 바꾼 연결을 쓰는 중일 때만.
+       방법 고르기 줄에 둔다 — 칸을 열지 않아도 바로 되돌릴 수 있어야 한다. */
     if (info.source === 'custom') {
       var reset = mk('button', 'ys-act', '기본(환경변수) 저장소로 되돌리기');
       reset.addEventListener('click', function () {
@@ -307,7 +357,7 @@
           });
         });
       });
-      act.appendChild(reset);
+      choice.appendChild(reset);
     }
     form.appendChild(act);
     root.appendChild(form);

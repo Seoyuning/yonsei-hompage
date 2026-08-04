@@ -311,6 +311,20 @@
   color: rgba(255, 255, 255, .62);
 }
 .ys-pubfoot.is-dirty .ys-pubfoot-c { color: #ffd66e; }
+/* 게시 아래 「초안 모두 삭제」 — 초안이 있을 때만 보이는 조용한 위험 버튼 */
+.ys-dropfoot {
+  width: 100%;
+  margin-top: .45rem;
+  padding: .45rem .8rem;
+  border: 1px solid var(--ys-line-2);
+  border-radius: 10px;
+  background: #fff;
+  color: #b3261e;
+  font-size: .74rem;
+  font-weight: 700;
+  transition: background .14s, border-color .14s;
+}
+.ys-dropfoot:hover { background: #fdeceb; border-color: #e7b3b0; }
 
 /* 화면 하단 가운데 게시 버튼 — 인라인 편집 초안이 있고 패널이 닫혀 있을 때만 */
 .ys-pubbar {

@@ -438,6 +438,11 @@ main{position:relative;z-index:2;background:var(--paper)}
 @media (min-width:861px) and (prefers-reduced-motion:no-preference){
   html{scroll-snap-type:y proximity;scroll-padding-top:calc(var(--ys-bars,5rem) + 1.6rem)}
   #secNews .sec-head,.board-band .bhead{scroll-snap-align:start;scroll-snap-stop:always}
+  /* 숫자 페이지(히어로 바로 아래 한 화면)도 도달하면 화면에 꽉 맞춰 선다(사용자 요청).
+     전역 scroll-padding 은 고정 바 밑에 맞추는 값이라, 이 페이지는 화면 맨 위에
+     붙어야 하므로 음수 scroll-margin 으로 그만큼 도로 끌어올린다. */
+  .stats{scroll-snap-align:start;scroll-snap-stop:always;
+    scroll-margin-top:calc(-1 * (var(--ys-bars,5rem) + 1.6rem))}
 }
 
 
@@ -637,7 +642,8 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
 .stats.in .sq:nth-child(2){transition-delay:.6s}
 .stats.in .sq:nth-child(3){transition-delay:.7s}
 .stats.in .sq:nth-child(4){transition-delay:.8s}
-.sq{transition:opacity .7s ease,transform .85s var(--e),border-color .25s ease,box-shadow .25s ease}
+/* 호버 실선은 전환 없이 즉시 선다(사용자: 올리자마자) — 등장 리빌 전환만 남긴다 */
+.sq{transition:opacity .7s ease,transform .85s var(--e)}
 @media(max-width:960px){.stats .stats-quick{grid-template-columns:1fr 1fr;gap:.8rem}}
 @media(max-width:640px){.stats .stats-quick{padding-bottom:1.9rem}
   .sq{padding:1rem 1.05rem 1.1rem}

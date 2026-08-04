@@ -577,27 +577,33 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
 .pbtn:hover svg{opacity:1}
 .pbtn:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
 
-/* ── 바로가기 — 히어로 안 작은 버튼 줄(끝의 거대 밴드는 상단 메뉴·푸터와 겹쳐 없앴다) ── */
-.hero-quick{display:flex;flex-wrap:wrap;justify-content:center;gap:.6rem;margin-top:2.1rem}
-.hero-quick a{display:inline-flex;align-items:center;gap:.45rem;padding:.6rem 1.15rem;
-  border:1px solid rgba(255,255,255,.42);border-radius:999px;color:#fff;
-  font-size:.92rem;font-weight:600;letter-spacing:.01em;
-  background:rgba(255,255,255,.07);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
-  transition:background .3s ease,border-color .3s ease,color .3s ease}
-.hero-quick a::after{content:"→";font-size:.9em;transition:transform .3s var(--e)}
-.hero-quick a:hover{background:#fff;color:var(--navy-d);border-color:#fff}
-.hero-quick a:hover::after{transform:translateX(3px)}
-.hero-quick a:focus-visible{outline:2px solid #fff;outline-offset:2px}
-@media(max-width:640px){.hero-quick{gap:.5rem;margin-top:1.7rem}
-  .hero-quick a{padding:.5rem .95rem;font-size:.85rem}}
+/* ── 바로가기 — 지표 띠 하단 작은 버튼 줄(끝의 거대 밴드는 상단 메뉴·푸터와 겹쳐 없앴다) ── */
+.stats-quick{display:flex;flex-wrap:wrap;justify-content:center;gap:.6rem;
+  padding:0 1.2rem clamp(2rem,4.2vh,3rem)}
+.stats-quick a{display:inline-flex;align-items:center;gap:.45rem;padding:.55rem 1.1rem;
+  border:1px solid var(--line);border-radius:999px;color:var(--navy);
+  font-size:.9rem;font-weight:600;letter-spacing:.01em;background:#fff}
+.stats-quick a::after{content:"→";font-size:.9em;transition:transform .3s var(--e)}
+.stats-quick a:hover{background:var(--navy);color:#fff;border-color:var(--navy)}
+.stats-quick a:hover::after{transform:translateX(3px)}
+.stats-quick a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+/* 지표와 같은 리빌 결에 얹는다 — 숫자 줄이 선 다음 이어서 떠오른다 */
+.stats-quick a{opacity:0;transform:translateY(14px);
+  transition:opacity .6s ease,transform .7s var(--e),background .3s ease,border-color .3s ease,color .3s ease}
+.stats.in .stats-quick a{opacity:1;transform:none}
+.stats.in .stats-quick a:nth-child(1){transition-delay:.3s}
+.stats.in .stats-quick a:nth-child(2){transition-delay:.37s}
+.stats.in .stats-quick a:nth-child(3){transition-delay:.44s}
+.stats.in .stats-quick a:nth-child(4){transition-delay:.51s}
+@media(max-width:640px){.stats-quick{gap:.5rem;padding-bottom:1.6rem}
+  .stats-quick a{padding:.48rem .9rem;font-size:.84rem}}
 
 /* ── 페이드 애니메이션 ── */
 /* 히어로: 로드 시 순차 페이드 (배경은 아주 느린 줌아웃으로 깊이감) */
 .hero-bg{animation:heroZoom 9s cubic-bezier(.2,.6,.3,1) forwards}
 @keyframes heroZoom{from{transform:scale(1.07)}to{transform:scale(1)}}
-.hero-kick,.hero .sub,.hero-quick,.hero-scroll{opacity:0;animation:heroFade 1.1s var(--e) forwards}
+.hero-kick,.hero .sub,.hero-scroll{opacity:0;animation:heroFade 1.1s var(--e) forwards}
 .hero .sub{animation-delay:.5s}
-.hero-quick{animation-delay:.75s}
 .hero-scroll{animation-name:heroFadeSoft;animation-delay:1.1s}
 @keyframes heroFade{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 @keyframes heroFadeSoft{from{opacity:0}to{opacity:1}}
@@ -633,7 +639,11 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
 .mq{overflow:hidden;padding:clamp(5rem,10vh,7.5rem) 0 clamp(1.6rem,3vh,2.6rem);user-select:none;pointer-events:none}
 .mq-track{display:flex;width:max-content;animation:mq 30s linear infinite}
 .mq-track span{display:flex;align-items:center;gap:2.4rem;padding-right:2.4rem;white-space:nowrap;
-  font-weight:800;letter-spacing:.02em;font-size:clamp(2.4rem,5.5vw,4.4rem);
+  /* 외곽선 글자는 획 윤곽이 합쳐진 폰트여야 한다 — Pretendard 는 A·N 의 획 교차선이
+     안에 그대로 비쳐 겹친 자국이 났다(사용자 지적). 굵기도 실제 있는 700 —
+     없는 굵기를 흉내 내면(합성 볼드) 외곽선이 두 겹으로 진다. */
+  font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-weight:700;letter-spacing:.02em;font-size:clamp(2.4rem,5.5vw,4.4rem);
   color:transparent;-webkit-text-stroke:1px rgba(15,27,48,.3)}
 .mq-track i{font-style:normal;font-size:.5em;color:var(--coral);-webkit-text-stroke:0}
 @keyframes mq{to{transform:translateX(-50%)}}
@@ -643,7 +653,8 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
 
 @media(prefers-reduced-motion:reduce){
   .sfade{opacity:1!important}
-  .hero-bg,.hero-kick,.hero .sub,.hero-quick,.hero-scroll{animation:none;opacity:1}
+  .hero-bg,.hero-kick,.hero .sub,.hero-scroll{animation:none;opacity:1}
+  .stats-quick a{opacity:1;transform:none}
   .fade{opacity:1;transform:none;transition:none}
   .hero h1 .ti{transform:none;transition:none}
   .blist .brow,.clist .crow{opacity:1;transform:none;transition:none}
@@ -716,13 +727,6 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
     <p class="hero-kick" data-i18n="heroKick">School of Mechanical Engineering</p>
     <h1 data-i18n="heroTitle">연세대학교 기계공학부</h1>
     <p class="sub" data-i18n="heroSub">멈추지 않는 도전, 100년을 향한 연세 기계공학</p>
-    <!-- 바로가기 — 페이지 끝 거대 밴드 대신 히어로 안 작은 버튼 줄(사용자 결정: 밑이 아니라 위) -->
-    <nav class="hero-quick" aria-label="바로가기">
-      <a href="G-admissions.html" data-i18n="qAdm">입학 안내</a>
-      <a href="G-academics.html" data-i18n="qAcad">학사 · 교과</a>
-      <a href="G-people.html" data-i18n="qFac">교수진</a>
-      <a href="G-about.html#location" data-i18n="qDir">오시는 길</a>
-    </nav>
   </div>
   <div class="hero-scroll" aria-hidden="true">Scroll</div>
 </section>
@@ -733,6 +737,14 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
     <div class="st" style="--i:1"><span class="sk">Research Areas</span><b data-count="6">0</b><span data-i18n="stAreas">연구 분야</span></div>
     <div class="st" style="--i:2"><span class="sk">Founded</span><b>1958</b><span data-i18n="stFounded">설립</span></div>
   </div>
+  <!-- 바로가기 — 페이지 끝 거대 밴드 대신 여기(히어로를 지나면 처음 만나는 띠) 버튼 줄로.
+       처음엔 히어로 안에 넣었는데 「메인 히어로 말고, 내렸을 때의 상단」이라는 지시로 옮겼다. -->
+  <nav class="stats-quick" aria-label="바로가기">
+    <a href="G-admissions.html" data-i18n="qAdm">입학 안내</a>
+    <a href="G-academics.html" data-i18n="qAcad">학사 · 교과</a>
+    <a href="G-people.html" data-i18n="qFac">교수진</a>
+    <a href="G-about.html#location" data-i18n="qDir">오시는 길</a>
+  </nav>
 </div>
 
 

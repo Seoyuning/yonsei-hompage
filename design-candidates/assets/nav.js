@@ -677,6 +677,10 @@
        '해시만 다른 같은 문서'로 보고 **리로드도 스크롤도 하지 않는다** — 보고 있던 자리에
        그대로 머물러 "메뉴를 눌렀는데 히어로가 아니라 교수진이 맨 위"가 된다. 직접 처리한다. */
     document.addEventListener('click', function (e) {
+      /* 페이지 스크립트가 이미 맡은 클릭은 건드리지 않는다 — 소식의 공지 행은
+         href 가 "G-news.html?post=…"라 여기서 '해시 없는 같은 페이지'로 오인돼
+         상세로 즉시 고정한 화면을 히어로(맨 위)로 도로 끌어올렸다. */
+      if (e.defaultPrevented) return;
       var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
       if (!a || a.target === '_blank') return;
       var href = a.getAttribute('href') || '';

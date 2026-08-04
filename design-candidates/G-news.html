@@ -890,7 +890,9 @@ a{color:inherit;text-decoration:none}
       if(push){
         try{ history.pushState({ post: postId(x) }, '', 'G-news.html?post=' + encodeURIComponent(postId(x))); }catch(e){}
       }
-      scrollToTopOf(root.closest('section') || root);
+      /* 즉시 고정 — 부드러운 이동은 히어로에서 미끄러져 내려오는 동안 히어로가 먼저
+         보이고, 숨은 탭에서는 아예 안 움직인다. 주소 직행과 같은 「그 자리에서 시작」로 통일 */
+      scrollToTopOf(root.closest('section') || root, true);
       var bk = postEl.querySelector('.post-back');
       if(bk) bk.focus({ preventScroll:true });
     }
@@ -908,6 +910,15 @@ a{color:inherit;text-decoration:none}
         return;
       }
       if(e.target.closest && e.target.closest('.post-back')){ showList(true); }
+    });
+    /* 상세를 보다가 위 형제 탭(공지사항 포함)을 누르면 목록으로 돌아간다 —
+       nav.js 의 탭 전환은 섹션만 바꾸고 이 게시판의 상세 상태(is-post)는 모른다.
+       주소의 ?post= 도 지운다. 남겨 두면 새로고침 때 상세가 도로 열린다. */
+    document.addEventListener('click', function(e){
+      var t = e.target.closest ? e.target.closest('.ysub-tab') : null;
+      if(!t || !root.classList.contains('is-post')) return;
+      showList(false);
+      try{ history.replaceState({}, '', 'G-news.html' + location.hash); }catch(_e){}
     });
     addEventListener('popstate', function(){
       var id = new URLSearchParams(location.search).get('post');
@@ -1083,7 +1094,7 @@ a{color:inherit;text-decoration:none}
       sec.classList.add('is-post');
       if(push){ try{ history.pushState({ sched: kind + ':' + x.no }, '',
         'G-news.html?' + kind + '=' + encodeURIComponent(x.no) + '#sched'); }catch(e){} }
-      scrollToTopOf(sec);
+      scrollToTopOf(sec, true);   /* 공지 상세와 같은 「즉시 그 자리에서 시작」 */
       var bk = box.querySelector('.post-back');
       if(bk) bk.focus({ preventScroll:true });
     }
@@ -1110,8 +1121,21 @@ a{color:inherit;text-decoration:none}
       var x = findItem(kind, q.get(kind));
       if(x) open(x, kind, !!push);
     }
+    /* 상세를 보다가 위 형제 탭을 누르면 목록으로 — 공지 게시판과 같은 규칙 */
+    document.addEventListener('click', function(e){
+      var t = e.target.closest ? e.target.closest('.ysub-tab') : null;
+      if(!t || !sec.classList.contains('is-post')) return;
+      close(false);
+      try{ history.replaceState({}, '', 'G-news.html' + location.hash); }catch(_e){}
+    });
     addEventListener('popstate', function(){ fromUrl(false); });
     fromUrl(false);   /* ?sem=/?evt= 를 달고 들어온 경우 — 처음부터 그 글을 편다 */
+    if(sec.classList.contains('is-post')){
+      /* 주소 직행 — 서브탭·이미지가 늦게 자리 잡아도 상세가 최상단을 지키게 몇 번 다잡는다 */
+      var jmp = function(){ scrollToTopOf(sec, true); };
+      [80, 250, 600].forEach(function(d){ setTimeout(jmp, d); });
+      addEventListener('load', function(){ setTimeout(jmp, 60); });
+    }
   })();
   /* 개수 배지도 숫자와 붙어 있어 사전이 못 잡는다 — 항목이 늘어도 따라오도록 여기서 만든다 */
   function paintCounts(){

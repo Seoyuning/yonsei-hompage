@@ -72,7 +72,10 @@
       'border-radius:10px;padding:.7rem .75rem}',
       '.ys-gh-f{display:flex;flex-direction:column;gap:.22rem}',
       '.ys-gh-f>span{font-size:.7rem;font-weight:700;color:var(--ys-muted)}',
-      '.ys-gh-f em{font-style:normal;font-weight:400;color:var(--ys-dim)}'
+      '.ys-gh-f em{font-style:normal;font-weight:400;color:var(--ys-dim)}',
+      '.ys-gh-urlnote{font-size:.68rem;line-height:1.5;color:var(--ys-muted)}',
+      '.ys-gh-urlnote.is-ok{color:#0d5c3a}',
+      '.ys-gh-urlnote.is-bad{color:#b3261e}'
     ].join('');
     var st = doc.createElement('style');
     st.id = STYLE_ID;
@@ -218,8 +221,41 @@
       form.appendChild(w);
       return i;
     }
+    /* 깃헙 주소 → 아래 칸 자동 채움(사용자 요청: 소유자·저장소를 직접 안 쳐도 되게).
+       지원: https://github.com/소유자/저장소[.git][/tree/브랜치[/폴더…]]
+             git@github.com:소유자/저장소.git · 소유자/저장소 */
+    function parseGhUrl(s) {
+      s = String(s || '').trim();
+      if (!s) return null;
+      var m = s.match(/^git@github\.com:([\w.-]+)\/([\w.-]+?)(?:\.git)?\/?$/i);
+      if (m) return { owner: m[1], repo: m[2], branch: '', basePath: '' };
+      m = s.match(/^(?:https?:\/\/)?(?:www\.)?github\.com\/([\w.-]+)\/([\w.-]+?)(?:\.git)?(?:\/(?:tree|blob)\/([^\/?#\s]+)((?:\/[^?#\s]*)?))?\/?(?:[?#].*)?$/i);
+      if (m) return { owner: m[1], repo: m[2], branch: m[3] || '', basePath: (m[4] || '').replace(/^\/+|\/+$/g, '') };
+      m = s.match(/^([\w.-]+)\/([\w.-]+?)(?:\.git)?$/);
+      if (m) return { owner: m[1], repo: m[2], branch: '', basePath: '' };
+      return null;
+    }
     var curOwner = (info.repo || '/').split('/')[0] || '';
     var curRepo = (info.repo || '/').split('/')[1] || '';
+    var fUrl = field('깃헙 주소로 채우기', '저장소 주소를 붙여넣으면 아래 칸이 채워집니다', 'text', '', 'https://github.com/소유자/저장소');
+    var urlNote = mk('div', 'ys-gh-urlnote');
+    fUrl.parentNode.appendChild(urlNote);
+    fUrl.addEventListener('input', function () {
+      var v = fUrl.value.trim();
+      if (!v) { urlNote.textContent = ''; urlNote.className = 'ys-gh-urlnote'; return; }
+      var p = parseGhUrl(v);
+      if (!p) {
+        urlNote.textContent = '주소를 읽지 못했습니다 — 아래 칸에 직접 적어 주세요.';
+        urlNote.className = 'ys-gh-urlnote is-bad';
+        return;
+      }
+      fOwner.value = p.owner; fRepo.value = p.repo;
+      if (p.branch) fBranch.value = p.branch;
+      if (p.basePath) fBase.value = p.basePath;
+      urlNote.textContent = '채웠습니다: ' + p.owner + '/' + p.repo
+        + (p.branch ? ' · ' + p.branch : '') + (p.basePath ? ' · ' + p.basePath : '');
+      urlNote.className = 'ys-gh-urlnote is-ok';
+    });
     var fOwner = field('소유자(owner)', '깃헙 계정 또는 조직 이름', 'text', curOwner);
     var fRepo = field('저장소 이름', null, 'text', curRepo);
     var fBranch = field('브랜치', null, 'text', info.branch || 'main');

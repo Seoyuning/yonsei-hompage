@@ -279,12 +279,23 @@
     t('연결 변경 버튼이 위 버튼 줄에', !!changeBtn);
     changeBtn.click();
     var form = q('.ys-gh-form', gh);
+    /* 칸 차례: [0]주소 붙여넣기 [1]소유자 [2]저장소 [3]브랜치 [4]사이트 폴더 [5]토큰 */
     var ins = qa('input.ys-in', form);
     t('변경 폼 열림·현재 값 채움', form && form.style.display !== 'none'
-      && ins[0].value === 'todo0157' && ins[1].value === 'yonsei-me-homepage-competition'
-      && ins[3].value === 'design-candidates', ins.map(function (i) { return i.value; }).join('|'));
-    ins[0].value = 'yonsei-me-dept'; ins[1].value = 'me-homepage'; ins[2].value = 'main';
-    ins[3].value = ''; ins[4].value = 'ghp_TESTTESTTESTTESTTEST0001';
+      && ins[1].value === 'todo0157' && ins[2].value === 'yonsei-me-homepage-competition'
+      && ins[4].value === 'design-candidates', ins.map(function (i) { return i.value; }).join('|'));
+    /* 깃헙 주소 붙여넣기 → 소유자·저장소·브랜치·폴더 자동 채움 */
+    ins[0].value = 'https://github.com/paste-org/paste-repo/tree/dev/site';
+    ins[0].dispatchEvent(new Event('input'));
+    t('주소 붙여넣기 → 칸 자동 채움', ins[1].value === 'paste-org' && ins[2].value === 'paste-repo'
+      && ins[3].value === 'dev' && ins[4].value === 'site',
+      [ins[1].value, ins[2].value, ins[3].value, ins[4].value].join('|'));
+    t('붙여넣기 결과 문구', /paste-org\/paste-repo/.test((q('.ys-gh-urlnote', form) || {}).textContent || ''));
+    ins[0].value = 'git@github.com:ssh-org/ssh-repo.git';
+    ins[0].dispatchEvent(new Event('input'));
+    t('SSH 주소도 인식', ins[1].value === 'ssh-org' && ins[2].value === 'ssh-repo');
+    ins[1].value = 'yonsei-me-dept'; ins[2].value = 'me-homepage'; ins[3].value = 'main';
+    ins[4].value = ''; ins[5].value = 'ghp_TESTTESTTESTTESTTEST0001';
     qa('.ys-act.is-pri', form).filter(function (b) { return b.textContent === '검증하고 변경'; })[0].click();
     await sleep(200);
     var cfm = q('.ys-modal');

@@ -168,9 +168,8 @@ main{position:relative;z-index:2;background:var(--paper)}
   transition:opacity .7s ease,transform .95s cubic-bezier(.16,1,.3,1),clip-path .95s cubic-bezier(.16,1,.3,1)}
 .stats.in .stats-head .kick{opacity:1;transform:none}
 .stats.in .stats-head h2{opacity:1;transform:none;clip-path:inset(0 0 -8% 0);transition-delay:.1s}
-/* 독수리 워터마크 — 늦게 스며들고, 히어로처럼 아주 느리게 떠다닌다 */
-.stats-eagle{opacity:0;transition:opacity 1.4s ease .55s}
-.stats.in .stats-eagle{opacity:.05;animation:hlFloat 52s ease-in-out infinite alternate}
+/* 독수리 워터마크 — 처음부터 보인다(사용자: 중간에 나타나지 말 것). 느린 부유만 */
+.stats-eagle{animation:hlFloat 52s ease-in-out infinite alternate}
 @media(min-width:861px){
   .stats{min-height:100svh;display:flex;flex-direction:column;justify-content:center;
     gap:clamp(1.9rem,4.5vh,3.2rem)}
@@ -707,8 +706,7 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
   .hero-bg,.hero-kick,.hero .sub,.hero-scroll{animation:none;opacity:1}
   .sq,.st .sk,.st b,.st > span:last-child,.stats-head .kick,.stats-head h2{
     opacity:1;transform:none;clip-path:none;transition:none}
-  .stats-eagle{opacity:.05;transition:none}
-  .stats.in .stats-eagle{animation:none}
+  .stats-eagle{animation:none}
   .fade{opacity:1;transform:none;transition:none}
   .hero h1 .ti{transform:none;transition:none}
   .blist .brow,.clist .crow{opacity:1;transform:none;transition:none}

@@ -30,7 +30,9 @@
     no: { label: '번호', hint: '맨 위 번호의 다음이 저절로 들어갑니다. "공지"로 바꾸면 목록 맨 위에 고정됩니다.' },
     title: { label: '제목', long: true, required: true },
     date: { label: '날짜', hint: 'YYYY.MM.DD' },
-    url: { label: '원문 링크', hint: '학교 게시판 원문 주소. 없으면 비워 둡니다.' },
+    /* 원문 링크는 등록 폼에서 받지 않는다(사용자 결정) — 새 글은 이 사이트가 원문이다.
+       상세의 「원문 보기」 줄은 값이 있을 때만 그려져, 비어 있어도 안전하다. */
+    url: { label: '원문 링크', hidden: true },
     /* 첨부는 한 묶음이다 — 켜면 파일 올리기와 이름 칸이 함께 열린다 */
     att: { label: '첨부 파일', hint: '켜면 파일을 올릴 수 있습니다.', group: 'att' },
     attName: { label: '첨부 이름만 표시', hint: '파일을 올리지 않고 이름만 보여 줄 때 씁니다(여러 개면 쉼표). 내려받기는 원문에서.', group: 'att' },
@@ -307,7 +309,7 @@
     for (var i = 0; i < shape.length; i++) {
       var key = shape[i].key, kind = shape[i].kind;
       var meta = FIELD[key] || { label: key };
-      if (meta.auto) { inputs.push({ key: key, kind: kind, meta: meta, auto: true }); continue; }
+      if (meta.auto || meta.hidden) { inputs.push({ key: key, kind: kind, meta: meta, auto: true }); continue; }
       var wrap = mk('div', 'ys-post-f' + (kind === 'bool' ? ' ys-post-chk' : ''));
       var lab = mk('span', null, meta.label);
       if (meta.required) lab.appendChild(mk('i', 'ys-req', '*'));

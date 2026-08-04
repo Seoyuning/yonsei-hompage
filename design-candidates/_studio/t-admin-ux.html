@@ -164,6 +164,7 @@
     t('입력 차례 제목→날짜→…→본문', fLabels.slice(1, 5).join('/') === '제목/날짜/번호/본문', fLabels.join('/'));
     t('본문 큰 칸(is-tall)', !!q('.ys-ta.is-tall', panel));
     t('본문 형태 칸 없음', fLabels.join('/').indexOf('본문 형태') < 0);
+    t('원문 링크 칸 없음', fLabels.join('/').indexOf('원문 링크') < 0, fLabels.join('/'));
     var attChk = q('.ys-post-chk input', panel);
     var attGrp = q('.ys-post-attg', panel);
     t('첨부 묶음 존재·처음엔 접힘', attGrp && attGrp.style.display === 'none');

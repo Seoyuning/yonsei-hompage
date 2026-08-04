@@ -1481,7 +1481,14 @@
       else Y.toast('복제할 수 없는 요소입니다.', 'warn');
     }));
     row.appendChild(act('삭제', 'is-danger', function () {
-      confirmBox('<' + info.tag + '> ' + (info.label || '') + ' 요소를 삭제할까요? 되돌리기(Ctrl+Z)로 취소할 수 있습니다.')
+      /* 원문 쪽 내용을 확인창에 보여 준다 — 화면과 원문이 어긋난 채 지우는 사고를
+         사람이 마지막에 잡을 수 있는 방어선이다. */
+      var pv = Y.engine.sourcePreview ? Y.engine.sourcePreview(idx) : null;
+      var msg = '<' + info.tag + '> ' + (info.label || '') + ' 요소를 삭제할까요?';
+      if (pv && pv.els >= 5) msg = '이 요소 안에 다른 요소 ' + pv.els + '개가 함께 지워집니다. ' + msg;
+      if (pv && pv.text) msg += ' 지워질 내용: 「' + pv.text + '」.';
+      msg += ' 되돌리기(Ctrl+Z)로 취소할 수 있습니다.';
+      confirmBox(msg)
         .then(function (ok) {
           if (!ok) return;
           if (Y.engine.removeEl(idx)) { clearSelection(); Y.toast('삭제했습니다.'); }

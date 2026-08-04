@@ -123,6 +123,8 @@
 <script src="../assets/studio/hud.js"></script>
 <script src="../assets/studio/posts.js"></script>
 <script src="../assets/studio/github.js"></script>
+<script src="../assets/studio/source.js"></script>
+<script src="../assets/studio/align.js"></script>
 <script>
 (function () {
   var Y = window.YStudio;
@@ -342,6 +344,31 @@
     offB.click();
     await sleep(120);
     t('끝내기 → 편집 모드 해제', !rootEl2.classList.contains('is-editing'));
+
+    /* 14. 정렬 회귀 — is-on 이 형제 사이를 옮겨 다녀도 짝이 밀리면 안 된다.
+          (홈 연구분야에서 짝이 한 칸 밀린 채 삭제가 게시돼 원문이 지워진 사고의 재현) */
+    var pSrc = '<!doctype html><html><head><meta charset="utf-8"></head><body><div class="g">'
+      + '<div class="fx-t is-on" data-i="0"><p>역학</p></div>'
+      + '<div class="fx-t" data-i="1"><p>열유체</p></div>'
+      + '<div class="fx-t" data-i="2"><p>동역학</p></div>'
+      + '</div></body></html>';
+    var pDoc = new DOMParser().parseFromString(pSrc, 'text/html');
+    var pz = Y.source.zip(pDoc, Y.source.scan(pSrc));
+    t('정렬 하니스 zip 성공', pz.ok, pz.reason);
+    var lDoc = new DOMParser().parseFromString(pSrc, 'text/html');
+    qa('.fx-t', lDoc).forEach(function (el) {
+      el.classList.toggle('is-on', el.getAttribute('data-i') === '2');
+    });
+    var amap = Y.align(pz.nodes, lDoc.documentElement);
+    var alignOk = true, alignGot = [];
+    qa('.fx-t', lDoc).forEach(function (el) {
+      var ai = amap.indexOf(el);
+      var srcEl = ai == null ? null : pz.nodes[ai];
+      var srcI = srcEl ? srcEl.getAttribute('data-i') : 'X';
+      alignGot.push(el.getAttribute('data-i') + '→' + srcI);
+      if (srcI !== el.getAttribute('data-i')) alignOk = false;
+    });
+    t('is-on 이동해도 정렬 안 밀림', alignOk, alignGot.join(' '));
 
     var fail = results.filter(function (r) { return !r.ok; }).length;
     var sum = 'TOTAL ' + results.length + ' · FAIL ' + fail;

@@ -212,6 +212,17 @@
     indexFromLive: function (el) { return live && live.map ? live.map.indexOf(el) : null; },
     nearestFromLive: function (el) { return live && live.map ? live.map.nearest(el) : null; },
 
+    /** 삭제 확인용 — **원문 쪽** 노드의 내용 요약. 화면에서 고른 것과 원문이
+        어긋나 있어도(정렬 사고) 확인창에서 지워질 실제 내용을 읽고 멈출 수 있다. */
+    sourcePreview: function (idx) {
+      var n = nodeAt(idx); if (!n) return null;
+      var t = (n.textContent || '').replace(/\s+/g, ' ').trim();
+      return {
+        text: t.length > 80 ? t.slice(0, 80) + '…' : t,
+        els: n.querySelectorAll('*').length
+      };
+    },
+
     /* ── 편집 ── */
     setText: function (idx, text) {
       var el = elAt(idx); if (!el) return false;

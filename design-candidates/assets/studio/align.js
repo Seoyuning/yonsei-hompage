@@ -18,11 +18,17 @@
 
   /* 파일에도 존재하지만 런타임에 붙었다 떨어지는(토글) 클래스 — 양쪽 키에서 모두 제외한다.
      파일에 아예 없는 클래스(예: 홈의 sfade, drag)는 목록에 넣을 필요가 없다 —
-     아래 "원본 클래스 어휘" 규칙이 자동으로 걸러 낸다. */
+     아래 "원본 클래스 어휘" 규칙이 자동으로 걸러 낸다.
+
+     is-on 은 반드시 여기 있어야 한다: 홈 연구분야(fx-t·fx-dot·fx-s)는 파일에서
+     0번에만 is-on 이 붙고 런타임엔 스크롤 위치의 형제로 옮겨 다닌다. 키에 남기면
+     같은 키의 형제 열이 어긋나 LCS 짝이 한 칸씩 밀리고, 화면에서 고른 카드가
+     원문의 **다른** 카드로 매핑된다(실제로 이 어긋난 삭제가 게시돼 홈 연구분야가
+     통째로 지워진 사고가 있었다). */
   var RUNTIME_CLASS = {
     'in': 1, 'vis': 1, 'fade': 1, 'ttl-on': 1, 'ysub-hide': 1, 'on': 1, 'cur': 1,
     'open': 1, 'min': 1, 'show': 1, 'dim-others': 1, 'has-ysub': 1, 'is-open': 1,
-    'active': 1, 'drag': 1, 'ys-sel': 1, 'ys-hover': 1, 'ys-target': 1
+    'is-on': 1, 'active': 1, 'drag': 1, 'ys-sel': 1, 'ys-hover': 1, 'ys-target': 1
   };
   /* 사이트 JS 가 라이브에 주입하는 노드 — 원본에는 없다 */
   var INJECTED = '.ynv, .ysub, .ytop, .ynv-ovl, footer.yft, [data-ys-ui], [data-ys-injected]';

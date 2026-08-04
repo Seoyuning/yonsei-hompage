@@ -763,10 +763,71 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
        h1 바로 뒤에 h3(분야 이름) 여섯이 오면 화면낭독기의 제목 목차가 한 칸 끊긴다. -->
   <h2 id="fx-h" class="vh">연구 분야</h2>
   <div class="fx-pin">
+    <div class="fx-grid">
+      <div class="fx-left">
+        <div class="fx-stack">
+        <div class="fx-t is-on" data-i="0">
+          <h3 class="fx-ko"><span>역학</span><span>재료</span></h3>
+          <p class="fx-en">Mechanics & Materials</p>
+          <p class="fx-d">금속·복합재·연성재료가 힘을 받아 어떻게 변형하고 파손되는지 실험과 시뮬레이션으로 규명합니다.</p>
+          <a class="fx-go" href="G-research.html#solid">연구실 6곳 <i aria-hidden="true">→</i></a>
+        </div>
+        <div class="fx-t" data-i="1">
+          <h3 class="fx-ko"><span>열</span><span>유체</span></h3>
+          <p class="fx-en">Thermal & Fluid</p>
+          <p class="fx-d">난류·미세유동과 연소·열전달을 해석해 연료전지·수소·배터리처럼 에너지를 다루는 기술을 연구합니다.</p>
+          <a class="fx-go" href="G-research.html#thermal">연구실 7곳 <i aria-hidden="true">→</i></a>
+        </div>
+        <div class="fx-t" data-i="2">
+          <h3 class="fx-ko"><span>동역학</span><span>제어</span></h3>
+          <p class="fx-en">Dynamics & Control</p>
+          <p class="fx-d">로봇과 자율 시스템이 스스로 감지하고 정밀하게 움직이도록 제어와 메카트로닉스를 연구합니다.</p>
+          <a class="fx-go" href="G-research.html#dynamics">연구실 4곳 <i aria-hidden="true">→</i></a>
+        </div>
+        <div class="fx-t" data-i="3">
+          <h3 class="fx-ko"><span>설계</span><span>제조</span></h3>
+          <p class="fx-en">Design & Manufacturing</p>
+          <p class="fx-d">전산 최적설계로 형상을 찾고 정밀·극한 가공으로 구현합니다. 반도체 장비·전기차 같은 첨단 제조를 다룹니다.</p>
+          <a class="fx-go" href="G-research.html#manufacturing">연구실 6곳 <i aria-hidden="true">→</i></a>
+        </div>
+        <div class="fx-t" data-i="4">
+          <h3 class="fx-ko"><span>마이크로</span><span>나노</span></h3>
+          <p class="fx-en">Micro / Nano Systems</p>
+          <p class="fx-d">MEMS와 박막·미세가공, 나노 소자·센서로 눈에 보이지 않는 스케일의 구조와 현상을 다룹니다.</p>
+          <a class="fx-go" href="G-research.html#micro">연구실 5곳 <i aria-hidden="true">→</i></a>
+        </div>
+        <div class="fx-t" data-i="5">
+          <h3 class="fx-ko"><span>바이오</span><span>포토닉스</span></h3>
+          <p class="fx-en">Bio & Photonics</p>
+          <p class="fx-d">광학·이미징과 바이오칩, 생체역학을 결합해 질병 진단과 의료 광학·바이오 센싱을 연구합니다.</p>
+          <a class="fx-go" href="G-research.html#optics">연구실 5곳 <i aria-hidden="true">→</i></a>
+        </div>
+        </div>
+        <div class="fx-dots" id="fxDots" role="tablist" aria-label="연구 분야 고르기">
+        <button type="button" class="fx-dot is-on" data-i="0" aria-label="역학·재료"><i></i></button>
+        <button type="button" class="fx-dot" data-i="1" aria-label="열·유체"><i></i></button>
+        <button type="button" class="fx-dot" data-i="2" aria-label="동역학·제어"><i></i></button>
+        <button type="button" class="fx-dot" data-i="3" aria-label="설계·제조"><i></i></button>
+        <button type="button" class="fx-dot" data-i="4" aria-label="마이크로·나노"><i></i></button>
+        <button type="button" class="fx-dot" data-i="5" aria-label="바이오·포토닉스"><i></i></button>
+        </div>
+      </div>
+      <div class="fx-right" aria-hidden="true">
+        <figure class="fx-s is-on" data-i="0"><img src="assets/fields/solid.jpg?v=4" alt="" fetchpriority="low" decoding="async"></figure>
+        <figure class="fx-s" data-i="1"><img src="assets/fields/thermal.jpg?v=4" alt="" loading="lazy" decoding="async"></figure>
+        <figure class="fx-s" data-i="2"><img src="assets/fields/dynamics.jpg?v=4" alt="" loading="lazy" decoding="async"></figure>
+        <figure class="fx-s" data-i="3"><img src="assets/fields/manufacturing.jpg?v=4" alt="" loading="lazy" decoding="async"></figure>
+        <figure class="fx-s" data-i="4"><img src="assets/fields/micro.jpg?v=4" alt="" loading="lazy" decoding="async"></figure>
+        <figure class="fx-s" data-i="5"><img src="assets/fields/optics.jpg?v=4" alt="" loading="lazy" decoding="async"></figure>
+      </div>
+    </div>
   </div>
 </section>
 
 <section class="tw-scene is-say" id="twSay" aria-label="학부 요약">
+  <div class="tw-pin">
+    <p class="tw-say" id="twSayText">1958년 이래 여섯 개 연구 분야에서 전임 교수 33명이 교육과 연구를 이어 오고 있습니다.</p>
+  </div>
 </section>
 
   <!-- 교수진을 히어로·지표 바로 뒤로 올렸다 — 어두운 화면 셋이 이어져 도입이 묵직해진다.
@@ -774,6 +835,18 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
   <!-- 공지·세미나도 원래 짙은 밴드라, 흰 섹션 사이에 두면 명암이 다시 줄무늬가 된다.
        앞쪽 어두운 덩어리에 붙여 [히어로·지표·교수진·공지] 를 한 묶음으로 만든다. -->
   <!-- ═══ 연구 뉴스 (KAIST 뉴스 하이라이트 스타일) ═══ -->
+  <section class="wrap sec" aria-labelledby="h-news" id="secNews">
+    <div class="sec-head">
+      <p class="kick">Research &amp; News</p>
+      <div class="sec-head-row">
+        <h2 class="sec-title" id="h-news" data-i18n="newsTitle">연구 소식</h2>
+        <a class="more" href="G-news.html" data-i18n="moreAll">전체 보기 →</a>
+      </div>
+    </div>
+    <div class="news-lead" id="newsGrid">
+      <a class="nlink" href="G-news.html#hi"><span class="t">학부 뉴스 보기</span></a>
+    </div>
+  </section>
 
   <section class="board-band" aria-label="공지 및 세미나">
     <div class="wrap">

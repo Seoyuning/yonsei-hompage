@@ -153,13 +153,29 @@ main{position:relative;z-index:2;background:var(--paper)}
 /* 지표 + 바로가기를 「띠」가 아니라 히어로 다음의 한 화면짜리 페이지로(사용자 지시).
    내용을 세로 가운데에 두고, 화면이 커진 만큼 숫자도 한 뼘 키운다. 휴대폰은
    한 화면을 억지로 채우면 빈 공간만 늘어나 원래 높이대로 둔다. */
+.stats{overflow:clip}
+/* 아래 .stats .wrap{display:grid} 보다 앞에 서 있으므로 특이도(0,3,0)로 이긴다 */
+.stats .wrap.stats-head{display:block;padding-top:clamp(2.2rem,4.5vh,3.2rem);padding-bottom:0}
+.stats-head h2{margin-top:1.1rem;font-size:clamp(1.8rem,1.1rem + 2.6vw,3.3rem);
+  font-weight:700;letter-spacing:-.025em;line-height:1.12;color:var(--navy)}
+.stats-eagle{position:absolute;right:-6%;bottom:-5%;width:min(46vw,620px);aspect-ratio:1/1;
+  background:url("assets/me-eagle.png") center/contain no-repeat;
+  filter:brightness(0);opacity:.05;pointer-events:none}
+/* 제목도 지표와 같은 결로 떠오른다 */
+.stats-head .kick,.stats-head h2{opacity:0;transform:translateY(14px);
+  transition:opacity .55s ease,transform .68s cubic-bezier(.16,1,.3,1)}
+.stats.in .stats-head .kick{opacity:1;transform:none}
+.stats.in .stats-head h2{opacity:1;transform:none;transition-delay:.07s}
 @media(min-width:861px){
-  .stats{min-height:100svh;display:flex;flex-direction:column;justify-content:center}
-  .stats .wrap{width:100%;padding-bottom:0}
+  .stats{min-height:100svh;display:flex;flex-direction:column;justify-content:center;
+    gap:clamp(1.9rem,4.5vh,3.2rem)}
+  .stats .wrap.stats-head{padding-top:0;padding-bottom:0}
+  .stats .wrap{width:100%;padding-top:0;padding-bottom:0}
   .st b{font-size:clamp(3.2rem,2rem + 4.2vw,5.4rem)}
   .st .sk{font-size:.78rem}
-  .stats .stats-quick{width:100%;padding-bottom:0;margin-top:clamp(2.8rem,7vh,5rem)}
+  .stats .stats-quick{width:100%;padding-top:0;padding-bottom:0;margin-top:0}
 }
+@media(max-width:860px){.stats-eagle{display:none}}
 .stats .wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:0;
   padding-top:clamp(2.4rem,5vh,3.6rem);padding-bottom:clamp(2.4rem,5vh,3.6rem)}
 .st{display:flex;flex-direction:column;gap:.4rem;padding:0 clamp(1rem,2.4vw,2.2rem)}
@@ -749,7 +765,14 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
   <div class="hero-scroll" aria-hidden="true">Scroll</div>
 </section>
 <div class="hero-hold" aria-hidden="true"></div>
-<div class="stats">
+<div class="stats" aria-labelledby="stats-h">
+  <!-- 한 화면 페이지가 되며 생긴 여백을 우리 것으로 채운다 — 사이트 공통 kick +
+       큰 제목, 오른쪽엔 히어로와 같은 마스코트 독수리 워터마크(밝은 배경용 검정판). -->
+  <span class="stats-eagle" aria-hidden="true"></span>
+  <div class="wrap stats-head">
+    <p class="kick">Yonsei Mechanical Engineering — Since 1958</p>
+    <h2 id="stats-h" data-i18n="statsTitle">숫자로 보는 기계공학부</h2>
+  </div>
   <div class="wrap">
     <div class="st" style="--i:0"><span class="sk">Faculty</span><b data-count="33">0</b><span data-i18n="stFaculty">전임 교수</span></div>
     <div class="st" style="--i:1"><span class="sk">Research Areas</span><b data-count="6">0</b><span data-i18n="stAreas">연구 분야</span></div>
@@ -1009,6 +1032,7 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
       smTitle: '세미나', moreShort: '전체 →',
       areasTitle: '연구 분야', moreLabs: '연구실 목록 →',
       peopleTitle: '교수진', morePeople: '교수진 전체 →',
+      statsTitle: '숫자로 보는 기계공학부',
       qAdm: '입학 안내', qAdmS: '학부·대학원 지원 경로', qAcad: '학사 · 교과', qAcadS: '교과과정과 이수 체계',
       qFac: '교수진', qFacS: '33명의 전임 교수', qDir: '오시는 길', qDirS: '서울 서대문구 연세로 50',
       fAddr: '(03722) 서울특별시 서대문구 연세로 50 연세대학교 공과대학 기계공학부',
@@ -1034,6 +1058,7 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
       smTitle: 'Seminars', moreShort: 'All →',
       areasTitle: 'Research Areas', moreLabs: 'All laboratories →',
       peopleTitle: 'Faculty', morePeople: 'All faculty →',
+      statsTitle: 'The School in Numbers',
       qAdm: 'Admissions', qAdmS: 'Undergraduate & graduate', qAcad: 'Academics', qAcadS: 'Curriculum & requirements',
       qFac: 'Faculty', qFacS: '33 full-time professors', qDir: 'Directions', qDirS: '50 Yonsei-ro, Seodaemun-gu, Seoul',
       fAddr: '50 Yonsei-ro, Seodaemun-gu, Seoul 03722, Republic of Korea — College of Engineering',

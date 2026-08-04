@@ -389,36 +389,20 @@ main{position:relative;z-index:2;background:var(--paper)}
 }
 
 
-/* ── 소식 구간에 「걸리는」 느낌 ──
-   scroll-snap 을 proximity 로 건다. mandatory 로 걸면 스크롤을 놓을 때마다 붙잡혀
-   지나가려는 사람까지 가둔다. proximity 는 가까이서 멈췄을 때만 당겨 준다.
+/* ── 소식 구간 — 머리가 상단에 닿는 순간 멈춘다 ──
+   snap-stop:always. normal 이었을 땐 관성이 머리를 지나친 뒤 proximity 가 도로
+   끌어올려 「내려가다 다시 올라오며 걸리는」 되감기가 났다(사용자 지적).
+   always 는 지나치려는 스크롤을 머리 위치에서 세우므로 지나침 자체가 없다.
+   mandatory 로는 안 건다 — 놓을 때마다 붙잡혀 지나가려는 사람까지 가둔다.
 
    붙는 표시는 구간(section)이 아니라 **구간 머리(.sec-head · .bhead)** 에 준다.
-   구간에 주면 「상자의 위」가 화면 위에 서는데, 이 구간들은 위쪽 여백이 5~8rem 이라
-   화면 한 폭이 빈 채로 걸리고 제목은 화면 한가운데쯤에 남았다.
-   머리에 주면 「RESEARCH & NEWS / 연구 소식」이 상단 바 바로 아래에 서고,
-   그 아래로 목록이 이어져 구간이 한눈에 들어온다.
+   구간에 주면 위쪽 여백 5~8rem 이 화면을 비운 채 걸린다. 머리에 주면
+   「RESEARCH & NEWS / 연구 소식」이 상단 바 바로 아래에 선다.
    히어로·연구 분야·문장 구간에는 걸지 않는다 — 저마다 sticky 로 화면을 붙들고 있어
    두 장치가 서로 당긴다. */
 @media (min-width:861px) and (prefers-reduced-motion:no-preference){
   html{scroll-snap-type:y proximity;scroll-padding-top:calc(var(--ys-bars,5rem) + 1.6rem)}
-  #secNews .sec-head,.board-band .bhead{scroll-snap-align:start;scroll-snap-stop:normal}
-}
-
-/* ── 소식 구간에 「걸리는」 느낌 ──
-   scroll-snap 을 proximity 로 건다. mandatory 로 걸면 스크롤을 놓을 때마다 붙잡혀
-   지나가려는 사람까지 가둔다. proximity 는 가까이서 멈췄을 때만 당겨 준다.
-
-   붙는 표시는 구간(section)이 아니라 **구간 머리(.sec-head · .bhead)** 에 준다.
-   구간에 주면 「상자의 위」가 화면 위에 서는데, 이 구간들은 위쪽 여백이 5~8rem 이라
-   화면 한 폭이 빈 채로 걸리고 제목은 화면 한가운데쯤에 남았다.
-   머리에 주면 「RESEARCH & NEWS / 연구 소식」이 상단 바 바로 아래에 서고,
-   그 아래로 목록이 이어져 구간이 한눈에 들어온다.
-   히어로·연구 분야·문장 구간에는 걸지 않는다 — 저마다 sticky 로 화면을 붙들고 있어
-   두 장치가 서로 당긴다. */
-@media (min-width:861px) and (prefers-reduced-motion:no-preference){
-  html{scroll-snap-type:y proximity;scroll-padding-top:calc(var(--ys-bars,5rem) + 1.6rem)}
-  #secNews .sec-head,.board-band .bhead{scroll-snap-align:start;scroll-snap-stop:normal}
+  #secNews .sec-head,.board-band .bhead{scroll-snap-align:start;scroll-snap-stop:always}
 }
 
 
@@ -593,30 +577,27 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
 .pbtn:hover svg{opacity:1}
 .pbtn:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
 
-/* ── 바로가기 — 네이비 스테이트먼트 밴드, 거대 타이포 행 ── */
-.quick{background:var(--navy-d);color:#fff}
-.quick .wrap{padding-top:clamp(6rem,12vh,9rem);padding-bottom:clamp(6rem,12vh,9rem)}
-.ql{position:relative;display:flex;align-items:baseline;gap:clamp(.9rem,2.4vw,2rem);
-  padding:clamp(1.5rem,3.2vh,2.2rem) .3rem;border-bottom:1px solid rgba(255,255,255,.38);overflow:hidden}
-.ql:first-child{border-top:1px solid rgba(255,255,255,.38)}
-.ql::before{content:"";position:absolute;inset:0;background:var(--ink);
-  transform:scaleX(0);transform-origin:left;transition:transform .5s var(--e)}
-.ql:hover::before{transform:scaleX(1)}
-.ql>*{position:relative}
-.ql b{font-size:clamp(1.5rem,1rem + 2.6vw,2.6rem);font-weight:800;letter-spacing:-.015em;line-height:1.1}
-.ql span{flex:1;min-width:0;font-size:.86rem;color:rgba(255,255,255,.85);white-space:nowrap;
-  overflow:hidden;text-overflow:ellipsis}
-.ql i{font-style:normal;font-size:clamp(1.3rem,2.4vw,2rem);line-height:1;
-  transition:transform .5s var(--e)}
-.ql:hover i{transform:translateX(10px)}
-@media(max-width:640px){.ql span{display:none}}
+/* ── 바로가기 — 히어로 안 작은 버튼 줄(끝의 거대 밴드는 상단 메뉴·푸터와 겹쳐 없앴다) ── */
+.hero-quick{display:flex;flex-wrap:wrap;justify-content:center;gap:.6rem;margin-top:2.1rem}
+.hero-quick a{display:inline-flex;align-items:center;gap:.45rem;padding:.6rem 1.15rem;
+  border:1px solid rgba(255,255,255,.42);border-radius:999px;color:#fff;
+  font-size:.92rem;font-weight:600;letter-spacing:.01em;
+  background:rgba(255,255,255,.07);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  transition:background .3s ease,border-color .3s ease,color .3s ease}
+.hero-quick a::after{content:"→";font-size:.9em;transition:transform .3s var(--e)}
+.hero-quick a:hover{background:#fff;color:var(--navy-d);border-color:#fff}
+.hero-quick a:hover::after{transform:translateX(3px)}
+.hero-quick a:focus-visible{outline:2px solid #fff;outline-offset:2px}
+@media(max-width:640px){.hero-quick{gap:.5rem;margin-top:1.7rem}
+  .hero-quick a{padding:.5rem .95rem;font-size:.85rem}}
 
 /* ── 페이드 애니메이션 ── */
 /* 히어로: 로드 시 순차 페이드 (배경은 아주 느린 줌아웃으로 깊이감) */
 .hero-bg{animation:heroZoom 9s cubic-bezier(.2,.6,.3,1) forwards}
 @keyframes heroZoom{from{transform:scale(1.07)}to{transform:scale(1)}}
-.hero-kick,.hero .sub,.hero-scroll{opacity:0;animation:heroFade 1.1s var(--e) forwards}
+.hero-kick,.hero .sub,.hero-quick,.hero-scroll{opacity:0;animation:heroFade 1.1s var(--e) forwards}
 .hero .sub{animation-delay:.5s}
+.hero-quick{animation-delay:.75s}
 .hero-scroll{animation-name:heroFadeSoft;animation-delay:1.1s}
 @keyframes heroFade{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 @keyframes heroFadeSoft{from{opacity:0}to{opacity:1}}
@@ -662,7 +643,7 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
 
 @media(prefers-reduced-motion:reduce){
   .sfade{opacity:1!important}
-  .hero-bg,.hero-kick,.hero .sub,.hero-scroll{animation:none;opacity:1}
+  .hero-bg,.hero-kick,.hero .sub,.hero-quick,.hero-scroll{animation:none;opacity:1}
   .fade{opacity:1;transform:none;transition:none}
   .hero h1 .ti{transform:none;transition:none}
   .blist .brow,.clist .crow{opacity:1;transform:none;transition:none}
@@ -676,13 +657,11 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
   .sec{padding-top:4.4rem;padding-bottom:4.4rem}
   .sec-head{margin-bottom:2.2rem}
   .board-band .wrap{padding-top:3.6rem;padding-bottom:3.6rem}
-  .quick .wrap{padding-top:3.8rem;padding-bottom:3.8rem}
 }
 @media(max-width:640px){
   .sec{padding-top:3.4rem;padding-bottom:3.4rem}
   .stats .wrap{padding-top:1.5rem;padding-bottom:1.5rem}
   .board-band .wrap{padding-top:2.8rem;padding-bottom:2.8rem}
-  .quick .wrap{padding-top:2.9rem;padding-bottom:2.9rem}
   .mq{padding-top:2.6rem;padding-bottom:1.2rem}
   /* 섹션 머리 — 「전체 보기」가 제목과 부딪혀 줄이 엉켰다. 아래 줄로 내린다 */
   .sec-head{margin-bottom:1.7rem}
@@ -705,7 +684,6 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
   .bt{white-space:nowrap;display:block;-webkit-line-clamp:unset;overflow:hidden;text-overflow:ellipsis;
     font-size:.9rem;line-height:1.4}
   .bd{margin:0}
-  .ql{padding-top:1.15rem;padding-bottom:1.15rem}
   /* 인스타 릴스 — 휴대폰에서도 왼쪽으로 흐른다(사용자 요청).
      처음엔 배터리를 아끼려 세워 뒀는데, 서 있으니 멈춘 화면처럼 읽혔다.
      대신 흐름만 조금 늦춘다. */
@@ -738,6 +716,13 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
     <p class="hero-kick" data-i18n="heroKick">School of Mechanical Engineering</p>
     <h1 data-i18n="heroTitle">연세대학교 기계공학부</h1>
     <p class="sub" data-i18n="heroSub">멈추지 않는 도전, 100년을 향한 연세 기계공학</p>
+    <!-- 바로가기 — 페이지 끝 거대 밴드 대신 히어로 안 작은 버튼 줄(사용자 결정: 밑이 아니라 위) -->
+    <nav class="hero-quick" aria-label="바로가기">
+      <a href="G-admissions.html" data-i18n="qAdm">입학 안내</a>
+      <a href="G-academics.html" data-i18n="qAcad">학사 · 교과</a>
+      <a href="G-people.html" data-i18n="qFac">교수진</a>
+      <a href="G-about.html#location" data-i18n="qDir">오시는 길</a>
+    </nav>
   </div>
   <div class="hero-scroll" aria-hidden="true">Scroll</div>
 </section>
@@ -916,22 +901,6 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
   </div>
 
   <!-- ═══ 바로가기 — 네이비 스테이트먼트 밴드 ═══ -->
-  <section class="quick" aria-label="바로가기">
-    <div class="wrap">
-      <a class="ql" href="G-admissions.html">
-        <b data-i18n="qAdm">입학 안내</b><span data-i18n="qAdmS">학부·대학원 지원 경로</span><i aria-hidden="true">→</i>
-      </a>
-      <a class="ql" href="G-academics.html">
-        <b data-i18n="qAcad">학사 · 교과</b><span data-i18n="qAcadS">교과과정과 이수 체계</span><i aria-hidden="true">→</i>
-      </a>
-      <a class="ql" href="G-people.html">
-        <b data-i18n="qFac">교수진</b><span data-i18n="qFacS">33명의 전임 교수</span><i aria-hidden="true">→</i>
-      </a>
-      <a class="ql" href="G-about.html#location">
-        <b data-i18n="qDir">오시는 길</b><span data-i18n="qDirS">서울 서대문구 연세로 50</span><i aria-hidden="true">→</i>
-      </a>
-    </div>
-  </section>
 
 </main>
 
@@ -997,8 +966,7 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
       smTitle: '세미나', moreShort: '전체 →',
       areasTitle: '연구 분야', moreLabs: '연구실 목록 →',
       peopleTitle: '교수진', morePeople: '교수진 전체 →',
-      qAdm: '입학 안내', qAdmS: '학부·대학원 지원 경로', qAcad: '학사 · 교과', qAcadS: '교과과정과 이수 체계',
-      qFac: '교수진', qFacS: '33명의 전임 교수', qDir: '오시는 길', qDirS: '서울 서대문구 연세로 50',
+      qAdm: '입학 안내', qAcad: '학사 · 교과', qFac: '교수진', qDir: '오시는 길',
       fAddr: '(03722) 서울특별시 서대문구 연세로 50 연세대학교 공과대학 기계공학부',
       fTel: '학부 02-2123-4426 · 대학원 02-2123-2810', fAdmin: '관리자',
       catUG: '학부', catGrad: '대학원', labUnit: '개 연구실',
@@ -1022,8 +990,7 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
       smTitle: 'Seminars', moreShort: 'All →',
       areasTitle: 'Research Areas', moreLabs: 'All laboratories →',
       peopleTitle: 'Faculty', morePeople: 'All faculty →',
-      qAdm: 'Admissions', qAdmS: 'Undergraduate & graduate', qAcad: 'Academics', qAcadS: 'Curriculum & requirements',
-      qFac: 'Faculty', qFacS: '33 full-time professors', qDir: 'Directions', qDirS: '50 Yonsei-ro, Seodaemun-gu, Seoul',
+      qAdm: 'Admissions', qAcad: 'Academics', qFac: 'Faculty', qDir: 'Directions',
       fAddr: '50 Yonsei-ro, Seodaemun-gu, Seoul 03722, Republic of Korea — College of Engineering',
       fTel: 'Undergrad +82-2-2123-4426 · Graduate +82-2-2123-2810', fAdmin: 'Admin',
       catUG: 'UG', catGrad: 'Grad', labUnit: 'Laboratories',
@@ -1278,7 +1245,7 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   if (!('IntersectionObserver' in window)) return;
   var targets = [];
-  document.querySelectorAll('.stats .st, .quick .ql').forEach(function (el, i) {
+  document.querySelectorAll('.stats .st').forEach(function (el, i) {
     el.classList.add('fade');
     el.style.transitionDelay = (i % 4) * 90 + 'ms';
     targets.push(el);
@@ -1496,7 +1463,7 @@ html[lang="en"] .fx-en{margin:0;font-family:var(--kr);font-weight:700;
      투명해지는 순간 뒤 사진이 비쳐 숫자가 씻긴 것처럼 보인다.
      퇴장 효과 없이 판 그대로 나간다(사용자 결정). */
   var secs = [].slice.call(document.querySelectorAll(
-    'main .sec, .board-band, .quick'));
+    'main .sec, .board-band'));
   if (!secs.length) return;
   secs.forEach(function (s) { s.classList.add('sfade'); });
   var ticking = false;

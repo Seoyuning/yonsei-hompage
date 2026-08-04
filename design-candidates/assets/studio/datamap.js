@@ -27,7 +27,7 @@
     areaGrid: { page: 'H-academic.html', colls: ['clusters'], label: 'clusters[]', human: '연구 분야 카드' },
     pGrid: { page: 'H-academic.html', colls: ['professors'], label: 'professors[] (화면 순서는 무작위 셔플)', human: '교수진 카드' },
     /* G-people */
-    rows: { page: 'G-people.html', colls: ['professors'], label: 'professors[]', human: '교수진 목록' },
+    rows: { page: 'G-people.html', colls: ['professors'], label: 'professors[]', human: '교수진 목록', cardVars: 1 },
     cChips: { page: 'G-people.html', colls: ['clusters'], label: 'clusters[]', human: '연구 분야 고르기' },
     /* G-research */
     fieldGrid: { page: 'G-research.html', colls: ['clusters', 'labs'], label: 'clusters[] + labs[]', human: '연구 분야·연구실' },
@@ -335,6 +335,19 @@
     spliceSrc(from, to, '');
   }
 
+  /** 이웃 항목과 자리 바꾸기 — 두 항목의 원문 조각을 서로 맞바꾼다.
+      배열 정렬을 화면이 그대로 쓰는 목록(교수 카드 등)에서 「카드 교체」가 된다. */
+  function swapItems(coll, i, j) {
+    var arr = arrayOf(coll);
+    if (!arr.items[i] || !arr.items[j]) return false;
+    var a = arr.items[Math.min(i, j)], b = arr.items[Math.max(i, j)];
+    var s = state.src;
+    var litA = s.slice(a.start, a.end), litB = s.slice(b.start, b.end);
+    state.src = s.slice(0, a.start) + litB + s.slice(a.end, b.start) + litA + s.slice(b.end);
+    reparse();
+    return true;
+  }
+
   /* ── 4. 소유 판별 ── */
   function ownerOf(el) {
     var cur = el;
@@ -377,6 +390,31 @@
     t = norm(t);
     if (!t) t = coll + '[' + index + ']';
     return t.length > 70 ? t.slice(0, 70) + '…' : t;
+  }
+
+  /** 카드가 데이터 id 를 DOM id 로 달고 있으면(예: 교수 카드 #kang-keonwook)
+      텍스트 추측 없이 그 항목이 정답이다. 클릭 지점부터 컨테이너까지 올라가며 찾는다.
+      — 텍스트 매칭만 쓰면 같은 값(같은 연구분야 등)을 가진 다른 항목이 잡히는
+      오선택이 난다(강건욱 분야 클릭 → 장용훈 선택 사고). */
+  function itemByDomId(container, colls, liveEl) {
+    var cur = liveEl;
+    while (cur && cur.nodeType === 1 && cur !== container) {
+      var did = cur.id;
+      if (did) {
+        for (var c = 0; c < colls.length; c++) {
+          var arrNode = state.root.props[colls[c]];
+          if (!arrNode || arrNode.type !== 'array') continue;
+          for (var k = 0; k < arrNode.items.length; k++) {
+            var it = plain(arrNode.items[k]);
+            if (it && typeof it === 'object' && String(it.id || '') === did) {
+              return { coll: colls[c], index: k, item: it, hit: null };
+            }
+          }
+        }
+      }
+      cur = cur.parentElement;
+    }
+    return null;
   }
 
   /** 클릭 텍스트·항목 텍스트와 가장 잘 맞는 항목을 고른다. */
@@ -435,7 +473,13 @@
       '.ys-dm-list h5{margin:.3rem 0 .1rem;font-size:.7rem;font-weight:700;color:var(--ys-muted,#5b6b85)}',
       '.ys-dm-pick{text-align:left;font:inherit;font-size:.8rem;line-height:1.4;cursor:pointer;border:0;background:transparent;',
       'color:var(--ys-ink,#0d1b2f);padding:.24rem .34rem;border-radius:.3rem}',
-      '.ys-dm-pick:hover{background:var(--ys-tint,#eef2f9);color:var(--ys-navy,#12294f)}'
+      '.ys-dm-pick:hover{background:var(--ys-tint,#eef2f9);color:var(--ys-navy,#12294f)}',
+      /* 카드 모양 고치기 접힘 상자 */
+      '.ys-dm-card{border:1px solid var(--ys-line,#dfe5ef);border-radius:.45rem;padding:.45rem .55rem}',
+      '.ys-dm-card>summary{cursor:pointer;font-size:.76rem;font-weight:700;color:var(--ys-navy,#12294f)}',
+      '.ys-dm-card .ys-dm-f{margin-top:.45rem}',
+      '.ys-dm-sel{font:inherit;font-size:.82rem;line-height:1.5;color:var(--ys-ink,#0d1b2f);',
+      'border:1px solid var(--ys-line,#c6d0e0);border-radius:.4rem;padding:.36rem .45rem;background:#fff;width:100%}'
     ].join('');
     var st = document.createElement('style');
     st.id = STYLE_ID;
@@ -472,6 +516,18 @@
       var doc = (Y.engine && Y.engine.liveDoc && Y.engine.liveDoc()) || document;
       var box = doc.getElementById(owner.containerId);
       if (!box) return;
+      /* 카드가 항목 id 를 DOM id 로 달고 있으면 그 카드로 바로 간다 */
+      if (item.id && box.querySelector) {
+        var direct = doc.getElementById(String(item.id));
+        if (direct && box.contains(direct)) {
+          try { direct.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
+          catch (e2) { direct.scrollIntoView(); }
+          direct.style.outline = '2px solid #12294f';
+          direct.style.outlineOffset = '3px';
+          setTimeout(function () { direct.style.outline = ''; direct.style.outlineOffset = ''; }, 1600);
+          return;
+        }
+      }
       var key = norm(String(item.name || item.title || item.ko || item.code || '')).slice(0, 40);
       var hit = null;
       if (key) {
@@ -546,6 +602,57 @@
   }
 
   /** 항목 필드 편집 폼 */
+  /** 카드 모양(모서리·테두리) 고치기 — 목록 컨테이너의 인라인 스타일에 CSS 변수를 적는다.
+      원문(파일)의 style 속성이 바뀌므로 게시하면 그대로 남고, 화면에는 즉시 보인다. */
+  function cardShapeBox(owner, d) {
+    var det = d.createElement('details');
+    det.className = 'ys-dm-card';
+    var sum = d.createElement('summary');
+    sum.textContent = '카드 모양(모서리 · 테두리) 고치기';
+    det.appendChild(sum);
+
+    var doc = (Y.engine && Y.engine.liveDoc && Y.engine.liveDoc()) || document;
+    var box = doc.getElementById(owner.containerId);
+    var idx = (box && Y.engine && Y.engine.indexFromLive) ? Y.engine.indexFromLive(box) : null;
+    if (idx == null) {
+      var no = d.createElement('p');
+      no.className = 'ys-dm-note';
+      no.textContent = '이 목록 상자를 원문에서 찾지 못해 지금은 모양을 바꿀 수 없습니다.';
+      det.appendChild(no);
+      return det;
+    }
+    function ctl(labelText, varName, options) {
+      var lab = d.createElement('label');
+      lab.className = 'ys-dm-f';
+      var sp = d.createElement('span');
+      sp.textContent = labelText;
+      var sel = d.createElement('select');
+      sel.className = 'ys-dm-sel';
+      var cur = (Y.engine.getStyleProp && Y.engine.getStyleProp(idx, varName)) || '';
+      for (var i = 0; i < options.length; i++) {
+        var op = d.createElement('option');
+        op.textContent = options[i][0];
+        op.value = options[i][1];
+        if (options[i][1] === cur) op.selected = true;
+        sel.appendChild(op);
+      }
+      sel.addEventListener('change', function () {
+        Y.engine.setStyleProp(idx, varName, sel.value || null);
+        Y.toast('카드 모양을 바꿨습니다 — 「게시」를 눌러야 사이트에 반영됩니다.');
+      });
+      lab.appendChild(sp);
+      lab.appendChild(sel);
+      det.appendChild(lab);
+    }
+    ctl('모서리', '--ys-card-r', [
+      ['각지게(기본)', ''], ['살짝 둥글게', '10px'], ['둥글게', '16px'], ['아주 둥글게', '24px']]);
+    ctl('테두리 두께', '--ys-card-bw', [
+      ['기본(1px)', ''], ['없음', '0'], ['도톰(2px)', '2px']]);
+    ctl('테두리 색', '--ys-card-bc', [
+      ['기본', ''], ['네이비', '#1a3d75'], ['금색', '#b08d3e'], ['옅은 회색', '#c9ccd4']]);
+    return det;
+  }
+
   function renderForm(host, owner, coll, index, hitKey) {
     var arrNode = state.root.props[coll];
     var itemNode = arrNode && arrNode.type === 'array' ? arrNode.items[index] : null;
@@ -601,8 +708,38 @@
       body.appendChild(none);
     }
 
+    /* 카드 모양 고치기 — 컨테이너 인라인 스타일의 CSS 변수로 페이지 CSS 를 움직인다.
+       변수를 읽는 페이지(교수진 목록 .pcard 등)에서만 상자를 낸다(MAP.cardVars). */
+    if (MAP[owner.containerId] && MAP[owner.containerId].cardVars) {
+      body.appendChild(cardShapeBox(owner, d));
+    }
+
     var act = d.createElement('div');
     act.className = 'ys-dm-act';
+    /* 카드 교체(순서 이동) — 배열 순서를 화면이 그대로 쓰는 목록에서 자리가 바뀐다 */
+    var up = d.createElement('button');
+    up.type = 'button'; up.className = 'ys-dm-btn'; up.textContent = '↑ 위로';
+    var down = d.createElement('button');
+    down.type = 'button'; down.className = 'ys-dm-btn'; down.textContent = '↓ 아래로';
+    function dirtyInputs() {
+      for (var j = 0; j < inputs.length; j++) if (inputs[j].inp.value !== inputs[j].was) return true;
+      return false;
+    }
+    function moveBy(dir) {
+      if (dirtyInputs()) { Y.toast('고치던 내용을 먼저 저장하거나 되돌린 뒤 옮겨 주세요.', 'warn'); return; }
+      up.disabled = down.disabled = true;
+      api.moveItem(coll, index, dir).then(function (to) {
+        Y.toast('순서를 바꿨습니다 — 「게시」 후 화면에 반영됩니다.');
+        renderForm(host, owner, coll, to, hitKey);
+      }, function (e) {
+        up.disabled = down.disabled = false;
+        Y.toast((e && e.message) || '옮기지 못했습니다.', 'warn');
+      });
+    }
+    up.addEventListener('click', function () { moveBy(-1); });
+    down.addEventListener('click', function () { moveBy(1); });
+    act.appendChild(up);
+    act.appendChild(down);
     var save = d.createElement('button');
     save.type = 'button';
     save.className = 'ys-dm-btn is-primary';
@@ -712,6 +849,15 @@
       });
     },
 
+    /** 항목 순서 이동(위/아래 한 칸) — 새 인덱스를 돌려준다 */
+    moveItem: function (coll, index, dir) {
+      return ensure().then(function () {
+        var to = index + (dir < 0 ? -1 : 1);
+        if (!swapItems(coll, index, to)) throw new Error('더 옮길 수 없습니다.');
+        return persist().then(function () { return to; });
+      });
+    },
+
     /** data.js 초안 버리기 */
     discardDraft: function () {
       return Y.store.del('drafts', DATA_PATH).then(function () {
@@ -736,7 +882,8 @@
 
       hostEl.textContent = '목록을 불러오는 중…';
       return ensure().then(function () {
-        var found = findItem(owner.colls, clickText, itemText);
+        var found = itemByDomId(owner.container, owner.colls, liveEl)
+          || findItem(owner.colls, clickText, itemText);
         if (found) renderForm(hostEl, pub, found.coll, found.index, found.hit);
         else renderList(hostEl, pub, function (c, i) {
           renderForm(hostEl, pub, c, i, null);
